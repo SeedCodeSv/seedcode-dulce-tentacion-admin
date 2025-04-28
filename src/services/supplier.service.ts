@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import {
   IGetSupplierPagination,
   IGetSuppliers,
@@ -11,6 +12,7 @@ import { get_token, get_user } from '../storage/localStorage';
 
 export const add_supplier = (payload: PayloadSupplier) => {
   const token = get_token() ?? '';
+
   return axios.post<{ ok: boolean }>(API_URL + '/suppliers', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -57,6 +59,7 @@ export const update_supplier = (payload: Supplier, id: number) => {
   delete payload.direccionId;
   delete payload.transmitter;
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(API_URL + '/suppliers/' + id, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -66,6 +69,7 @@ export const update_supplier = (payload: Supplier, id: number) => {
 
 export const delete_supplier = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.delete<{ ok: boolean }>(API_URL + '/suppliers/' + id, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -76,6 +80,7 @@ export const delete_supplier = (id: number) => {
 export const get_supplier = () => {
   const user = get_user();
   const token = get_token() ?? '';
+
   return axios.get<IGetSuppliers>(
     API_URL +
     `/suppliers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
@@ -89,6 +94,7 @@ export const get_supplier = () => {
 
 export const activate_supplier = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/suppliers/activate/' + id,
     {},
@@ -102,6 +108,7 @@ export const activate_supplier = (id: number) => {
 
 export const get_supplier_by_id = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetSuppliersById>(API_URL + `/suppliers/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -111,6 +118,7 @@ export const get_supplier_by_id = (id: number) => {
 
 export const get_supplier_by_nit = (nit: string) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetSuppliersById>(API_URL + `/suppliers/by-nit/${nit}`, {
     headers: {
       Authorization: `Bearer ${token}`,

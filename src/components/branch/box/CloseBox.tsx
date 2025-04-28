@@ -10,13 +10,15 @@ import {
 } from '@heroui/react';
 //   import Layout from "@renderer/components/global/Layout";
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
+
 import OneDollar from '../../../assets/dollars/1.jpg';
 import FiveDollar from '../../../assets/dollars/5.png';
 import ThenDollar from '../../../assets/dollars/10.png';
 import TwentyDollar from '../../../assets/dollars/20.jpg';
 import FiftyDollar from '../../../assets/dollars/50.png';
 import OneHundredDollar from '../../../assets/dollars/100.png';
-
 import OneCent from '../../../assets/cents/01.png';
 import FiveCent from '../../../assets/cents/5.png';
 import TenCent from '../../../assets/cents/10.png';
@@ -25,17 +27,18 @@ import OneHundredCent from '../../../assets/cents/1.png';
 import { ICloseBox } from '../../../types/box.types';
 import { useBoxStore } from '../../../store/Boxes.store';
 import { close_box } from '../../../services/Boxes.service';
-import { toast } from 'sonner';
 import { IGetBox } from '../../../types/box.types';
-import { useNavigate } from 'react-router';
 import { get_box } from '../../../storage/localStorage';
+
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 
 function Box() {
   const [idBox, setIdBox] = useState(0);
+
   useEffect(() => {
     const box = get_box();
+
     setIdBox(Number(box));
   }, []);
 
@@ -103,7 +106,6 @@ function Box() {
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image alt="Card background" className="object-cover" src={OneDollar} />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -111,13 +113,14 @@ function Box() {
                   label="Billetes de 1"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       oneDollar: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -125,7 +128,6 @@ function Box() {
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image alt="Card background" className="object-cover w-full" src={FiveDollar} />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -133,13 +135,14 @@ function Box() {
                   label="Billetes de $5"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       fiveDollars: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -147,7 +150,6 @@ function Box() {
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image alt="Card background" className="object-cover w-full" src={ThenDollar} />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -155,13 +157,14 @@ function Box() {
                   label="Billetes de $10"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       tenDollars: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -169,7 +172,6 @@ function Box() {
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image alt="Card background" className="object-cover w-full" src={TwentyDollar} />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -177,13 +179,14 @@ function Box() {
                   label="Billetes de $20"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       twentyDollars: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -191,7 +194,6 @@ function Box() {
               <CardBody className="flex flex-col items-center justify-center py-2 overflow-visible">
                 <Image alt="Card background" className="object-cover w-full" src={FiftyDollar} />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -199,13 +201,14 @@ function Box() {
                   label="Billetes de $50"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       fiftyDollars: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -217,7 +220,6 @@ function Box() {
                   src={OneHundredDollar}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -225,13 +227,14 @@ function Box() {
                   label="Billetes de $100"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       hundredDollars: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -243,7 +246,6 @@ function Box() {
                   src={OneCent}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -251,13 +253,14 @@ function Box() {
                   label="Monedas de $0.01"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       oneCents: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -269,7 +272,6 @@ function Box() {
                   src={FiveCent}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -277,13 +279,14 @@ function Box() {
                   label="Monedas de $0.05"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       fiveCents: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -295,7 +298,6 @@ function Box() {
                   src={TenCent}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -303,13 +305,14 @@ function Box() {
                   label="Monedas de $0.10"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       tenCents: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -321,7 +324,6 @@ function Box() {
                   src={TwentyFiveCent}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -329,13 +331,14 @@ function Box() {
                   label="Monedas de $0.25"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       twentyFiveCents: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -347,7 +350,6 @@ function Box() {
                   src={OneHundredCent}
                 />
                 <Input
-                  variant="bordered"
                   className="mt-2"
                   classNames={{
                     label: 'font-semibold',
@@ -355,13 +357,14 @@ function Box() {
                   label="Monedas de $1"
                   placeholder="0"
                   size="sm"
+                  type="number"
+                  variant="bordered"
                   onChange={(e) => {
                     setBoxValues({
                       ...boxValues,
                       oneDollarCents: parseInt(e.target.value),
                     });
                   }}
-                  type="number"
                 />
               </CardBody>
             </Card>
@@ -427,8 +430,8 @@ function Box() {
                     <PopoverTrigger>
                       <ButtonUi
                         className="w-full text-white bg-coffee-brown"
-                        onPress={() => popover.onOpen()}
                         theme={Colors.Warning}
+                        onPress={() => popover.onOpen()}
                       >
                         Cerrar Caja
                       </ButtonUi>
@@ -436,19 +439,19 @@ function Box() {
                     <PopoverContent>
                       <div className="p-4 w-72">
                         <ButtonUi
+                          className="w-full mt-3 text-white bg-coffee-brown"
+                          theme={Colors.Info}
                           onPress={() => {
                             popover.onClose();
                             preview_box();
                           }}
-                          theme={Colors.Info}
-                          className="w-full mt-3 text-white bg-coffee-brown"
                         >
                           Verificar nuevamente
                         </ButtonUi>
                         <ButtonUi
-                          onPress={completeBox}
                           className="w-full mt-3 text-white bg-coffee-green"
                           theme={Colors.Success}
+                          onPress={completeBox}
                         >
                           Completar de caja
                         </ButtonUi>
@@ -458,9 +461,9 @@ function Box() {
                 </>
               ) : (
                 <ButtonUi
-                  onPress={preview_box}
                   className="w-full text-white bg-coffee-brown"
                   theme={Colors.Secondary}
+                  onPress={preview_box}
                 >
                   Cerrar caja
                 </ButtonUi>

@@ -1,11 +1,14 @@
 import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
-import { API_URL } from '../../utils/constants';
 import { toast } from 'sonner';
+import compressImage from 'browser-image-compression';
+
+import { API_URL } from '../../utils/constants';
 import DefaultImage from '../../assets/react.svg';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';
-import compressImage from 'browser-image-compression';
+
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -28,9 +31,11 @@ function UpdateFile(props: Props) {
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+
     if (files && files.length > 0) {
       if (files[0].type !== 'image/png') {
         toast.error('Solo se permiten imágenes en formato .png');
+
         return;
       }
 
@@ -51,6 +56,7 @@ function UpdateFile(props: Props) {
         });
 
         const compressedImageUrl = URL.createObjectURL(convertedFile);
+
         setSelectedImage(compressedImageUrl);
         setSelectedFile(convertedFile);
       } catch {
@@ -68,6 +74,7 @@ function UpdateFile(props: Props) {
     if (selectedFile) {
       try {
         const formData = new FormData();
+
         formData.append('file', selectedFile);
         await axios.patch(
           `${API_URL}/personalization/change-image/${props.perzonalitationId}`,
@@ -102,32 +109,32 @@ function UpdateFile(props: Props) {
       <div className="p-4">
         <div className="flex flex-col items-center justify-center m-4 2xl">
           <img
+            alt="Cargando..."
+            className="h-720 w-72 rounded-lg object-cover"
             src={
               selectedImage || personalizationLogo
                 ? selectedImage || personalizationLogo
                 : DefaultImage
             }
-            alt="Cargando..."
-            className="h-720 w-72 rounded-lg object-cover"
           />
           <div className="mt-2">
             <label htmlFor="fileInput">
               <ButtonUi
                 className="text-white font-semibold px-5"
-                onPress={handleButtonClick}
-                theme={Colors.Primary}
                 disabled={loading}
+                theme={Colors.Primary}
+                onPress={handleButtonClick}
               >
                 {loading ? 'Cargando...' : 'Selecciona un archivo'}
               </ButtonUi>
             </label>
             <input
-              type="file"
-              id="fileInput"
-              accept="image/*"
-              style={{ display: 'none' }}
-              onChange={handleFileChange}
               ref={fileInputRef}
+              accept="image/*"
+              id="fileInput"
+              style={{ display: 'none' }}
+              type="file"
+              onChange={handleFileChange}
             />
           </div>
         </div>
@@ -135,9 +142,9 @@ function UpdateFile(props: Props) {
         <div className="mt-5">
           <ButtonUi
             className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
+            disabled={loading}
             theme={Colors.Success}
             onPress={handleUpload}
-            disabled={loading}
           >
             {loading ? 'Guardando...' : 'Guardar'}
           </ButtonUi>

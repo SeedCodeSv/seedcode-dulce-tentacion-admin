@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router";
-import AddButton from "../global/AddButton";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Table as ITable, CreditCard, EditIcon } from "lucide-react";
@@ -12,24 +11,27 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
+
+import AddButton from "../global/AddButton";
 import { usePromotionsStore } from "../../store/promotions/promotions.store";
 import { useBranchesStore } from "../../store/branches.store";
 import { Tipos_Promotions, limit_options } from "../../utils/constants";
 import Pagination from "../global/Pagination";
 import SmPagination from "../global/SmPagination";
 import { formatDate } from "../../utils/dates";
-import MobileView from "./MobileView";
-// import UpdatePromotionsByCategory from './UpdatePromotionsCategories';
 import {
   Promotion,
   PromotionCategories,
   PromotionProducts,
 } from "../../types/promotions.types";
-import UpdatePromotionsBranch from "./UpdatePromotionBranch";
 import HeadlessModal from "../global/HeadlessModal";
 import { Branches } from "../../types/branches.types";
 import TooltipGlobal from "../global/TooltipGlobal";
+
+import UpdatePromotionsBranch from "./UpdatePromotionBranch";
+import MobileView from "./MobileView";
 import UpdatePromotionsProduct from "./UpdatePromotionsProduct";
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -105,11 +107,11 @@ function ListDiscount({ actions }: Props) {
   };
 
   <Column
-    headerClassName="text-sm font-semibold"
-    header="Prioridad"
     body={(item: { priority: string }) => (
       <span>{priorityMapping[item.priority] || item.priority}</span>
     )}
+    header="Prioridad"
+    headerClassName="text-sm font-semibold"
   />;
 
   return (
@@ -122,14 +124,14 @@ function ListDiscount({ actions }: Props) {
                 className="font-semibold dark:text-white"
                 label="Sucursal"
                 labelPlacement="outside"
-                variant="bordered"
                 placeholder="Selecciona la sucursal"
+                variant="bordered"
               >
                 {branch_list.map((branch) => (
                   <AutocompleteItem
-                    onClick={() => setbranch(branch)}
-                    className="dark:text-white"
                     key={branch.id}
+                    className="dark:text-white"
+                    onClick={() => setbranch(branch)}
                   >
                     {branch.name}
                   </AutocompleteItem>
@@ -137,15 +139,15 @@ function ListDiscount({ actions }: Props) {
               </Autocomplete>
 
               <Select
-                variant="bordered"
-                placeholder="Selecciona el tipo de promoción"
                 className="w-full dark:text-white"
-                label="Tipo de Promoción"
-                labelPlacement="outside"
                 classNames={{
                   label: "font-semibold text-gray-500 text-sm",
                 }}
+                label="Tipo de Promoción"
+                labelPlacement="outside"
+                placeholder="Selecciona el tipo de promoción"
                 value={type}
+                variant="bordered"
                 onChange={(e) => {
                   setType(e.target.value);
                 }}
@@ -160,36 +162,36 @@ function ListDiscount({ actions }: Props) {
                 ))}
               </Select>
               <Input
-                onChange={(e) => setDateInitial(e.target.value)}
-                value={dateInitial}
+                classNames={{
+                  input: "dark:text-white dark:border-gray-600",
+                  label: "text-sm font-semibold dark:text-white",
+                }}
                 defaultValue={formatDate()}
-                placeholder="Buscar por nombre..."
-                type="date"
-                variant="bordered"
                 label="Fecha inicial"
                 labelPlacement="outside"
-                classNames={{
-                  input: "dark:text-white dark:border-gray-600",
-                  label: "text-sm font-semibold dark:text-white",
-                }}
+                placeholder="Buscar por nombre..."
+                type="date"
+                value={dateInitial}
+                variant="bordered"
+                onChange={(e) => setDateInitial(e.target.value)}
               />
               <Input
-                onChange={(e) => setDateEnd(e.target.value)}
-                value={dateEnd}
-                placeholder="Buscar por nombre..."
-                variant="bordered"
-                label="Fecha final"
-                type="date"
-                labelPlacement="outside"
                 classNames={{
                   input: "dark:text-white dark:border-gray-600",
                   label: "text-sm font-semibold dark:text-white",
                 }}
+                label="Fecha final"
+                labelPlacement="outside"
+                placeholder="Buscar por nombre..."
+                type="date"
+                value={dateEnd}
+                variant="bordered"
+                onChange={(e) => setDateEnd(e.target.value)}
               />
               <ButtonUi
-                theme={Colors.Primary}
                 className="font-semibold"
                 color="primary"
+                theme={Colors.Primary}
                 onPress={() => handleSearch(undefined)}
               >
                 Buscar
@@ -200,14 +202,14 @@ function ListDiscount({ actions }: Props) {
               <div className="flex items-start justify-between w-full gap-10 lg:justify-start">
                 <Select
                   className="max-w-44 dark:text-white"
-                  variant="bordered"
-                  label="Mostrar"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={["5"]}
                   classNames={{
                     label: "font-semibold",
                   }}
+                  defaultSelectedKeys={["5"]}
+                  label="Mostrar"
+                  labelPlacement="outside"
                   value={limit}
+                  variant="bordered"
                   onChange={(e) => {
                     setLimit(
                       Number(e.target.value !== "" ? e.target.value : "5")
@@ -226,15 +228,15 @@ function ListDiscount({ actions }: Props) {
                 <div className="mt-6">
                 <ButtonGroup className="mt-4">
                 <ButtonUi
-                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('table')}
                 >
                   <ITable />
                 </ButtonUi>
                 <ButtonUi
-                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('grid')}
                 >
                   <CreditCard />
@@ -256,8 +258,8 @@ function ListDiscount({ actions }: Props) {
 
             {(view === "grid" || view === "list") && (
               <MobileView
-                layout={view as "grid" | "list"}
                 actions={actions}
+                layout={view as "grid" | "list"}
                 openEditModal={(promotion) => {
                   if (type === "Categorias") {
                     setIsOpenPromotionCategory(true);
@@ -280,35 +282,33 @@ function ListDiscount({ actions }: Props) {
               <DataTable
                 className="w-full mt-6 shadow "
                 emptyMessage="No se encontraron resultados"
-                value={pagination_promotions.promotionsDiscount}
-                tableStyle={{ minWidth: "50rem" }}
                 loading={loading_products}
+                tableStyle={{ minWidth: "50rem" }}
+                value={pagination_promotions.promotionsDiscount}
               >
                 <Column
-                  headerClassName="text-sm font-semibold"
-                  headerStyle={{  borderTopLeftRadius: "10px" }}
                   field="id"
                   header="No."
+                  headerClassName="text-sm font-semibold"
+                  headerStyle={{  borderTopLeftRadius: "10px" }}
                 />
                 <Column
-                  headerClassName="text-sm font-semibold"
                   field="name"
                   header="Nombre"
+                  headerClassName="text-sm font-semibold"
                 />
                 <Column
-                  headerClassName="text-sm font-semibold"
                   field="startDate"
                   header="Fecha Inicial"
+                  headerClassName="text-sm font-semibold"
                 />
                 <Column
-                  headerClassName="text-sm font-semibold"
                   field="endDate"
                   header="Fecha Final"
+                  headerClassName="text-sm font-semibold"
                 />
 
                 <Column
-                  headerClassName="text-sm font-semibold"
-                  header="Descuento"
                   body={(item) => (
                     <span>
                       {item.percentage > 0
@@ -318,11 +318,11 @@ function ListDiscount({ actions }: Props) {
                         : ""}
                     </span>
                   )}
+                  header="Descuento"
+                  headerClassName="text-sm font-semibold"
                 />
 
                 <Column
-                  headerClassName="text-sm font-semibold"
-                  header="Prioridad"
                   body={(item: { priority: Priority }) => (
                     <span style={{ display: "flex", alignItems: "center" }}>
                       <span
@@ -334,26 +334,27 @@ function ListDiscount({ actions }: Props) {
                             priorityMap[item.priority]?.color || "black",
                           marginRight: "8px",
                         }}
-                      ></span>
+                       />
                       {priorityMap[item.priority]?.label || item.priority}
                     </span>
                   )}
+                  header="Prioridad"
+                  headerClassName="text-sm font-semibold"
                 />
 
                 <Column
-                  headerClassName="text-sm font-semibold"
                   body={(item) => (
                     <div className="">
                       {type === "Categorias" && (
                         <TooltipGlobal text={"Editar Promoción"}>
                           <ButtonUi
+                            isIconOnly
+                            theme={Colors.Primary}
                             onClick={() => {
                               setIsOpenPromotionCategory(true);
                               setPromotionId(item.id);
                               setDataPromotion(item);
                             }}
-                            isIconOnly
-                            theme={Colors.Primary}
                           >
                             <EditIcon size={20} />
                           </ButtonUi>
@@ -361,26 +362,26 @@ function ListDiscount({ actions }: Props) {
                       )}
                       {type === "Productos" && (
                         <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
                           onClick={() => {
                             setPromotionId(item.id);
                             setDataPromotionProduct(item);
                             setIsOpenPromotionProduct(true);
                           }}
-                          isIconOnly
-                          theme={Colors.Primary}
                         >
                           <EditIcon size={20} />
                         </ButtonUi>
                       )}
                       {type === "Sucursales" && (
                         <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
                           onClick={() => {
                             setIsOpen(true);
                             setPromotionId(item.id);
                             setDataPromotionBranch(item);
                           }}
-                          isIconOnly
-                          theme={Colors.Primary}
                         >
                           <EditIcon  size={20} />
                         </ButtonUi>
@@ -388,6 +389,7 @@ function ListDiscount({ actions }: Props) {
                     </div>
                   )}
                   header="Acciones"
+                  headerClassName="text-sm font-semibold"
                 />
               </DataTable>
             )}
@@ -396,9 +398,9 @@ function ListDiscount({ actions }: Props) {
               <>
                 <div className="hidden w-full mt-5 md:flex">
                   <Pagination
-                    previousPage={pagination_promotions.prevPag}
-                    nextPage={pagination_promotions.nextPag}
                     currentPage={pagination_promotions.currentPag}
+                    nextPage={pagination_promotions.nextPag}
+                    previousPage={pagination_promotions.prevPag}
                     totalPages={pagination_promotions.totalPag}
                     onPageChange={(page) => {
                       serPage(page);
@@ -415,6 +417,7 @@ function ListDiscount({ actions }: Props) {
                 </div>
                 <div className="flex w-full mt-5 md:hidden">
                   <SmPagination
+                    currentPage={pagination_promotions.currentPag}
                     handleNext={() => {
                       serPage(pagination_promotions.nextPag);
                       getPaginatedPromotions(
@@ -439,7 +442,6 @@ function ListDiscount({ actions }: Props) {
                         dateEnd
                       );
                     }}
-                    currentPage={pagination_promotions.currentPag}
                     totalPages={pagination_promotions.totalPag}
                   />
                 </div>
@@ -464,16 +466,15 @@ function ListDiscount({ actions }: Props) {
         </HeadlessModal> */}
 
         <HeadlessModal
-          title="Actualizar promoción por producto"
-          size="2xl"
           isOpen={isOpenPromotionProduct}
+          size="2xl"
+          title="Actualizar promoción por producto"
           onClose={() => setIsOpenPromotionProduct(false)}
         >
           <UpdatePromotionsProduct
-            onClose={() => setIsOpenPromotionProduct(false)}
+            branch={branch}
             id={promotionId}
             promotion={dataPromotionProduct}
-            branch={branch}
             reloadData={() =>
               getPaginatedPromotions(
                 1,
@@ -484,18 +485,20 @@ function ListDiscount({ actions }: Props) {
                 dateEnd
               )
             }
+            onClose={() => setIsOpenPromotionProduct(false)}
           />
         </HeadlessModal>
 
         {dataPromotionBranch && (
           <HeadlessModal
-            title="Actualizar promoción"
-            size="2xl"
             isOpen={isOpen}
+            size="2xl"
+            title="Actualizar promoción"
             onClose={() => setIsOpen(false)}
           >
             <UpdatePromotionsBranch
-              onClose={() => setIsOpen(false)}
+              id={promotionId}
+              promotion={dataPromotionBranch}
               reloadData={() =>
                 getPaginatedPromotions(
                   1,
@@ -506,8 +509,7 @@ function ListDiscount({ actions }: Props) {
                   dateEnd
                 )
               }
-              id={promotionId}
-              promotion={dataPromotionBranch}
+              onClose={() => setIsOpen(false)}
             />
           </HeadlessModal>
         )}

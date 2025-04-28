@@ -1,13 +1,16 @@
 import { create } from "zustand";
-import { IDebitNotes } from "./types/notas_debito.store.types";
-import { get_contingence_debit_notes, get_debit_notes_by_id, get_recent_debit_notes } from "@/services/debit_notes.service";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "@/plugins/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { SPACES_BUCKET } from "@/utils/constants";
 import axios from "axios";
-import { SVFE_ND_Firmado } from "@/types/svf_dte/nd.types";
 import { toast } from "sonner";
+
+import { IDebitNotes } from "./types/notas_debito.store.types";
+
+import { get_contingence_debit_notes, get_debit_notes_by_id, get_recent_debit_notes } from "@/services/debit_notes.service";
+import { s3Client } from "@/plugins/s3";
+import { SPACES_BUCKET } from "@/utils/constants";
+import { SVFE_ND_Firmado } from "@/types/svf_dte/nd.types";
+
 
 export const useDebitNotes = create<IDebitNotes>((set, get) => ({
     json_debit: undefined,
@@ -40,6 +43,7 @@ export const useDebitNotes = create<IDebitNotes>((set, get) => ({
         get_debit_notes_by_id(id)
             .then(async (res) => {
                 const { pathJson, sale } = res.data.debit;
+
                 get().onGetRecentDebitNotes(id, sale.id);
                 const url = await getSignedUrl(
                     s3Client,

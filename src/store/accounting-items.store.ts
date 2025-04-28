@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+
 import { AccountingItemsServiceStore } from './types/accounting-items.service.store.types';
+
 import {
   create_item,
   delete_item,
@@ -87,6 +89,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
       'accounting_items',
       JSON.stringify({ page, limit, startDate, endDate, typeItem, typeOrder })
     );
+
     return get_accounting_items(id, page, limit, startDate, endDate, typeItem, typeOrder)
       .then((res) => {
         if (res.data.items.length > 0) {
@@ -151,6 +154,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           get().search_item.typeItem,
           get().search_item.typeOrder
         );
+
         return true;
       })
       .catch(() => {
@@ -169,6 +173,7 @@ export const useAccountingItemsStore = create<AccountingItemsServiceStore>((set,
           get().search_item.typeItem,
           get().search_item.typeOrder
         );
+
         return true;
       })
       .catch(() => {

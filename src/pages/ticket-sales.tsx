@@ -1,16 +1,3 @@
-import FullPageLayout from '@/components/global/FullOverflowLayout';
-import Pagination from '@/components/global/Pagination';
-import useWindowSize from '@/hooks/useWindowSize';
-import Layout from '@/layout/Layout';
-import { get_ticket } from '@/services/ticket.service';
-import { useBranchesStore } from '@/store/branches.store';
-import { useTicketStore } from '@/store/ticket.store';
-import ButtonUi from '@/themes/ui/button-ui';
-import ThGlobal from '@/themes/ui/th-global';
-import { Colors } from '@/types/themes.types';
-import { DetailSale } from '@/types/ticket.types';
-import { formatDate } from '@/utils/dates';
-import { formatCurrency } from '@/utils/dte';
 import {
   Accordion,
   AccordionItem,
@@ -26,6 +13,20 @@ import classNames from 'classnames';
 import jsPDF from 'jspdf';
 import { CreditCard, Eye, Filter, Table2Icon, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
+import FullPageLayout from '@/components/global/FullOverflowLayout';
+import Pagination from '@/components/global/Pagination';
+import useWindowSize from '@/hooks/useWindowSize';
+import Layout from '@/layout/Layout';
+import { get_ticket } from '@/services/ticket.service';
+import { useBranchesStore } from '@/store/branches.store';
+import { useTicketStore } from '@/store/ticket.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import ThGlobal from '@/themes/ui/th-global';
+import { Colors } from '@/types/themes.types';
+import { DetailSale } from '@/types/ticket.types';
+import { formatDate } from '@/utils/dates';
+import { formatCurrency } from '@/utils/dte';
 
 function TicketSales() {
   const [dateInitial, setDateInitial] = useState(formatDate());
@@ -58,6 +59,7 @@ function TicketSales() {
     get_ticket(saleId).then((res) => {
       const blob = generateTicket(res.data.detailSale);
       const url = URL.createObjectURL(blob);
+
       setPdf(url);
       setLoadingPdf(false);
     });
@@ -68,7 +70,7 @@ function TicketSales() {
       <>
         <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full flex flex-col p-3 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-            <Accordion isCompact variant="splitted" defaultSelectedKeys={['1']}>
+            <Accordion isCompact defaultSelectedKeys={['1']} variant="splitted">
               <AccordionItem
                 key="1"
                 aria-label="Accordion 1"
@@ -78,44 +80,45 @@ function TicketSales() {
                 <div className="grid grid-cols-3 gap-5">
                   <Input
                     className="z-0"
-                    onChange={(e) => setDateInitial(e.target.value)}
-                    value={dateInitial}
+                    classNames={{
+                      input: 'dark:text-white dark:border-gray-600',
+                      label: 'text-sm font-semibold dark:text-white',
+                    }}
                     defaultValue={formatDate()}
-                    placeholder="Buscar por nombre..."
-                    type="date"
-                    variant="bordered"
                     label="Fecha inicial"
                     labelPlacement="outside"
-                    classNames={{
-                      input: 'dark:text-white dark:border-gray-600',
-                      label: 'text-sm font-semibold dark:text-white',
-                    }}
+                    placeholder="Buscar por nombre..."
+                    type="date"
+                    value={dateInitial}
+                    variant="bordered"
+                    onChange={(e) => setDateInitial(e.target.value)}
                   />
                   <Input
-                    onChange={(e) => setEndDate(e.target.value)}
-                    value={endDate}
-                    placeholder="Buscar por nombre..."
-                    variant="bordered"
-                    label="Fecha final"
-                    type="date"
-                    labelPlacement="outside"
                     classNames={{
                       input: 'dark:text-white dark:border-gray-600',
                       label: 'text-sm font-semibold dark:text-white',
                     }}
+                    label="Fecha final"
+                    labelPlacement="outside"
+                    placeholder="Buscar por nombre..."
+                    type="date"
+                    value={endDate}
+                    variant="bordered"
+                    onChange={(e) => setEndDate(e.target.value)}
                   />
                   <Select
                     className="z-0"
-                    placeholder="Selecciona la sucursal"
-                    variant="bordered"
-                    label="Sucursal"
-                    labelPlacement="outside"
                     classNames={{
                       label: 'text-sm font-semibold dark:text-white',
                     }}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder="Selecciona la sucursal"
+                    variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
                         const branchId = Number(new Set(key).values().next().value);
+
                         setBranch(branchId);
                       } else {
                         setBranch(0);
@@ -130,15 +133,15 @@ function TicketSales() {
                 <div className="flex flex-row justify-between mt-6 w-full">
                   <ButtonGroup className="mt-4">
                     <ButtonUi
-                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       isIconOnly
+                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       onPress={() => setView('table')}
                     >
                       <Table2Icon />
                     </ButtonUi>
                     <ButtonUi
-                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       isIconOnly
+                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       onPress={() => setView('grid')}
                     >
                       <CreditCard />
@@ -146,38 +149,38 @@ function TicketSales() {
                   </ButtonGroup>
                   <Select
                     className="w-44 dark:text-white border-white border rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    label="Cantidad a mostrar"
-                    defaultSelectedKeys={['5']}
                     classNames={{
                       label: 'font-semibold',
                     }}
-                    value={limit}
+                    defaultSelectedKeys={['5']}
+                    label="Cantidad a mostrar"
+                    labelPlacement="outside"
                     selectedKeys={[limit.toString()]}
+                    value={limit}
+                    variant="bordered"
                     onChange={(e) => {
                       setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                     }}
                   >
-                    <SelectItem className="dark:text-white" key={'5'}>
+                    <SelectItem key={'5'} className="dark:text-white">
                       5
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'10'}>
+                    <SelectItem key={'10'} className="dark:text-white">
                       10
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'20'}>
+                    <SelectItem key={'20'} className="dark:text-white">
                       20
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'30'}>
+                    <SelectItem key={'30'} className="dark:text-white">
                       30
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'40'}>
+                    <SelectItem key={'40'} className="dark:text-white">
                       40
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'50'}>
+                    <SelectItem key={'50'} className="dark:text-white">
                       50
                     </SelectItem>
-                    <SelectItem className="dark:text-white" key={'100'}>
+                    <SelectItem key={'100'} className="dark:text-white">
                       100
                     </SelectItem>
                   </Select>
@@ -226,9 +229,9 @@ function TicketSales() {
                     {isLoading ? (
                       <>
                         <tr>
-                          <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                          <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                             <div className="flex flex-col items-center justify-center w-full h-64">
-                              <div className="loader"></div>
+                              <div className="loader" />
                               <p className="mt-3 text-xl font-semibold">Cargando...</p>
                             </div>
                           </td>
@@ -237,7 +240,7 @@ function TicketSales() {
                     ) : (
                       <>
                         {tickets.map((sale, index) => (
-                          <tr className="border-b border-slate-200" key={index}>
+                          <tr key={index} className="border-b border-slate-200">
                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                               {sale.fecEmi} - {sale.horEmi}
                             </td>
@@ -255,9 +258,9 @@ function TicketSales() {
                             </td>
                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                               <ButtonUi
+                                isIconOnly
                                 theme={Colors.Info}
                                 onPress={() => handleShowPdf(sale.id)}
-                                isIconOnly
                               >
                                 <Eye />
                               </ButtonUi>
@@ -274,8 +277,8 @@ function TicketSales() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {tickets.map((sale, index) => (
                       <div
-                        className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl"
                         key={index}
+                        className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl"
                       >
                         <div className="flex flex-col justify-between">
                           <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
@@ -294,9 +297,9 @@ function TicketSales() {
                           </p>
                         </div>
                         <ButtonUi
+                          isIconOnly
                           theme={Colors.Info}
                           onPress={() => handleShowPdf(sale.id)}
-                          isIconOnly
                         >
                           <Eye />
                         </ButtonUi>
@@ -310,12 +313,12 @@ function TicketSales() {
               <div className="mt-5 w-full dark:bg-gray-900">
                 <Pagination
                   currentPage={ticketPagination.currentPag}
+                  nextPage={ticketPagination.prevPag}
+                  previousPage={ticketPagination.nextPag}
                   totalPages={ticketPagination.totalPag}
                   onPageChange={(page) => {
                     onGetTickets(page, limit, dateInitial, endDate, branch);
                   }}
-                  nextPage={ticketPagination.prevPag}
-                  previousPage={ticketPagination.nextPag}
                 />
               </div>
             )}
@@ -330,20 +333,20 @@ function TicketSales() {
           >
             <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
               <Button
+                isIconOnly
+                className="absolute bottom-6 left-6"
                 color="danger"
                 onPress={() => showFullLayout.onClose()}
-                className="absolute bottom-6 left-6"
-                isIconOnly
               >
                 <X />
               </Button>
               {loadingPdf ? (
                 <div className="w-full h-full flex flex-col justify-center items-center">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-5 text-xl">Cargando...</p>
                 </div>
               ) : (
-                <iframe className="w-full h-full" src={pdf}></iframe>
+                <iframe className="w-full h-full" src={pdf} title='pdf' />
               )}
             </div>
           </div>
@@ -380,6 +383,7 @@ function generateTicket(details: DetailSale[]) {
   });
 
   let y = 70;
+
   doc.setFontSize(9);
   doc.text('Prod.', 10, y);
   doc.text('Cant.', 70, y);

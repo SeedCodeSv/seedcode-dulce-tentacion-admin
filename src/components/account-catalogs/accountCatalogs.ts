@@ -1,5 +1,6 @@
-import { AccountCatalog } from "@/types/accountCatalogs.types"
 import ExcelJS from "exceljs"
+
+import { AccountCatalog } from "@/types/accountCatalogs.types"
 export const generate_catalog_de_cuentas = async (accountCatalogs: AccountCatalog[]) => {
     const workbook = new ExcelJS.Workbook()
     const worksheet = workbook.addWorksheet("CATALOGO DE CUENTAS")

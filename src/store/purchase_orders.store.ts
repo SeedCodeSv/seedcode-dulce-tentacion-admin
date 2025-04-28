@@ -1,12 +1,14 @@
 import { create } from 'zustand';
-import { PurchaseOrderStore } from './types/purchase_orders.types';
+import { toast } from 'sonner';
+
 import {
   get_details_purchase_order,
   get_order_purchase,
   save_order_purchase,
   update_order,
 } from '../services/purchase_orders.service';
-import { toast } from 'sonner';
+
+import { PurchaseOrderStore } from './types/purchase_orders.types';
 
 export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => ({
   purchase_orders: [],
@@ -82,6 +84,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
   },
   updateOrderProduct(id, price, quantity) {
     const product = get().details_order_purchase.find((cp) => cp.orderId === id);
+
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
@@ -105,6 +108,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
   deleteProductDetail() {},
   addProductToOrder(product) {
     const exist = get().details_order_purchase.find((cp) => cp.productId === product.id);
+
     if (!exist) {
       set({
         details_order_purchase: [
@@ -127,13 +131,16 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
   },
   deleteProductOrder(id) {
     const find = get().details_order_purchase.find((cp) => cp.orderId === id);
+
     if (find) {
       const products = get().details_order_purchase.filter((cp) => cp.productId !== id);
+
       set({ details_order_purchase: products });
     }
   },
   updatePriceOrder(id, price) {
     const product = get().details_order_purchase.find((cp) => cp.productId === id);
+
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
@@ -159,16 +166,19 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
   },
   clearProductOrder() {
     const oldest_products = get().details_order_purchase.filter((cp) => !cp.isNew);
+
     set({ details_order_purchase: oldest_products });
   },
   updatePurchaseOrder(id, details): Promise<{ ok: boolean }> {
     return update_order(id, details)
       .then(() => {
         toast.success('Orden de compra actualizada correctamente');
+
         return { ok: true };
       })
       .catch(() => {
         toast.error('Error al actualizar la orden');
+
         return { ok: false };
       });
   },

@@ -1,13 +1,16 @@
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
+import { useEffect, useState } from 'react';
+
+import NO_DATA from '../../assets/no.png';
+
+import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
+
 import Layout from '@/layout/Layout';
 // import { useBranchesStore } from '@/store/branches.store';
 import { useIvaCcfeStore } from '@/store/reports/iva-ccfe.store';
 // import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, Spinner } from "@heroui/react";
-import { useEffect, useState } from 'react';
-import { csvmaker_ccfe, export_annexes_iva_ccfe } from './utils';
 import { global_styles } from '@/styles/global.styles';
-import NO_DATA from '../../assets/no.png';
 import { months } from '@/utils/constants';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -35,6 +38,7 @@ function AnexoCcfe() {
     const blob = await export_annexes_iva_ccfe(annexes_iva_ccfe);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
+
     link.href = url;
     link.download = 'anexos-iva-ccfe.xlsx';
     link.click();
@@ -45,6 +49,7 @@ function AnexoCcfe() {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
+
     link.href = url;
     link.download = 'ANEXO_CONTRIBUYENTES.csv';
     link.click();
@@ -56,17 +61,17 @@ function AnexoCcfe() {
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex justify-between gap-5">
             <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Meses"
+              labelPlacement="outside"
               selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setMonthSelected(Number(new Set(key).values().next().value));
                 }
               }}
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Meses"
-              labelPlacement="outside"
-              variant="bordered"
             >
               {months.map((month) => (
                 <SelectItem key={month.value}>
@@ -75,17 +80,17 @@ function AnexoCcfe() {
               ))}
             </Select>
             <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
               selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setYearSelected(Number(new Set(key).values().next().value));
                 }
               }}
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Año"
-              labelPlacement="outside"
-              variant="bordered"
             >
               {years.map((years) => (
                 <SelectItem key={years.value}>
@@ -170,7 +175,7 @@ function AnexoCcfe() {
                   ) : (
                     <>
                       <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                        <img className="w-44 mt-10" src={NO_DATA} alt="" />
+                        <img alt="" className="w-44 mt-10" src={NO_DATA} />
                         <p className="mt-5 dark:text-white text-gray-600 text-xl">
                           No se encontraron resultados
                         </p>

@@ -1,7 +1,9 @@
 import { Input } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+
 import { useUsersStore } from '../../store/users.store';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -40,26 +42,26 @@ function UpdatePassword(props: Props) {
           <>
             <div>
               <Input
-                label="Contraseña"
-                labelPlacement="outside"
                 className="dark:text-white font-semibold"
-                name="password"
-                value={values.password}
-                onChange={handleChange('password')}
-                onBlur={handleBlur('password')}
-                placeholder="Ingresa la contraseña"
                 classNames={{
                   label: 'font-semibold text-gray-500 text-sm',
                 }}
-                variant="bordered"
-                isInvalid={touched.password && !!errors.password}
                 errorMessage={touched.password && errors.password}
+                isInvalid={touched.password && !!errors.password}
+                label="Contraseña"
+                labelPlacement="outside"
+                name="password"
+                placeholder="Ingresa la contraseña"
+                value={values.password}
+                variant="bordered"
+                onBlur={handleBlur('password')}
+                onChange={handleChange('password')}
               />
             </div>
             <ButtonUi
-              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               theme={Colors.Primary}
+              onPress={() => handleSubmit()}
             >
               Guardar
             </ButtonUi>

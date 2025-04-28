@@ -1,8 +1,3 @@
-import Layout from '@/layout/Layout';
-import { useBranchesStore } from '@/store/branches.store';
-import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
-import { useSalesStore } from '@/store/sales.store';
-import { formatDate } from '@/utils/dates';
 import {
   Input,
   Select,
@@ -17,18 +12,25 @@ import {
   ModalFooter,
 } from '@heroui/react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import debounce from 'debounce';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
+import { DateTime } from 'luxon';
+
 import { ItemListProps, Items } from './types/types';
+
+import Layout from '@/layout/Layout';
+import { useBranchesStore } from '@/store/branches.store';
+import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
+import { useSalesStore } from '@/store/sales.store';
+import { formatDate } from '@/utils/dates';
 import { CodCuentaSelect } from '@/components/shopping/manual/cod-cuenta-select';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
-import debounce from 'debounce';
 import { useAuthStore } from '@/store/auth.store';
-import { toast } from 'sonner';
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
-import { useNavigate } from 'react-router';
 import { Period } from '@/types/items-period.types';
 import { create_period, find_period, update_period } from '@/services/items-period.service';
-import { DateTime } from 'luxon';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -54,6 +56,7 @@ function AddItemsBySales() {
     const transId = user?.correlative
       ? user?.correlative.branch.transmitter.id
       : user?.pointOfSale?.branch.transmitter.id;
+
     getBranchesList();
     getFiscalDataAndParameter(transId ?? 0);
     getAccountCatalogs(transId ?? 0, '', '');
@@ -67,6 +70,7 @@ function AddItemsBySales() {
       ? user?.correlative.branch.transmitter.id
       : user?.pointOfSale?.branch.transmitter.id;
     const listBranches = Array.from(branches) as number[];
+
     getSaleByItem(
       transId ?? 0,
       startDate,
@@ -193,6 +197,7 @@ function AddItemsBySales() {
 
   const getBranchName = (id: number) => {
     const branch = branch_list.find((branch) => branch.id === id);
+
     return branch?.name || '';
   };
 
@@ -217,6 +222,7 @@ function AddItemsBySales() {
   const handleSave = async () => {
     if (items.length === 0) {
       toast.warning('Debe agregar al menos una partida');
+
       return;
     }
 
@@ -226,16 +232,19 @@ function AddItemsBySales() {
 
     if (!date) {
       toast.warning('Debe seleccionar una fecha');
+
       return;
     }
 
     if (selectedType === 0) {
       toast.warning('Debe seleccionar un tipo de partida');
+
       return;
     }
 
     if ($total !== 0) {
       toast.warning('La diferencia debe ser 0');
+
       return;
     }
 
@@ -253,12 +262,14 @@ function AddItemsBySales() {
       });
       setPeriod(existsPeriod.data.period);
       periodModal.onOpenChange();
+
       return;
     }
 
     setLoading(true);
     const trandId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     addAddItem({
       date: date,
       typeOfAccountId: selectedType,
@@ -300,6 +311,7 @@ function AddItemsBySales() {
 
     if (itemsExist || !notHasDebeOrHaber) {
       toast.warning('Debe agregar al menos una partida');
+
       return false;
     }
 
@@ -310,14 +322,17 @@ function AddItemsBySales() {
     if (branches.length === 0) return branch_list.map((b) => b.name).join(', ');
     const branchesName = branches.map((branch) => {
       const branchName = branch_list.find((b) => b.id === branch)?.name;
+
       return branchName;
     });
+
     return branchesName.join(', ');
   };
 
   const formattedStartDate = (startDate: string) => {
     const format = DateTime.fromISO(startDate, { zone: 'America/El_Salvador' });
     const formattedStartDate = format.toLocaleString(DateTime.DATE_FULL);
+
     return formattedStartDate;
   };
 
@@ -328,6 +343,7 @@ function AddItemsBySales() {
       setloadingUpdateActions(true);
       const trandId =
         user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
       updateAndDeleteItem(period.item.id, {
         date: date,
         typeOfAccountId: selectedType,
@@ -347,6 +363,7 @@ function AddItemsBySales() {
       })
         .then(async () => {
           const listBranches = Array.from(branches) as number[];
+
           setloadingUpdateActions(false);
           await update_period(period.id, startDate, endDate, listBranches, period.item.id);
           toast.success('Partida actualizada');
@@ -367,41 +384,41 @@ function AddItemsBySales() {
             <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
-              type="date"
-              variant="bordered"
               labelPlacement="outside"
+              type="date"
               value={startDate}
+              variant="bordered"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <Input
               classNames={{ label: 'font-semibold' }}
               label="Fecha final"
-              type="date"
-              variant="bordered"
               labelPlacement="outside"
+              type="date"
               value={endDate}
+              variant="bordered"
               onChange={(e) => setEndDate(e.target.value)}
             />
             <div className="flex gap-5 items-end">
               <Select
-                variant="bordered"
-                labelPlacement="outside"
-                label="Sucursal"
-                classNames={{ label: 'font-semibold' }}
-                placeholder="Seleccione una sucursal"
-                className="col-span-2 md:col-span-1"
                 multiple
+                className="col-span-2 md:col-span-1"
+                classNames={{ label: 'font-semibold' }}
                 isLoading={loadingSalesByItem}
                 isRequired={loadingSalesByItem}
-                selectionMode="multiple"
+                label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Seleccione una sucursal"
                 selectedKeys={branches}
+                selectionMode="multiple"
+                variant="bordered"
                 onSelectionChange={setBranches}
               >
                 {branch_list.map((branch) => (
                   <SelectItem key={branch.id}>{branch.name}</SelectItem>
                 ))}
               </Select>
-              <ButtonUi onPress={handleSearch} theme={Colors.Primary}>
+              <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
                 Buscar
               </ButtonUi>
             </div>
@@ -411,22 +428,22 @@ function AddItemsBySales() {
               classNames={{
                 base: 'font-semibold',
               }}
-              labelPlacement="outside"
-              variant="bordered"
-              type="date"
               label="Fecha de la partida"
+              labelPlacement="outside"
+              type="date"
               value={date}
+              variant="bordered"
               onChange={(e) => setDate(e.target.value)}
-            ></Input>
+            />
             <Select
               classNames={{
                 base: 'font-semibold',
               }}
-              labelPlacement="outside"
-              variant="bordered"
               label="Tipo de partida"
+              labelPlacement="outside"
               placeholder="Selecciona el tipo de partida"
               selectedKeys={selectedType > 0 ? [selectedType.toString()] : []}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setSelectedType(Number(key.currentKey));
@@ -442,14 +459,14 @@ function AddItemsBySales() {
           </div>
           <div className="mt-2">
             <Textarea
-              label="Concepto de la partida"
-              placeholder="Ingresa el concepto de la partida"
-              variant="bordered"
               classNames={{
                 base: 'font-semibold',
               }}
+              label="Concepto de la partida"
               labelPlacement="outside"
+              placeholder="Ingresa el concepto de la partida"
               value={description}
+              variant="bordered"
               onChange={({ target }) => handleDescriptionChange(target.value)}
             />
           </div>
@@ -467,9 +484,9 @@ function AddItemsBySales() {
               <tbody>
                 {loadingSalesByItem && (
                   <tr>
-                    <td colSpan={6} className="p-3 text-sm text-center text-slate-500">
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
                       <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader"></div>
+                        <div className="loader" />
                         <p className="mt-3 text-xl font-semibold">Cargando...</p>
                       </div>
                     </td>
@@ -478,57 +495,57 @@ function AddItemsBySales() {
                 {!loadingSalesByItem && (
                   <>
                     <ItemsList
-                      items={items}
-                      setItems={setItems}
-                      openModal={modalCatalog.onOpen}
-                      isOpen={false}
                       getBranchName={getBranchName}
+                      isOpen={false}
+                      items={items}
+                      openModal={modalCatalog.onOpen}
+                      setItems={setItems}
                     />
                   </>
                 )}
                 <tr>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <p className="text-lg font-semibold">Totales:</p>
                   </td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <Input
-                      placeholder="0.00"
-                      variant="bordered"
+                      readOnly
                       classNames={{ base: 'font-semibold' }}
                       labelPlacement="outside"
+                      placeholder="0.00"
                       value={$debe.toFixed(2)}
-                      readOnly
+                      variant="bordered"
                     />
                   </td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <Input
-                      placeholder="0.00"
-                      variant="bordered"
+                      readOnly
                       classNames={{ base: 'font-semibold' }}
                       labelPlacement="outside"
+                      placeholder="0.00"
                       value={$haber.toFixed(2)}
-                      readOnly
+                      variant="bordered"
                     />
                   </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                 </tr>
                 <tr>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <p className="text-lg font-semibold">Diferencia:</p>
                   </td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     <Input
-                      placeholder="0.00"
-                      variant="bordered"
+                      readOnly
                       classNames={{ base: 'font-semibold' }}
                       labelPlacement="outside"
+                      placeholder="0.00"
                       value={$total.toString()}
-                      readOnly
+                      variant="bordered"
                     />
                   </td>
                 </tr>
@@ -537,18 +554,18 @@ function AddItemsBySales() {
           </div>
           <div className="flex justify-end gap-5 mt-3">
             <ButtonUi
-              theme={Colors.Default}
               isLoading={loading}
+              theme={Colors.Default}
               onPress={() => navigate('/accounting-items')}
             >
               Cancelar
             </ButtonUi>
-            <ButtonUi theme={Colors.Primary} isLoading={loading} onPress={() => handleSave()}>
+            <ButtonUi isLoading={loading} theme={Colors.Primary} onPress={() => handleSave()}>
               Guardar
             </ButtonUi>
           </div>
         </div>
-        <Modal isOpen={periodModal.isOpen} onOpenChange={periodModal.onOpenChange} size="xl">
+        <Modal isOpen={periodModal.isOpen} size="xl" onOpenChange={periodModal.onOpenChange}>
           <ModalContent>
             <>
               <ModalHeader>Se encontró una partida contable en este periodo</ModalHeader>
@@ -602,44 +619,45 @@ function AddItemsBySales() {
 
 export default AddItemsBySales;
 
-const ItemsList = memo(({ items, setItems, openModal, getBranchName }: ItemListProps) => {
+const ItemsList = memo(function List({ items, setItems, openModal, getBranchName }: ItemListProps) {
   return (
     <>
       {items.map((item, index) => (
-        <tr>
+        <tr key={index}>
           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
             <CodCuentaSelect
-              openCatalogModal={openModal}
-              onClose={() => {}}
-              items={items}
-              setItems={setItems}
               index={index}
               isReadOnly={false}
+              items={items}
+              openCatalogModal={openModal}
+              setItems={setItems}
+              onClose={() => {}}
             />
           </td>
           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
             <Input
-              variant="bordered"
+              readOnly
               classNames={{
                 base: 'font-semibold',
               }}
               labelPlacement="outside"
-              readOnly
               value={getBranchName(Number(item.centroCosto ?? 0))}
+              variant="bordered"
             />
           </td>
           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
             <Input
               aria-labelledby="Concepto"
-              placeholder="Ingresa el concepto de la partida"
-              variant="bordered"
               classNames={{
                 base: 'font-semibold',
               }}
               labelPlacement="outside"
+              placeholder="Ingresa el concepto de la partida"
               value={items[index].descTran}
+              variant="bordered"
               onChange={(e) => {
                 const itemss = [...items];
+
                 itemss[index].descTran = e.target.value;
                 setItems([...items]);
               }}
@@ -649,16 +667,17 @@ const ItemsList = memo(({ items, setItems, openModal, getBranchName }: ItemListP
             <Input
               aria-labelledby="Debe"
               className="min-w-24"
-              placeholder="0.00"
-              variant="bordered"
               classNames={{
                 base: 'font-semibold',
               }}
-              labelPlacement="outside"
               isReadOnly={Number(items[index].haber) > 0}
+              labelPlacement="outside"
+              placeholder="0.00"
               value={items[index].debe}
+              variant="bordered"
               onChange={(e) => {
                 const itemss = [...items];
+
                 itemss[index].debe = e.target.value;
                 setItems([...itemss]);
               }}
@@ -668,16 +687,17 @@ const ItemsList = memo(({ items, setItems, openModal, getBranchName }: ItemListP
             <Input
               aria-labelledby="Haber"
               className="min-w-24"
-              placeholder="0.00"
-              variant="bordered"
               classNames={{
                 base: 'font-semibold',
               }}
-              labelPlacement="outside"
-              value={items[index].haber}
               isReadOnly={Number(items[index].debe) > 0}
+              labelPlacement="outside"
+              placeholder="0.00"
+              value={items[index].haber}
+              variant="bordered"
               onChange={(e) => {
                 const itemss = [...items];
+
                 itemss[index].haber = e.target.value;
                 setItems([...itemss]);
               }}

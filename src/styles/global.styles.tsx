@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks*/
 
 import { useContext } from 'react';
+
 import { ThemeContext } from '../hooks/useTheme';
 
 export const global_styles = () => {

@@ -5,7 +5,7 @@ function Error404() {
   return (
     <Layout title="Pagina no encontrada">
       <div className="flex items-center dark:bg-gray-800 justify-center w-full h-full overflow-y-hidden">
-        <img src={ERROR404} alt="404" />
+        <img alt="404" src={ERROR404} />
       </div>
     </Layout>
   );

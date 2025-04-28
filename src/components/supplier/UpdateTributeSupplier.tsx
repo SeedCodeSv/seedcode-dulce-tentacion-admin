@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 import { Button } from "@heroui/react";
-import { global_styles } from '../../styles/global.styles';
-import Layout from '@/layout/Layout';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
-import { useSupplierStore } from '@/store/supplier.store';
 import { toast } from 'sonner';
 import { FormikProvider, useFormik } from 'formik';
 import * as yup from 'yup';
+
+import { global_styles } from '../../styles/global.styles';
+
 import EditFormTributte from './edit-form-tributte';
+
+import { useSupplierStore } from '@/store/supplier.store';
+import Layout from '@/layout/Layout';
 
 function UpdateTributeSupplier() {
   const { id } = useParams();
   const { supplier, patchSupplier, OnGetBySupplier } = useSupplierStore();
   const navigate = useNavigate();
   const [selectedDepartment, setSelectedDepartment] = useState(supplier?.direccion?.departamento);
+
   useEffect(() => {
     if (id) {
       OnGetBySupplier(Number(id));
@@ -49,16 +53,19 @@ function UpdateTributeSupplier() {
         .required('**Número de documento es requerido**')
         .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
           const { tipoDocumento } = this.parent;
+
           return tipoDocumento !== '' ? true : false;
         })
         .test('validar-documento', '**Número de documento no válido**', function (value) {
           const { tipoDocumento } = this.parent;
+
           if (tipoDocumento === '13') {
             return /^([0-9]{9})$/.test(value);
           }
           if (tipoDocumento === '36') {
             return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
           }
+
           return true;
         }),
       telefono: yup
@@ -138,10 +145,10 @@ function UpdateTributeSupplier() {
     <Layout title="Actualizar  Contribuyente">
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div onClick={() => navigate("/suppliers")} className="w-32  flex gap-2 mb-4 cursor-pointer">
+          <button className="w-32  flex gap-2 mb-4 cursor-pointer" onClick={() => navigate("/suppliers")}>
             <ArrowLeft className="dark:text-white" size={20} />
             <p className="dark:text-white">Regresar</p>
-          </div>
+          </button>
           <form onSubmit={(e)=>{
             e.preventDefault()
             formik.handleSubmit(e)
@@ -154,16 +161,16 @@ function UpdateTributeSupplier() {
             </FormikProvider>
             <div className="w-full mt-5 flex justify-end gap-5">
               <Button
-                onClick={() => navigate('/suppliers')}
                 className="px-20 font-semibold"
                 style={global_styles().dangerStyles}
+                onClick={() => navigate('/suppliers')}
               >
                 Cancelar
               </Button>
               <Button
-                type="submit"
                 className="px-20 font-semibold"
                 style={global_styles().darkStyle}
+                type="submit"
               >
                 Guardar
               </Button>

@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
+
 import defaultTheme from '@/themes/default-theme.json';
 import { ITheme } from '@/types/themes.types';
 

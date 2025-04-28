@@ -14,19 +14,23 @@ import {
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import WeekSelector from './WeekSelector';
+import { DollarSign, ScanBarcode, ScrollText, Search, Truck } from 'lucide-react';
+import { useNavigate } from 'react-router';
+
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
 import { operadores } from '../../utils/constants';
 import { PromotionProduct } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
-import { DollarSign, ScanBarcode, ScrollText, Search, Truck } from 'lucide-react';
 import { global_styles } from '../../styles/global.styles';
 import HeadlessModal from '../global/HeadlessModal';
 import { Branches } from '../../types/branches.types';
 import { useSupplierStore } from '../../store/supplier.store';
 import { usePromotionsProductsStore } from '../../store/promotions/promotionsByProduct.store';
-import { useNavigate } from 'react-router';
+
+
+import WeekSelector from './WeekSelector';
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -55,6 +59,7 @@ function AddPromotionsByProducts() {
   const [productCode, setProductCode] = useState('');
   const { getSupplierList, supplier_list } = useSupplierStore();
   const { getBranchProductOrders, branch_product_order } = useBranchProductStore();
+
   useEffect(() => {
     getSupplierList('');
     getBranchProductOrders(branch, supplier, product, productCode);
@@ -63,8 +68,10 @@ function AddPromotionsByProducts() {
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { getBranchesList, branch_list } = useBranchesStore();
+
   type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
   const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
   interface PriorityInfo {
     label: string;
     color: string;
@@ -86,6 +93,7 @@ function AddPromotionsByProducts() {
   });
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { postPromotions } = usePromotionsProductsStore();
+
   useEffect(() => {
     if (selectedBranchId) {
       getPaginatedBranchProducts(Number(selectedBranchId));
@@ -109,6 +117,7 @@ function AddPromotionsByProducts() {
       priority: selectedPriority,
       products: selectedProductIds.map((products) => ({ productId: Number(products) })),
     };
+
     postPromotions(payload);
     navigate('/discounts');
   };
@@ -118,7 +127,6 @@ function AddPromotionsByProducts() {
     <>
       <div className="flex flex-col items-center justify-center w-full">
         <Formik
-          validationSchema={validationSchema}
           initialValues={{
             name: '',
             branchId: 0,
@@ -137,12 +145,13 @@ function AddPromotionsByProducts() {
             priority: '',
             products: [],
           }}
+          validationSchema={validationSchema}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
             <>
               <div className="absolute flex justify-end  right-20 top-8">
-                <Button onClick={vaul.onOpen} style={global_styles().thirdStyle}>
+                <Button style={global_styles().thirdStyle} onClick={vaul.onOpen}>
                   Agregar Producto
                 </Button>
               </div>
@@ -151,15 +160,15 @@ function AddPromotionsByProducts() {
                 <div className="grid w-full grid-cols-1 gap-5">
                   <div>
                     <Input
-                      name="name"
-                      labelPlacement="outside"
-                      value={values.name}
-                      onChange={handleChange('name')}
-                      onBlur={handleBlur('name')}
-                      placeholder="Ingresa el nombre "
                       classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                      variant="bordered"
                       label="Nombre"
+                      labelPlacement="outside"
+                      name="name"
+                      placeholder="Ingresa el nombre "
+                      value={values.name}
+                      variant="bordered"
+                      onBlur={handleBlur('name')}
+                      onChange={handleChange('name')}
                     />
                     {errors.name && touched.name && (
                       <>
@@ -170,20 +179,20 @@ function AddPromotionsByProducts() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="">
                       <Input
-                        label="Precio"
-                        labelPlacement="outside"
-                        name="price"
-                        value={values.price.toString()}
-                        onChange={handleChange('price')}
-                        onBlur={handleBlur('price')}
-                        placeholder="0"
+                        className="dark:text-white"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        variant="bordered"
-                        type="number"
+                        label="Precio"
+                        labelPlacement="outside"
+                        name="price"
+                        placeholder="0"
                         startContent=""
-                        className="dark:text-white"
+                        type="number"
+                        value={values.price.toString()}
+                        variant="bordered"
+                        onBlur={handleBlur('price')}
+                        onChange={handleChange('price')}
                       />
                       {errors.price && touched.price && (
                         <span className="text-sm font-semibold text-red-500">{errors.price}</span>
@@ -191,15 +200,15 @@ function AddPromotionsByProducts() {
                     </div>
                     <div className="">
                       <Select
-                        variant="bordered"
-                        placeholder="Selecciona el operador"
                         className="w-full dark:text-white"
-                        label="Operador de precio"
-                        labelPlacement="outside"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Operador de precio"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el operador"
                         value={values.operatorPrice}
+                        variant="bordered"
                         onChange={(e) => setFieldValue('operatorPrice', e.target.value)}
                       >
                         {operadores.map((operator) => (
@@ -223,20 +232,20 @@ function AddPromotionsByProducts() {
                   <div className="grid w-full grid-cols-3 gap-2 ">
                     <div>
                       <Input
-                        label="Cantidad Minima"
-                        labelPlacement="outside"
-                        name="quantity"
-                        value={values.quantity.toString()}
-                        onChange={handleChange('quantity')}
-                        onBlur={handleBlur('quantity')}
-                        placeholder="0"
+                        className="dark:text-white"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        variant="bordered"
-                        type="number"
+                        label="Cantidad Minima"
+                        labelPlacement="outside"
+                        name="quantity"
+                        placeholder="0"
                         startContent=""
-                        className="dark:text-white"
+                        type="number"
+                        value={values.quantity.toString()}
+                        variant="bordered"
+                        onBlur={handleBlur('quantity')}
+                        onChange={handleChange('quantity')}
                       />
                       {errors.quantity && touched.quantity && (
                         <span className="text-sm font-semibold text-red-500">
@@ -246,15 +255,15 @@ function AddPromotionsByProducts() {
                     </div>
                     <div>
                       <Select
-                        variant="bordered"
-                        placeholder="Selecciona el operador"
                         className="w-full dark:text-white"
-                        label="Operador"
-                        labelPlacement="outside"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Operador"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el operador"
                         value={values.operator}
+                        variant="bordered"
                         onChange={(e) => setFieldValue('operator', e.target.value)}
                       >
                         {operadores.map((operator) => (
@@ -269,20 +278,20 @@ function AddPromotionsByProducts() {
                     </div>
                     <div>
                       <Input
-                        label="Cantidad Maxima"
-                        labelPlacement="outside"
-                        name="maximum"
-                        value={values.maximum?.toString()}
-                        onChange={handleChange('maximum')}
-                        onBlur={handleBlur('maximum')}
-                        placeholder="0"
+                        className="dark:text-white"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        variant="bordered"
-                        type="number"
+                        label="Cantidad Maxima"
+                        labelPlacement="outside"
+                        name="maximum"
+                        placeholder="0"
                         startContent=""
-                        className="dark:text-white"
+                        type="number"
+                        value={values.maximum?.toString()}
+                        variant="bordered"
+                        onBlur={handleBlur('maximum')}
+                        onChange={handleChange('maximum')}
                       />
                       {errors.maximum && touched.maximum && (
                         <span className="text-sm font-semibold text-red-500">{errors.maximum}</span>
@@ -293,13 +302,18 @@ function AddPromotionsByProducts() {
                 <div className="grid grid-cols-1">
                   <div className="">
                     <Input
+                      classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                       label="Porcentaje"
                       labelPlacement="outside"
                       name="percentage"
+                      placeholder="0"
                       type="number"
                       value={values.percentage ? values.percentage.toString() : ''}
+                      variant="bordered"
+                      onBlur={handleBlur('percentage')}
                       onChange={(e) => {
                         const newValue = parseFloat(e.target.value);
+
                         handleChange('percentage')(e);
                         if (newValue > 0) {
                           setFieldValue('fixedPrice', 0);
@@ -309,28 +323,29 @@ function AddPromotionsByProducts() {
                           // setShowTooltip(true);
                         }
                       }}
-                      onBlur={handleBlur('percentage')}
-                      placeholder="0"
-                      classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                      variant="bordered"
                     />
                     <div className="mt-11">
                       <Tooltip
-                        color="primary"
                         className="capitize"
+                        color="primary"
                         content="Solo puedes llenar uno de los campos: porcentaje o precio fijo"
                         isOpen={showTooltipFixedPrice}
-                        onOpenChange={setShowTooltipFixedPrice}
                         placement="bottom-start"
+                        onOpenChange={setShowTooltipFixedPrice}
                       >
                         <Input
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                           label="Precio Fijo"
                           labelPlacement="outside"
                           name="fixedPrice"
+                          placeholder="0"
                           type="number"
                           value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                          variant="bordered"
+                          onBlur={handleBlur('fixedPrice')}
                           onChange={(e) => {
                             const newValue = parseFloat(e.target.value);
+
                             handleChange('fixedPrice')(e);
                             if (newValue > 0) {
                               setFieldValue('percentage', 0);
@@ -340,10 +355,6 @@ function AddPromotionsByProducts() {
                               setShowTooltipFixedPrice(true);
                             }
                           }}
-                          onBlur={handleBlur('fixedPrice')}
-                          placeholder="0"
-                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                          variant="bordered"
                         />
                       </Tooltip>
                     </div>
@@ -352,11 +363,11 @@ function AddPromotionsByProducts() {
                         classNames={{
                           label: 'font-semibold text-black dark:text-white text-md',
                         }}
+                        label="Prioridad"
                         orientation="horizontal"
+                        size="lg"
                         value={selectedPriority ? [selectedPriority] : []}
                         onChange={handlePriorityChange}
-                        label="Prioridad"
-                        size="lg"
                       >
                         {priority.map((p) => (
                           <Checkbox key={p} value={p}>
@@ -377,14 +388,14 @@ function AddPromotionsByProducts() {
                 <div className="grid grid-cols-2 gap-5 mt-4">
                   <div>
                     <Input
-                      type="date"
-                      variant="bordered"
-                      label="Fecha inicial"
-                      labelPlacement="outside"
                       className="dark:text-white"
                       classNames={{ label: 'font-semibold' }}
-                      onChange={(e) => setStartDate(e.target.value)}
+                      label="Fecha inicial"
+                      labelPlacement="outside"
+                      type="date"
                       value={startDate}
+                      variant="bordered"
+                      onChange={(e) => setStartDate(e.target.value)}
                     />
                     {errors.startDate && touched.startDate && (
                       <span className="text-sm font-semibold text-red-500">{errors.startDate}</span>
@@ -392,14 +403,14 @@ function AddPromotionsByProducts() {
                   </div>
                   <div>
                     <Input
-                      type="date"
-                      variant="bordered"
-                      label="Fecha final"
-                      labelPlacement="outside"
                       className="dark:text-white"
                       classNames={{ label: 'font-semibold' }}
-                      onChange={(e) => setEndDate(e.target.value)}
+                      label="Fecha final"
+                      labelPlacement="outside"
+                      type="date"
                       value={endDate}
+                      variant="bordered"
+                      onChange={(e) => setEndDate(e.target.value)}
                     />
                     {errors.endDate && touched.endDate && (
                       <span className="text-sm font-semibold text-red-500">{errors.endDate}</span>
@@ -408,22 +419,23 @@ function AddPromotionsByProducts() {
                 </div>
 
                 <Textarea
-                  label="Productos Seleccionados"
-                  labelPlacement="outside"
-                  name="description"
-                  width={300}
-                  height={200}
-                  placeholder="Productos ..."
                   classNames={{
                     label: 'font-semibold text-black text-sm',
                   }}
-                  variant="bordered"
+                  height={200}
+                  label="Productos Seleccionados"
+                  labelPlacement="outside"
+                  name="description"
+                  placeholder="Productos ..."
                   value={selectedProductIds
                     .map((id) => {
                       const product = branch_product_order.find((p) => p.id === id);
+
                       return product ? product.product.name : '';
                     })
-                    .join(', ')} // Muestra solo los nombres de los productos seleccionados
+                    .join(', ')}
+                  variant="bordered"
+                  width={300}
                 />
 
                 <div className="grid grid-cols-1 ">
@@ -433,25 +445,25 @@ function AddPromotionsByProducts() {
                   </h1>
                   <div className="grid items-start grid-cols-6 ">
                     <WeekSelector
-                      startDate={startDate}
                       endDate={endDate}
+                      startDate={startDate}
                       onDaysSelected={handleDaysSelected}
                     />
                   </div>
                   {/* Descripción  */}
                   <div className="mt-2">
                     <Textarea
-                      label="Descripción"
-                      labelPlacement="outside"
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      placeholder="Ingresa la descripción"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm ',
                       }}
+                      label="Descripción"
+                      labelPlacement="outside"
+                      name="description"
+                      placeholder="Ingresa la descripción"
+                      value={values.description}
                       variant="bordered"
+                      onBlur={handleBlur('description')}
+                      onChange={handleChange('description')}
                     />
                     {errors.description && touched.description && (
                       <span className="text-sm font-semibold text-red-500">
@@ -463,9 +475,9 @@ function AddPromotionsByProducts() {
 
                 <div className="mt-32">
                   <ButtonUi
-                    onPress={() => handleSubmit()}
                     className="hidden w-full h-full py-2 font-semibold md:flex"
                     theme={Colors.Primary}
+                    onPress={() => handleSubmit()}
                   >
                     Guardar
                   </ButtonUi>
@@ -478,34 +490,36 @@ function AddPromotionsByProducts() {
 
       <HeadlessModal
         isOpen={vaul.isOpen}
-        onClose={vaul.onClose}
-        title="Seleccionar Productos"
         size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
+        title="Seleccionar Productos"
+        onClose={vaul.onClose}
       >
         <div className="w-full bg-white dark:bg-gray-800">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
             <div>
               <Select
+                className="w-full dark:text-white"
                 label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Selecciona una sucursal"
                 value={branch}
+                variant="bordered"
                 onSelectionChange={(e) => {
                   const setkeys = new Set(e as unknown as string[]);
                   const keysArray = Array.from(setkeys);
+
                   if (keysArray.length > 0) {
                     const branchId = branch_list.find((branch) => branch.name === keysArray[0])?.id;
+
                     if (branchId) {
                       handleBranchSelection(branchId);
                       setBranch(keysArray[0]);
                     }
                   }
                 }}
-                placeholder="Selecciona una sucursal"
-                labelPlacement="outside"
-                variant="bordered"
-                className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name}>
+                  <SelectItem key={branch.name} className="dark:text-white">
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -514,18 +528,18 @@ function AddPromotionsByProducts() {
             <div>
               <Autocomplete
                 label="Proveedor"
+                labelPlacement="outside"
+                placeholder="Selecciona un proveedor"
                 value={branch}
+                variant="bordered"
                 onSelect={(e) => {
                   setSupplier(e.currentTarget.value);
                 }}
-                placeholder="Selecciona un proveedor"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {supplier_list.map((branch) => (
                   <AutocompleteItem
-                    className="dark:text-white"
                     key={branch.id ?? 0}
+                    className="dark:text-white"
                   >
                     {branch.nombre}
                   </AutocompleteItem>
@@ -534,24 +548,24 @@ function AddPromotionsByProducts() {
             </div>
             <div>
               <Input
+                className="w-full dark:text-white"
                 label="Nombre"
-                placeholder="Escribe el nombre del producto"
                 labelPlacement="outside"
+                placeholder="Escribe el nombre del producto"
+                startContent={<Search />}
                 variant="bordered"
                 onChange={(e) => setProduct(e.currentTarget.value)}
-                startContent={<Search />}
-                className="w-full dark:text-white"
               />
             </div>
             <div>
               <Input
+                className="w-full dark:text-white"
                 label="Código"
-                placeholder="Escribe el código del producto"
                 labelPlacement="outside"
+                placeholder="Escribe el código del producto"
+                startContent={<Search />}
                 variant="bordered"
                 onChange={(e) => setProductCode(e.currentTarget.value)}
-                startContent={<Search />}
-                className="w-full dark:text-white"
               />
             </div>
           </div>

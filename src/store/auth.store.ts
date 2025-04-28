@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-import { IAuthStore } from './types/auth_store.types';
+import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+
 import {
   get_token,
   get_user,
@@ -17,11 +19,11 @@ import {
   save_transmitter,
 } from '../storage/localStorage';
 import { post_login } from '../services/auth.service';
-import { toast } from 'sonner';
 import { login_mh, get_transmitter } from '../services/transmitter.service';
 import { ILoginMHFailed } from '../types/transmitter.types';
-import { AxiosError } from 'axios';
 import { is_admin } from '../utils/filters';
+
+import { IAuthStore } from './types/auth_store.types';
 import { useConfigurationStore } from './perzonalitation.store';
 
 export const useAuthStore = create<IAuthStore>((set, get) => ({
@@ -47,17 +49,20 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           }
           const { GetConfigurationByTransmitter } = useConfigurationStore.getState();
           const transmitterId = data.user.correlative?.branch?.transmitterId ?? 0;
+
           await GetConfigurationByTransmitter(transmitterId);
           toast.success('Bienvenido');
         } else {
           toast.error('Datos incorrectos');
         }
+
         return data;
       })
       .catch(() => {
         delete_token();
         delete_user();
         toast.error('Datos incorrectos');
+
         return null;
       });
   },
@@ -73,17 +78,21 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
               await save_mh_token(login_mh.data.body.token);
             } else {
               const data = login_mh as unknown as ILoginMHFailed
+
               toast.error(`Error ${data}`)
+
               return
             }
           })
           .catch((error: AxiosError<ILoginMHFailed>) => {
             toast.error(`Error ${error.response?.data.body.descripcionMsg}`);
+
             return;
           });
       })
       .catch(() => {
         toast.error('Aun no tienes datos asignados');
+
         return;
       });
   },

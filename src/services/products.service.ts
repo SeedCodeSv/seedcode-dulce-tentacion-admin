@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import {
   IGetProductsPaginated,
   ProductList,
@@ -18,6 +19,7 @@ export const get_products = (
   active = 1
 ) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetProductsPaginated>(
     API_URL +
       `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
@@ -31,6 +33,7 @@ export const get_products = (
 
 export const create_products = (values: ProductPayload) => {
   const token = get_token() ?? '';
+
   return axios.post<{ ok: boolean }>(API_URL + '/products', values, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -40,6 +43,7 @@ export const create_products = (values: ProductPayload) => {
 
 export const get_promotions_products_list = () => {
   const token = get_token() ?? '';
+
   return axios.get<ProductList>(API_URL + `/products`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -49,6 +53,7 @@ export const get_promotions_products_list = () => {
 
 export const update_products = (values: ProductPayload, id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(API_URL + '/products/' + id, values, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -57,6 +62,7 @@ export const update_products = (values: ProductPayload, id: number) => {
 };
 export const delete_products = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.delete<{ ok: boolean }>(API_URL + '/products/' + id, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -66,6 +72,7 @@ export const delete_products = (id: number) => {
 
 export const activate_product = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/products/activate/' + id,
     {},

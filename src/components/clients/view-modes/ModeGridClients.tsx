@@ -1,15 +1,17 @@
-import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { global_styles } from '@/styles/global.styles';
 import { Button, Card, CardBody, CardHeader } from '@heroui/react';
-
 import { EditIcon, Repeat, RefreshCcw } from 'lucide-react';
 import { useNavigate } from 'react-router';
+
 import { DeletePopover } from './DeleteClients';
+
+import { global_styles } from '@/styles/global.styles';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { PropsCustomersModes } from '@/components/categories/types/mobile-view.types';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 function ModeGridClients(props: PropsCustomersModes) {
   const navigate = useNavigate();
+
   return (
     <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
       {props.customers.map((c, index) => (
@@ -43,11 +45,11 @@ function ModeGridClients(props: PropsCustomersModes) {
               {props.actions.includes('Editar') && c.isActive && (
                 <TooltipGlobal text="Editar">
                   <ButtonUi
+                    isIconOnly
+                    theme={Colors.Primary}
                     onPress={() =>
                       navigate(`/add-customer/${c.id}/${c.esContribuyente ? 'tribute' : 'normal'}`)
                     }
-                    isIconOnly
-                    theme={Colors.Primary}
                   >
                     <EditIcon size={20} />
                   </ButtonUi>
@@ -62,9 +64,9 @@ function ModeGridClients(props: PropsCustomersModes) {
                   {c.esContribuyente === false && c.isActive && (
                     <TooltipGlobal text="Cambiar tipo de cliente">
                       <ButtonUi
-                        onPress={() => navigate(`/add-customer/${c.id}/tribute`)}
                         isIconOnly
                         theme={Colors.Info}
+                        onPress={() => navigate(`/add-customer/${c.id}/tribute`)}
                       >
                         <Repeat size={20} />
                       </ButtonUi>
@@ -78,11 +80,11 @@ function ModeGridClients(props: PropsCustomersModes) {
                   {props.actions.includes('Activar Cliente') && (
                     <TooltipGlobal text="Activar">
                       <Button
+                        isIconOnly
+                        style={global_styles().thirdStyle}
                         onClick={() => {
                           props.handleActivate(c.id);
                         }}
-                        isIconOnly
-                        style={global_styles().thirdStyle}
                       >
                         <RefreshCcw size={20} />
                       </Button>

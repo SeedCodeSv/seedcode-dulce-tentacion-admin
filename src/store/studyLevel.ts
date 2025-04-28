@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import { messages } from '../utils/constants';
+
+import { IStudyLevelStore } from './types/studyLevel.store';
+
 import {
   activate_study_level,
   create_study_level,
@@ -8,7 +12,6 @@ import {
   get_study_level,
   update_study_level,
 } from '@/services/studyLevel.service';
-import { IStudyLevelStore } from './types/studyLevel.store';
 
 export const useStatusStudyLevel = create<IStudyLevelStore>((set, get) => ({
   paginated_study_level: {
@@ -77,10 +80,12 @@ export const useStatusStudyLevel = create<IStudyLevelStore>((set, get) => ({
       .then(({ data }) => {
         get().getPaginatedStudyLevel(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

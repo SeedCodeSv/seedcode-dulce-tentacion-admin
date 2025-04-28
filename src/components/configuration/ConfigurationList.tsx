@@ -1,23 +1,28 @@
 import { useContext, useEffect, useState } from 'react';
 import { ButtonGroup, Card, useDisclosure } from '@heroui/react';
-import { useThemeStore } from '../../store/theme.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import { Check, Edit, Plus } from 'lucide-react';
-import AddButton from '../global/AddButton';
-import CreateConfiguration from './CreateConfiguration';
-import { useConfigurationStore } from '../../store/perzonalitation.store';
-import { useAuthStore } from '../../store/auth.store';
-import UpdateFile from './UpdateFile';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import UpdateConfigurationName from './UpdateConfigurationName';
 import { Button } from '@heroui/react';
 import { Image } from 'primereact/image';
 import { Table as ITable, CreditCard } from 'lucide-react';
-import MobileViewConfi from './MobileViewConfi';
+import { useNavigate } from 'react-router';
+
+import { useThemeStore } from '../../store/theme.store';
+import { ThemeContext } from '../../hooks/useTheme';
+import AddButton from '../global/AddButton';
+import { useConfigurationStore } from '../../store/perzonalitation.store';
+import { useAuthStore } from '../../store/auth.store';
 import { IConfiguration } from '../../types/configuration.types';
 import HeadlessModal from '../global/HeadlessModal';
-import { useNavigate } from 'react-router';
+
+import CreateConfiguration from './CreateConfiguration';
+import UpdateFile from './UpdateFile';
+import UpdateConfigurationName from './UpdateConfigurationName';
+import MobileViewConfi from './MobileViewConfi';
+
+
+
 import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -63,15 +68,15 @@ const ConfigurationList = ({ actions }: Props) => {
             <div className="flex gap-4 justify-between w-full">
               <ButtonGroup className="mt-4">
                 <ButtonUi
-                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('table')}
                 >
                   <ITable />
                 </ButtonUi>
                 <ButtonUi
-                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('grid')}
                 >
                   <CreditCard />
@@ -81,21 +86,20 @@ const ConfigurationList = ({ actions }: Props) => {
               {actions.includes('Agregar') && (
                 <>
                   <Button
-                    onClick={() => navigate('/add-theme')}
-                    // onClick={() => modalAdd.onOpen()}
+                    className="hidden font-semibold md:flex"
                     endContent={<Plus size={20} />}
                     style={global_styles().thirdStyle}
-                    className="hidden font-semibold md:flex"
                     type="button"
+                    onPress={() => navigate('/add-theme')}
                   >
                     Agregar nuevo tema
                   </Button>
                   <Button
+                    isIconOnly
+                    className="flex font-semibold md:hidden"
+                    style={global_styles().thirdStyle}
                     type="button"
                     onClick={() => navigate('/add-theme')}
-                    style={global_styles().thirdStyle}
-                    className="flex font-semibold md:hidden"
-                    isIconOnly
                   >
                     <Plus />
                   </Button>
@@ -114,26 +118,26 @@ const ConfigurationList = ({ actions }: Props) => {
                     personalization.map((item) => (
                       <>
                         <Button
+                          className="hidden font-semibold md:flex"
+                          endContent={<Plus size={20} />}
+                          style={global_styles().thirdStyle}
+                          type="button"
                           onClick={() => {
                             UpdateImgModal.onOpen();
                             setLogoId(item.id || 0);
                           }}
-                          endContent={<Plus size={20} />}
-                          style={global_styles().thirdStyle}
-                          className="hidden font-semibold md:flex"
-                          type="button"
                         >
                           Actualizar logo
                         </Button>
                         <Button
+                          isIconOnly
+                          className="flex font-semibold md:hidden"
+                          style={global_styles().thirdStyle}
                           type="button"
                           onClick={() => {
                             UpdateImgModal.onOpen();
                             setLogoId(item.id || 0);
                           }}
-                          style={global_styles().thirdStyle}
-                          className="flex font-semibold md:hidden"
-                          isIconOnly
                         >
                           <Plus />
                         </Button>
@@ -142,10 +146,10 @@ const ConfigurationList = ({ actions }: Props) => {
                 </>
               ) }
               <Button
-                style={global_styles().secondaryStyle}
-                onClick={() => navigate('/edit-transmitter-info')}
                 className="hidden font-semibold md:flex"
                 endContent={<Edit size={20} />}
+                style={global_styles().secondaryStyle}
+                onClick={() => navigate('/edit-transmitter-info')}
               >
                 Editar emisor
               </Button>
@@ -167,47 +171,47 @@ const ConfigurationList = ({ actions }: Props) => {
               {view == 'table' && (
                 <>
                   <DataTable
-                    value={personalization}
                     className="text-slate-600 dark:text-gray-100 mt-5 dark:bg-slate-700 bg-slate-200"
                     emptyMessage="No se encontraron resultados"
                     tableStyle={{ minWidth: '50rem' }}
+                    value={personalization}
                   >
                     <Column
-                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      field="logo"
-                      header="Logo"
                       body={(rowData) => (
                         <Image
                           preview
-                          src={rowData.logo}
                           alt={rowData.name}
+                          src={rowData.logo}
                           style={{ width: '100px' }}
                         />
                       )}
+                      field="logo"
+                      header="Logo"
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                     />
                     <Column
-                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                       field="name"
                       header="Nombre"
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                     />
                     <Column
-                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      header="Actualizar Nombre"
                       body={(rowData) => (
                         <>
                           {actions.includes('Editar') && (
                             <Button
+                              style={global_styles().secondaryStyle}
                               onClick={() => {
                                 setSelectedConfiguration(rowData);
                                 updateName.onOpen();
                               }}
-                              style={global_styles().secondaryStyle}
                             >
                               Actualizar
                             </Button>
                           ) }
                         </>
                       )}
+                      header="Actualizar Nombre"
+                      headerClassName="text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
                     />
                   </DataTable>
                 </>
@@ -222,41 +226,37 @@ const ConfigurationList = ({ actions }: Props) => {
                   {themes.map((themeS, index) => (
                     <Card
                       key={index}
-                      className="grid w-full grid-cols-6 border shadow"
                       isPressable
-                      // onClick={() => {
-                      //   handleUpdate(themeS), setSelectedTheme(themeS.name);
-                      // }}
-                      // onClick={() => toggleTheme(themeS as Theme)}
+                      className="grid w-full grid-cols-6 border shadow"
                     >
                       <span className="col-span-6 font-semibold">{themeS.name}</span>
                       <div className="absolute top-5 right-5">
-                        {themeS.name === theme.name && <Check size={30} color="#fff" />}
+                        {themeS.name === theme.name && <Check color="#fff" size={30} />}
                       </div>
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.danger }}
-                      ></span>
+                       />
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.dark }}
-                      ></span>
+                       />
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.primary }}
-                      ></span>
+                       />
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.secondary }}
-                      ></span>
+                       />
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.third }}
-                      ></span>
+                       />
                       <span
                         className="w-full h-44"
                         style={{ backgroundColor: themeS.colors.warning }}
-                      ></span>
+                       />
                     </Card>
                   ))}
                 </div>
@@ -268,27 +268,27 @@ const ConfigurationList = ({ actions }: Props) => {
 
       <HeadlessModal
         isOpen={addLogo.isOpen}
-        onClose={addLogo.onClose}
-        title="Agregar logo y nombre"
         size="w-[350px] md:w-[500px]"
+        title="Agregar logo y nombre"
+        onClose={addLogo.onClose}
       >
         <CreateConfiguration theme={selectedTheme} />
       </HeadlessModal>
 
       <HeadlessModal
         isOpen={UpdateImgModal.isOpen}
-        onClose={UpdateImgModal.onClose}
-        title="Actualizar logo"
         size="w-[350px] md:w-[500px]"
+        title="Actualizar logo"
+        onClose={UpdateImgModal.onClose}
       >
         <UpdateFile perzonalitationId={logoId} />
       </HeadlessModal>
 
       <HeadlessModal
         isOpen={updateName.isOpen}
-        onClose={updateName.onClose}
-        title="Actualizar nombre"
         size="w-[350px] md:w-[500px]"
+        title="Actualizar nombre"
+        onClose={updateName.onClose}
       >
         <UpdateConfigurationName
           name={selectedConfiguration}

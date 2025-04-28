@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import {  IGetChargesPaginated, IGetListCharges } from "../types/charges.types";
@@ -6,6 +7,7 @@ import {  IGetChargesPaginated, IGetListCharges } from "../types/charges.types";
 
 export const create_charge = ({ name }: { name: string }) => {
   const token = get_token() ?? '';
+
   return axios.post<{ ok: boolean }>(
     API_URL + '/charges',
     {
@@ -21,6 +23,7 @@ export const create_charge = ({ name }: { name: string }) => {
 
 export const get_charges_list = () => {
   const token = get_token();
+
   return axios.get<IGetListCharges>(`${API_URL}/charges`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -30,6 +33,7 @@ export const get_charges_list = () => {
 
 export const update_charge = ({ name }: { name: string }, id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/charges/' + id,
     {
@@ -45,6 +49,7 @@ export const update_charge = ({ name }: { name: string }, id: number) => {
 
 export const delete_charge =  (id: number) => {
   const token = get_token();
+
   return axios.delete<{ ok: boolean }>(`${API_URL}/charges/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -54,6 +59,7 @@ export const delete_charge =  (id: number) => {
 
 export const activate_charge = (id: number) => {
   const token = get_token();
+
   return axios.patch<{ ok: boolean }>(`${API_URL}/charges/activate/${id}`, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -63,6 +69,7 @@ export const activate_charge = (id: number) => {
 
 export const get_charges_paginated = (page = 1, limit = 5, name = '', active = 1) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetChargesPaginated>(
     API_URL +
       `/charges/list-paginated?page=${page}&limit=${limit}&name=${name}&active=${active}`,

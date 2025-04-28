@@ -6,6 +6,7 @@ import {
 
 export const is_admin = (rol: string) => {
   const patron = /administrador/i;
+
   return !patron.test(rol);
 };
 export const normalize = (text: string) =>
@@ -44,6 +45,7 @@ export function calcularPorcentajeDescuento(
 ): number {
   const precioOriginal = total + descuento;
   const porcentajeDescuento = (descuento / precioOriginal) * 100;
+
   return porcentajeDescuento;
 }
 
@@ -53,6 +55,7 @@ export function calculateDiscountedTotal(
 ): { discountedTotal: number; discountAmount: number } {
   const discountAmount = (price * discountPercentage) / 100;
   const discountedTotal = price - discountAmount;
+
   return { discountedTotal, discountAmount };
 }
 
@@ -81,5 +84,6 @@ export const validateIfArrayContain = (array: string[], items: string[]) => {
 
 export const validate_pathname = (pathname: string, array_pathnames: string[]) => {
   const validation = array_pathnames.some((item) => pathname.includes(item));
+
   return validation
 }

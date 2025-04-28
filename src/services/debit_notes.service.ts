@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_URL } from '@/utils/constants';
 import { IGetDebitNote, IRecentDebitNotes } from '@/types/debit-notes.types';
 import { IGetAllDebitNotes } from '@/types/debit-notes.types';

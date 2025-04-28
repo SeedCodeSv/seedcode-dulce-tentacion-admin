@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_URL } from '../utils/constants';
 import {
   IGetUserPaginated,
@@ -11,6 +12,7 @@ import { get_token } from '../storage/localStorage';
 
 export const get_users_list = () => {
   const token = get_token() ?? '';
+
   return axios.get<IGetUsers>(API_URL + '/users', {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -43,6 +45,7 @@ export const get_user_paginated = (
 
 export const save_user = (payload: UserPayload) => {
   const token = get_token() ?? '';
+
   return axios.post<{ ok: boolean }>(API_URL + '/users', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -52,6 +55,7 @@ export const save_user = (payload: UserPayload) => {
 
 export const patch_user = (payload: UserUpdate, id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(API_URL + '/users/' + id, payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -61,6 +65,7 @@ export const patch_user = (payload: UserUpdate, id: number) => {
 
 export const delete_user = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.delete<{ ok: boolean }>(API_URL + '/users/' + id, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -70,6 +75,7 @@ export const delete_user = (id: number) => {
 
 export const patch_password = (password: string, id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/users/change-password/' + id,
     {
@@ -85,6 +91,7 @@ export const patch_password = (password: string, id: number) => {
 
 export const get_roles_list = () => {
   const token = get_token() ?? '';
+
   return axios.get<IResponseRoles>(API_URL + '/roles', {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -94,6 +101,7 @@ export const get_roles_list = () => {
 
 export const activate_user = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/users/activate/' + id,
     {},
@@ -107,6 +115,7 @@ export const activate_user = (id: number) => {
 
 export const generate_code = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean, code: string }>(API_URL + '/users/generate-code/' + id, {}, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -116,6 +125,7 @@ export const generate_code = (id: number) => {
 
 export const verify_code = (id: number) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetUsers>(API_URL + '/roles' + id, {
     headers: {
       Authorization: `Bearer ${token}`,

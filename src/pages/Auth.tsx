@@ -1,14 +1,16 @@
 import { useContext, useState } from 'react';
-import BUSINESS from '../assets/bussines.jpg';
 import { Input } from '@heroui/react';
 import { Eye, EyeOff } from 'lucide-react';
-import LOGO from '../assets/fac3.png';
 import * as yup from 'yup';
-import { IAuthPayload } from '../types/auth.types';
 import { Formik } from 'formik';
+
+import LOGO from '../assets/fac3.png';
+import { IAuthPayload } from '../types/auth.types';
+import BUSINESS from '../assets/bussines.jpg';
 import { useAuthStore } from '../store/auth.store';
 import { SessionContext } from '../hooks/useSession';
 import { delete_seller_mode } from '../storage/localStorage';
+
 import { useViewsStore } from '@/store/views.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -49,9 +51,9 @@ function Auth() {
         <div
           className="hidden md:flex md:w-[50%] xl:w-[60%] h-full bg-cover bg-center rounded-2xl shadow"
           style={{ backgroundImage: `url(${BUSINESS})` }}
-        ></div>
+         />
         <div className="w-[100%] md:w-[50%] xl:w-[40%] px-5 mb:px-10 sm:px-10 xl:px-10 h-full flex flex-col justify-center bg-white dark:bg-gray-800">
-          <img src={LOGO} alt="" className="w-80" />
+          <img alt="" className="w-80" src={LOGO} />
           <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white ">Bienvenido</p>
           <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">
             Inicia sesión con tus credenciales
@@ -65,16 +67,16 @@ function Auth() {
               <>
                 <div className="flex flex-col mt-5 md:mt-10 xl:mt1-16">
                   <Input
-                    classNames={{ label: 'text-sm font-semibold' }}
-                    variant="bordered"
-                    label="Usuario"
-                    value={values.userName}
-                    onChange={handleChange('userName')}
-                    onBlur={handleBlur('userName')}
-                    labelPlacement="outside"
-                    type="text"
-                    placeholder="Ingresa tu usuario"
                     className="dark:text-white"
+                    classNames={{ label: 'text-sm font-semibold' }}
+                    label="Usuario"
+                    labelPlacement="outside"
+                    placeholder="Ingresa tu usuario"
+                    type="text"
+                    value={values.userName}
+                    variant="bordered"
+                    onBlur={handleBlur('userName')}
+                    onChange={handleChange('userName')}
                   />
                   {errors.userName && touched.userName && (
                     <p className="text-red-500 text-sm font-semibold">{errors.userName}</p>
@@ -82,16 +84,8 @@ function Auth() {
                 </div>
                 <div className="flex flex-col mt-10">
                   <Input
-                    classNames={{ label: 'text-sm font-semibold' }}
-                    variant="bordered"
-                    value={values.password}
-                    onChange={handleChange('password')}
-                    onBlur={handleBlur('password')}
-                    label="Contraseña"
-                    labelPlacement="outside"
-                    placeholder="Ingresa tu contraseña"
                     className="dark:text-white"
-                    type={showPassword ? 'text' : 'password'}
+                    classNames={{ label: 'text-sm font-semibold' }}
                     endContent={
                       showPassword ? (
                         <EyeOff
@@ -105,6 +99,14 @@ function Auth() {
                         />
                       )
                     }
+                    label="Contraseña"
+                    labelPlacement="outside"
+                    placeholder="Ingresa tu contraseña"
+                    type={showPassword ? 'text' : 'password'}
+                    value={values.password}
+                    variant="bordered"
+                    onBlur={handleBlur('password')}
+                    onChange={handleChange('password')}
                   />
                   {errors.password && touched.password && (
                     <p className="text-red-500 text-sm font-semibold">{errors.password}</p>
@@ -112,8 +114,8 @@ function Auth() {
                 </div>
 
                 <ButtonUi
-                  theme={Colors.Primary}
                   className={' mt-10 w-full font-semibold'}
+                  theme={Colors.Primary}
                   onPress={() => handleSubmit()}
                 >
                   Iniciar Sesión

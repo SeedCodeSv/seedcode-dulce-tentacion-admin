@@ -10,8 +10,10 @@ const calculateGravadaWithoutVAT = (gravada: number, total: number) => {
   if (gravada === total) {
     return parseFloat((gravada / 1.13).toFixed(2)); // Eliminar IVA y redondear a 2 decimales
   }
+
   return gravada;
 };
+
   return (
     <table className="w-full">
       <thead className="sticky top-0 z-20 dark:bg-black bg-white">

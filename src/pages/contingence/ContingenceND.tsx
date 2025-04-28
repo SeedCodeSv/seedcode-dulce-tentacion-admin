@@ -1,12 +1,3 @@
-import useGlobalStyles from '@/components/global/global.styles';
-import { useAuthStore } from '@/store/auth.store';
-import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
-import { useEmployeeStore } from '@/store/employee.store';
-import { useDebitNotes } from '@/store/notes_debit.store';
-import { useTransmitterStore } from '@/store/transmitter.store';
-import { IContingencia } from '@/types/DTE/contingencia.types';
-import { SendMHFailed } from '@/types/transmitter.types';
-import { formatDate } from '@/utils/dates';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -22,7 +13,21 @@ import axios, { AxiosError } from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { ShieldAlert } from 'lucide-react';
+
 import { generate_contingencias } from './contingencia_facturacion.ts';
+
+import useGlobalStyles from '@/components/global/global.styles';
+import { useAuthStore } from '@/store/auth.store';
+import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
+import { useEmployeeStore } from '@/store/employee.store';
+import { useDebitNotes } from '@/store/notes_debit.store';
+import { useTransmitterStore } from '@/store/transmitter.store';
+import { IContingencia } from '@/types/DTE/contingencia.types';
+import { SendMHFailed } from '@/types/transmitter.types';
+import { formatDate } from '@/utils/dates';
 import {
   firmarDocumentoContingencia,
   firmarDocumentoNotaDebito,
@@ -30,16 +35,13 @@ import {
   send_to_mh_contingencia,
 } from '@/services/DTE.service';
 import { return_mh_token } from '@/storage/localStorage';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { s3Client } from '@/plugins/s3.ts';
-import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { ambiente, API_URL, contingence_steps, SPACES_BUCKET } from '@/utils/constants.ts';
 import { SVFE_ND_Firmado, SVFE_ND_SEND } from '@/types/svf_dte/nd.types.ts';
 import { PayloadMH } from '@/types/DTE/DTE.types.ts';
 import { formatCurrency } from '@/utils/dte.ts';
 import { Employee } from '@/types/employees.types.ts';
 import HeadlessModal from '@/components/global/HeadlessModal.tsx';
-import { ShieldAlert } from 'lucide-react';
 import { useBranchesStore } from '@/store/branches.store.ts';
 
 function ContingenceND() {
@@ -94,14 +96,17 @@ function ContingenceND() {
   const timeStart = useMemo(() => {
     if (contingence_debits.length > 0) {
       setStartTime(contingence_debits[0]?.horEmi);
+
       return contingence_debits[0]?.horEmi;
     }
+
     return startTime;
   }, [contingence_debits]);
 
   const timeEnd = useMemo(() => {
     if (contingence_debits.length > 0) {
       setEndTime(contingence_debits[0]?.horEmi);
+
       return endTime;
     }
   }, [contingence_debits]);
@@ -127,12 +132,15 @@ function ContingenceND() {
   const handleError = () => {
     if (motivo === '') {
       setError((prev) => ({ ...prev, motivo: 'Selecciona el motivo' }));
+
       return;
     } else if (nombreRes === '') {
       setError((prev) => ({ ...prev, nombreRes: 'Selecciona el responsable' }));
+
       return;
     } else if (motivo === '5' && observaciones === '') {
       setError((prev) => ({ ...prev, observaciones: 'Debes rellenar la información adicional' }));
+
       return;
     }
   };
@@ -154,6 +162,7 @@ function ContingenceND() {
       })
       .catch(() => {
         toast.error('No se encontraron correlativos');
+
         return undefined;
       });
 
@@ -181,6 +190,7 @@ function ContingenceND() {
           nit: transmitter.nit,
           documento: firma.data.body,
         };
+
         setCurrentStep(1);
         const source = axios.CancelToken.source();
 
@@ -195,6 +205,7 @@ function ContingenceND() {
           toast.error('Fallo al obtener las credenciales del Ministerio de Hacienda', {
             position: 'top-right',
           });
+
           return;
         }
         // $ ENVIAR A CONTINGENCIA
@@ -207,6 +218,7 @@ function ContingenceND() {
               setLoading(false);
               setCurrentStep(0);
               clearTimeout(timeout);
+
               return;
             } else {
               toast.success('Contingencia enviada con éxito');
@@ -234,6 +246,7 @@ function ContingenceND() {
 
                 if (!json) {
                   toast.error('Error al cargar la nota de débito');
+
                   return false;
                 }
 
@@ -257,6 +270,7 @@ function ContingenceND() {
                     extension: json.extension,
                   },
                 };
+
                 // * FIRMAR NOTA DE DÉBITO
                 firmarDocumentoNotaDebito(send)
                   .then((firma_doc) => {
@@ -328,19 +342,23 @@ function ContingenceND() {
                                 .put(API_URL + `/nota-de-debitos/update-transaction`, data_send)
                                 .then(() => {
                                   toast.success('Se guardo correctamente la nota de débito');
+
                                   return true;
                                 })
                                 .catch(() => {
                                   toast.error('Error al guardar en la base de datos');
+
                                   return false;
                                 });
                             } else {
                               toast.error('Error al subir el archivo JSON');
+
                               return false;
                             }
                           })
                           .catch(() => {
                             toast.error('Error al subir el archivo JSON');
+
                             return false;
                           });
                       })
@@ -366,6 +384,7 @@ function ContingenceND() {
                             description: 'Al enviar la venta, no se obtuvo respuesta de hacienda',
                           });
                         }
+
                         return false;
                       });
 
@@ -374,6 +393,7 @@ function ContingenceND() {
                   // ! ERROR AL FIRMAR NOTA DE DÉBITO
                   .catch(() => {
                     toast.error('Error al firmar la nota de débito');
+
                     return false;
                   });
               });
@@ -385,6 +405,7 @@ function ContingenceND() {
                 })
                 .catch(() => {
                   toast.error('Error al guardar en la base de datos');
+
                   return false;
                 });
             }
@@ -460,19 +481,19 @@ function ContingenceND() {
         </div>
       )}
       <HeadlessModal
-        title={title}
         isOpen={modalError.isOpen}
-        onClose={modalError.onClose}
         size={'w-96 p-5'}
+        title={title}
+        onClose={modalError.onClose}
       >
         <div className="w-full flex flex-col justify-center items-center">
-          <ShieldAlert size={75} color="red" />
+          <ShieldAlert color="red" size={75} />
           <p className="text-lg font-semibold">{errorMessage}</p>
           <div className="grid grid-cols-2 gap-8 mt-2">
-            <Button onClick={handleProccessContingence} style={style.thirdStyle} className="px-6">
+            <Button className="px-6" style={style.thirdStyle} onClick={handleProccessContingence}>
               Re-intentar
             </Button>
-            <Button onClick={modalError.onClose} style={style.dangerStyles} className="px-6">
+            <Button className="px-6" style={style.dangerStyles} onClick={modalError.onClose}>
               Aceptar
             </Button>
           </div>
@@ -484,40 +505,40 @@ function ContingenceND() {
           <Input
             className="dark:text-white z-0"
             classNames={{ label: 'font-semibold text-sm' }}
-            labelPlacement="outside"
-            variant="bordered"
-            type="date"
             label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
             value={startDate}
+            variant="bordered"
             onChange={(e) => setStartDate(e.target.value)}
           />
           <Input
             className="dark:text-white z-0"
             classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora inicial"
             labelPlacement="outside"
-            variant="bordered"
             type="time"
             value={timeStart}
-            label="Hora inicial"
+            variant="bordered"
           />
           <Input
             className="dark:text-white z-0"
             classNames={{ label: 'font-semibold text-sm' }}
+            label="Fecha de fin"
             labelPlacement="outside"
-            variant="bordered"
             type="date"
             value={endDate}
+            variant="bordered"
             onChange={(e) => setEndDate(e.target.value)}
-            label="Fecha de fin"
           />
           <Input
             className="dark:text-white z-0"
             classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora de fin"
             labelPlacement="outside"
-            variant="bordered"
             type="time"
             value={timeEnd}
-            label="Hora de fin"
+            variant="bordered"
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-10 gap-y-3">
@@ -525,52 +546,52 @@ function ContingenceND() {
             <Select
               className="dark:text-white z-0"
               classNames={{ label: 'font-semibold text-sm' }}
+              defaultSelectedKeys={[motivo.toString()]}
+              errorMessage={error.motivo}
+              isInvalid={!!error.motivo}
+              label="Motivo"
               labelPlacement="outside"
               placeholder="Selecciona el motivo"
-              variant="bordered"
-              label="Motivo"
-              onChange={(e) => setMotivo(e.target.value)}
-              defaultSelectedKeys={[motivo.toString()]}
               value={motivo}
-              isInvalid={!!error.motivo}
-              errorMessage={error.motivo}
+              variant="bordered"
+              onChange={(e) => setMotivo(e.target.value)}
             >
               {service.get005TipoDeContingencum().map((item) => (
-                <SelectItem className="dark:text-white" key={item.codigo} >
+                <SelectItem key={item.codigo} className="dark:text-white" >
                   {item.valores}
                 </SelectItem>
               ))}
             </Select>
             <Textarea
               className="dark:text-white z-0"
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
               classNames={{ label: 'font-semibold text-sm' }}
-              labelPlacement="outside"
-              variant="bordered"
-              label="Información adicional"
-              placeholder="Ingresa tus observaciones e información adicional"
-              isInvalid={!!error.observaciones}
               errorMessage={error.observaciones}
+              isInvalid={!!error.observaciones}
+              label="Información adicional"
+              labelPlacement="outside"
+              placeholder="Ingresa tus observaciones e información adicional"
+              value={observaciones}
+              variant="bordered"
+              onChange={(e) => setObservaciones(e.target.value)}
             />
           </div>
           <div className="flex flex-col-2 gap-4">
             <Autocomplete
-              value={branchId}
-              label="Sucursal"
-              labelPlacement="outside"
-              variant="bordered"
               className="dark:text-white font-semibold"
-              placeholder="Selecciona la sucursal"
-              onSelectionChange={(value) => setBranchId((value as string) || '')}
               classNames={{
                 base: 'font-semibold text-gray-500 text-sm',
               }}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              value={branchId}
+              variant="bordered"
+              onSelectionChange={(value) => setBranchId((value as string) || '')}
             >
               {branch_list.map((bra) => (
                 <AutocompleteItem
-                  className="dark:text-white"
                   key={bra.id.toString()}
+                  className="dark:text-white"
                 >
                   {bra.name}
                 </AutocompleteItem>
@@ -579,15 +600,16 @@ function ContingenceND() {
 
             <Autocomplete
               className="dark:text-white font-semibold text-sm"
-              variant="bordered"
+              errorMessage={error.nombreRes}
+              isInvalid={!!error.nombreRes}
               label="Responsable"
               labelPlacement="outside"
               placeholder="Selecciona al responsable"
-              isInvalid={!!error.nombreRes}
-              errorMessage={error.nombreRes}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const employee = JSON.parse(key as string) as Employee;
+
                   setNombreRes(
                     `${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`
                   );
@@ -620,17 +642,17 @@ function ContingenceND() {
               <>
                 {motivo === '' || nombreRes === '' || contingence_debits.length === 0 ? (
                   <Button
+                    className="px-10 font-semibold text-white"
                     style={style.dangerStyles}
                     onClick={handleError}
-                    className="px-10 font-semibold text-white"
                   >
                     Procesar contingencia
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleProccessContingence}
-                    style={style.thirdStyle}
                     className="px-10 font-semibold"
+                    style={style.thirdStyle}
+                    onClick={handleProccessContingence}
                   >
                     Procesar contingencia
                   </Button>
@@ -661,7 +683,7 @@ function ContingenceND() {
               </thead>
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {contingence_debits.map((sale, index) => (
-                  <tr className="border-b border-slate-200" key={index}>
+                  <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">{index + 1}</td>
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">
                       {sale.fecEmi + ' - ' + sale.horEmi}

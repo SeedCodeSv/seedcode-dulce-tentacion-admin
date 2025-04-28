@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import { messages } from '../../utils/constants';
 import { create_promotion_discount_by_product, get_products_by_promotion, remove_products_to_promotion } from '../../services/promotions/promotions_discountByProduct.service';
+
 import { IPromotionsByProductStore } from './types/promotionsByProduct.store';
 
 export const usePromotionsProductsStore = create<IPromotionsByProductStore>((set) => ({
@@ -43,6 +45,7 @@ export const usePromotionsProductsStore = create<IPromotionsByProductStore>((set
     try {
       if (usePromotionsProductsStore.getState().products.includes(id)) {
         toast.warning('El producto ya existe');
+
         return;
       } else {
         set((state) => ({ products: [...state.products, id] }));

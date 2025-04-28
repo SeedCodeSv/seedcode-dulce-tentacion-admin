@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { SubCategoryStore } from './types/sub_category_store';
 import { toast } from 'sonner';
+
 import { messages } from '../utils/constants';
 import {
   activate_sub_category,
@@ -12,6 +12,8 @@ import {
   update_sub_category,
 } from '../services/sub_categories.service';
 import { ISubCategoryPayload } from '../types/sub_categories.types';
+
+import { SubCategoryStore } from './types/sub_category_store';
 
 export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
   sub_categories_paginated: {
@@ -64,10 +66,12 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       .then(() => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+
         return { ok: false };
       });
   },
@@ -76,10 +80,12 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       .then(() => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+
         return { ok: false };
       });
   },
@@ -88,21 +94,26 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
       .then((res) => {
         get().getSubCategoriesPaginated(1, 5, '');
         toast.success(messages.success);
+
         return res.data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
   async activateSubCategory(id) {
     try {
       const res = await activate_sub_category(id);
+
       get().getSubCategoriesPaginated(1, 5, '');
       toast.success(messages.success);
+
       return res.data.ok;
     } catch {
       toast.error(messages.error);
+
       return false;
     }
   },

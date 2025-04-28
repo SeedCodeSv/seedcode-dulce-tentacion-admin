@@ -1,5 +1,6 @@
 import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
 import { global_styles } from '../../styles/global.styles';
 
 interface Props {
@@ -12,13 +13,13 @@ interface Props {
 function SmPagination({ handleNext, handlePrev, currentPage, totalPages }: Props) {
   return (
     <div className="flex w-full justify-between items-center">
-      <Button onClick={handlePrev} isIconOnly style={global_styles().darkStyle}>
+      <Button isIconOnly style={global_styles().darkStyle} onClick={handlePrev}>
         <ChevronLeft />
       </Button>
       <p className="text-center font-semibold dark:text-white">
         {currentPage} de {totalPages}
       </p>
-      <Button onClick={handleNext} isIconOnly style={global_styles().darkStyle}>
+      <Button isIconOnly style={global_styles().darkStyle} onClick={handleNext}>
         <ChevronRight />
       </Button>
     </div>

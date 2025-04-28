@@ -1,12 +1,14 @@
 import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
-import { ambiente, API_URL, SPACES_BUCKET } from "./constants";
-import { s3Client } from "@/plugins/s3";
 import { toast } from "sonner";
-import { PayloadMH } from "@/types/DTE/DTE.types";
 import axios from "axios";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+import { ambiente, API_URL, SPACES_BUCKET } from "./constants";
+
+import { s3Client } from "@/plugins/s3";
+import { PayloadMH } from "@/types/DTE/DTE.types";
 import { firmarDocumentoFactura, firmarDocumentoFiscal, send_to_mh } from "@/services/DTE.service";
 import { SaleContingence } from "@/types/sales.types";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { SVFC_FC_Firmado, SVFE_FC_SEND } from "@/types/svf_dte/fc.types";
 import { generateURL } from "@/pages/contingence/utils";
 import { get_token } from "@/storage/localStorage";
@@ -21,12 +23,14 @@ export const uploadToS3 = async (key: string, body: Blob) => {
 
     try {
         const response = await s3Client.send(new PutObjectCommand(uploadParams));
+
         if (response.$metadata) {
             return true;
         }
     } catch (error) {
         toast.error("Error al subir el archivo a s3")
     }
+
     return false;
 };
 
@@ -41,7 +45,9 @@ export const sendDocumentToMH = async (
 
     try {
         const response = await send_to_mh(data, token, source);
+
         clearTimeout(timeout);
+
         return response;
       } catch (error) {
         await axios.put(API_URL + '/sales/update-status-contingence', {
@@ -132,6 +138,7 @@ export const processSaleFCF = async (
 
           if (uploadSuccess) {
             const token = get_token() ?? '';
+
             await axios.put(
               `${API_URL}/sales/sale-update-transaction`,
               {
@@ -149,6 +156,7 @@ export const processSaleFCF = async (
               }
             );
             toast.success(`Venta no. ${saleIndex + 1} guardada`);
+
             return true;
           }
 
@@ -227,6 +235,7 @@ export const processSaleCCF = async (
   
       if (uploadSuccess) {
         const token = get_token() ?? '';
+
         await axios.put(
           `${API_URL}/sales/sale-update-transaction`,
           {
@@ -244,6 +253,7 @@ export const processSaleCCF = async (
           }
         );
         toast.success(`Venta no. ${saleIndex + 1} guardada`);
+
         return true;
       }
   

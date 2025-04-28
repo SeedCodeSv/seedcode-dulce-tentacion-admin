@@ -12,15 +12,17 @@ import {
   useDisclosure,
   Selection,
 } from '@heroui/react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { X } from 'lucide-react';
+
+import FullPageLayout from '../global/FullOverflowLayout';
+
 import { useAuthStore } from '@/store/auth.store';
 import { useItemsStore } from '@/store/items.store';
 import { formatDate, formatDateForReports } from '@/utils/dates';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { formatMoney } from '@/utils/utils';
 import { formatDdMmYyyy } from '@/utils/date';
-import FullPageLayout from '../global/FullOverflowLayout';
-import { X } from 'lucide-react';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
@@ -50,6 +52,7 @@ function AuxiliarBook({ disclosure }: Props) {
   useEffect(() => {
     const trandId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     getAccountCatalogs(trandId, '', '');
   }, []);
 
@@ -127,8 +130,10 @@ function AuxiliarBook({ disclosure }: Props) {
 
       return saldos[typeAccount];
     };
+
     for (const item of dailyMajorItemsAccount) {
       const saldoAnterior = +item.saldoAnterior;
+
       if (item.items.length > 0 || saldoAnterior !== 0) {
         const data = item.items.map((it) => {
           return [
@@ -360,11 +365,13 @@ function AuxiliarBook({ disclosure }: Props) {
 
     if (type === 'download') {
       doc.save('libro-diario-mayor.pdf');
+
       return;
     }
 
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
+
     setLoadingPdf(false);
     setPdf(url);
   };
@@ -380,24 +387,24 @@ function AuxiliarBook({ disclosure }: Props) {
       <FullPageLayout show={previewModal.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
+            isIconOnly
+            className="absolute bottom-6 left-6"
             color="danger"
             onPress={() => previewModal.onClose()}
-            className="absolute bottom-6 left-6"
-            isIconOnly
           >
             <X />
           </Button>
           {loadingPdf ? (
             <div className="w-full h-full flex flex-col justify-center items-center">
-              <div className="loader"></div>
+              <div className="loader" />
               <p className="mt-5 text-xl">Cargando...</p>
             </div>
           ) : (
-            <iframe className="w-full h-full" src={pdf}></iframe>
+            <iframe className="w-full h-full" src={pdf} title='pdf' />
           )}
         </div>
       </FullPageLayout>
-      <Modal {...disclosure} size="xl" isDismissable={false}>
+      <Modal {...disclosure} isDismissable={false} size="xl">
         <ModalContent>
           <>
             <ModalHeader>
@@ -405,23 +412,23 @@ function AuxiliarBook({ disclosure }: Props) {
             </ModalHeader>
             <ModalBody>
               <Select
-                classNames={{ base: 'font-semibold' }}
-                selectionMode="multiple"
-                variant="bordered"
                 className="dark:text-white z-[800]"
+                classNames={{ base: 'font-semibold' }}
+                isLoading={loadingMajorAccount}
                 label="Cuenta mayor"
                 labelPlacement="outside"
                 placeholder="Seleccione una cuenta mayor"
-                isLoading={loadingMajorAccount}
                 selectedKeys={accounts}
+                selectionMode="multiple"
+                variant="bordered"
                 onSelectionChange={setAccounts}
               >
                 {account_catalog_pagination.accountCatalogs
                   .sort((a, b) => a.code.localeCompare(b.code))
                   .map((account) => (
                     <SelectItem
-                      className="dark:text-white"
                       key={account.code}
+                      className="dark:text-white"
                       textValue={`${account.code} - ${account.name}`}
                     >
                       {account.code} - {account.name}
@@ -430,60 +437,60 @@ function AuxiliarBook({ disclosure }: Props) {
               </Select>
               <div className="mt-5">
                 <Input
-                  labelPlacement="outside"
+                  className="dark:text-white"
                   classNames={{ label: 'font-semibold' }}
                   label="Fecha inicial"
+                  labelPlacement="outside"
                   type="date"
-                  variant="bordered"
                   value={startDate}
-                  className="dark:text-white"
+                  variant="bordered"
                   onChange={(e) => setStartDate(e.target.value)}
                 />
               </div>
               <div className="mt-4">
                 <Input
-                  labelPlacement="outside"
                   classNames={{ label: 'font-semibold' }}
                   label="Fecha final"
+                  labelPlacement="outside"
                   type="date"
-                  variant="bordered"
                   value={endDate}
+                  variant="bordered"
                   onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
               <ButtonUi
-                onPress={handleGetItems}
+                className="w-full"
                 isLoading={loadingDailyMajorAccount}
                 theme={Colors.Primary}
-                className="w-full"
+                onPress={handleGetItems}
               >
                 Buscar
               </ButtonUi>
             </ModalBody>
             <ModalFooter>
               <ButtonUi
-                onPress={disclosure.onClose}
+                className="px-10"
                 isLoading={loadingDailyMajorAccount}
                 theme={Colors.Default}
-                className="px-10"
+                onPress={disclosure.onClose}
               >
                 Cancelar
               </ButtonUi>
               <ButtonUi
-                onPress={handleShowPreview}
+                className="px-10"
                 isDisabled={dailyMajorItemsAccount.length === 0}
                 isLoading={loadingDailyMajorAccount || loadingPdf}
                 theme={Colors.Info}
-                className="px-10"
+                onPress={handleShowPreview}
               >
                 Visualizar
               </ButtonUi>
               <ButtonUi
-                onPress={() => generatePDF('download')}
+                className="px-10"
                 isDisabled={dailyMajorItemsAccount.length === 0}
                 isLoading={loadingDailyMajorAccount}
                 theme={Colors.Success}
-                className="px-10"
+                onPress={() => generatePDF('download')}
               >
                 Descargar PDF
               </ButtonUi>

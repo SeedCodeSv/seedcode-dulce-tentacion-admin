@@ -1,9 +1,10 @@
-import { useUsersStore } from "@/store/users.store";
-import { global_styles } from "@/styles/global.styles";
 import { Button, Input, Tooltip } from "@heroui/react";
 import { Copy } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
+import { global_styles } from "@/styles/global.styles";
+import { useUsersStore } from "@/store/users.store";
 
 interface Props {
     id: number;
@@ -18,6 +19,7 @@ function GenerateCode(props: Props) {
   const handleGenerateCode = async () => {
     if (!props.id) {
       toast.error('El ID del usuario no existe');
+
       return;
     }
     setLoading(true);
@@ -48,23 +50,24 @@ function GenerateCode(props: Props) {
       toast.error('Error al copiar el código');
     });
   };
+
     return (
         <div className='w-full h-full'>
             <div className='flex mt-6 gap-4'>
               <Input
+                readOnly
+                className='bg-red'
                 label="Codigo"
                 labelPlacement='outside'
                 placeholder='Codigo de usuario'
-                className='bg-red'
                 value={code}
-                readOnly
               />
               <Tooltip content="Copiar al portapapeles">
                 <Button 
                     isIconOnly 
                     className='mt-6'
-                    onClick={handleCopyToClipboard}
                     style={styles.secondaryStyle}
+                    onClick={handleCopyToClipboard}
                 >
                     <Copy />
                 </Button>
@@ -72,9 +75,9 @@ function GenerateCode(props: Props) {
             </div>
             <Button
               className='w-full mt-6'
-              onClick={handleGenerateCode}
               disabled={loading}
               style={styles.thirdStyle}
+              onClick={handleGenerateCode}
             >
               {loading ? 'Generando...' : 'Generar código'}
             </Button>

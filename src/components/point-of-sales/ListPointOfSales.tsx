@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Autocomplete, AutocompleteItem, ButtonGroup, Input } from '@heroui/react';
 import { Filter, Building2, Table2Icon, CreditCard } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { toast } from 'sonner';
+
 import TooltipGlobal from '../global/TooltipGlobal';
 import BottomDrawer from '../global/BottomDrawer';
+import LoadingTable from '../global/LoadingTable';
+
+import NoData from './types/NoData';
+
 import { usePointOfSales } from '@/store/point-of-sales.store';
 import { Branches } from '@/types/branches.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { PayloadPointOfSales, PointOfSales } from '@/types/point-of-sales.types';
-import LoadingTable from '../global/LoadingTable';
-import NoData from './types/NoData';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import useWindowSize from '@/hooks/useWindowSize';
-import { toast } from 'sonner';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 interface Props {
@@ -38,15 +41,18 @@ function ListPointOfSales({ actions }: Props) {
   };
 
   const [openVaul, setOpenVaul] = useState(false);
+
   useEffect(() => {
     if (point_of_sales_list?.pointOfSales) {
       const salesData = Object.values(point_of_sales_list.pointOfSales).flat();
+
       setEditableSales(salesData);
     }
   }, [point_of_sales_list]);
 
   const handleEdit = (salePoint: PointOfSales) => {
     const updatedSale = editableSales.find((item) => item.id === salePoint.id);
+
     if (updatedSale) {
       const payload: PayloadPointOfSales = {
         prev: updatedSale.prev,
@@ -91,27 +97,28 @@ function ListPointOfSales({ actions }: Props) {
             <div className="hidden  w-full gap-5 md:flex">
               <div className="w-80">
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const branchSelected = JSON.parse(key as string) as Branches;
-                      setBranch(branchSelected.id);
-                    }
-                  }}
                   className="w-full dark:text-white hidden md:flex"
-                  label="Sucursal"
-                  startContent={<Building2 size={20} />}
-                  labelPlacement="outside"
-                  placeholder="Selecciona una sucursal"
-                  variant="bordered"
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
                   clearButtonProps={{
                     onClick: () => setBranch(0),
                   }}
+                  label="Sucursal"
+                  labelPlacement="outside"
+                  placeholder="Selecciona una sucursal"
+                  startContent={<Building2 size={20} />}
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const branchSelected = JSON.parse(key as string) as Branches;
+
+                      setBranch(branchSelected.id);
+                    }
+                  }}
                 >
                   {branch_list.map((bra) => (
-                    <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
+                    <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
                       {bra.name}
                     </AutocompleteItem>
                   ))}
@@ -120,9 +127,9 @@ function ListPointOfSales({ actions }: Props) {
 
               <div className="mt-6">
                 <ButtonUi
-                  theme={Colors.Primary}
                   className="font-semibold w-32"
                   color="primary"
+                  theme={Colors.Primary}
                   onPress={() => handleSearch(undefined)}
                 >
                   Buscar
@@ -133,10 +140,10 @@ function ListPointOfSales({ actions }: Props) {
           <div className="flex mt-0 md:mt-4 gap-5 mb-4 items-end justify-between">
             <div className="flex items-center gap-5 md:hidden">
               <div className="block md:hidden">
-                <TooltipGlobal text="Buscar por filtros" color="primary">
+                <TooltipGlobal color="primary" text="Buscar por filtros">
                   <ButtonUi
-                    theme={Colors.Info}
                     isIconOnly
+                    theme={Colors.Info}
                     type="button"
                     onPress={() => setOpenVaul(true)}
                   >
@@ -146,41 +153,42 @@ function ListPointOfSales({ actions }: Props) {
 
                 <BottomDrawer
                   open={openVaul}
-                  onClose={() => setOpenVaul(false)}
                   title="Filtros disponibles"
+                  onClose={() => setOpenVaul(false)}
                 >
                   <div className="flex flex-col gap-3">
                     <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const branchSelected = JSON.parse(key as string) as Branches;
-                          setBranch(branchSelected.id);
-                        }
-                      }}
                       className="w-full dark:text-white "
-                      label="Sucursal"
-                      startContent={<Building2 size={20} />}
-                      labelPlacement="outside"
-                      placeholder="Selecciona una sucursal"
-                      variant="bordered"
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
                       clearButtonProps={{
                         onClick: () => setBranch(0),
                       }}
+                      label="Sucursal"
+                      labelPlacement="outside"
+                      placeholder="Selecciona una sucursal"
+                      startContent={<Building2 size={20} />}
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const branchSelected = JSON.parse(key as string) as Branches;
+
+                          setBranch(branchSelected.id);
+                        }
+                      }}
                     >
                       {branch_list.map((bra) => (
-                        <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
+                        <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
                           {bra.name}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>
 
                     <ButtonUi
-                      theme={Colors.Primary}
                       className="mb-10 font-semibold"
                       color="primary"
+                      theme={Colors.Primary}
                       onPress={() => {
                         handleSearch(undefined);
                         setOpenVaul(false);
@@ -193,15 +201,15 @@ function ListPointOfSales({ actions }: Props) {
 
                 <ButtonGroup className="mt-4">
                   <ButtonUi
-                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     isIconOnly
+                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     onPress={() => setView('table')}
                   >
                     <Table2Icon />
                   </ButtonUi>
                   <ButtonUi
-                    theme={view === 'list' ? Colors.Primary : Colors.Default}
                     isIconOnly
+                    theme={view === 'list' ? Colors.Primary : Colors.Default}
                     onPress={() => setView('list')}
                   >
                     <CreditCard />
@@ -229,8 +237,8 @@ function ListPointOfSales({ actions }: Props) {
                         <thead>
                           <tr>
                             <th
-                              colSpan={5}
                               className="p-3 text-center bg-[#1D3557] text-lg font-semibold dark:text-gray-100 dark:bg-slate-700 text-white border border-gray-200 sticky top-0 z-30 w-full"
+                              colSpan={5}
                             >
                               <div className="flex justify-between items-center w-full">
                                 <span className="mx-auto text-sm sm:text-base lg:text-lg">
@@ -239,8 +247,8 @@ function ListPointOfSales({ actions }: Props) {
                                   {salePointArray[0]?.codPuntoVenta || 'Código Punto de Venta'}
                                 </span>
                                 <button
-                                  onClick={() => toggleOpen(index)}
                                   className="ml-2 focus:outline-none text-white"
+                                  onClick={() => toggleOpen(index)}
                                 >
                                   {openIndex === index ? (
                                     <ChevronUp className="dark:text-white" size={20} />
@@ -284,15 +292,15 @@ function ListPointOfSales({ actions }: Props) {
                                 {salePointArray.length === 0 ? (
                                   <tr>
                                     <td
-                                      colSpan={5}
                                       className="p-3 text-sm text-center text-slate-500 border border-gray-200"
+                                      colSpan={5}
                                     >
                                       No se encontraron registros.
                                     </td>
                                   </tr>
                                 ) : (
                                   salePointArray.map((salePoint: PointOfSales, idx: number) => (
-                                    <tr className="border border-gray-400 h-16" key={idx}>
+                                    <tr key={idx} className="border border-gray-400 h-16">
                                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap border border-gray-200">
                                         {salePoint.typeVoucher}
                                       </td>
@@ -301,9 +309,11 @@ function ListPointOfSales({ actions }: Props) {
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
                                         <Input
+                                          className="border border-white   text-sm w-full rounded-xl"
+                                          defaultValue={salePoint.prev.toString()}
+                                          placeholder="Anterior"
                                           type="number"
                                           variant="bordered"
-                                          defaultValue={salePoint.prev.toString()}
                                           onInput={(e) =>
                                             handleChange(
                                               salePoint.id,
@@ -311,14 +321,15 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          className="border border-white   text-sm w-full rounded-xl"
-                                          placeholder="Anterior"
                                         />
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
                                         <Input
-                                          type="number"
+                                          className="border border-white rounded-xl text-sm w-full "
                                           defaultValue={salePoint.next.toString()}
+                                          placeholder="Siguiente"
+                                          type="number"
+                                          variant="bordered"
                                           onInput={(e) =>
                                             handleChange(
                                               salePoint.id,
@@ -326,19 +337,16 @@ function ListPointOfSales({ actions }: Props) {
                                               e.currentTarget.value
                                             )
                                           }
-                                          variant="bordered"
-                                          className="border border-white rounded-xl text-sm w-full "
-                                          placeholder="Siguiente"
                                         />
                                       </td>
                                       <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100 border border-gray-200">
                                         {actions.includes('Editar') && (
                                           <ButtonUi
+                                            isIconOnly
+                                            theme={Colors.Success}
                                             onPress={() => {
                                               handleEdit(salePoint);
                                             }}
-                                            isIconOnly
-                                            theme={Colors.Success}
                                           >
                                             <p className="text-white ">Actualizar</p>
                                           </ButtonUi>

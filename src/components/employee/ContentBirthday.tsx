@@ -1,5 +1,6 @@
-import { IContentBirthday } from './types/mobile-view.types';
 import logo from '../../assets/globo.png';
+
+import { IContentBirthday } from './types/mobile-view.types';
 
 function ParticipantList(props: IContentBirthday) {
   return (
@@ -12,9 +13,9 @@ function ParticipantList(props: IContentBirthday) {
           >
             <div className="flex items-center">
               <img
-                src="https://ps.w.org/cbxuseronline/assets/icon-256x256.png?rev=2284897"
-                className="w-12 h-12 rounded-full mr-4 border-2 border-blue-500"
                 alt={`${participant.firstName} ${participant.firstLastName}`}
+                className="w-12 h-12 rounded-full mr-4 border-2 border-blue-500"
+                src="https://ps.w.org/cbxuseronline/assets/icon-256x256.png?rev=2284897"
               />
               <div className="text-blue-400">
                 <p className="text-lg font-bold">
@@ -28,7 +29,7 @@ function ParticipantList(props: IContentBirthday) {
               </div>
             </div>
             <div className="text-pink-500">
-              <img src={logo} alt="icon" className=" xl:flex w-10 h-10" />
+              <img alt="icon" className=" xl:flex w-10 h-10" src={logo} />
             </div>
           </div>
         ))}

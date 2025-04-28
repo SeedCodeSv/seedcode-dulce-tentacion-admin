@@ -1,4 +1,21 @@
 import {
+  Autocomplete,
+  AutocompleteItem,
+  Checkbox,
+  Input,
+  Select,
+  SelectItem,
+  Tooltip,
+} from '@heroui/react';
+import { useFormikContext } from 'formik';
+import { MessageCircleQuestion } from 'lucide-react';
+import { useMemo } from 'react';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
+import { GeneralInfoProps } from '@/types/shopping.types';
+import { useSupplierStore } from '@/store/supplier.store';
+import { useBranchesStore } from '@/store/branches.store';
+import {
   ClassDocumentCode,
   ClassDocuments,
   ClassDocumentValue,
@@ -15,22 +32,6 @@ import {
   TypeCostSpents,
   TypeCostSpentValue,
 } from '@/enums/shopping.enum';
-import { useBranchesStore } from '@/store/branches.store';
-import { useSupplierStore } from '@/store/supplier.store';
-import { GeneralInfoProps } from '@/types/shopping.types';
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Checkbox,
-  Input,
-  Select,
-  SelectItem,
-  Tooltip,
-} from '@heroui/react';
-import { useFormikContext } from 'formik';
-import { MessageCircleQuestion } from 'lucide-react';
-import { useMemo } from 'react';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 
 interface ShoppingPayload {
   operationTypeCode: OperationTypeCode;
@@ -82,27 +83,28 @@ function GeneralInfo({
       <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
         <div className="w-full flex flex-col md:flex-row gap-5">
           <Input
+            className="w-full md:w-44"
+            classNames={{ label: 'font-semibold' }}
             label="Registro"
             labelPlacement="outside"
-            variant="bordered"
             placeholder="EJ:000"
-            classNames={{ label: 'font-semibold' }}
-            className="w-full md:w-44"
             value={nrc}
+            variant="bordered"
             onChange={(e) => setNrc(e.currentTarget.value)}
           />
           <Autocomplete
+            classNames={{ base: 'font-semibold' }}
             label="Nombre de proveedor"
             labelPlacement="outside"
-            variant="bordered"
             placeholder="Selecciona el proveedor"
             selectedKey={`${supplierSelected?.id ?? undefined}`}
-            classNames={{ base: 'font-semibold' }}
+            variant="bordered"
             onInputChange={(text) => setSearchNRC(text)}
             onSelectionChange={(key) => {
               if (key) {
                 const id = Number(new Set([key]).values().next().value);
                 const fnd = supplier_pagination.suppliers.find((spp) => spp.id === id);
+
                 if (fnd) {
                   setSupplierSelected(fnd);
                   setNrc(fnd?.nrc);
@@ -119,27 +121,28 @@ function GeneralInfo({
         </div>
         <div className="w-full flex flex-col md:flex-row gap-5">
           <Input
+            className="w-full md:w-44"
+            classNames={{ label: 'font-semibold' }}
             label="Tipo"
             labelPlacement="outside"
-            variant="bordered"
             placeholder="EJ:01"
-            classNames={{ label: 'font-semibold' }}
-            className="w-full md:w-44"
             value={tipoDte}
+            variant="bordered"
             onChange={(e) => {
               formik.setFieldValue('tipoDte', e.currentTarget.value);
               setTipoDte(e.currentTarget.value);
             }}
           />
           <Select
+            classNames={{ label: 'font-semibold' }}
             label="Nombre comprobante"
             labelPlacement="outside"
-            variant="bordered"
             placeholder="Selecciona el tipo de documento"
             selectedKeys={formik.values.tipoDte !== '' ? [formik.values.tipoDte] : undefined}
-            classNames={{ label: 'font-semibold' }}
+            variant="bordered"
             onSelectionChange={(key) => {
               const value = new Set(key).values().next().value as string;
+
               if (value) {
                 formik.setFieldValue('tipoDte', value);
                 setTipoDte(value);
@@ -161,13 +164,16 @@ function GeneralInfo({
         <div>
           <Select
             classNames={{ label: 'font-semibold' }}
-            variant="bordered"
-            label="Sucursal"
-            placeholder="Selecciona la sucursal"
-            labelPlacement="outside"
             defaultSelectedKeys={
               formik.values.branchId > 0 ? [`${formik.values.branchId}`] : undefined
             }
+            errorMessage={formik.errors.branchId}
+            isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
+            label="Sucursal"
+            labelPlacement="outside"
+            placeholder="Selecciona la sucursal"
+            variant="bordered"
+            onBlur={formik.handleBlur('branchId')}
             onSelectionChange={(key) => {
               if (key) {
                 const branchId = Number(key.anchorKey);
@@ -180,9 +186,6 @@ function GeneralInfo({
                 }
               }
             }}
-            onBlur={formik.handleBlur('branchId')}
-            isInvalid={!!formik.touched.branchId && !!formik.errors.branchId}
-            errorMessage={formik.errors.branchId}
           >
             {branch_list.map((item) => (
               <SelectItem key={item.id} textValue={item.name}>
@@ -194,20 +197,21 @@ function GeneralInfo({
         <div>
           <Select
             classNames={{ label: 'font-semibold' }}
-            variant="bordered"
-            label="Tipo"
-            placeholder="Selecciona el tipo"
-            labelPlacement="outside"
             defaultSelectedKeys={
               formik.values.typeSale !== '' ? [`${formik.values.typeSale}`] : undefined
             }
+            errorMessage={formik.errors.typeSale}
+            isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
+            label="Tipo"
+            labelPlacement="outside"
+            placeholder="Selecciona el tipo"
+            variant="bordered"
+            onBlur={formik.handleBlur('typeSale')}
             onSelectionChange={(key) => {
               const value = new Set(key).values().next().value;
+
               key ? formik.setFieldValue('typeSale', value) : formik.setFieldValue('typeSale', '');
             }}
-            onBlur={formik.handleBlur('typeSale')}
-            isInvalid={!!formik.touched.typeSale && !!formik.errors.typeSale}
-            errorMessage={formik.errors.typeSale}
           >
             <SelectItem key={'interna'} textValue="Interna">
               Interna
@@ -222,11 +226,8 @@ function GeneralInfo({
         </div>
         <Input
           classNames={{ label: 'font-semibold' }}
-          placeholder="EJ: 101"
-          variant="bordered"
-          value={formik.values.numeroControl}
-          onChange={formik.handleChange('numeroControl')}
-          onBlur={formik.handleBlur('numeroControl')}
+          errorMessage={formik.errors.numeroControl}
+          isInvalid={!!formik.touched.numeroControl && !!formik.errors.numeroControl}
           label={
             <div className="flex gap-5">
               <p>Numero de control</p>
@@ -245,37 +246,17 @@ function GeneralInfo({
             </div>
           }
           labelPlacement="outside"
-          isInvalid={!!formik.touched.numeroControl && !!formik.errors.numeroControl}
-          errorMessage={formik.errors.numeroControl}
+          placeholder="EJ: 101"
+          value={formik.values.numeroControl}
+          variant="bordered"
+          onBlur={formik.handleBlur('numeroControl')}
+          onChange={formik.handleChange('numeroControl')}
         />
         <Select
-          onBlur={formik.handleBlur('classDocumentCode')}
-          onSelectionChange={(key) => {
-            if (key) {
-              const value = new Set(key).values().next().value;
-              const code = ClassDocuments.find((item) => item.code === value);
-              if (code) {
-                formik.setFieldValue('classDocumentCode', code.code);
-                formik.setFieldValue('classDocumentValue', code.value);
-              } else {
-                formik.setFieldValue('classDocumentCode', '');
-                formik.setFieldValue('classDocumentValue', '');
-              }
-            } else {
-              formik.setFieldValue('classDocumentCode', '');
-              formik.setFieldValue('classDocumentValue', '');
-            }
-          }}
-          selectedKeys={
-            String(formik.values.classDocumentCode) !== ''
-              ? [`${formik.values.classDocumentCode}`]
-              : undefined
-          }
-          classNames={{ label: 'font-semibold' }}
           className="w-full"
-          variant="bordered"
-          labelPlacement="outside"
-          placeholder="Selecciona una opción"
+          classNames={{ label: 'font-semibold' }}
+          errorMessage={formik.errors.classDocumentCode}
+          isInvalid={!!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode}
           label={
             <div className="flex gap-5">
               <p>clase del documento</p>
@@ -294,8 +275,32 @@ function GeneralInfo({
               </Tooltip>
             </div>
           }
-          isInvalid={!!formik.touched.classDocumentCode && !!formik.errors.classDocumentCode}
-          errorMessage={formik.errors.classDocumentCode}
+          labelPlacement="outside"
+          placeholder="Selecciona una opción"
+          selectedKeys={
+            String(formik.values.classDocumentCode) !== ''
+              ? [`${formik.values.classDocumentCode}`]
+              : undefined
+          }
+          variant="bordered"
+          onBlur={formik.handleBlur('classDocumentCode')}
+          onSelectionChange={(key) => {
+            if (key) {
+              const value = new Set(key).values().next().value;
+              const code = ClassDocuments.find((item) => item.code === value);
+
+              if (code) {
+                formik.setFieldValue('classDocumentCode', code.code);
+                formik.setFieldValue('classDocumentValue', code.value);
+              } else {
+                formik.setFieldValue('classDocumentCode', '');
+                formik.setFieldValue('classDocumentValue', '');
+              }
+            } else {
+              formik.setFieldValue('classDocumentCode', '');
+              formik.setFieldValue('classDocumentValue', '');
+            }
+          }}
         >
           {ClassDocuments.map((item) => (
             <SelectItem key={item.code} textValue={item.value}>
@@ -304,11 +309,25 @@ function GeneralInfo({
           ))}
         </Select>
         <Select
+          className="w-full"
+          classNames={{ label: 'font-semibold' }}
+          errorMessage={formik.errors.operationTypeCode}
+          isInvalid={!!formik.touched.operationTypeCode && !!formik.errors.operationTypeCode}
+          label="Tipo de operación"
+          labelPlacement="outside"
+          placeholder="Selecciona una opción"
+          selectedKeys={
+            String(formik.values.operationTypeCode) !== ''
+              ? [`${formik.values.operationTypeCode}`]
+              : undefined
+          }
+          variant="bordered"
           onBlur={formik.handleBlur('operationTypeCode')}
           onSelectionChange={(key) => {
             if (key) {
               const value = new Set(key).values().next().value;
               const code = OperationTypes.find((item) => item.code === value);
+
               if (code) {
                 formik.setFieldValue('operationTypeCode', code.code);
                 formik.setFieldValue('operationTypeValue', code.value);
@@ -320,19 +339,6 @@ function GeneralInfo({
               formik.setFieldValue('operationTypeCode', '');
             }
           }}
-          selectedKeys={
-            String(formik.values.operationTypeCode) !== ''
-              ? [`${formik.values.operationTypeCode}`]
-              : undefined
-          }
-          classNames={{ label: 'font-semibold' }}
-          className="w-full"
-          variant="bordered"
-          labelPlacement="outside"
-          placeholder="Selecciona una opción"
-          label="Tipo de operación"
-          isInvalid={!!formik.touched.operationTypeCode && !!formik.errors.operationTypeCode}
-          errorMessage={formik.errors.operationTypeCode}
         >
           {OperationTypes.map((item) => (
             <SelectItem key={item.code} textValue={item.value}>
@@ -341,16 +347,25 @@ function GeneralInfo({
           ))}
         </Select>
         <Select
-          classNames={{ label: 'font-semibold' }}
           className="w-full"
-          variant="bordered"
+          classNames={{ label: 'font-semibold' }}
+          errorMessage={formik.errors.classificationCode}
+          isInvalid={!!formik.touched.classificationCode && !!formik.errors.classificationCode}
+          label="Clasificación"
           labelPlacement="outside"
           placeholder="Selecciona una opción"
-          label="Clasificación"
+          selectedKeys={
+            String(formik.values.classificationCode) !== ''
+              ? [`${formik.values.classificationCode}`]
+              : undefined
+          }
+          variant="bordered"
+          onBlur={formik.handleBlur('classificationCode')}
           onSelectionChange={(key) => {
             if (key) {
               const value = new Set(key).values().next().value;
               const code = Classifications.find((item) => item.code === value);
+
               if (code) {
                 formik.setFieldValue('classificationCode', code.code);
                 formik.setFieldValue('classificationValue', code.value);
@@ -362,14 +377,6 @@ function GeneralInfo({
               formik.setFieldValue('classificationCode', '');
             }
           }}
-          selectedKeys={
-            String(formik.values.classificationCode) !== ''
-              ? [`${formik.values.classificationCode}`]
-              : undefined
-          }
-          onBlur={formik.handleBlur('classificationCode')}
-          isInvalid={!!formik.touched.classificationCode && !!formik.errors.classificationCode}
-          errorMessage={formik.errors.classificationCode}
         >
           {Classifications.map((item) => (
             <SelectItem key={item.code} textValue={item.value}>
@@ -378,16 +385,23 @@ function GeneralInfo({
           ))}
         </Select>
         <Select
-          classNames={{ label: 'font-semibold' }}
           className="w-full"
-          variant="bordered"
+          classNames={{ label: 'font-semibold' }}
+          errorMessage={formik.errors.sectorCode}
+          isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
+          label="Sector"
           labelPlacement="outside"
           placeholder="Selecciona una opción"
-          label="Sector"
+          selectedKeys={
+            String(formik.values.sectorCode) !== '' ? [`${formik.values.sectorCode}`] : undefined
+          }
+          variant="bordered"
+          onBlur={formik.handleBlur('sectorCode')}
           onSelectionChange={(key) => {
             if (key) {
               const value = new Set(key).values().next().value;
               const code = Sectors.find((item) => item.code === value);
+
               if (code) {
                 formik.setFieldValue('sectorCode', code.code);
                 formik.setFieldValue('sectorValue', code.value);
@@ -399,12 +413,6 @@ function GeneralInfo({
               formik.setFieldValue('sectorCode', '');
             }
           }}
-          selectedKeys={
-            String(formik.values.sectorCode) !== '' ? [`${formik.values.sectorCode}`] : undefined
-          }
-          onBlur={formik.handleBlur('sectorCode')}
-          isInvalid={!!formik.touched.sectorCode && !!formik.errors.sectorCode}
-          errorMessage={formik.errors.sectorCode}
         >
           {Sectors.map((item) => (
             <SelectItem key={item.code} textValue={item.value}>
@@ -413,16 +421,25 @@ function GeneralInfo({
           ))}
         </Select>
         <Select
-          classNames={{ label: 'font-semibold' }}
           className="w-full"
-          variant="bordered"
+          classNames={{ label: 'font-semibold' }}
+          errorMessage={formik.errors.typeCostSpentCode}
+          isInvalid={!!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode}
+          label="Tipo de costo/gasto"
           labelPlacement="outside"
           placeholder="Selecciona una opción"
-          label="Tipo de costo/gasto"
+          selectedKeys={
+            String(formik.values.typeCostSpentCode) !== ''
+              ? [`${formik.values.typeCostSpentCode}`]
+              : undefined
+          }
+          variant="bordered"
+          onBlur={formik.handleBlur('typeCostSpentCode')}
           onSelectionChange={(key) => {
             if (key) {
               const value = new Set(key).values().next().value;
               const code = TypeCostSpents.find((item) => item.code === value);
+
               if (code) {
                 formik.setFieldValue('typeCostSpentCode', code.code);
                 formik.setFieldValue('typeCostSpentValue', code.value);
@@ -434,14 +451,6 @@ function GeneralInfo({
               formik.setFieldValue('typeCostSpentCode', '');
             }
           }}
-          selectedKeys={
-            String(formik.values.typeCostSpentCode) !== ''
-              ? [`${formik.values.typeCostSpentCode}`]
-              : undefined
-          }
-          onBlur={formik.handleBlur('typeCostSpentCode')}
-          isInvalid={!!formik.touched.typeCostSpentCode && !!formik.errors.typeCostSpentCode}
-          errorMessage={formik.errors.typeCostSpentCode}
         >
           {TypeCostSpents.map((item) => (
             <SelectItem key={item.code} textValue={item.value}>
@@ -451,46 +460,46 @@ function GeneralInfo({
         </Select>
         <div>
           <Input
+            readOnly
+            classNames={{ label: 'font-semibold' }}
             label="CORRELATIVO"
             labelPlacement="outside"
-            readOnly
-            value={correlative.toString()}
             placeholder="EJ: 001"
-            variant="bordered"
-            classNames={{ label: 'font-semibold' }}
             type="number"
+            value={correlative.toString()}
+            variant="bordered"
           />
         </div>
         <Input
           classNames={{ label: 'font-semibold' }}
-          variant="bordered"
-          type="date"
-          label="Fecha del documento"
-          value={formik.values.fecEmi}
-          onChange={formik.handleChange('fecEmi')}
-          onBlur={formik.handleBlur('fecEmi')}
-          labelPlacement="outside"
-          isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
           errorMessage={formik.errors.fecEmi}
+          isInvalid={!!formik.touched.fecEmi && !!formik.errors.fecEmi}
+          label="Fecha del documento"
+          labelPlacement="outside"
+          type="date"
+          value={formik.values.fecEmi}
+          variant="bordered"
+          onBlur={formik.handleBlur('fecEmi')}
+          onChange={formik.handleChange('fecEmi')}
         />
         <Input
           classNames={{ label: 'font-semibold' }}
-          variant="bordered"
-          type="date"
-          label="Fecha de declaración"
-          value={formik.values.declarationDate}
-          onChange={formik.handleChange('declarationDate')}
-          onBlur={formik.handleBlur('declarationDate')}
-          labelPlacement="outside"
-          isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
           errorMessage={formik.errors.declarationDate}
+          isInvalid={!!formik.touched.declarationDate && !!formik.errors.declarationDate}
+          label="Fecha de declaración"
+          labelPlacement="outside"
+          type="date"
+          value={formik.values.declarationDate}
+          variant="bordered"
+          onBlur={formik.handleBlur('declarationDate')}
+          onChange={formik.handleChange('declarationDate')}
         />
 
         <div className="flex  items-end">
           <Checkbox
             checked={includePerception}
-            onValueChange={(val) => setIncludePerception(val)}
             size="lg"
+            onValueChange={(val) => setIncludePerception(val)}
           >
             ¿Incluye percepción?
           </Checkbox>

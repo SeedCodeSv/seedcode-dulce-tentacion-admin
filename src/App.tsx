@@ -1,14 +1,15 @@
 import './App.css';
-import ThemeProvider from './hooks/useTheme';
 import { HeroUIProvider } from '@heroui/react';
 import { Toaster } from 'sonner';
-import SessionProvider from './hooks/useSession';
-import Main from './pages/Main';
 import Tailwind from 'primereact/passthrough/tailwind';
 import { HelmetProvider } from 'react-helmet-async';
 import { PrimeReactProvider } from 'primereact/api';
-import ActionsProvider from './hooks/useActions';
 import { useEffect } from 'react';
+
+import ActionsProvider from './hooks/useActions';
+import Main from './pages/Main';
+import SessionProvider from './hooks/useSession';
+import ThemeProvider from './hooks/useTheme';
 import { useViewsStore } from './store/views.store';
 import { useAuthStore } from './store/auth.store';
 import { AlertProvider } from './lib/alert';
@@ -17,6 +18,7 @@ import PermissionProvider from './hooks/usePermission';
 function App() {
   const { OnGetActionsByRol, OnGetViewasAction } = useViewsStore();
   const { user } = useAuthStore();
+
   useEffect(() => {
     OnGetActionsByRol(user?.roleId ?? 0);
     OnGetViewasAction(1, 5, '');

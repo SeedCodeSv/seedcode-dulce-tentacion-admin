@@ -2,10 +2,12 @@ import { Input, Autocomplete, AutocompleteItem } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useEffect, useMemo, useState } from 'react';
+
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import { useCategoriesStore } from '../../store/categories.store';
 import { CategoryProduct } from '../../types/branch_products.types';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -42,12 +44,14 @@ const AddSubCategory = (props: Props) => {
     try {
       if (props.subCategory) {
         const data = await patchSubCategory(payload, props.subCategory.id);
+
         if (data.ok === true) {
           props.closeModal();
           setLoging(true);
         }
       } else {
         const data = await postSubCategory(payload);
+
         if (data.ok === true) {
           props.closeModal();
           setLoging(true);
@@ -63,6 +67,7 @@ const AddSubCategory = (props: Props) => {
       const classProduct = list_categories.find(
         (classProduct) => classProduct.id === props.subCategory?.categoryPorudctId
       );
+
       return JSON.stringify(classProduct);
     }
   }, [props, props.subCategory, list_categories]);
@@ -70,64 +75,65 @@ const AddSubCategory = (props: Props) => {
   return (
     <div className="w-full mt-4">
       <Formik
-        validationSchema={validationSchema}
         initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={handleSave}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div className="flex flex-col w-full dark:text-white">
               <Input
-                label="Nombre"
-                name="name"
-                labelPlacement="outside"
-                value={values.name}
-                onChange={handleChange('name')}
-                onBlur={handleBlur('name')}
-                placeholder="Ingresa el nombre de la categoría"
                 classNames={{ base: 'font-semibold dark:text-gray-200 text-sm' }}
-                variant="bordered"
-                isInvalid={!!errors.name && touched.name}
                 errorMessage={errors.name}
+                isInvalid={!!errors.name && touched.name}
+                label="Nombre"
+                labelPlacement="outside"
+                name="name"
+                placeholder="Ingresa el nombre de la categoría"
+                value={values.name}
+                variant="bordered"
+                onBlur={handleBlur('name')}
+                onChange={handleChange('name')}
               />
 
               <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const category = JSON.parse(key as string) as CategoryProduct;
-                    handleChange('categoryProductId')(category.id.toString());
-                  }
-                }}
-                onBlur={handleBlur('categoryProductId')}
+                className="dark:text-white mt-4 font-semibold"
+                defaultSelectedKey={selectedKeyCategory}
+                errorMessage={errors.categoryProductId}
+                isInvalid={!!errors.categoryProductId && touched.name}
                 label="Categoría de producto"
                 labelPlacement="outside"
-                variant="bordered"
-                className="dark:text-white mt-4 font-semibold"
+                name="categoryProductId"
                 placeholder={
                   props.subCategory?.categoryProduct?.name
                     ? props.subCategory?.categoryProduct.name
                     : 'Selecciona una categoría'
                 }
-                defaultSelectedKey={selectedKeyCategory}
                 value={selectedKeyCategory}
-                name="categoryProductId"
-                isInvalid={!!errors.categoryProductId && touched.name}
-                errorMessage={errors.categoryProductId}
+                variant="bordered"
+                onBlur={handleBlur('categoryProductId')}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const category = JSON.parse(key as string) as CategoryProduct;
+
+                    handleChange('categoryProductId')(category.id.toString());
+                  }
+                }}
               >
                 {list_categories.map((bra) => (
-                  <AutocompleteItem className="dark:text-white" key={JSON.stringify(bra)}>
+                  <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
                     {bra.name}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
             </div>
             {!loading ? (
-              <ButtonUi onPress={() => handleSubmit()} theme={Colors.Primary}>
+              <ButtonUi theme={Colors.Primary} onPress={() => handleSubmit()}>
                 Guardar
               </ButtonUi>
             ) : (
               <div className="flex flex-col items-center justify-center w-full">
-                <div className="loaderBranch w-2 h-2 mt-2"></div>
+                <div className="loaderBranch w-2 h-2 mt-2" />
                 <p className="mt-3 text-sm font-semibold">Cargando...</p>
               </div>
             )}

@@ -1,5 +1,6 @@
-import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
 import { ISale_JSON_Debito, ISaleByItem, SaleContingence, SaleDates, SaleDetails } from '../../types/sales.types';
+
+import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
 import { SalesByDay } from '@/types/iva_fe';
 import { IPagination } from '@/types/global.types';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';

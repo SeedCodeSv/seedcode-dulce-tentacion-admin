@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+
 import { ReportForItem } from '@/types/accounting-items.types';
 import { completeDateFormat } from '@/utils/date';
 
@@ -30,12 +31,15 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
     // Recorrer cada grupo de cuentas
     data.forEach((group) => {
       const lastElement = group[group?.length - 1];
+
       finalElements.push(lastElement);
       group.forEach((account) => {
         const accountCode = account.account;
+
         if (accountCode.length === 4) {
           if (consolidatedMap.has(accountCode)) {
             const existingAccount = consolidatedMap.get(accountCode);
+
             existingAccount.debe = (
               parseFloat(existingAccount.debe) + Number(account.debe)
             ).toFixed(2);
@@ -140,8 +144,10 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
 
     const countMap = new Map();
     const displayedKeys = new Set();
+
     data.forEach((row) => {
       const key = row[0];
+
       countMap.set(key, (countMap.get(key) || 0) + 1);
     });
     autoTable(doc, {
@@ -176,6 +182,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
       didParseCell: (data) => {
         if (data.column.index === 0) {
           const key = data.cell.raw;
+
           if (countMap.get(key) > 1) {
             if (displayedKeys.has(key)) {
               data.cell.text = [''];
@@ -194,6 +201,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
           const columnValues = rows.map((row) => String((row.raw as string[])[0]));
 
           const lastIndex = columnValues.lastIndexOf(accountValue);
+
           if (data.row.index === lastIndex) {
             if (+(data.row.raw as string[])[2] > 0) {
               doc.line(
@@ -261,6 +269,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
             'S'
           );
           const lineSpacing = 0.7;
+
           doc.line(
             data.cell.x + 4,
             data.cell.y + data.cell.height + lineSpacing,
@@ -313,12 +322,14 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
     });
 
     const result = doc.internal.pageSize.height - finalY;
+
     if (result < 10) {
       doc.addPage();
       finalY = 20;
     }
 
     const pageCount = doc.internal.pages.length - 1;
+
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFont('helvetica', 'bold');
@@ -369,6 +380,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
     }
 
     const pdfOutput = doc.output('datauristring');
+
     setPdfUrl(pdfOutput);
   };
 
@@ -381,7 +393,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
   return (
     <div style={{ width: '100%', height: '100%' }}>
       {pdfUrl ? (
-        <iframe src={pdfUrl} width="100%" height="100%" style={{ border: 'none' }} />
+        <iframe src={pdfUrl} style={{ width: '100%', height: '100%' }} title='pdf' />
       ) : (
         <p>Generando PDF...</p>
       )}

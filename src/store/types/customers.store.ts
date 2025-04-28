@@ -1,5 +1,6 @@
-import { IGetUserById } from '@/types/user_by_id.types';
 import { IGetCustomerPagination, PayloadCustomer, Customer } from '../../types/customers.types';
+
+import { IGetUserById } from '@/types/user_by_id.types';
 
 export interface IUseCustomersStore {
   loading: boolean;

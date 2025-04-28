@@ -1,6 +1,8 @@
-import { Colors } from '@/types/themes.types';
 import { Button, ButtonProps, Tooltip } from '@heroui/react';
+
 import useThemeColors from '../use-theme-colors';
+
+import { Colors } from '@/types/themes.types';
 interface CustomButtonProps extends ButtonProps {
   theme: Colors;
   showTooltip?: boolean;
@@ -8,10 +10,11 @@ interface CustomButtonProps extends ButtonProps {
 }
 function ButtonUi(props: CustomButtonProps) {
   const style = useThemeColors({ name: props.theme });
+
   return (
     <>
       {props.showTooltip ? (
-        <Tooltip content={props.tooltipText} className="dark:text-white">
+        <Tooltip className="dark:text-white" content={props.tooltipText}>
           <Button style={style} {...props}>
             {props.children}
           </Button>

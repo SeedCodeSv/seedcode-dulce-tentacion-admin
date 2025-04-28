@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { IUseAccountReceivableStore } from './types/accounts_receivable.store.types';
+
 import { get_account_receivable_list, get_accounts_receivable, get_payments_by_account } from '../services/account_receivable.service';
+
+import { IUseAccountReceivableStore } from './types/accounts_receivable.store.types';
 
 export const useAccountReceivableStore = create<IUseAccountReceivableStore>((set) => ({
   accounts: [],

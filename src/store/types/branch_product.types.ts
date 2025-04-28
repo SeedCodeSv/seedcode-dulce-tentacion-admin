@@ -1,4 +1,3 @@
-import { Branches } from '@/types/branches.types';
 import {
   BranchProduct,
   IBranchProductOrder,
@@ -7,6 +6,8 @@ import {
   IGetBranchProductPaginated,
   SupplierProducts,
 } from '../../types/branch_products.types';
+
+import { Branches } from '@/types/branches.types';
 import { IGetBranchProductOrderPaginated } from '@/types/branch_product_order.types';
 
 export interface IBranchProductStore {

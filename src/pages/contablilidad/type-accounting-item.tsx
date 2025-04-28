@@ -1,3 +1,7 @@
+import { Input, Select, SelectItem, useDisclosure } from '@heroui/react';
+import { Pencil, Trash } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import Pagination from '@/components/global/Pagination';
 import AddTypeAccounting from '@/components/type-accounting/add-type-account';
 import DeleteModal from '@/components/type-accounting/delete-modal';
@@ -9,9 +13,6 @@ import ThGlobal from '@/themes/ui/th-global';
 import { Colors } from '@/types/themes.types';
 import { TypeOfAccount } from '@/types/type-of-account.types';
 import { limit_options } from '@/utils/constants';
-import { Input, Select, SelectItem, useDisclosure } from '@heroui/react';
-import { Pencil, Trash } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 function TypeAccountingItem() {
   const { getTypeOfAccounts, type_of_account, loading, type_of_account_pagination } =
@@ -20,6 +21,7 @@ function TypeAccountingItem() {
   const [name, setName] = useState('');
 
   const [limit, setLimit] = useState(5);
+
   useEffect(() => {
     getTypeOfAccounts(1, limit, name);
   }, [name]);
@@ -46,24 +48,24 @@ function TypeAccountingItem() {
           <div className="w-full h-full flex flex-col p-5 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="flex gap-3 md:gap-10 items-end">
               <Input
-                label="Buscar por nombre"
                 className="w-full"
+                classNames={{
+                  base: 'font-semibold',
+                }}
+                label="Buscar por nombre"
+                labelPlacement="outside"
+                placeholder="Ingresa el nombre del tipo de partida"
                 variant="bordered"
                 onChange={(e) => setName(e.target.value)}
-                classNames={{
-                  base: 'font-semibold',
-                }}
-                placeholder="Ingresa el nombre del tipo de partida"
-                labelPlacement="outside"
               />
               <Select
-                labelPlacement="outside"
-                label="Cantidad a mostrar"
+                className="w-64"
                 classNames={{
                   base: 'font-semibold',
                 }}
+                label="Cantidad a mostrar"
+                labelPlacement="outside"
                 placeholder="Selecciona un limite"
-                className="w-64"
                 variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
@@ -92,9 +94,9 @@ function TypeAccountingItem() {
                   {loading ? (
                     <>
                       <tr>
-                        <td colSpan={4} className="p-3 text-sm text-center text-slate-500">
+                        <td className="p-3 text-sm text-center text-slate-500" colSpan={4}>
                           <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader"></div>
+                            <div className="loader" />
                             <p className="mt-3 text-xl font-semibold">Cargando...</p>
                           </div>
                         </td>
@@ -103,7 +105,7 @@ function TypeAccountingItem() {
                   ) : (
                     <>
                       {type_of_account.map((type, index) => (
-                        <tr className="border-b border-slate-200" key={index}>
+                        <tr key={index} className="border-b border-slate-200">
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             {type.id}
                           </td>
@@ -140,9 +142,9 @@ function TypeAccountingItem() {
               <>
                 <div className="hidden w-full mt-5 md:flex">
                   <Pagination
-                    previousPage={type_of_account_pagination.prevPag}
-                    nextPage={type_of_account_pagination.nextPag}
                     currentPage={type_of_account_pagination.currentPag}
+                    nextPage={type_of_account_pagination.nextPag}
+                    previousPage={type_of_account_pagination.prevPag}
                     totalPages={type_of_account_pagination.totalPag}
                     onPageChange={(page) => {
                       getTypeOfAccounts(page, limit, name);
@@ -156,21 +158,21 @@ function TypeAccountingItem() {
         {selectedType && (
           <UpdateTypeAccounting
             isOpen={updateModal.isOpen}
+            type={selectedType}
             onClose={() => {
               setSelectedType(undefined);
               updateModal.onClose();
             }}
-            type={selectedType}
           />
         )}
         {selectedId > 0 && (
           <DeleteModal
+            id={selectedId}
             isOpen={deleteModal.isOpen}
             onClose={() => {
               setSelectedType(undefined);
               deleteModal.onClose();
             }}
-            id={selectedId}
           />
         )}
       </>

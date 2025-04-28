@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { get_token } from '@/storage/localStorage';
 import {
   IGetPointOfSalePaginated,
@@ -8,10 +10,10 @@ import {
 } from '@/types/point-of-sales.types';
 import { API_URL } from '@/utils/constants';
 
-import axios from 'axios';
 
 export const get_point_of_sales = (branchId: number) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetPointOfSales>(
     `${API_URL}/point-of-sale/by-branch/${branchId}`,
     {
@@ -24,6 +26,7 @@ export const get_point_of_sales = (branchId: number) => {
 
 export const save_point_of_sales = (payload: PointOfSalePayload) => {
   const token = get_token() ?? '';
+
   return axios.post<{ ok: boolean }>(API_URL + '/point-of-sale/with-user', payload, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -40,6 +43,7 @@ export const get_point_of_sale = (
   dteType = ''
 ) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetPointOfSalePaginated>(
     import.meta.env.VITE_API_URL +
       `/point-of-sale/list-paginated/${Transmitter}?page=${page}&limit=${limit}&posCode=${posCode}&branch=${branch}&dteType=${dteType}`,
@@ -54,6 +58,7 @@ export const get_point_of_sale = (
 //Listado de puntos de venta
 export const get_point_of_sale_list = (branchId: number) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetPointOfSalesByBranch>(API_URL + `/branches/by-point-of-sale/${branchId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -63,6 +68,7 @@ export const get_point_of_sale_list = (branchId: number) => {
 
 export const patch_point_of_sale = (payload: PayloadPointOfSales, id: number) => {
   const token = get_token() ?? '';
+
   return axios.patch<{ ok: boolean }>(
     API_URL + '/point-of-sale/update-point-of-sale/' + id,
     payload,
@@ -76,6 +82,7 @@ export const patch_point_of_sale = (payload: PayloadPointOfSales, id: number) =>
 
 export const verify_code_correlatives = (BranchId: number, posCode: string) => {
   const toke = get_token() ?? '';
+
   return axios.get<{ ok: boolean }>(
     API_URL + `/point-of-sale/verify-code/${BranchId}?posCode=${posCode}`,
     {

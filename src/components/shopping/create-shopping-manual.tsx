@@ -1,11 +1,19 @@
-import { get_correlative_shopping } from '@/services/shopping.service';
-import { API_URL } from '@/utils/constants';
-import { formatDate } from '@/utils/dates';
 import { Modal, ModalContent, useDisclosure } from '@heroui/react';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { FormikProvider, useFormik } from 'formik';
+import * as yup from 'yup';
+
+import GeneralInfo from './manual/general-info';
+import ResumeShopping from './manual/resume-shopping';
+import CatalogItemsPaginated from './manual/catalog-items-paginated';
+import AccountItem from './manual/account-item';
+
+import { get_correlative_shopping } from '@/services/shopping.service';
+import { API_URL } from '@/utils/constants';
+import { formatDate } from '@/utils/dates';
 import { useAuthStore } from '@/store/auth.store';
 import { Supplier } from '@/types/supplier.types';
 import { useSupplierStore } from '@/store/supplier.store';
@@ -22,17 +30,11 @@ import {
   ClassDocumentCode,
   ClassDocumentValue,
 } from '@/enums/shopping.enum';
-import { FormikProvider, useFormik } from 'formik';
-import * as yup from 'yup';
 import { validateReceptor } from '@/utils/validation';
 import { useBranchesStore } from '@/store/branches.store';
-import GeneralInfo from './manual/general-info';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
-import ResumeShopping from './manual/resume-shopping';
-import CatalogItemsPaginated from './manual/catalog-items-paginated';
-import AccountItem from './manual/account-item';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -66,6 +68,7 @@ function CreateShoppingManual() {
   useEffect(() => {
     if (fiscalDataAndParameter) {
       const itemss = [...items];
+
       if (fiscalDataAndParameter) {
         const findedI = account_catalog_pagination.accountCatalogs.find(
           (acc) => acc.code === (fiscalDataAndParameter.ivaLocalShopping || '110901')
@@ -99,6 +102,7 @@ function CreateShoppingManual() {
   useEffect(() => {
     if (nrc !== '') {
       const find = supplier_pagination.suppliers.find((supp) => supp.nrc === nrc);
+
       if (find) setSupplierSelected(find);
       else {
         setSupplierSelected(undefined);
@@ -190,6 +194,7 @@ function CreateShoppingManual() {
 
   const handleDeleteItem = (index: number) => {
     const itemss = [...items];
+
     itemss.splice(index, 1);
     setItems([...itemss]);
     if (selectedIndex === index) {
@@ -205,6 +210,7 @@ function CreateShoppingManual() {
         if (!item.isExenta) {
           return acc + Number(item.debe) + Number(item.haber);
         }
+
         return acc;
       }, 0)
       .toFixed(2);
@@ -219,6 +225,7 @@ function CreateShoppingManual() {
         if (!item.isExenta) {
           return acc + Number(item.debe) + Number(item.haber);
         }
+
         return acc;
       }, 0) * 0.13;
 
@@ -297,6 +304,7 @@ function CreateShoppingManual() {
     async onSubmit(values, formikHelpers) {
       if (!supplierSelected) {
         toast.warning('Debes seleccionar el proveedor');
+
         return;
       }
 
@@ -338,9 +346,11 @@ function CreateShoppingManual() {
             })),
           },
         };
+
         if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
           toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
           formikHelpers.setSubmitting(false);
+
           return;
         }
 
@@ -371,71 +381,71 @@ function CreateShoppingManual() {
       <div className="w-full h-full">
         <FormikProvider value={formik}>
           <form
+            className="w-full h-full overflow-y-auto p-5"
             onSubmit={(e) => {
               e.preventDefault();
               if (!formik.isSubmitting) {
                 formik.submitForm();
               }
             }}
-            className="w-full h-full overflow-y-auto p-5"
           >
             <GeneralInfo
-              setSupplierSelected={setSupplierSelected}
+              correlative={correlative}
+              includePerception={includePerception}
+              nrc={nrc}
+              setBranchName={setBranchName}
+              setIncludePerception={setIncludePerception}
               setNrc={setNrc}
               setSearchNRC={setSearchNRC}
-              supplierSelected={supplierSelected}
-              nrc={nrc}
-              includePerception={includePerception}
-              setIncludePerception={setIncludePerception}
-              tipoDte={tipoDte}
+              setSupplierSelected={setSupplierSelected}
               setTipoDte={setTipoDte}
-              correlative={correlative}
-              setBranchName={setBranchName}
+              supplierSelected={supplierSelected}
+              tipoDte={tipoDte}
             />
             <AccountItem
               editAccount
-              items={items}
-              ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? 'null'}
-              addItems={addItem}
-              setItems={setItems}
-              handleDeleteItem={handleDeleteItem}
-              index={0}
-              selectedIndex={selectedIndex}
-              setSelectedIndex={setSelectedIndex}
-              openCatalogModal={openCatalogModal}
-              onClose={catalogModal.onClose}
-              branchName={branchName}
               $debe={$debe}
               $haber={$haber}
               $total={$total}
-              description={description}
+              addItems={addItem}
+              branchName={branchName}
+              canAddItem={true}
               date={dateItem}
+              description={description}
+              handleDeleteItem={handleDeleteItem}
+              index={0}
+              isReadOnly={false}
+              items={items}
+              ivaShoppingCod={fiscalDataAndParameter?.ivaLocalShopping ?? 'null'}
+              openCatalogModal={openCatalogModal}
+              selectedIndex={selectedIndex}
               selectedType={selectedType}
-              setSelectedType={setSelectedType}
               setDate={setDateItem}
               setDescription={setDescription}
-              isReadOnly={false}
-              canAddItem={true}
               setExenta={setExenta}
+              setItems={setItems}
+              setSelectedIndex={setSelectedIndex}
+              setSelectedType={setSelectedType}
+              onClose={catalogModal.onClose}
             />
             <ResumeShopping
+              $1perception={$1perception}
+              addItems={addItem}
               afecta={$afecta}
               exenta={$exenta}
-              totalIva={$totalIva}
-              $1perception={$1perception}
-              total={$totalItems}
-              addItems={addItem}
               items={items}
               setExenta={setExenta}
+              total={$totalItems}
+              totalIva={$totalIva}
             />
 
             <div className="w-full flex justify-end mt-4">
               <ButtonUi
-                type="submit"
                 className="px-16"
-                theme={Colors.Primary}
                 isDisabled={formik.isSubmitting}
                 isLoading={formik.isSubmitting}
+                theme={Colors.Primary}
+                type="submit"
               >
                 {formik.isSubmitting ? 'Guardando...' : 'Guardar'}
               </ButtonUi>
@@ -446,18 +456,18 @@ function CreateShoppingManual() {
       {editIndex !== null && (
         <Modal
           isOpen={catalogModal.isOpen}
+          scrollBehavior="inside"
           size="2xl"
           onClose={catalogModal.onClose}
-          scrollBehavior="inside"
         >
           <ModalContent>
             {(onClose) => (
               <>
                 <CatalogItemsPaginated
-                  onClose={onClose}
+                  index={editIndex}
                   items={items}
                   setItems={setItems}
-                  index={editIndex}
+                  onClose={onClose}
                 />
               </>
             )}

@@ -16,20 +16,22 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { Filter, Pen, SearchIcon, Trash } from 'lucide-react';
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { toast } from 'sonner';
+
 import Pagination from '../global/Pagination';
+import AddButton from '../global/AddButton';
+import TooltipGlobal from '../global/TooltipGlobal';
+import BottomDrawer from '../global/BottomDrawer';
+
+import NO_DATA from '@/assets/svg/no_data.svg';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
 import { useShoppingStore } from '@/store/shopping.store';
 import { ArrayAction } from '@/types/view.types';
-import AddButton from '../global/AddButton';
-import { useEffect, useState } from 'react';
-import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
-import axios from 'axios';
 import { API_URL, limit_options } from '@/utils/constants';
-import { toast } from 'sonner';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -50,6 +52,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   const { user } = useAuthStore();
   const { getBranchesList, branches_list } = useBranchProductStore();
   const [branchId, setBranchId] = useState(search_params.branchId ?? 0);
+
   useEffect(() => {
     getPaginatedShopping(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
@@ -157,16 +160,16 @@ function ShoppingPage({ actions }: ArrayAction) {
           </ModalBody>
           <ModalFooter>
             <ButtonUi
-              isLoading={loadingDelete}
               className="border border-white rounded-xl px-10 font-semibold"
+              isLoading={loadingDelete}
               theme={Colors.Default}
               onPress={modalConfirm.onClose}
             >
               Cancelar
             </ButtonUi>
             <ButtonUi
-              isLoading={loadingDelete}
               className="border border-white rounded-xl px-10 font-semibold"
+              isLoading={loadingDelete}
               theme={Colors.Error}
               onPress={() => deletePermanently(selectedShoppingId ?? 0)}
             >
@@ -181,59 +184,59 @@ function ShoppingPage({ actions }: ArrayAction) {
             <div className="md:hidden justify-start flex-grow mt-0">
               <TooltipGlobal text="Filtrar">
                 <ButtonUi
-                  theme={Colors.Primary}
                   isIconOnly
-                  onPress={() => setOpenVaul(true)}
+                  theme={Colors.Primary}
                   type="button"
+                  onPress={() => setOpenVaul(true)}
                 >
                   <Filter />
                 </ButtonUi>
               </TooltipGlobal>
               <BottomDrawer
                 open={openVaul}
-                onClose={() => setOpenVaul(false)}
                 title="Filtros disponibles"
+                onClose={() => setOpenVaul(false)}
               >
                 <div className="flex flex-col  gap-2">
                   <Input
                     className="dark:text-white border border-white rounded-xl"
-                    onChange={(e) => {
-                      setDateInitial(e.target.value);
+                    classNames={{
+                      label: 'text-sm font-semibold',
                     }}
+                    label="Fecha inicial"
+                    labelPlacement="outside"
                     placeholder="Buscar por fecha..."
                     type="date"
                     value={dateInitial}
                     variant="bordered"
-                    label="Fecha inicial"
-                    labelPlacement="outside"
-                    classNames={{
-                      label: 'text-sm font-semibold',
+                    onChange={(e) => {
+                      setDateInitial(e.target.value);
                     }}
                   />
                   <Input
                     className="dark:text-white border border-white rounded-xl"
-                    onChange={(e) => {
-                      setDateEnd(e.target.value);
-                    }}
-                    value={dateEnd}
-                    placeholder="Buscar por fecha..."
-                    variant="bordered"
-                    label="Fecha final"
-                    type="date"
-                    labelPlacement="outside"
                     classNames={{
                       label: 'text-sm font-semibold',
+                    }}
+                    label="Fecha final"
+                    labelPlacement="outside"
+                    placeholder="Buscar por fecha..."
+                    type="date"
+                    value={dateEnd}
+                    variant="bordered"
+                    onChange={(e) => {
+                      setDateEnd(e.target.value);
                     }}
                   />
                   <div className="w-full">
                     <p className="text-sm font-semibold dark:text-white">Sucursal</p>
                     <Autocomplete
                       className="dark:text-white font-semibold border border-white rounded-xl"
-                      variant="bordered"
+                      clearButtonProps={{ onClick: () => setBranchId('') }}
                       labelPlacement="outside"
                       placeholder="Selecciona la sucursal"
-                      clearButtonProps={{ onClick: () => setBranchId('') }}
                       selectedKey={branchId}
+                      variant="bordered"
                       onSelectionChange={(key) =>
                         key ? setBranchId(String(key)) : setBranchId('')
                       }
@@ -247,8 +250,8 @@ function ShoppingPage({ actions }: ArrayAction) {
                   </div>
 
                   <ButtonUi
-                    theme={Colors.Primary}
                     className="mt-6 font-semibold"
+                    theme={Colors.Primary}
                     onPress={() => {
                       searchDailyReport();
                       setOpenVaul(false);
@@ -268,42 +271,42 @@ function ShoppingPage({ actions }: ArrayAction) {
           <div className="flex justify-between mt-4 gap-3 md:gap-5 items-end px-2">
             <Input
               className="dark:text-white border border-white rounded-xl hidden md:flex"
-              onChange={(e) => {
-                setDateInitial(e.target.value);
+              classNames={{
+                label: 'text-sm font-semibold',
               }}
+              label="Fecha inicial"
+              labelPlacement="outside"
               placeholder="Buscar por fecha..."
               type="date"
               value={dateInitial}
               variant="bordered"
-              label="Fecha inicial"
-              labelPlacement="outside"
-              classNames={{
-                label: 'text-sm font-semibold',
+              onChange={(e) => {
+                setDateInitial(e.target.value);
               }}
             />
             <Input
               className="dark:text-white border border-white rounded-xl hidden md:flex"
-              onChange={(e) => {
-                setDateEnd(e.target.value);
-              }}
-              defaultValue={dateEnd}
-              placeholder="Buscar por fecha..."
-              variant="bordered"
-              label="Fecha final"
-              type="date"
-              labelPlacement="outside"
               classNames={{
                 label: 'text-sm font-semibold',
+              }}
+              defaultValue={dateEnd}
+              label="Fecha final"
+              labelPlacement="outside"
+              placeholder="Buscar por fecha..."
+              type="date"
+              variant="bordered"
+              onChange={(e) => {
+                setDateEnd(e.target.value);
               }}
             />
             <Autocomplete
               className="dark:text-white font-semibold border border-white rounded-xl hidden md:flex"
-              variant="bordered"
+              clearButtonProps={{ onClick: () => setBranchId('') }}
+              label="Sucursal"
               labelPlacement="outside"
               placeholder="Selecciona la sucursal"
-              label="Sucursal"
-              clearButtonProps={{ onClick: () => setBranchId('') }}
               selectedKey={branchId}
+              variant="bordered"
               onSelectionChange={(key) => (key ? setBranchId(String(key)) : setBranchId(''))}
             >
               {branches_list.map((item) => (
@@ -314,28 +317,28 @@ function ShoppingPage({ actions }: ArrayAction) {
             </Autocomplete>
             <Select
               className="dark:text-white border border-white rounded-xl"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Cantidad a mostrar"
               classNames={{
                 label: 'font-semibold',
               }}
               defaultSelectedKeys={['5']}
+              label="Cantidad a mostrar"
+              labelPlacement="outside"
               value={limit}
+              variant="bordered"
               onChange={(e) => {
                 setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
             >
               {limit_options.map((option) => (
-                <SelectItem className="w-full dark:text-white" key={option}>
+                <SelectItem key={option} className="w-full dark:text-white">
                   {option}
                 </SelectItem>
               ))}
             </Select>
             <div className="hidden md:flex items-end justify-end">
               <ButtonUi
-                theme={Colors.Primary}
                 startContent={<SearchIcon className="w-full" />}
+                theme={Colors.Primary}
                 onPress={searchDailyReport}
               >
                 Buscar
@@ -361,9 +364,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
                   {loading_shopping ? (
                     <tr>
-                      <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                      <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                         <div className="flex flex-col items-center justify-center w-full h-64">
-                          <div className="loader"></div>
+                          <div className="loader" />
                           <p className="mt-3 text-xl font-semibold">Cargando...</p>
                         </div>
                       </td>
@@ -373,7 +376,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                       {shoppingList.length > 0 ? (
                         <>
                           {shoppingList.map((cat) => (
-                            <tr className="border-b border-slate-200" key={cat.id}>
+                            <tr key={cat.id} className="border-b border-slate-200">
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                 {cat.id}
                               </td>
@@ -399,20 +402,20 @@ function ShoppingPage({ actions }: ArrayAction) {
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 <div className="flex gap-2">
                                   <ButtonUi
+                                    isIconOnly
+                                    theme={Colors.Success}
                                     onPress={() =>
                                       navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
                                     }
-                                    theme={Colors.Success}
-                                    isIconOnly
                                   >
                                     <Pen />
                                   </ButtonUi>
                                   {cat.generationCode !== 'N/A' && (
                                     <>
                                       <ButtonUi
-                                        onPress={() => handleVerify(cat.id)}
-                                        theme={Colors.Error}
                                         isIconOnly
+                                        theme={Colors.Error}
+                                        onPress={() => handleVerify(cat.id)}
                                       >
                                         <Trash />
                                       </ButtonUi>
@@ -421,7 +424,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                                   {cat.generationCode === 'N/A' && (
                                     <Popover className="border border-white rounded-xl">
                                       <PopoverTrigger>
-                                        <Button style={style} isIconOnly>
+                                        <Button isIconOnly style={style}>
                                           <Trash />
                                         </Button>
                                       </PopoverTrigger>
@@ -432,9 +435,9 @@ function ShoppingPage({ actions }: ArrayAction) {
                                           </p>
                                           <div className="flex justify-center mt-4">
                                             <ButtonUi
-                                              onPress={() => onDeleteConfirm(cat.id)}
-                                              theme={Colors.Error}
                                               className="mr-2"
+                                              theme={Colors.Error}
+                                              onPress={() => onDeleteConfirm(cat.id)}
                                             >
                                               Sí, eliminar
                                             </ButtonUi>
@@ -452,7 +455,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                         <tr>
                           <td colSpan={5}>
                             <div className="flex flex-col items-center justify-center w-full">
-                              <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                              <img alt="X" className="w-32 h-32" src={NO_DATA} />
                               <p className="mt-3 text-xl">No se encontraron resultados</p>
                             </div>
                           </td>
@@ -467,9 +470,9 @@ function ShoppingPage({ actions }: ArrayAction) {
               <>
                 <div className="w-full mt-5">
                   <Pagination
-                    previousPage={pagination_shopping.prevPag}
-                    nextPage={pagination_shopping.nextPag}
                     currentPage={pagination_shopping.currentPag}
+                    nextPage={pagination_shopping.nextPag}
+                    previousPage={pagination_shopping.prevPag}
                     totalPages={pagination_shopping.totalPag}
                     onPageChange={(page) => {
                       getPaginatedShopping(

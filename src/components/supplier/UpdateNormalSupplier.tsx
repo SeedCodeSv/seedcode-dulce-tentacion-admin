@@ -1,8 +1,3 @@
-import Layout from '@/layout/Layout';
-import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import { useAuthStore } from '@/store/auth.store';
-import { useSupplierStore } from '@/store/supplier.store';
-import { global_styles } from '@/styles/global.styles';
 import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
@@ -10,7 +5,14 @@ import { useEffect, useState, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
+
 import { SelectedItem } from './select-account';
+
+import { global_styles } from '@/styles/global.styles';
+import { useSupplierStore } from '@/store/supplier.store';
+import { useAuthStore } from '@/store/auth.store';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import Layout from '@/layout/Layout';
 function UpdateNormalSupplier() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -31,6 +33,7 @@ function UpdateNormalSupplier() {
   useEffect(() => {
     const transId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     getAccountCatalogs(transId, '', '');
   }, []);
 
@@ -98,15 +101,15 @@ function UpdateNormalSupplier() {
     <Layout title="Actualizar Consumidor Final">
       <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div
+          <button
+            className="w-32 flex gap-2 mb-4 cursor-pointer"
             onClick={() => {
               navigate('/suppliers');
             }}
-            className="w-32 flex gap-2 mb-4 cursor-pointer"
           >
             <ArrowLeft className="dark:text-white" size={20} />
             <p className="dark:text-white">Regresar</p>
-          </div>
+          </button>
 
           <form
             onSubmit={(e) => {
@@ -117,69 +120,70 @@ function UpdateNormalSupplier() {
             <div className="grid xl:grid-cols-2 gap-5 pt-3">
               <div className="pt-3">
                 <Input
-                  label="Nombre"
-                  labelPlacement="outside"
                   className="dark:text-white"
-                  placeholder="Ingresa el nombre"
                   classNames={{
                     label: 'font-semibold  text-sm',
                   }}
+                  label="Nombre"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el nombre"
                   variant="bordered"
                   {...formik.getFieldProps('nombre')}
-                  isInvalid={!!formik.touched.nombre && !!formik.errors.nombre}
                   errorMessage={formik.errors.nombre}
+                  isInvalid={!!formik.touched.nombre && !!formik.errors.nombre}
                 />
               </div>
               <div className="pt-3">
                 <Input
                   className="dark:text-white"
-                  label="Correo electrónico"
-                  labelPlacement="outside"
-                  placeholder="Ingresa el correo"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
+                  label="Correo electrónico"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el correo"
                   variant="bordered"
                   {...formik.getFieldProps('correo')}
-                  isInvalid={formik.touched.correo && !!formik.errors.correo}
                   errorMessage={formik.errors.correo}
+                  isInvalid={formik.touched.correo && !!formik.errors.correo}
                 />
               </div>
               <div>
                 <Input
-                  type="number"
                   className="dark:text-white"
-                  label="Teléfono"
-                  labelPlacement="outside"
-                  placeholder="Ingresa el teléfono"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
+                  label="Teléfono"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el teléfono"
+                  type="number"
                   variant="bordered"
                   {...formik.getFieldProps('telefono')}
-                  isInvalid={formik.touched.telefono && !!formik.errors.telefono}
                   errorMessage={formik.errors.telefono}
+                  isInvalid={formik.touched.telefono && !!formik.errors.telefono}
                 />
               </div>
               <div className="pt-2">
                 <Autocomplete
+                  className="dark:text-white"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  errorMessage={formik.errors.tipoDocumento}
+                  isInvalid={formik.touched.tipoDocumento && !!formik.errors.tipoDocumento}
                   label="Tipo de documento"
                   labelPlacement="outside"
+                  placeholder="Selecciona el tipo de documento"
+                  selectedKey={formik.values.tipoDocumento}
+                  variant="bordered"
                   onSelectionChange={(value) => {
                     const selected = services
                       .get022TipoDeDocumentoDeIde()
                       .find((dep) => dep.codigo === value);
+
                     formik.setFieldValue('tipoDocumento', selected?.codigo ?? '');
                   }}
-                  selectedKey={formik.values.tipoDocumento}
-                  placeholder="Selecciona el tipo de documento"
-                  variant="bordered"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  className="dark:text-white"
-                  isInvalid={formik.touched.tipoDocumento && !!formik.errors.tipoDocumento}
-                  errorMessage={formik.errors.tipoDocumento}
                 >
                   {services.get022TipoDeDocumentoDeIde().map((dep) => (
                     <AutocompleteItem key={dep.codigo} className="dark:text-white">
@@ -190,18 +194,18 @@ function UpdateNormalSupplier() {
               </div>
               <div>
                 <Input
-                  type="number"
-                  label="Número documento"
-                  labelPlacement="outside"
                   className="dark:text-white"
-                  placeholder="Ingresa el número documento"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
+                  label="Número documento"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el número documento"
+                  type="number"
                   variant="bordered"
                   {...formik.getFieldProps('numDocumento')}
-                  isInvalid={formik.touched.numDocumento && !!formik.errors.numDocumento}
                   errorMessage={formik.errors.numDocumento}
+                  isInvalid={formik.touched.numDocumento && !!formik.errors.numDocumento}
                 />
               </div>
               <div className="w-full flex items-end gap-2">
@@ -211,10 +215,10 @@ function UpdateNormalSupplier() {
                   }}
                   placeholder="Ingresa el código de la cuenta"
                   {...formik.getFieldProps('codCuenta')}
-                  variant="bordered"
+                  className="w-full"
                   label="Cuenta"
                   labelPlacement="outside"
-                  className="w-full"
+                  variant="bordered"
                 />
                 <SelectedItem
                   code={formik.values.codCuenta}
@@ -223,8 +227,17 @@ function UpdateNormalSupplier() {
               </div>
               <div>
                 <Autocomplete
+                  className="dark:text-white"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  errorMessage={formik.touched.departamento && formik.errors.departamento}
+                  isInvalid={formik.touched.departamento && !!formik.errors.departamento}
                   label="Departamento"
                   labelPlacement="outside"
+                  placeholder="Selecciona el departamento"
+                  selectedKey={formik.values.departamento}
+                  variant="bordered"
                   onSelectionChange={(key) => {
                     if (key) {
                       const depSelected = services
@@ -236,15 +249,6 @@ function UpdateNormalSupplier() {
                       formik.handleChange('nombreDepartamento')(depSelected?.valores || '');
                     }
                   }}
-                  placeholder="Selecciona el departamento"
-                  variant="bordered"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  className="dark:text-white"
-                  selectedKey={formik.values.departamento}
-                  isInvalid={formik.touched.departamento && !!formik.errors.departamento}
-                  errorMessage={formik.touched.departamento && formik.errors.departamento}
                 >
                   {services.get012Departamento().map((dep) => (
                     <AutocompleteItem key={dep.codigo} className="dark:text-white">
@@ -255,27 +259,28 @@ function UpdateNormalSupplier() {
               </div>
               <div>
                 <Autocomplete
+                  className="dark:text-white font-semibold"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  errorMessage={formik.errors.municipio}
+                  isInvalid={formik.touched.municipio && !!formik.errors.municipio}
                   label="Municipio"
                   labelPlacement="outside"
                   name="municipio"
                   placeholder="Selecciona el municipio"
-                  className="dark:text-white font-semibold"
-                  variant="bordered"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
                   selectedKey={formik.values.municipio}
+                  variant="bordered"
                   onSelectionChange={(key) => {
                     if (key) {
                       const selected = municipios.find((mun) => mun.codigo === key);
+
                       if (selected) {
                         formik.setFieldValue('municipio', selected.codigo);
                         formik.setFieldValue('nombreMunicipio', selected.valores);
                       }
                     }
                   }}
-                  isInvalid={formik.touched.municipio && !!formik.errors.municipio}
-                  errorMessage={formik.errors.municipio}
                 >
                   {municipios.map((mun) => (
                     <AutocompleteItem key={mun.codigo} className="dark:text-white">
@@ -288,31 +293,31 @@ function UpdateNormalSupplier() {
             <div className="flex flex-col mt-2">
               <div className="pt-2">
                 <Textarea
-                  label="Complemento de dirección"
                   className="dark:text-white"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  placeholder="Ingresa el complemento de dirección"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
+                  label="Complemento de dirección"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el complemento de dirección"
+                  variant="bordered"
                   {...formik.getFieldProps('complemento')}
-                  isInvalid={formik.touched.complemento && !!formik.errors.complemento}
                   errorMessage={formik.errors.complemento}
+                  isInvalid={formik.touched.complemento && !!formik.errors.complemento}
                 />
               </div>
               <div className="w-full mt-5 flex justify-end gap-5">
                 <Button
-                  onClick={() => navigate('/suppliers')}
                   className="px-20 font-semibold"
                   style={global_styles().dangerStyles}
+                  onClick={() => navigate('/suppliers')}
                 >
                   Cancelar
                 </Button>
                 <Button
-                  type="submit"
                   className="px-20 font-semibold"
                   style={global_styles().darkStyle}
+                  type="submit"
                 >
                   Guardar
                 </Button>

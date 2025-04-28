@@ -2,10 +2,12 @@ import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Formik } from 'formik';
 import { useEffect } from 'react';
 import * as yup from 'yup';
+
 import { useRolesStore } from '../../store/roles.store';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { UserPayload } from '../../types/users.types';
+
 import { useAuthStore } from '@/store/auth.store';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -58,75 +60,76 @@ function AddUsers(props: Props) {
             <div className="mt-5 flex flex-col">
               <div className="pt-2">
                 <Input
-                  label="Nombre de usuario"
-                  labelPlacement="outside"
-                  name="userName"
                   className="dark:text-white"
-                  value={values.userName}
-                  onChange={handleChange('userName')}
-                  onBlur={handleBlur('userName')}
-                  isInvalid={touched.userName && !!errors.userName}
-                  errorMessage={touched.userName && errors.userName}
-                  placeholder="Ingresa el nombre de usuario"
                   classNames={{
                     base: 'text-gray-500 text-sm font-semibold',
                   }}
+                  errorMessage={touched.userName && errors.userName}
+                  isInvalid={touched.userName && !!errors.userName}
+                  label="Nombre de usuario"
+                  labelPlacement="outside"
+                  name="userName"
+                  placeholder="Ingresa el nombre de usuario"
+                  value={values.userName}
                   variant="bordered"
+                  onBlur={handleBlur('userName')}
+                  onChange={handleChange('userName')}
                 />
               </div>
               <div className="pt-2">
                 <Input
-                  label="Contraseña"
-                  labelPlacement="outside"
-                  name="password"
                   className="dark:text-white"
-                  value={values.password}
-                  onChange={handleChange('password')}
-                  onBlur={handleBlur('password')}
-                  placeholder="Ingresa la Contraseña"
-                  isInvalid={touched.password && !!errors.password}
-                  errorMessage={touched.password && errors.password}
-                  type="password"
                   classNames={{
                     base: 'text-gray-500 text-sm font-semibold',
                   }}
+                  errorMessage={touched.password && errors.password}
+                  isInvalid={touched.password && !!errors.password}
+                  label="Contraseña"
+                  labelPlacement="outside"
+                  name="password"
+                  placeholder="Ingresa la Contraseña"
+                  type="password"
+                  value={values.password}
                   variant="bordered"
+                  onBlur={handleBlur('password')}
+                  onChange={handleChange('password')}
                 />
               </div>
 
               <div className="pt-2">
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as Role;
-                      handleChange('roleId')(depSelected.id.toString());
-                    }
+                  className="dark:text-white"
+                  classNames={{
+                    base: 'text-gray-500 text-sm font-semibold',
                   }}
-                  onBlur={handleBlur('roleId')}
+                  errorMessage={touched.roleId && errors.roleId}
+                  isInvalid={touched.roleId && !!errors.roleId}
                   label="Rol"
                   labelPlacement="outside"
                   placeholder="Selecciona el rol"
                   variant="bordered"
-                  isInvalid={touched.roleId && !!errors.roleId}
-                  errorMessage={touched.roleId && errors.roleId}
-                  className="dark:text-white"
-                  classNames={{
-                    base: 'text-gray-500 text-sm font-semibold',
+                  onBlur={handleBlur('roleId')}
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as Role;
+
+                      handleChange('roleId')(depSelected.id.toString());
+                    }
                   }}
                 >
                   {roles_list
                     .filter((dep) => dep.name !== 'TIENDA')
                     .map((dep) => (
-                      <AutocompleteItem className="dark:text-white" key={JSON.stringify(dep)}>
+                      <AutocompleteItem key={JSON.stringify(dep)} className="dark:text-white">
                         {dep.name}
                       </AutocompleteItem>
                     ))}
                 </Autocomplete>
               </div>
               <ButtonUi
-                onPress={() => handleSubmit()}
                 className="w-full mt-4 text-sm font-semibold mb-3"
                 theme={Colors.Primary}
+                onPress={() => handleSubmit()}
               >
                 Guardar
               </ButtonUi>

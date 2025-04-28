@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { ICorrelativesDteStore } from './types/correlatives_dte.store.types';
+
 import { get_correlatives_dte, get_correlatives_dte_point_of_sales, get_point_of_sales } from '../services/correlatives_dte.service';
+
+import { ICorrelativesDteStore } from './types/correlatives_dte.store.types';
 
 export const useCorrelativesDteStore = create<ICorrelativesDteStore>((set) => ({
   point_of_sales: [],

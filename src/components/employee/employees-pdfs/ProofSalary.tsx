@@ -1,6 +1,8 @@
 import jsPDF from 'jspdf';
 import { Wallet } from 'lucide-react';
+
 import logo from '../../../assets/MADNESS.png';
+
 import { Employee } from '@/types/employees.types';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -13,9 +15,11 @@ export interface Props {
 function ProofSalary({ employee, actions }: Props) {
 
   const img = new Image();
+
   img.src = logo;
   const generatePDF = () => {
     const doc = new jsPDF();
+
     doc.setFontSize(18);
     doc.setFont('helvetica', 'bold');
     doc.addImage(img, 'PNG', 10, 10, 40, 20);
@@ -90,19 +94,21 @@ function ProofSalary({ employee, actions }: Props) {
     doc.text('__________________________', 120, 240);
     doc.text('Firma del Empleado', 120, 250);
     const pdfBlobUrl = doc.output('bloburl');
+
     window.open(pdfBlobUrl, '_blank');
   };
+
   return (
     <>
       {actions.includes('Constancia de Salario') && employee.isActive && (
         <TooltipGlobal text="Generar Constancia de Salario">
           <ButtonUi
+            isIconOnly
             className="border border-white"
+            theme={Colors.Primary}
             onPress={() => {
               generatePDF();
             }}
-            isIconOnly
-            theme={Colors.Primary}
           >
             <Wallet
               size={20}

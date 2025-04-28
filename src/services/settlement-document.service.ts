@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { get_token } from '@/storage/localStorage';
 import {
   GetSettlementDocument,
@@ -5,10 +7,10 @@ import {
   PostSettlementDocumentResponse,
 } from '@/types/settlement_document.types';
 import { API_URL } from '@/utils/constants';
-import axios from 'axios';
 
 export const save_settlement_document = (payload: PostSettlementDocumentPayload) => {
   const token = get_token();
+
   return axios.post<PostSettlementDocumentResponse>(API_URL + '/settlement-document', payload, {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -1,10 +1,11 @@
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { CalendarMinus2, CalendarPlus2, Edit, Shapes, Store } from 'lucide-react';
+import { Button } from "@heroui/react";
 
 import { usePromotionsStore } from '../../store/promotions/promotions.store';
-import { Button } from "@heroui/react";
 import { global_styles } from '../../styles/global.styles';
+
 import { GridProps, MobileViewProps } from './types/mobile_view.types';
 
 function MobileView(props: MobileViewProps) {
@@ -15,26 +16,26 @@ function MobileView(props: MobileViewProps) {
   return (
     <div className="w-full pb-10">
       <DataView
-        value={pagination_promotions.promotionsDiscount}
-        loading={loading_products}
         gutter
+        color="surface"
+        emptyMessage="No se encontraron resultados"
+        itemTemplate={(cat) => (
+          <GridItem
+            actions={actions}
+            layout={layout}
+            openEditModal={openEditModal}
+            promotion={cat}
+          />
+        )}
         layout={layout}
+        loading={loading_products}
         pt={{
           grid: () => ({
             className:
               'grid dark:bg-slate-800 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
-        color="surface"
-        itemTemplate={(cat) => (
-          <GridItem
-            promotion={cat}
-            layout={layout}
-            actions={actions}
-            openEditModal={openEditModal}
-          />
-        )}
-        emptyMessage="No se encontraron resultados"
+        value={pagination_promotions.promotionsDiscount}
       />
     </div>
   );
@@ -71,9 +72,9 @@ const GridItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-full">
             <Button
-              onClick={() => openEditModal({ ...promotion, id: promotion.id })}
               isIconOnly
               style={global_styles().secondaryStyle}
+              onClick={() => openEditModal({ ...promotion, id: promotion.id })}
             >
               <Edit size={15} />
             </Button>
@@ -81,10 +82,10 @@ const GridItem = (props: GridProps) => {
         </div>
       ) : (
         <ListItem
-          promotion={promotion}
-          layout="list"
           actions={actions}
+          layout="list"
           openEditModal={openEditModal}
+          promotion={promotion}
         />
       )}
     </>
@@ -94,6 +95,7 @@ const GridItem = (props: GridProps) => {
 const ListItem = (props: GridProps) => {
   // const { theme } = useContext(ThemeContext);
   const { promotion, openEditModal } = props;
+
   return (
     <>
       <div
@@ -120,9 +122,9 @@ const ListItem = (props: GridProps) => {
           </div>
           <div className="flex justify-between mt-5 w-full">
             <Button
-              onClick={() => openEditModal({ ...promotion, id: promotion.id })}
               isIconOnly
               style={global_styles().secondaryStyle}
+              onClick={() => openEditModal({ ...promotion, id: promotion.id })}
             >
               <Edit size={15} />
             </Button>

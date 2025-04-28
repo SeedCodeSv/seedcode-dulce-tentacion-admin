@@ -1,12 +1,13 @@
 import { Select, SelectItem, Input } from "@heroui/react";
 import { ColorPicker } from 'primereact/colorpicker';
 import { useEffect, useState } from 'react';
-import { useThemeStore } from '../../store/theme.store';
-import { defaultTheme } from '../../utils/constants';
-import Layout from '@/layout/Layout';
 import { useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-// import Table from '../Table';
+
+import { useThemeStore } from '../../store/theme.store';
+import { defaultTheme } from '../../utils/constants';
+
+import Layout from '@/layout/Layout';
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -21,45 +22,7 @@ function CreateTheme() {
 
   const handleSave = () => {
     if (color.context) {
-      // const payload: ThemePayload = {
-      //   name: color.name,
-      //   context: color.context as 'light' | 'dark',
-      //   colors: [
-      //     {
-      //       name: 'danger',
-      //       color: color.colors.danger,
-      //     },
-      //     {
-      //       name: 'dark',
-      //       color: color.colors.dark,
-      //     },
-      //     {
-      //       name: 'primary',
-      //       color: color.colors.primary,
-      //     },
-      //     {
-      //       name: 'secondary',
-      //       color: color.colors.secondary,
-      //     },
-      //     {
-      //       name: 'third',
-      //       color: color.colors.third,
-      //     },
-      //     {
-      //       name: 'warning',
-      //       color: color.colors.warning,
-      //     },
-      //   ],
-      // };
-
-      // save_theme(payload)
-      //   .then(() => {
-      //     toast.success('Se guardo el tema');
-      //     location.href = '/configuration';
-      //   })
-      //   .catch(() => {
-      //     toast.error('Error al guardar el tema');
-      //   });
+     
     }
   };
 
@@ -69,10 +32,10 @@ function CreateTheme() {
         <>
           <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
             <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-              <div className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
+              <button className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
                 <ArrowLeft className="mr-2 dark:text-white" />
                 <p className="text-lg font-semibold dark:text-white"> Regresar </p>
-              </div>
+              </button>
               <div className="flex items-center justify-center">
                 <ColorPicker
                   format="hex"
@@ -197,23 +160,22 @@ function CreateTheme() {
 
                 <div className="flex flex-col gap-5 mt-5 justify-center items-center ml-5">
                   <Input
-                    label="Nombre"
-                    variant="bordered"
                     className="w-64"
+                    label="Nombre"
                     labelPlacement="outside"
                     placeholder="Ingrese un nombre"
-                    //   value={color.name}
+                    variant="bordered"
                     onChange={(e) => {
                       setColor({ ...color, name: e.target.value });
                     }}
                   />
                   <Select
-                    label="Tema"
-                    placeholder="Seleccione un tema"
-                    labelPlacement="outside"
-                    variant="bordered"
                     className="w-64"
+                    label="Tema"
+                    labelPlacement="outside"
+                    placeholder="Seleccione un tema"
                     value={color.context}
+                    variant="bordered"
                     onChange={(e) => {
                       setColor({ ...color, context: e.target.value });
                     }}
@@ -234,8 +196,8 @@ function CreateTheme() {
               <div className="mt-5">
                 <ButtonUi
                   className="w-full text-sm font-semibold"
-                  onPress={handleSave}
                   theme={Colors.Primary}
+                  onPress={handleSave}
                 >
                   Guardar
                 </ButtonUi>

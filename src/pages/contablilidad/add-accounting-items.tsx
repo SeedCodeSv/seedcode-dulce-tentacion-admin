@@ -1,10 +1,3 @@
-import Pagination from '@/components/global/Pagination';
-import Layout from '@/layout/Layout';
-import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import { useBranchesStore } from '@/store/branches.store';
-import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
-import { AccountCatalog, AccountCatalogPayload } from '@/types/accountCatalogs.types';
-import { formatDate } from '@/utils/dates';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -25,13 +18,22 @@ import classNames from 'classnames';
 import { Plus, Search, Trash } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { CodCuentaProps, Items } from './types/types';
-import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { useNavigate } from 'react-router';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { verify_item_count } from '@/services/accounting-items.service';
 import axios from 'axios';
+
+import { CodCuentaProps, Items } from './types/types';
+
+import Pagination from '@/components/global/Pagination';
+import Layout from '@/layout/Layout';
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useBranchesStore } from '@/store/branches.store';
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
+import { AccountCatalog, AccountCatalogPayload } from '@/types/accountCatalogs.types';
+import { formatDate } from '@/utils/dates';
+import { useAccountingItemsStore } from '@/store/accounting-items.store';
+import { verify_item_count } from '@/services/accounting-items.service';
 import { API_URL } from '@/utils/constants';
 import { useAuthStore } from '@/store/auth.store';
 import ThGlobal from '@/themes/ui/th-global';
@@ -106,14 +108,17 @@ function AddAccountingItems() {
       no: items.length + 1,
       itemId: 0,
     };
+
     setItems((prevItems) => {
       const updatedItems = [...prevItems, newItem];
+
       return updatedItems;
     });
   };
 
   const handleDeleteItem = (index: number) => {
     const itemss = [...items];
+
     itemss.splice(index, 1);
     setItems([...itemss]);
     if (selectedIndex === index) {
@@ -151,6 +156,7 @@ function AddAccountingItems() {
   const handleSave = () => {
     if (items.length === 0) {
       toast.warning('Debe agregar al menos una partida');
+
       return;
     }
 
@@ -160,22 +166,26 @@ function AddAccountingItems() {
 
     if (!date) {
       toast.warning('Debe seleccionar una fecha');
+
       return;
     }
 
     if (selectedType === 0) {
       toast.warning('Debe seleccionar un tipo de partida');
+
       return;
     }
 
     if ($total !== 0) {
       toast.warning('La diferencia debe ser 0');
+
       return;
     }
 
     setLoading(true);
     const trandId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     addAddItem({
       date: date,
       typeOfAccountId: selectedType,
@@ -215,6 +225,7 @@ function AddAccountingItems() {
 
     if (itemsExist || !notHasDebeOrHaber) {
       toast.warning('Debe agregar al menos una partida');
+
       return false;
     }
 
@@ -246,6 +257,7 @@ function AddAccountingItems() {
       if (values.code.slice(0, -2).length < 4) {
         toast.error('No puedes agregar una cuenta con un código menor a 4 caracteres');
         formikHelpers.setSubmitting(false);
+
         return;
       }
 
@@ -253,6 +265,7 @@ function AddAccountingItems() {
         if (res.data.countItems > 0) {
           formikHelpers.setSubmitting(false);
           toast.error('Ya existen partidas contables con esta cuenta');
+
           return;
         } else {
           const transmitterId =
@@ -303,22 +316,22 @@ function AddAccountingItems() {
                 classNames={{
                   base: 'font-semibold',
                 }}
-                labelPlacement="outside"
-                variant="bordered"
-                type="date"
                 label="Fecha de la partida"
+                labelPlacement="outside"
+                type="date"
                 value={date}
+                variant="bordered"
                 onChange={(e) => setDate(e.target.value)}
-              ></Input>
+               />
               <Select
                 classNames={{
                   base: 'font-semibold',
                 }}
-                labelPlacement="outside"
-                variant="bordered"
                 label="Tipo de partida"
+                labelPlacement="outside"
                 placeholder="Selecciona el tipo de partida"
                 selectedKeys={[selectedType.toString()]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setSelectedType(Number(key.currentKey));
@@ -332,14 +345,14 @@ function AddAccountingItems() {
             </div>
             <div className="mt-3">
               <Textarea
-                label="Concepto de la partida"
-                placeholder="Ingresa el concepto de la partida"
-                variant="bordered"
                 classNames={{
                   base: 'font-semibold',
                 }}
+                label="Concepto de la partida"
                 labelPlacement="outside"
+                placeholder="Ingresa el concepto de la partida"
                 value={description}
+                variant="bordered"
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
@@ -357,10 +370,10 @@ function AddAccountingItems() {
                 </div>
               )}
               <div className="flex justify-end gap-10">
-                <ButtonUi onPress={() => addAccountModal.onOpen()} theme={Colors.Info}>
+                <ButtonUi theme={Colors.Info} onPress={() => addAccountModal.onOpen()}>
                   Agregar cuenta
                 </ButtonUi>
-                <ButtonUi onPress={handleAddItem} isIconOnly theme={Colors.Success}>
+                <ButtonUi isIconOnly theme={Colors.Success} onPress={handleAddItem}>
                   <Plus />
                 </ButtonUi>
               </div>
@@ -380,35 +393,38 @@ function AddAccountingItems() {
                 <tbody>
                   {items.map((_, index) => (
                     <tr
+                      key={index}
                       className={classNames(
                         'border-b border-slate-200',
                         index === selectedIndex && 'bg-slate-100 dark:bg-slate-900'
                       )}
                       onClick={() => setSelectedIndex(index)}
-                      key={index}
                     >
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <CodCuentaSelect
-                          openCatalogModal={openCatalogModal}
-                          onClose={catalogModal.onClose}
-                          items={items}
-                          setItems={setItems}
                           index={index}
+                          items={items}
+                          openCatalogModal={openCatalogModal}
+                          setItems={setItems}
+                          onClose={catalogModal.onClose}
                         />
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <Select
                           aria-labelledby="Centro de costo"
                           className="min-w-44"
-                          variant="bordered"
                           placeholder="Selecciona el centro"
                           selectedKeys={[items[index].centroCosto ? items[index].centroCosto : '']}
+                          variant="bordered"
                           onSelectionChange={(key) => {
                             if (key) {
                               const branchId = key.currentKey;
+
                               setItems((prevItems) => {
                                 const updatedItems = [...prevItems];
+
                                 updatedItems[index].centroCosto = branchId;
+
                                 return updatedItems;
                               });
                             }
@@ -422,15 +438,16 @@ function AddAccountingItems() {
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <Input
                           aria-labelledby="Concepto"
-                          placeholder="Ingresa el concepto de la partida"
-                          variant="bordered"
                           classNames={{
                             base: 'font-semibold',
                           }}
                           labelPlacement="outside"
+                          placeholder="Ingresa el concepto de la partida"
                           value={items[index].descTran}
+                          variant="bordered"
                           onChange={(e) => {
                             const itemss = [...items];
+
                             itemss[index].descTran = e.target.value;
                             setItems([...items]);
                           }}
@@ -440,14 +457,14 @@ function AddAccountingItems() {
                         <Input
                           aria-labelledby="Debe"
                           className="min-w-24"
-                          placeholder="0.00"
-                          variant="bordered"
                           classNames={{
                             base: 'font-semibold',
                           }}
-                          labelPlacement="outside"
                           isReadOnly={Number(items[index].haber) > 0}
+                          labelPlacement="outside"
+                          placeholder="0.00"
                           value={items[index].debe}
+                          variant="bordered"
                           onChange={(e) => {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
@@ -465,14 +482,14 @@ function AddAccountingItems() {
                         <Input
                           aria-labelledby="Haber"
                           className="min-w-24"
-                          placeholder="0.00"
-                          variant="bordered"
                           classNames={{
                             base: 'font-semibold',
                           }}
-                          labelPlacement="outside"
-                          value={items[index].haber}
                           isReadOnly={Number(items[index].debe) > 0}
+                          labelPlacement="outside"
+                          placeholder="0.00"
+                          value={items[index].haber}
+                          variant="bordered"
                           onChange={(e) => {
                             const inputValue = e.target.value.replace(/[^0-9.]/g, '');
                             const updatedItems = [...items];
@@ -488,9 +505,9 @@ function AddAccountingItems() {
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <ButtonUi
-                          onPress={() => handleDeleteItem(index)}
                           isIconOnly
                           theme={Colors.Error}
+                          onPress={() => handleDeleteItem(index)}
                         >
                           <Trash />
                         </ButtonUi>
@@ -498,67 +515,67 @@ function AddAccountingItems() {
                     </tr>
                   ))}
                   <tr>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       <p className="text-lg font-semibold">Totales:</p>
                     </td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       <Input
-                        placeholder="0.00"
-                        variant="bordered"
+                        readOnly
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
+                        placeholder="0.00"
                         value={$debe.toFixed(2)}
-                        readOnly
+                        variant="bordered"
                       />
                     </td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       <Input
-                        placeholder="0.00"
-                        variant="bordered"
+                        readOnly
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
+                        placeholder="0.00"
                         value={$haber.toFixed(2)}
-                        readOnly
+                        variant="bordered"
                       />
                     </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                   </tr>
                   <tr>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       <p className="text-lg font-semibold">Diferencia:</p>
                     </td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       <Input
-                        placeholder="0.00"
-                        variant="bordered"
+                        readOnly
                         classNames={{ base: 'font-semibold' }}
                         labelPlacement="outside"
+                        placeholder="0.00"
                         value={$total.toString()}
-                        readOnly
+                        variant="bordered"
                       />
                     </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                   </tr>
                 </tbody>
               </table>
             </div>
             <div className="flex justify-end gap-5 mt-3">
               <ButtonUi
-                isLoading={loading}
                 className="px-20"
+                isLoading={loading}
                 theme={Colors.Default}
                 onPress={() => navigate('/accounting-items')}
               >
                 Cancelar
               </ButtonUi>
               <ButtonUi
-                isLoading={loading}
                 className="px-20"
+                isLoading={loading}
                 theme={Colors.Primary}
                 onPress={() => handleSave()}
               >
@@ -570,18 +587,18 @@ function AddAccountingItems() {
         {editIndex !== null && (
           <Modal
             isOpen={catalogModal.isOpen}
+            scrollBehavior="inside"
             size="2xl"
             onClose={catalogModal.onClose}
-            scrollBehavior="inside"
           >
             <ModalContent>
               {(onClose) => (
                 <>
                   <ItemPaginated
-                    onClose={onClose}
+                    index={editIndex}
                     items={items}
                     setItems={setItems}
-                    index={editIndex}
+                    onClose={onClose}
                   />
                 </>
               )}
@@ -590,9 +607,9 @@ function AddAccountingItems() {
         )}
         <Modal
           isOpen={addAccountModal.isOpen}
+          scrollBehavior="inside"
           size="2xl"
           onClose={addAccountModal.onClose}
-          scrollBehavior="inside"
         >
           <ModalContent>
             {(onClose) => (
@@ -612,59 +629,59 @@ function AddAccountingItems() {
                         <div>
                           <Input
                             classNames={{ label: 'font-semibold' }}
-                            label="Código"
-                            placeholder="Ingrese el código"
-                            variant="bordered"
-                            value={formik.values.code}
-                            name="code"
-                            onChange={formik.handleChange('code')}
-                            onBlur={formik.handleBlur('code')}
-                            labelPlacement="outside"
-                            isInvalid={!!formik.touched.code && !!formik.errors.code}
                             errorMessage={formik.errors.code}
+                            isInvalid={!!formik.touched.code && !!formik.errors.code}
+                            label="Código"
+                            labelPlacement="outside"
+                            name="code"
+                            placeholder="Ingrese el código"
+                            value={formik.values.code}
+                            variant="bordered"
+                            onBlur={formik.handleBlur('code')}
+                            onChange={formik.handleChange('code')}
                           />
                         </div>
                         <div>
                           <Input
                             classNames={{ label: 'font-semibold' }}
-                            label="Nombre"
-                            placeholder="Ingrese el nombre"
-                            variant="bordered"
-                            value={formik.values.name}
-                            name="name"
-                            onChange={formik.handleChange('name')}
-                            onBlur={formik.handleBlur('name')}
-                            labelPlacement="outside"
-                            isInvalid={!!formik.touched.name && !!formik.errors.name}
                             errorMessage={formik.errors.name}
+                            isInvalid={!!formik.touched.name && !!formik.errors.name}
+                            label="Nombre"
+                            labelPlacement="outside"
+                            name="name"
+                            placeholder="Ingrese el nombre"
+                            value={formik.values.name}
+                            variant="bordered"
+                            onBlur={formik.handleBlur('name')}
+                            onChange={formik.handleChange('name')}
                           />
                         </div>
 
                         <div>
                           <Input
-                            label="Cuenta Mayor"
-                            labelPlacement="outside"
-                            name="majorAccount"
-                            value={formik.values.majorAccount}
-                            onChange={formik.handleChange('majorAccount')}
-                            onBlur={formik.handleBlur('majorAccount')}
-                            placeholder="Ingrese la cuenta mayor"
                             classNames={{ label: 'font-semibold' }}
-                            variant="bordered"
+                            errorMessage={formik.errors.majorAccount}
                             isInvalid={
                               !!formik.touched.majorAccount && !!formik.errors.majorAccount
                             }
-                            errorMessage={formik.errors.majorAccount}
+                            label="Cuenta Mayor"
+                            labelPlacement="outside"
+                            name="majorAccount"
+                            placeholder="Ingrese la cuenta mayor"
+                            value={formik.values.majorAccount}
+                            variant="bordered"
+                            onBlur={formik.handleBlur('majorAccount')}
+                            onChange={formik.handleChange('majorAccount')}
                           />
                         </div>
                         <div>
                           <div className="pt-1 pb-2 mb-1">
-                            <label className="font-semibold block">Sub Cuenta</label>
+                            <span className="font-semibold block">Sub Cuenta</span>
                             <Switch
-                              color="primary"
                               checked={formik.values.hasSub}
-                              onChange={(e) => formik.setFieldValue('hasSub', e.target.checked)}
+                              color="primary"
                               size="lg"
+                              onChange={(e) => formik.setFieldValue('hasSub', e.target.checked)}
                             />
                           </div>
                         </div>
@@ -672,20 +689,21 @@ function AddAccountingItems() {
                         <div>
                           <Select
                             classNames={{ label: 'font-semibold' }}
-                            variant="bordered"
-                            label="Tipo de cuenta"
-                            placeholder="Selecciona el tipo"
-                            labelPlacement="outside"
                             defaultSelectedKeys={[`${formik.values.type}`]}
+                            errorMessage={formik.errors.type}
+                            isInvalid={!!formik.touched.type && !!formik.errors.type}
+                            label="Tipo de cuenta"
+                            labelPlacement="outside"
+                            placeholder="Selecciona el tipo"
+                            variant="bordered"
+                            onBlur={formik.handleBlur('type')}
                             onSelectionChange={(key) => {
                               const value = new Set(key).values().next().value;
+
                               key
                                 ? formik.setFieldValue('type', value)
                                 : formik.setFieldValue('typeSale', '');
                             }}
-                            onBlur={formik.handleBlur('type')}
-                            isInvalid={!!formik.touched.type && !!formik.errors.type}
-                            errorMessage={formik.errors.type}
                           >
                             {AccountTypes.map((type) => (
                               <SelectItem key={type.key}>{type.label}</SelectItem>
@@ -696,20 +714,21 @@ function AddAccountingItems() {
                         <div>
                           <Select
                             classNames={{ label: 'font-semibold' }}
-                            variant="bordered"
-                            label="Cargar como"
-                            placeholder="Selecciona el tipo"
-                            labelPlacement="outside"
                             defaultSelectedKeys={[`${formik.values.loadAs}`]}
+                            errorMessage={formik.errors.loadAs}
+                            isInvalid={!!formik.touched.loadAs && !!formik.errors.loadAs}
+                            label="Cargar como"
+                            labelPlacement="outside"
+                            placeholder="Selecciona el tipo"
+                            variant="bordered"
+                            onBlur={formik.handleBlur('loadAs')}
                             onSelectionChange={(key) => {
                               const value = new Set(key).values().next().value;
+
                               key
                                 ? formik.setFieldValue('loadAs', value)
                                 : formik.setFieldValue('loadAs', '');
                             }}
-                            onBlur={formik.handleBlur('loadAs')}
-                            isInvalid={!!formik.touched.loadAs && !!formik.errors.loadAs}
-                            errorMessage={formik.errors.loadAs}
                           >
                             {UploadAS.map((type) => (
                               <SelectItem key={type.key}>{type.label}</SelectItem>
@@ -720,20 +739,21 @@ function AddAccountingItems() {
                         <div>
                           <Select
                             classNames={{ label: 'font-semibold' }}
-                            variant="bordered"
-                            label="Elemento"
-                            placeholder="Selecciona el Elemento"
-                            labelPlacement="outside"
                             defaultSelectedKeys={[`${formik.values.item}`]}
+                            errorMessage={formik.errors.item}
+                            isInvalid={!!formik.touched.item && !!formik.errors.item}
+                            label="Elemento"
+                            labelPlacement="outside"
+                            placeholder="Selecciona el Elemento"
+                            variant="bordered"
+                            onBlur={formik.handleBlur('item')}
                             onSelectionChange={(key) => {
                               const value = new Set(key).values().next().value;
+
                               key
                                 ? formik.setFieldValue('item', value)
                                 : formik.setFieldValue('item', '');
                             }}
-                            onBlur={formik.handleBlur('item')}
-                            isInvalid={!!formik.touched.item && !!formik.errors.item}
-                            errorMessage={formik.errors.item}
                           >
                             {Item.map((type) => (
                               <SelectItem key={type.key}>{type.label}</SelectItem>
@@ -743,16 +763,16 @@ function AddAccountingItems() {
                         <div>
                           <Input
                             classNames={{ label: 'font-semibold' }}
-                            label="Nivel de Cuenta"
-                            placeholder="Ingrese el nivel de cuenta"
-                            variant="bordered"
-                            value={formik.values.level}
-                            name="level"
-                            onChange={formik.handleChange('level')}
-                            onBlur={formik.handleBlur('level')}
-                            labelPlacement="outside"
-                            isInvalid={!!formik.touched.level && !!formik.errors.level}
                             errorMessage={formik.errors.level}
+                            isInvalid={!!formik.touched.level && !!formik.errors.level}
+                            label="Nivel de Cuenta"
+                            labelPlacement="outside"
+                            name="level"
+                            placeholder="Ingrese el nivel de cuenta"
+                            value={formik.values.level}
+                            variant="bordered"
+                            onBlur={formik.handleBlur('level')}
+                            onChange={formik.handleChange('level')}
                           />
                         </div>
                       </div>
@@ -760,18 +780,18 @@ function AddAccountingItems() {
                   </ModalBody>
                   <ModalFooter className="w-full">
                     <ButtonUi
-                      isLoading={formik.isSubmitting}
                       className="px-10"
-                      onPress={onClose}
+                      isLoading={formik.isSubmitting}
                       theme={Colors.Default}
+                      onPress={onClose}
                     >
                       Cancelar
                     </ButtonUi>
                     <ButtonUi
                       className="px-10"
                       isLoading={formik.isSubmitting}
-                      type="submit"
                       theme={Colors.Primary}
+                      type="submit"
                     >
                       Agregar cuenta
                     </ButtonUi>
@@ -820,13 +840,16 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       const itemFind = account_catalog_pagination.accountCatalogs.find(
         (item) => item.code === value
       );
+
       if (itemFind) {
         if (itemFind.subAccount) {
           toast.error('No se puede agregar una cuenta con sub-cuentas');
+
           return;
         }
 
         const item = items[props.index];
+
         item.codCuenta = itemFind.code;
         item.descCuenta = itemFind.name;
         props.setItems([...items]);
@@ -844,24 +867,24 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
   return (
     <>
       <Autocomplete
+        aria-describedby="Cuenta"
+        aria-labelledby="Cuenta"
         className="min-w-52"
-        placeholder="Buscar cuenta"
-        variant="bordered"
         inputProps={{
           classNames: {
             inputWrapper: 'pl-1',
           },
         }}
-        aria-describedby="Cuenta"
-        aria-labelledby="Cuenta"
-        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
+        isLoading={loading}
+        placeholder="Buscar cuenta"
+        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
         startContent={
           <Button isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
             <Search />
           </Button>
         }
-        isLoading={loading}
-        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
+        variant="bordered"
+        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
         onSelectionChange={(key) => {
           if (key) {
             onChange(String(key));
@@ -902,6 +925,7 @@ export const ItemPaginated = (props: PropsItems) => {
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredData, currentPage]);
 
@@ -915,9 +939,11 @@ export const ItemPaginated = (props: PropsItems) => {
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
+
       return;
     }
     const items = [...props.items];
+
     items[props.index].codCuenta = item.code;
     props.setItems([...items]);
     props.onClose();
@@ -930,11 +956,11 @@ export const ItemPaginated = (props: PropsItems) => {
         <div>
           <Input
             classNames={{ base: 'font-semibold' }}
-            labelPlacement="outside"
-            variant="bordered"
             label="Buscar por código"
+            labelPlacement="outside"
             placeholder="Escribe para buscar..."
             value={search}
+            variant="bordered"
             onChange={(e) => {
               setSearch(e.target.value);
               setCurrentPage(1);
@@ -967,10 +993,10 @@ export const ItemPaginated = (props: PropsItems) => {
       <ModalFooter className="w-full">
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
           nextPage={currentPage + 1}
           previousPage={currentPage - 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </ModalFooter>
     </>

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { get_token } from '@/storage/localStorage';
 import {
   ErrorSupplier,
@@ -10,7 +12,6 @@ import {
   SuccessSupplier,
 } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
-import axios from 'axios';
 
 export const create_shopping = (payload: FormData) => {
   return axios.post<ErrorSupplier | SuccessSupplier>(`${API_URL}/shoppings`, payload);
@@ -31,6 +32,7 @@ export const get_shoppings_paginated = (
   branchId: string
 ) => {
   const token = get_token() ?? '';
+
   return axios.get<IGetShoppingPaginated>(
     `${API_URL}/shoppings/list/${id}?page=${page}&limit=${limit}&fecha=${fecha}&segundaFecha=${segundaFecha}&branch=${branchId}`,
     {

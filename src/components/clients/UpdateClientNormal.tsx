@@ -1,13 +1,16 @@
 import * as yup from 'yup';
 import { Formik } from 'formik';
-import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
 import { Autocomplete, AutocompleteItem, Input, Textarea } from "@heroui/react";
-import { useCustomerStore } from '../../store/customers.store';
-import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEffect, useMemo, useState } from 'react';
-import Layout from '@/layout/Layout';
 import { useNavigate, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
+
+import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+import { useCustomerStore } from '../../store/customers.store';
+import { useBillingStore } from '../../store/facturation/billing.store';
+
+
+import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -85,11 +88,13 @@ const UpdateClientNormal = (props: Props) => {
           message: 'El número de documento no es válido',
           test: (value, context) => {
             const { tipoDocumento } = context.parent;
+
             if (tipoDocumento === '13') {
               return /^[0-9]{9}$/.test(value || '');
             } else if (tipoDocumento === '36') {
               return /^[0-9]{14}$/.test(value || '');
             }
+
             return true;
           },
         }),
@@ -122,8 +127,10 @@ const UpdateClientNormal = (props: Props) => {
       const department = cat_012_departamento.find(
         (department) => department.codigo === user_by_id?.customer?.direccion?.departamento
       );
+
       return department?.codigo;
     }
+
     return;
   }, [user_by_id, cat_012_departamento.length]);
 
@@ -148,6 +155,7 @@ const UpdateClientNormal = (props: Props) => {
       telefono: payload.telefono || '0',
       branchId: payload.branchId,
     };
+
     if (isEditing && id && id !== '0') {
       await patchCustomer(finalPayload, parseInt(id));
     }
@@ -161,28 +169,30 @@ const UpdateClientNormal = (props: Props) => {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
         (typeOfDocument) => typeOfDocument.codigo === user_by_id?.customer?.tipoDocumento
       );
+
       return typeOfDocument?.codigo;
     }
   }, [user_by_id, cat_022_tipo_de_documentoDeIde.length]);
 
   const navigate = useNavigate();
+
   return (
     <Layout title="Cliente">
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
-            onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"
+            onClick={() => navigate('/clients')}
           >
             <ArrowLeft />
             <span>Volver</span>
           </button>
           {user_by_id && (
             <Formik
+              enableReinitialize={true}
               initialValues={{ ...initialValues }}
               validationSchema={validationSchema}
               onSubmit={(values) => onSubmit(values)}
-              enableReinitialize={true}
             >
               {({
                 values,
@@ -198,17 +208,17 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="">
                       <Input
                         className="dark:text-white"
-                        label="Nombre"
-                        labelPlacement="outside"
-                        name="name"
-                        value={values.nombre}
-                        onChange={handleChange('nombre')}
-                        onBlur={handleBlur('nombre')}
-                        placeholder="Ingresa el nombre"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Nombre"
+                        labelPlacement="outside"
+                        name="name"
+                        placeholder="Ingresa el nombre"
+                        value={values.nombre}
                         variant="bordered"
+                        onBlur={handleBlur('nombre')}
+                        onChange={handleChange('nombre')}
                       />
                       {errors.nombre && touched.nombre && (
                         <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
@@ -217,17 +227,17 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="pt-3">
                       <Input
                         className="dark:text-white"
-                        label="Correo electrónico"
-                        labelPlacement="outside"
-                        name="correo"
-                        value={values.correo}
-                        onChange={handleChange('correo')}
-                        onBlur={handleBlur('correo')}
-                        placeholder="Ingresa el correo"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Correo electrónico"
+                        labelPlacement="outside"
+                        name="correo"
+                        placeholder="Ingresa el correo"
+                        value={values.correo}
                         variant="bordered"
+                        onBlur={handleBlur('correo')}
+                        onChange={handleChange('correo')}
                       />
                       {errors.correo && touched.correo && (
                         <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
@@ -236,26 +246,27 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div className="pt-2">
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
+                          label="Tipo de documento"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el tipo de documento"
+                          variant="bordered"
+                          onBlur={handleBlur('tipoDocumento')}
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = cat_022_tipo_de_documentoDeIde.find(
                                 (dep) => dep.codigo === key
                               );
+
                               if (depSelected) {
                                 setFieldValue('tipoDocumento', depSelected.codigo);
                               }
                             }
                           }}
-                          onBlur={handleBlur('tipoDocumento')}
-                          label="Tipo de documento"
-                          placeholder="Selecciona el tipo de documento"
-                          variant="bordered"
-                          labelPlacement="outside"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          className="dark:text-white"
-                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
@@ -270,18 +281,18 @@ const UpdateClientNormal = (props: Props) => {
                       <div className="mt-2">
                         <Input
                           className="dark:text-white"
-                          type="text"
-                          label="Numero documento"
-                          labelPlacement="outside"
-                          name="numDocumento"
-                          value={values.numDocumento}
-                          onChange={handleChange('numDocumento')}
-                          onBlur={handleBlur('numDocumento')}
-                          placeholder="Ingresa el número de documento"
                           classNames={{
                             label: 'font-semibold text-gray-500 text-sm',
                           }}
+                          label="Numero documento"
+                          labelPlacement="outside"
+                          name="numDocumento"
+                          placeholder="Ingresa el número de documento"
+                          type="text"
+                          value={values.numDocumento}
                           variant="bordered"
+                          onBlur={handleBlur('numDocumento')}
+                          onChange={handleChange('numDocumento')}
                         />
                         {errors.numDocumento && touched.numDocumento && (
                           <span className="text-sm font-semibold text-red-500">
@@ -293,27 +304,28 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div>
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          defaultSelectedKey={`${selectedKeyDepartment}`}
+                          label="Departamento"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el departamento"
+                          variant="bordered"
+                          onBlur={handleBlur('departamento')}
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = cat_012_departamento.find(
                                 (dep) => dep.codigo === key
                               );
+
                               setSelectedCodeDep(depSelected?.codigo as string);
                               handleChange('departamento')(depSelected?.codigo as string);
                               handleChange('nombreDepartamento')(depSelected?.valores || '');
                               setFieldValue('municipio', '01');
                             }
                           }}
-                          onBlur={handleBlur('departamento')}
-                          label="Departamento"
-                          labelPlacement="outside"
-                          placeholder="Selecciona el departamento"
-                          variant="bordered"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          className="dark:text-white"
-                          defaultSelectedKey={`${selectedKeyDepartment}`}
                         >
                           {cat_012_departamento.map((dep) => (
                             <AutocompleteItem
@@ -332,25 +344,26 @@ const UpdateClientNormal = (props: Props) => {
                       </div>
                       <div>
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          label="Municipio"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el municipio"
+                          selectedKey={`${values.municipio}`}
+                          variant="bordered"
+                          onBlur={handleBlur('municipio')}
                           onSelectionChange={(key) => {
                             if (key) {
                               const munSelected = cat_013_municipios.find(
                                 (mun) => mun.codigo === key
                               );
+
                               setFieldValue('municipio', munSelected?.codigo);
                               setFieldValue('nombreMunicipio', munSelected?.valores);
                             }
                           }}
-                          label="Municipio"
-                          labelPlacement="outside"
-                          className="dark:text-white"
-                          variant="bordered"
-                          placeholder="Selecciona el municipio"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          onBlur={handleBlur('municipio')}
-                          selectedKey={`${values.municipio}`}
                         >
                           {cat_013_municipios.map((dep) => (
                             <AutocompleteItem
@@ -372,19 +385,19 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="grid grid-cols-2 gap-5 pt-3">
                       <div>
                         <Input
-                          type="number"
                           className="dark:text-white"
-                          label="Teléfono"
-                          labelPlacement="outside"
-                          name="telefono"
-                          value={values.telefono}
-                          onChange={handleChange('telefono')}
-                          onBlur={handleBlur('telefono')}
-                          placeholder="Ingresa el telefono"
                           classNames={{
                             label: 'font-semibold text-gray-500 text-sm',
                           }}
+                          label="Teléfono"
+                          labelPlacement="outside"
+                          name="telefono"
+                          placeholder="Ingresa el telefono"
+                          type="number"
+                          value={values.telefono}
                           variant="bordered"
+                          onBlur={handleBlur('telefono')}
+                          onChange={handleChange('telefono')}
                         />
                         {errors.telefono && touched.telefono && (
                           <span className="text-xs font-semibold text-red-500">
@@ -394,29 +407,30 @@ const UpdateClientNormal = (props: Props) => {
                       </div>
                       <div>
                         <Autocomplete
-                          onSelectionChange={(key) => {
-                            const selectedBranch = branch_list.find(
-                              (branch) => branch.id.toString() === key
-                            );
-                            if (selectedBranch) {
-                              setFieldValue('branchId', selectedBranch.id); // Actualiza branchId directamente con el ID numérico
-                            }
-                          }}
-                          onBlur={handleBlur('branchId')}
-                          label="Sucursal"
-                          labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
-                          variant="bordered"
                           className="dark:text-white"
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
                           defaultSelectedKey={user_by_id?.customer?.branch?.id.toString()}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          variant="bordered"
+                          onBlur={handleBlur('branchId')}
+                          onSelectionChange={(key) => {
+                            const selectedBranch = branch_list.find(
+                              (branch) => branch.id.toString() === key
+                            );
+
+                            if (selectedBranch) {
+                              setFieldValue('branchId', selectedBranch.id); // Actualiza branchId directamente con el ID numérico
+                            }
+                          }}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
-                              className="dark:text-white"
                               key={bra.id}
+                              className="dark:text-white"
                             >
                               {bra.name}
                             </AutocompleteItem>
@@ -433,17 +447,17 @@ const UpdateClientNormal = (props: Props) => {
                     <div className="pt-2">
                       <Textarea
                         className="dark:text-white"
-                        label="Complemento"
-                        labelPlacement="outside"
-                        name="Complemento"
-                        value={values.complemento}
-                        onChange={handleChange('complemento')}
-                        onBlur={handleBlur('complemento')}
-                        placeholder="Ingresa el complemento de la dirección"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Complemento"
+                        labelPlacement="outside"
+                        name="Complemento"
+                        placeholder="Ingresa el complemento de la dirección"
+                        value={values.complemento}
                         variant="bordered"
+                        onBlur={handleBlur('complemento')}
+                        onChange={handleChange('complemento')}
                       />
                       {errors.complemento && touched.complemento && (
                         <span className="text-sm font-semibold text-red-500">
@@ -452,9 +466,9 @@ const UpdateClientNormal = (props: Props) => {
                       )}
                     </div>
                     <ButtonUi
-                      onPress={() => handleSubmit()}
                       className="w-full mt-4 text-sm font-semibold"
                       theme={Colors.Primary}
+                      onPress={() => handleSubmit()}
                     >
                       Guardar
                     </ButtonUi>

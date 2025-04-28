@@ -1,12 +1,14 @@
 import { create } from 'zustand';
+import { toast } from 'sonner';
+
 import { accountCatalogsStore } from './types/accountCatalogs.store.types';
+
 import {
   get_account_catalogs_paginated,
   get_catalog_by_id,
   post_account_catalog,
 } from '@/services/accountCatalogs.service';
 import { messages } from '@/utils/constants';
-import { toast } from 'sonner';
 import { AccountCatalog } from '@/types/accountCatalogs.types';
 export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
   account_catalog: [],
@@ -49,10 +51,12 @@ export const useAccountCatalogsStore = create<accountCatalogsStore>((set) => ({
     return post_account_catalog(payload)
       .then(({ data }) => {
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

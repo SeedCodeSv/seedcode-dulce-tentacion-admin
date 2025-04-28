@@ -1,9 +1,11 @@
+import ExcelJS from 'exceljs';
+
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
-import ExcelJS from 'exceljs';
 
 const formatDate = (dateString: string) => {
   const [year, month, day] = dateString.split('-');
+
   return `${day}/${month}/${year}`;
 };
 
@@ -213,6 +215,7 @@ export const formatControlNumber = (controlNumber: string) => {
   if (controlNumber !== '' && controlNumber !== 'N/A' && controlNumber.length > 0) {
     return controlNumber.replace(/-/g, '');
   }
+
   return '';
 };
 
@@ -263,6 +266,7 @@ const formatNumDocument = (supplier: Supplier) => {
       ? supplier.numDocumento
       : '';
   }
+
   return '';
 };
 
@@ -276,6 +280,7 @@ export const formatTypes = (shopping: ShoppingReport, onlyCodes: boolean = false
       classDocument: shopping.classDocumentCode,
     };
   }
+
   return {
     typeOperation: `${shopping.operationTypeCode} ${shopping.operationTypeValue} `,
     classification: `${shopping.classificationCode} ${shopping.classificationValue} `,

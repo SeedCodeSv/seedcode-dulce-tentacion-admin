@@ -1,7 +1,9 @@
 import { create } from 'zustand';
-import { transmitterStore } from './types/transmitter.store.types';
+
 import { get_transmitter, get_transmitterId } from '../services/transmitter.service';
 import { ITransmitter } from '../types/transmitter.types';
+
+import { transmitterStore } from './types/transmitter.store.types';
 export const useTransmitterStore = create<transmitterStore>((set) => ({
   transmitter: {} as ITransmitter,
 

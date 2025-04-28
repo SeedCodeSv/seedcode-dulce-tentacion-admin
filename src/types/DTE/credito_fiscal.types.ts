@@ -1,4 +1,5 @@
 import { ITransmitter } from '../transmitter.types';
+
 import { Emisor } from './DTE.types';
 import { Resumen } from './factura.types';
 import { Pago } from './sub_interface/payment.types';

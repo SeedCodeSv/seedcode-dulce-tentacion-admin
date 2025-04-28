@@ -9,6 +9,7 @@ export const generate_control = (
 
 export function reemplazarNumero(str: string, numero: number) {
   const nuevoNumero = numero.toString().padStart(14, '0');
+
   return str.replace(/\d{14}$/, nuevoNumero);
 }
 

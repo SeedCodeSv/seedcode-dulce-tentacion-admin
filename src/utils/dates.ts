@@ -13,6 +13,7 @@ export const formatDate = () => {
   const date = new Date();
   const day = date.getDate() > 9 ? date.getDate() : `0${date.getDate()}`;
   const month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : `0${date.getMonth() + 1}`;
+
   return `${date.getFullYear()}-${month}-${day}`;
 };
 export const get_el_salvador_date = (dateString: string) => {
@@ -84,6 +85,7 @@ const month = fechaActual.getMonth() + 1;
 const day = fechaActual.getDate();
 const monthString = month < 10 ? `0${month}` : `${month}`;
 const dayString = day < 10 ? `0${day}` : `${day}`;
+
 export const fechaActualString = `${year}-${monthString}-${dayString}`;
 
 export function shortMonth(numero: number): string {
@@ -101,6 +103,7 @@ export function shortMonth(numero: number): string {
     'Noviembre',
     'Diciembre',
   ];
+
   if (numero >= 1 && numero <= 12) {
     return meses[numero - 1];
   } else {
@@ -112,12 +115,15 @@ const getFormattedDate = (date: Date): string => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
+
   return `${year}-${month}-${day}`;
 };
+
 export const getInitialAndEndDate = () => {
   const today = new Date();
   const initialDate = new Date(today.getFullYear(), today.getMonth(), 1);
   const endDate = today;
+
   return {
     initial: getFormattedDate(initialDate),
     end: getFormattedDate(endDate),
@@ -152,5 +158,6 @@ export function formatDateMMDDYYYY(day: number, month: number, year?: number): s
 export const formatDateForReports = (startDate: string, endDate: string) => {
   const formatDate = (date: DateTime) => date.setLocale('es').toFormat("d 'de' LLLL 'de' yyyy");
   const formattedRange = `del ${formatDate(DateTime.fromISO(startDate))} al ${formatDate(DateTime.fromISO(endDate))}`;
+
   return formattedRange;
 };

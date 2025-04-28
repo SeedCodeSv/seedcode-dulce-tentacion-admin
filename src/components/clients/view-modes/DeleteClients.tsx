@@ -1,10 +1,11 @@
+import { Button, Popover, PopoverTrigger, PopoverContent, useDisclosure } from '@heroui/react';
+import { Trash } from 'lucide-react';
+
 import { useCustomerStore } from '@/store/customers.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import useThemeColors from '@/themes/use-theme-colors';
 import { Customer } from '@/types/customers.types';
 import { Colors } from '@/types/themes.types';
-import { Button, Popover, PopoverTrigger, PopoverContent, useDisclosure } from '@heroui/react';
-import { Trash } from 'lucide-react';
 
 interface PopProps {
   customers: Customer;
@@ -24,8 +25,8 @@ export const DeletePopover = ({ customers }: PopProps) => {
       <Popover
         className="border border-white rounded-2xl"
         {...deleteDisclosure}
-        backdrop="blur"
         showArrow
+        backdrop="blur"
       >
         <PopoverTrigger>
           <Button isIconOnly style={style}>
@@ -42,9 +43,9 @@ export const DeletePopover = ({ customers }: PopProps) => {
             </p>
             <div className="flex justify-center mt-4 gap-5">
               <ButtonUi
+                className="border border-white"
                 theme={Colors.Default}
                 onPress={deleteDisclosure.onClose}
-                className="border border-white"
               >
                 No, cancelar
               </ButtonUi>

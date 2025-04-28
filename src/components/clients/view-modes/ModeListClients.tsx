@@ -1,4 +1,3 @@
-import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { Button } from "@heroui/react";
 import {
   User as IUser,
@@ -10,19 +9,22 @@ import {
   RefreshCcw,
   Dock,
 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 import { DeletePopover } from './DeleteClients';
-import { useNavigate } from 'react-router';
+
+import TooltipGlobal from '@/components/global/TooltipGlobal';
 import useGlobalStyles from '@/components/global/global.styles';
 import { PropsCustomersModes } from '@/components/categories/types/mobile-view.types';
 
 function ModeListClients(props: PropsCustomersModes) {
   const navigate = useNavigate();
   const styles = useGlobalStyles();
+
   return (
     <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 md:grid-cols-1 lg:grid-cols-1 2xl:grid-cols-1  gap-5 mt-5">
-      {props.customers.map((c) => (
-        <div className="flex w-full border dark:border-gray-600 rounded-2xl shadow p-5">
+      {props.customers.map((c, key) => (
+        <div key={key} className="flex w-full border dark:border-gray-600 rounded-2xl shadow p-5">
           <div className="w-full">
             <div className="flex w-full gap-2">
               <div>
@@ -70,11 +72,11 @@ function ModeListClients(props: PropsCustomersModes) {
             {props.actions.includes('Editar') && c.isActive && (
               <TooltipGlobal text="Editar">
                 <Button
+                  isIconOnly
+                  style={styles.secondaryStyle}
                   onClick={() =>
                     navigate(`/add-customer/${c.id}/${c.esContribuyente ? 'tribute' : 'normal'}`)
                   }
-                  isIconOnly
-                  style={styles.secondaryStyle}
                 >
                   <EditIcon size={20} />
                 </Button>
@@ -89,9 +91,9 @@ function ModeListClients(props: PropsCustomersModes) {
                 {c.esContribuyente === false && c.isActive && (
                   <TooltipGlobal text="Cambiar tipo de cliente">
                     <Button
-                      onClick={() => navigate(`/add-customer/${c.id}/tribute`)}
                       isIconOnly
                       style={styles.thirdStyle}
+                      onClick={() => navigate(`/add-customer/${c.id}/tribute`)}
                     >
                       <Repeat size={20} />
                     </Button>
@@ -105,11 +107,11 @@ function ModeListClients(props: PropsCustomersModes) {
                 {props.actions.includes('Activar Cliente') && (
                   <TooltipGlobal text="Activar">
                     <Button
+                      isIconOnly
+                      style={styles.thirdStyle}
                       onClick={() => {
                         props.handleActivate(c.id);
                       }}
-                      isIconOnly
-                      style={styles.thirdStyle}
                     >
                       <RefreshCcw size={20} />
                     </Button>

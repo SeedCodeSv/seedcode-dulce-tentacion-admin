@@ -16,6 +16,7 @@ export default function useEventListener(
 
   useEffect(() => {
     const isSupported = element && element.addEventListener;
+
     if (!isSupported) return;
 
     const eventListener = (event: Event) => savedHandler.current!(event);

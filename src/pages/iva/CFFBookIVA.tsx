@@ -1,3 +1,13 @@
+import { Button, Select, SelectItem } from '@heroui/react';
+import { useEffect, useMemo, useState } from 'react';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import saveAs from 'file-saver';
+
+import { export_excel_facturacion_ccfe } from '../excel/generate_excel';
+
+import TableCcfe from './CCFE/TableCcfe';
+import FacturacionCcfeItem from './CCFE/FacturacionCcfe';
+
 import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
@@ -5,14 +15,8 @@ import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem } from '@heroui/react';
-import { useEffect, useMemo, useState } from 'react';
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
-import { export_excel_facturacion_ccfe } from '../excel/generate_excel';
-import saveAs from 'file-saver';
 import { useViewsStore } from '@/store/views.store';
-import TableCcfe from './CCFE/TableCcfe';
-import FacturacionCcfeItem from './CCFE/FacturacionCcfe';
+
 // import jsPDF from "jspdf"
 // import autoTable from "jspdf-autotable"
 
@@ -148,6 +152,7 @@ function CFFBookIVA() {
     if (gravada === total) {
       return parseFloat((gravada / 1.13).toFixed(2)); // Quitar IVA y redondear a 2 decimales
     }
+
     return gravada;
   };
   const totalGravadaSinIVA = useMemo(() => {
@@ -169,17 +174,17 @@ function CFFBookIVA() {
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={`${monthSelected}`}
+                label="Meses"
+                labelPlacement="outside"
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setMonthSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                label="Meses"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {months.map((month) => (
                   <SelectItem key={month.value}>{month.name}</SelectItem>
@@ -188,17 +193,17 @@ function CFFBookIVA() {
             </div>
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
+                label="Año"
+                labelPlacement="outside"
                 selectedKeys={[`${yearSelected}`]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setYearSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                label="Año"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {years.map((years) => (
                   <SelectItem key={years.value}>{years.name}</SelectItem>
@@ -207,22 +212,23 @@ function CFFBookIVA() {
             </div>
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={`${branchId}`}
+                label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Selecciona la sucursal"
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     const id = Number(new Set(key).values().next().value);
+
                     setBranchId(id);
                     const branch = branch_list.find((branch) => branch.id == id);
 
                     if (branch) setBranchName(branch.name);
                   }
                 }}
-                className="w-full"
-                placeholder="Selecciona la sucursal"
-                classNames={{ label: 'font-semibold' }}
-                label="Sucursal"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {branch_list.map((branch) => (
                   <SelectItem key={branch.id}>{branch.name}</SelectItem>
@@ -232,10 +238,10 @@ function CFFBookIVA() {
             <div className="flex justify-end items-end mt-3 md:mt-0">
               {actionView.includes('Exportar Excel') && (
                 <Button
-                  onClick={handleExportExcel}
+                  className="text-white font-semibold"
                   color="success"
                   style={styles.thirdStyle}
-                  className="text-white font-semibold"
+                  onClick={handleExportExcel}
                 >
                   Exportar a excel
                   <PiMicrosoftExcelLogoBold size={25} />
@@ -256,7 +262,7 @@ function CFFBookIVA() {
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_creditos ? (
                 <div className="w-full flex justify-center p-20 items-center flex-col">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
                 </div>
               ) : (
@@ -278,14 +284,14 @@ function CFFBookIVA() {
             <div className="w-full overflow-x-auto custom-scrollbar mt-10 p-5 dark:bg-gray-800 bg-white border">
               <div className="min-w-[950px]">
                 <div className="grid grid-cols-8 w-full">
-                  <span className="border p-1 font-semibold"></span>
+                  <span className="border p-1 font-semibold" />
                   <span className="border p-1 text-sm md:font-semibold font-semibold">
                     Ventas Exentas
                   </span>
                   <span className="border p-1 text-sm md:font-semibold font-semibold">
                     Ventas Gravadas
                   </span>
-                  <span className="border p-1 text-sm md:font-semibold font-semibold"></span>
+                  <span className="border p-1 text-sm md:font-semibold font-semibold" />
                   <span className="border p-1 text-sm md:font-semibold font-semibold">
                     Exportaciones
                   </span>
@@ -302,7 +308,7 @@ function CFFBookIVA() {
                   <span className="border p-1">
                     {formatCurrency(calculateGravadaWithoutVAT(factura_totals, factura_totals))}
                   </span>
-                  <span className="border p-1"></span>
+                  <span className="border p-1" />
                   <span className="border p-1">{formatCurrency(0)}</span>
                   <span className="border p-1">{formatCurrency(0)}</span>
                   <span className="border p-1">{formatCurrency(0)}</span>
@@ -315,7 +321,7 @@ function CFFBookIVA() {
                   <span className="border p-1">
                     {formatCurrency(calculateGravadaWithoutVAT(totalGravadaSinIVA, total))}
                   </span>
-                  <span className="border p-1"></span>
+                  <span className="border p-1" />
                   <span className="border p-1">{formatCurrency(0)}</span>
                   <span className="border p-1">{formatCurrency(totalIva)}</span>
                   <span className="border p-1">{formatCurrency(0)}</span>
@@ -335,7 +341,7 @@ function CFFBookIVA() {
                       )
                     )}
                   </span>
-                  <span className="border p-1"></span>
+                  <span className="border p-1" />
                   <span className="border p-1">{formatCurrency(0)}</span>
                   <span className="border p-1">{formatCurrency(totalIva)}</span>
                   <span className="border p-1">{formatCurrency(0)}</span>
@@ -347,7 +353,7 @@ function CFFBookIVA() {
             </div>
             <div className="mt-4">
               {facturacion_ccfe.map((item, index) => (
-                <FacturacionCcfeItem facturacionCcfe={item} key={index} />
+                <FacturacionCcfeItem key={index} facturacionCcfe={item} />
               ))}
             </div>
           </div>

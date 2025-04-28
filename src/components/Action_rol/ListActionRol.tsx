@@ -1,9 +1,5 @@
-import { useActionsRolStore } from '@/store/role-actions.store';
-import { useRolesStore } from '@/store/roles.store';
 import { Button, Card, Checkbox, Select, SelectItem, useDisclosure } from '@heroui/react';
 import React, { useContext, useEffect, useState } from 'react';
-import permissionss from '../../actions.json';
-import { create_action_by_view, create_view } from '@/services/actions.service';
 import { toast } from 'sonner';
 import { HiPrinter } from 'react-icons/hi2';
 import { FaEdit, FaEye, FaRegFilePdf, FaTrash } from 'react-icons/fa';
@@ -11,20 +7,26 @@ import { BsDatabaseAdd } from 'react-icons/bs';
 import { FaArrowsRotate } from 'react-icons/fa6';
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 import { IoBagCheck } from 'react-icons/io5';
-import { ActionR } from '@/types/actions_rol.types';
-import { create_many_actions } from '@/services/role-actions.service';
-import { useAuthStore } from '@/store/auth.store';
-import { PermissionContext } from '@/hooks/usePermission';
-import HeadlessModal from '../global/HeadlessModal';
-import useGlobalStyles from '../global/global.styles';
-import GlobalLoading from '../global/GlobalLoading';
-import useColors from '@/themes/use-colors';
 import { FileJson, Send } from 'lucide-react';
 import { GrDocumentCsv } from 'react-icons/gr';
 import { TiExportOutline } from 'react-icons/ti';
 import { MdOutlineCake, MdOutlineCancelScheduleSend } from 'react-icons/md';
 import { RiContractLine } from 'react-icons/ri';
 import { LiaFileContractSolid } from 'react-icons/lia';
+
+import GlobalLoading from '../global/GlobalLoading';
+import useGlobalStyles from '../global/global.styles';
+import HeadlessModal from '../global/HeadlessModal';
+import permissionss from '../../actions.json';
+
+import useColors from '@/themes/use-colors';
+import { PermissionContext } from '@/hooks/usePermission';
+import { useAuthStore } from '@/store/auth.store';
+import { create_many_actions } from '@/services/role-actions.service';
+import { ActionR } from '@/types/actions_rol.types';
+import { create_action_by_view, create_view } from '@/services/actions.service';
+import { useRolesStore } from '@/store/roles.store';
+import { useActionsRolStore } from '@/store/role-actions.store';
 import { save_role_actions } from '@/storage/localStorage';
 
 function ListActionRol() {
@@ -70,6 +72,7 @@ function ListActionRol() {
 
       if (actionsToCreate.length > 0) {
         viewAction.actions = actionsToCreate;
+
         return true; // Algunas acciones no existen, se deben crear
       }
 
@@ -99,11 +102,13 @@ function ListActionRol() {
 
       if (actionsToCreate.length > 0) {
         viewAction.actions = actionsToCreate;
+
         return true; // Algunas acciones no existen, se deben crear
       }
 
       return false; // La vista y todas sus acciones ya existen
     });
+
     if (viewsToCreate.length > 0) {
       const response = await create_view({
         views: viewsToCreate.map(({ view }) => ({
@@ -148,56 +153,57 @@ function ListActionRol() {
 
   const renderItem = (name: string) => {
     if (name.toLocaleLowerCase().includes('agregar')) {
-      return <BsDatabaseAdd style={colors.textColor} size={20} />;
+      return <BsDatabaseAdd size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('mostrar') || name.toLocaleLowerCase().includes('ver')) {
-      return <FaEye style={colors.textColor} size={20} />;
+      return <FaEye size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('eliminar')) {
-      return <FaTrash style={colors.textColor} size={20} />;
+      return <FaTrash size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('editar')) {
-      return <FaEdit style={colors.textColor} size={20} />;
+      return <FaEdit size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('cambiar')) {
-      return <FaArrowsRotate style={colors.textColor} size={20} />;
+      return <FaArrowsRotate size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('excel')) {
-      return <PiMicrosoftExcelLogo style={colors.textColor} size={20} />;
+      return <PiMicrosoftExcelLogo size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('pdf')) {
-      return <FaRegFilePdf style={colors.textColor} size={20} />;
+      return <FaRegFilePdf size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('json')) {
-      return <FileJson style={colors.textColor} size={20} />;
+      return <FileJson size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('imprimir')) {
-      return <HiPrinter style={colors.textColor} size={20} />;
+      return <HiPrinter size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('activar')) {
-      return <IoBagCheck style={colors.textColor} size={20} />;
+      return <IoBagCheck size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('reenviar correo')) {
-      return <Send style={colors.textColor} size={20} />;
+      return <Send size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('csv')) {
-      return <GrDocumentCsv style={colors.textColor} size={20} />;
+      return <GrDocumentCsv size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('exportar')) {
-      return <TiExportOutline style={colors.textColor} size={20} />;
+      return <TiExportOutline size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('invalidar')) {
-      return <MdOutlineCancelScheduleSend style={colors.textColor} size={20} />;
+      return <MdOutlineCancelScheduleSend size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('cumpleaños')) {
-      return <MdOutlineCake style={colors.textColor} size={20} />;
+      return <MdOutlineCake size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('contrato')) {
-      return <RiContractLine style={colors.textColor} size={20} />;
+      return <RiContractLine size={20} style={colors.textColor} />;
     }
     if (name.toLocaleLowerCase().includes('constancia')) {
-      return <LiaFileContractSolid style={colors.textColor} size={20} />;
+      return <LiaFileContractSolid size={20} style={colors.textColor} />;
     }
+
     return <></>;
   };
 
@@ -242,9 +248,11 @@ function ListActionRol() {
 
     if (!isSelected) {
       const actions_f = actions.filter((fnd) => !fnd.hasInRol);
+
       views = views.concat(actions_f.map((action) => action.name));
     } else {
       const actions_f = actions.filter((fnd) => fnd.hasInRol);
+
       views = views.concat(actions_f.map((action) => action.name));
     }
 
@@ -274,19 +282,19 @@ function ListActionRol() {
     <>
       <GlobalLoading show={loading} />
       <HeadlessModal
-        onClose={modalNewView.onClose}
         isOpen={modalNewView.isOpen}
         size="p-5 w-96"
         title="Nuevas acciones"
+        onClose={modalNewView.onClose}
       >
         <div className="w-full flex flex-col">
           <p className="text-lg text-center mt-4">
             Se encontraron nuevas vistas y acciones disponibles
           </p>
           <Button
-            onClick={handleSave}
-            style={styles.thirdStyle}
             className="w-full mt-6 font-semibold"
+            style={styles.thirdStyle}
+            onClick={handleSave}
           >
             Actualizar vistas
           </Button>
@@ -297,18 +305,18 @@ function ListActionRol() {
           <div>
             <Select
               className="w-96 dark:text-white"
+              classNames={{ label: 'font-semibold' }}
               label="Rol"
               labelPlacement="outside"
               placeholder="Selecciona el rol"
-              classNames={{ label: 'font-semibold' }}
-              variant="bordered"
               selectedKeys={[roleSelected.toString()]}
+              variant="bordered"
               onSelectionChange={(e) => {
                 setRoleSelected(Number(new Set(e).values().next().value));
               }}
             >
               {roles_list.map((role) => (
-                <SelectItem className="dark:text-white" key={role.id}>
+                <SelectItem key={role.id} className="dark:text-white">
                   {role.name}
                 </SelectItem>
               ))}
@@ -321,7 +329,7 @@ function ListActionRol() {
                   <React.Fragment key={index}>
                     <Card className="w-full border dark:border-gray-700 rounded-3xl p-8">
                       <div className="w-full flex justify-between">
-                        <p style={colors.textColor} className="font-semibold text-lg">
+                        <p className="font-semibold text-lg" style={colors.textColor}>
                           {view.name}
                         </p>
                         <Checkbox
@@ -330,25 +338,25 @@ function ListActionRol() {
                           onValueChange={(isSelected) =>
                             handleSelectionAll(view.id, view.actions, !isSelected)
                           }
-                        ></Checkbox>
+                         />
                       </div>
                       <hr className="py-1 mt-2" />
                       <div className="flex flex-col gap-4">
                         {view.actions.map((action, index) => (
-                          <div className="flex justify-between gap-2 items-center" key={index}>
+                          <div key={index} className="flex justify-between gap-2 items-center">
                             <p
-                              style={colors.textColor}
                               className="flex justify-center items-center gap-4 font-semibold text-sm"
+                              style={colors.textColor}
                             >
                               {renderItem(action.name)} {action.name}
                             </p>
                             <Checkbox
                               isSelected={action.hasInRol}
+                              size="lg"
                               onValueChange={(isSelected) =>
                                 handleSelectAction(view.id, action, view.actions, !isSelected)
                               }
-                              size="lg"
-                            ></Checkbox>
+                             />
                           </div>
                         ))}
                       </div>

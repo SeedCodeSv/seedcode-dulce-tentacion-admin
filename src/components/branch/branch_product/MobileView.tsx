@@ -1,6 +1,7 @@
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Truck, ShoppingBag, Barcode, FileSpreadsheet } from 'lucide-react';
+
 import { useBranchesStore } from '../../../store/branches.store';
 import { IGetBranchProduct } from '../../../types/branches.types';
 interface Props {
@@ -8,11 +9,14 @@ interface Props {
 }
 function MobileView({ layout }: Props) {
   const { branch_products_list } = useBranchesStore();
+
   return (
     <div className="w-full pb-10">
       <DataView
-        value={branch_products_list}
         gutter
+        color="surface"
+        emptyMessage="No employee found"
+        itemTemplate={(branchProduct) => gridItem(branchProduct, layout)}
         layout={layout}
         pt={{
           grid: () => ({
@@ -20,9 +24,7 @@ function MobileView({ layout }: Props) {
               'grid  pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
           }),
         }}
-        color="surface"
-        itemTemplate={(branchProduct) => gridItem(branchProduct, layout)}
-        emptyMessage="No employee found"
+        value={branch_products_list}
       />
     </div>
   );
@@ -32,10 +34,10 @@ const gridItem = (branchProduct: IGetBranchProduct, layout: 'grid' | 'list') => 
     <>
       {layout === 'grid' ? (
         <div
+          key={branchProduct.id}
           className={classNames(
             'w-full shadow border border-white hover:shadow-lg dark:border dar:border-gray-600 p-6 rounded-2xl'
           )}
-          key={branchProduct.id}
         >
           <div className="flex w-full gap-2">
             <Truck className="text-blue-500 dark:text-blue-300" size={20} />

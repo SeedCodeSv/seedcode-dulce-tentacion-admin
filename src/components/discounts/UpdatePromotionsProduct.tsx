@@ -9,9 +9,10 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { useEffect, useState } from 'react';
-import WeekSelector from './WeekSelector';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { DollarSign, ScrollText, Search, Truck } from 'lucide-react';
+
 import { PromotionProducts } from '../../types/promotions.types';
 import { useProductsStore } from '../../store/products.store';
 import { useBranchesStore } from '../../store/branches.store';
@@ -20,9 +21,11 @@ import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsB
 import { operadores } from '../../utils/constants';
 import { global_styles } from '../../styles/global.styles';
 import HeadlessModal from '../global/HeadlessModal';
-import { DollarSign, ScrollText, Search, Truck } from 'lucide-react';
 import { Branches } from '../../types/branches.types';
 import { usePromotionsProductsStore } from '../../store/promotions/promotionsByProduct.store';
+
+import WeekSelector from './WeekSelector';
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -46,6 +49,7 @@ function UpdatePromotionsByProduct(props: Props) {
   const { branch_list, getBranchesList } = useBranchesStore();
   const { getProductsByPromotion, removeProductsToPromotion, addProductToPromotion, products } =
     usePromotionsProductsStore();
+
   useEffect(() => {
     getProductsByPromotion(props.id);
     getListProductsList();
@@ -56,6 +60,7 @@ function UpdatePromotionsByProduct(props: Props) {
 
   type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
   const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
   interface PriorityInfo {
     label: string;
     color: string;
@@ -102,6 +107,7 @@ function UpdatePromotionsByProduct(props: Props) {
   });
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { updatePromotionProduct } = usePromotionsByCategoryStore();
+
   useEffect(() => {
     if (selectedBranchId) {
       getPaginatedBranchProducts(Number(selectedBranchId));
@@ -126,6 +132,7 @@ function UpdatePromotionsByProduct(props: Props) {
       priority: selectedPriority,
       products: selectedProductIds.map((products) => ({ productId: Number(products) })),
     };
+
     updatePromotionProduct(props.id, {
       ...payload,
       startDate: startDate as string,
@@ -158,14 +165,15 @@ function UpdatePromotionsByProduct(props: Props) {
   };
 
   const { getBranchProductOrders, branch_product_order } = useBranchProductStore();
+
   useEffect(() => {
     getBranchProductOrders(branch, '', '', '');
   }, [branch, selectedBrancheId]);
+
   return (
     <>
       <div className="flex flex-col items-center justify-center p-8">
         <Formik
-          validationSchema={validationSchema}
           initialValues={{
             name: props.promotion?.name || '',
             branchId: props.promotion?.branchId || 0,
@@ -184,6 +192,7 @@ function UpdatePromotionsByProduct(props: Props) {
             priority: props.promotion?.priority || '',
             products: props.promotion?.products || [],
           }}
+          validationSchema={validationSchema}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
@@ -193,15 +202,15 @@ function UpdatePromotionsByProduct(props: Props) {
                   {/* COLUMNA 1 */}
                   <div>
                     <Input
-                      name="name"
-                      labelPlacement="outside"
-                      defaultValue={props.promotion?.name}
-                      onChange={handleChange('name')}
-                      placeholder="Ingresa el nombre "
-                      classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                      variant="bordered"
-                      label="Nombre"
                       className="dark:text-white"
+                      classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                      defaultValue={props.promotion?.name}
+                      label="Nombre"
+                      labelPlacement="outside"
+                      name="name"
+                      placeholder="Ingresa el nombre "
+                      variant="bordered"
+                      onChange={handleChange('name')}
                     />
                     {errors.name && touched.name && (
                       <>
@@ -212,20 +221,20 @@ function UpdatePromotionsByProduct(props: Props) {
                     <div className="grid grid-cols-2 gap-5 mt-4">
                       <div>
                         <Input
-                          label="Precio"
-                          labelPlacement="outside"
-                          name="price"
-                          defaultValue={props.promotion?.price.toString()}
-                          onChange={handleChange('price')}
-                          onBlur={handleBlur('price')}
-                          placeholder="0"
+                          className="dark:text-white"
                           classNames={{
                             label: 'font-semibold text-gray-500 text-sm',
                           }}
-                          variant="bordered"
-                          type="number"
+                          defaultValue={props.promotion?.price.toString()}
+                          label="Precio"
+                          labelPlacement="outside"
+                          name="price"
+                          placeholder="0"
                           startContent=""
-                          className="dark:text-white"
+                          type="number"
+                          variant="bordered"
+                          onBlur={handleBlur('price')}
+                          onChange={handleChange('price')}
                         />
                         {errors.price && touched.price && (
                           <span className="text-sm font-semibold text-red-500">{errors.price}</span>
@@ -233,15 +242,15 @@ function UpdatePromotionsByProduct(props: Props) {
                       </div>
                       <div className="">
                         <Select
-                          variant="bordered"
-                          placeholder={`${props.promotion?.operatorPrice}`}
                           className="w-full dark:text-white"
-                          label={`Selecciona el operador`}
-                          labelPlacement="outside"
                           classNames={{
                             label: 'font-semibold text-gray-500 text-sm',
                           }}
+                          label={`Selecciona el operador`}
+                          labelPlacement="outside"
+                          placeholder={`${props.promotion?.operatorPrice}`}
                           value={values.operatorPrice}
+                          variant="bordered"
                           onChange={(e) => setFieldValue('operatorPrice', e.target.value)}
                         >
                           {operadores.map((operator) => (
@@ -264,13 +273,13 @@ function UpdatePromotionsByProduct(props: Props) {
                     <div className="grid grid-cols-2 gap-5 mt-4">
                       <div>
                         <Input
-                          type="date"
-                          variant="bordered"
-                          label="Fecha inicial"
-                          labelPlacement="outside"
-                          defaultValue={props.promotion?.startDate.toString()}
                           className="dark:text-white"
                           classNames={{ label: 'font-semibold' }}
+                          defaultValue={props.promotion?.startDate.toString()}
+                          label="Fecha inicial"
+                          labelPlacement="outside"
+                          type="date"
+                          variant="bordered"
                           onChange={(e) => {
                             setStartDate(e.target.value);
                           }}
@@ -285,15 +294,15 @@ function UpdatePromotionsByProduct(props: Props) {
                       </div>
                       <div>
                         <Input
-                          type="date"
-                          variant="bordered"
-                          label="Fecha final"
-                          labelPlacement="outside"
-                          defaultValue={props.promotion?.endDate.toString()}
                           className="dark:text-white"
                           classNames={{
                             label: 'font-semibold',
                           }}
+                          defaultValue={props.promotion?.endDate.toString()}
+                          label="Fecha final"
+                          labelPlacement="outside"
+                          type="date"
+                          variant="bordered"
                           onChange={(e) => setEndDate(e.target.value)}
                         />
                         {errors.endDate && touched.endDate && (
@@ -309,18 +318,18 @@ function UpdatePromotionsByProduct(props: Props) {
                     {/* Descripción  */}
                     <div className="mt-5">
                       <Textarea
-                        label="Descripción"
-                        labelPlacement="outside"
-                        name="description"
-                        defaultValue={props.promotion?.description}
-                        onChange={handleChange('description')}
-                        onBlur={handleBlur('description')}
-                        placeholder="Ingresa la descripción"
+                        className="dark:text-white"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm ',
                         }}
+                        defaultValue={props.promotion?.description}
+                        label="Descripción"
+                        labelPlacement="outside"
+                        name="description"
+                        placeholder="Ingresa la descripción"
                         variant="bordered"
-                        className="dark:text-white"
+                        onBlur={handleBlur('description')}
+                        onChange={handleChange('description')}
                       />
                       {errors.description && touched.description && (
                         <span className="text-sm font-semibold text-red-500">
@@ -335,8 +344,8 @@ function UpdatePromotionsByProduct(props: Props) {
                       {/* Seleccionar dia */}
                       <div className="grid items-start grid-cols-6 ">
                         <WeekSelector
-                          startDate={startDate as string}
                           endDate={endDate as string}
+                          startDate={startDate as string}
                           onDaysSelected={handleDaysSelected}
                         />
                       </div>
@@ -347,47 +356,49 @@ function UpdatePromotionsByProduct(props: Props) {
                   <div>
                     <div>
                       <Input
+                        className="dark:text-white"
+                        classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                        defaultValue={props.promotion?.percentage.toString()}
                         label="Porcentaje de descuento"
                         labelPlacement="outside"
                         name="percentage"
-                        defaultValue={props.promotion?.percentage.toString()}
+                        placeholder="0"
+                        startContent="%"
+                        type="number"
+                        variant="bordered"
+                        onBlur={handleBlur('percentage')}
                         onChange={(e) => {
                           const newValue = parseFloat(e.target.value);
+
                           handleChange('percentage')(newValue.toString());
                           if (newValue > 0) {
                             setFieldValue('fixedPrice', 0);
                           }
                         }}
-                        onBlur={handleBlur('percentage')}
-                        placeholder="0"
-                        classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                        variant="bordered"
-                        type="number"
-                        startContent="%"
-                        className="dark:text-white"
                       />
                       <div className="mt-11">
                         <Input
+                          className="dark:text-white"
+                          classNames={{
+                            label: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          defaultValue={props.promotion?.fixedPrice.toString()}
                           label="Precio Fijo"
                           labelPlacement="outside"
                           name="fixedPrice"
-                          defaultValue={props.promotion?.fixedPrice.toString()}
+                          placeholder="0"
+                          startContent=""
+                          type="number"
+                          variant="bordered"
+                          onBlur={handleBlur('fixedPrice')}
                           onChange={(e) => {
                             const newValue = parseFloat(e.target.value);
+
                             handleChange('fixedPrice')(newValue.toString());
                             if (newValue > 0) {
                               setFieldValue('percentage', 0);
                             }
                           }}
-                          onBlur={handleBlur('fixedPrice')}
-                          placeholder="0"
-                          classNames={{
-                            label: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          variant="bordered"
-                          type="number"
-                          startContent=""
-                          className="dark:text-white"
                         />
                       </div>
                       <div className="mt-6">
@@ -395,11 +406,11 @@ function UpdatePromotionsByProduct(props: Props) {
                           classNames={{
                             label: 'font-semibold text-black text-md dark:text-white',
                           }}
+                          label="Prioridad"
                           orientation="horizontal"
+                          size="lg"
                           value={selectedPriority ? [selectedPriority] : []}
                           onChange={handlePriorityChange}
-                          label="Prioridad"
-                          size="lg"
                         >
                           {priority.map((p) => (
                             <Checkbox key={p} value={p}>
@@ -418,8 +429,8 @@ function UpdatePromotionsByProduct(props: Props) {
                     </div>
                     <div className="grid grid-cols-1 gap-5 mt-6">
                       <ButtonUi
-                        onClick={vaul.onOpen}
                         theme={Colors.Info}
+                        onClick={vaul.onOpen}
                       >
                         Productos
                       </ButtonUi>
@@ -428,10 +439,10 @@ function UpdatePromotionsByProduct(props: Props) {
                 </div>
                 <div className="flex flex-row justify-center mt-4">
                   <ButtonUi
-                    onClick={() => handleSubmit()}
-                    type="submit"
                     className="h-full py-2 font-semibold w-44"
                     theme={Colors.Primary}
+                    type="submit"
+                    onClick={() => handleSubmit()}
                   >
                     Actualizar Promoción
                   </ButtonUi>
@@ -443,35 +454,37 @@ function UpdatePromotionsByProduct(props: Props) {
       </div>
       <HeadlessModal
         isOpen={vaul.isOpen}
-        onClose={vaul.onClose}
-        title="Seleccionar Productos"
         size="w-screen h-screen pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
+        title="Seleccionar Productos"
+        onClose={vaul.onClose}
       >
         <div className="w-full bg-white dark:bg-gray-800">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
               <Select
-                label="Sucursal"
-                value={branch}
+                className="w-full dark:text-white"
                 defaultSelectedKeys={props.branch?.name}
+                label="Sucursal"
+                labelPlacement="outside"
+                placeholder={props.branch?.name ? props.branch.name : 'Selecciona una sucursal'}
+                value={branch}
+                variant="bordered"
                 onSelectionChange={(e) => {
                   const setkeys = new Set(e as unknown as string[]);
                   const keysArray = Array.from(setkeys);
+
                   if (keysArray.length > 0) {
                     const branchId = branch_list.find((branch) => branch.name === keysArray[0])?.id;
+
                     if (branchId) {
                       handleBranchSelection(branchId);
                       setBranch(keysArray[0]); // Asegúrate de que `branch` también se actualice
                     }
                   }
                 }}
-                placeholder={props.branch?.name ? props.branch.name : 'Selecciona una sucursal'}
-                labelPlacement="outside"
-                variant="bordered"
-                className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name}>
+                  <SelectItem key={branch.name} className="dark:text-white">
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -480,20 +493,20 @@ function UpdatePromotionsByProduct(props: Props) {
 
             <div>
               <Input
-                label="Nombre"
-                placeholder="Escribe el nombre del producto"
-                labelPlacement="outside"
-                variant="bordered"
-                startContent={<Search />}
                 className="w-full dark:text-white"
+                label="Nombre"
+                labelPlacement="outside"
+                placeholder="Escribe el nombre del producto"
+                startContent={<Search />}
+                variant="bordered"
               />
             </div>
           </div>
           <div className="flex justify-end w-full py-5">
             <Button
-              onClick={() => handleAccept()}
-              style={global_styles().secondaryStyle}
               className="px-10"
+              style={global_styles().secondaryStyle}
+              onClick={() => handleAccept()}
             >
               Aceptar
             </Button>

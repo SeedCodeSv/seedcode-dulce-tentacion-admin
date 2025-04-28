@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { LogsStore } from './types/logs.store.types';
+
 import { get_logs } from '../services/logs.service';
+
+import { LogsStore } from './types/logs.store.types';
 
 export const useLogsStore = create<LogsStore>((set) => ({
   logs: [],

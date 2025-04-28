@@ -1,5 +1,6 @@
-import { get_employee_status } from './../services/employee_status.service';
 import { create } from "zustand";
+
+import { get_employee_status } from './../services/employee_status.service';
 import { IEmployeeStatusStore } from "./types/employee_status.store.types";
 
 export const useEmployeeStatusStore = create<IEmployeeStatusStore>((set) => ({

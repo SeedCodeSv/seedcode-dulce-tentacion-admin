@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import {
   create_promotion_discount,
   get_promotions,
   patch_promotion_branch,
 } from '../../services/promotions/promotions_discount.service';
-import { IPromotionsStore } from './types/promotions.store';
 import { messages } from '../../utils/constants';
+
+import { IPromotionsStore } from './types/promotions.store';
 
 export const usePromotionsStore = create<IPromotionsStore>((set) => ({
   promotion_paginated: [],
@@ -39,6 +41,7 @@ export const usePromotionsStore = create<IPromotionsStore>((set) => ({
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

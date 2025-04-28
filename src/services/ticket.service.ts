@@ -1,6 +1,7 @@
+import axios from 'axios';
+
 import { GetDetailTicket, GetTicketsResponse } from '@/types/ticket.types';
 import { API_URL } from '@/utils/constants';
-import axios from 'axios';
 
 export const get_tickets = (
   id: number,

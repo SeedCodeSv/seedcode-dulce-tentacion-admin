@@ -1,9 +1,10 @@
-import { CodCuentaProps } from '@/pages/contablilidad/types/types';
-import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
+
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { CodCuentaProps } from '@/pages/contablilidad/types/types';
 
 export const CodCuentaSelect = (props: CodCuentaProps) => {
   const { account_catalog_pagination, loading } = useAccountCatalogsStore();
@@ -38,13 +39,16 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
       const itemFind = account_catalog_pagination.accountCatalogs.find(
         (item) => item.code === value
       );
+
       if (itemFind) {
         if (itemFind.subAccount) {
           toast.error('No se puede agregar una cuenta con sub-cuentas');
+
           return;
         }
 
         const item = items[props.index];
+
         item.codCuenta = itemFind.code;
         item.descCuenta = itemFind.name;
         props.setItems([...items]);
@@ -58,6 +62,7 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
   useEffect(() => {
     const updatedCode = props.items[props.index].codCuenta || '';
     const updatedDesc = props.items[props.index].descCuenta || '';
+
     setName(updatedCode ? `${updatedCode} - ${updatedDesc}` : '');
   }, [props.items, props.index]);
 
@@ -67,26 +72,26 @@ export const CodCuentaSelect = (props: CodCuentaProps) => {
 
   return (
     <>
-    {isReadOnly ? <Input variant='bordered' value={props.items[props.index].codCuenta + " - " + props.items[props.index].descCuenta} readOnly /> : <Autocomplete
-      readOnly={isReadOnly}
+    {isReadOnly ? <Input readOnly value={props.items[props.index].codCuenta + " - " + props.items[props.index].descCuenta} variant='bordered' /> : <Autocomplete
+      aria-describedby="Cuenta"
+        aria-labelledby="Cuenta"
         className="min-w-52"
-        placeholder="Buscar cuenta"
-        variant="bordered"
         inputProps={{
           classNames: {
             inputWrapper: 'pl-1',
           },
         }}
-        aria-describedby="Cuenta"
-        aria-labelledby="Cuenta"
-        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
+        isLoading={loading}
+        placeholder="Buscar cuenta"
+        readOnly={isReadOnly}
+        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
         startContent={
-          <Button isDisabled={isReadOnly} isIconOnly size="sm" onPress={() => props.openCatalogModal(props.index)}>
+          <Button isIconOnly isDisabled={isReadOnly} size="sm" onPress={() => props.openCatalogModal(props.index)}>
             <Search />
           </Button>
         }
-        isLoading={loading}
-        selectedKey={props.items[props.index].codCuenta} // Selecciona usando el código
+        variant="bordered"
+        onInputChange={handleInputChange} // Usa una función dedicada para cambios en el input
         onSelectionChange={(key) => {
           if (key) {
             onChange(String(key));

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { IEmployeeStore } from './types/employee.store';
+import { toast } from 'sonner';
+
 import {
   activate_employee,
   delete_employee,
@@ -11,8 +12,10 @@ import {
   save_employee,
   verify_code,
 } from '../services/employess.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+
+import { IEmployeeStore } from './types/employee.store';
+
 import { get_user } from '@/storage/localStorage';
 
 export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
@@ -81,6 +84,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     return save_employee(payload)
       .then(({ data }) => {
         const user = get_user();
+
         get().getEmployeesPaginated(
           user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
@@ -95,10 +99,12 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           ''
         );
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
@@ -106,6 +112,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     return patch_employee(payload, id)
       .then(({ data }) => {
         const user = get_user();
+
         get().getEmployeesPaginated(
           user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
@@ -120,10 +127,12 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           ''
         );
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
@@ -131,6 +140,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
     return delete_employee(id)
       .then(({ data }) => {
         const user = get_user();
+
         get().getEmployeesPaginated(
           user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
@@ -145,10 +155,12 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
           ''
         );
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },

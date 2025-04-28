@@ -1,10 +1,12 @@
-import BottomDrawer from '@/components/global/BottomDrawer';
-import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { global_styles } from '@/styles/global.styles';
 import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
 import { IPropsSearchEmployee } from '../types/mobile-view.types';
+
+import { global_styles } from '@/styles/global.styles';
+import TooltipGlobal from '@/components/global/TooltipGlobal';
+import BottomDrawer from '@/components/global/BottomDrawer';
 import { useBranchesStore } from '@/store/branches.store';
 import { useEmployeeStore } from '@/store/employee.store';
 import { useAuthStore } from '@/store/auth.store';
@@ -16,6 +18,7 @@ function SearchEmployee(props: IPropsSearchEmployee) {
   const { user } = useAuthStore();
   const { getBranchesList, branch_list } = useBranchesStore();
   const { getEmployeesPaginated } = useEmployeeStore();
+
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -27,28 +30,44 @@ function SearchEmployee(props: IPropsSearchEmployee) {
     startDate: fechaActualString,
     endDate: fechaActualString,
   });
+
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
-        <TooltipGlobal text="Buscar por filtros" color="primary">
+        <TooltipGlobal color="primary" text="Buscar por filtros">
           <Button
+            isIconOnly
             className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
-            isIconOnly
-            onClick={() => setOpenVaul(true)}
             type="button"
+            onClick={() => setOpenVaul(true)}
           >
             <Filter />
           </Button>
         </TooltipGlobal>
         <BottomDrawer
-          title="Filtros disponibles"
           open={openVaul}
+          title="Filtros disponibles"
           onClose={() => setOpenVaul(false)}
         >
           <div className="flex flex-col  gap-2">
             <Input
+              isClearable
+              className="w-full border dark:border-white rounded-xl  dark:text-white"
+              classNames={{
+                label: 'font-semibold text-gray-700',
+                inputWrapper: 'pr-0',
+              }}
+              label="Nombre"
+              labelPlacement="outside"
+              placeholder="Escribe para buscar..."
+              startContent={<Search />}
               value={filter.nameEmployee}
+              variant="bordered"
+              onChange={(e) => {
+                setFilter({ ...filter, nameEmployee: e.target.value });
+                props.nameEmployee(e.target.value);
+              }}
               onClear={() => {
                 setFilter({ ...filter, nameEmployee: '' });
 
@@ -70,116 +89,91 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   filter.endDate
                 );
               }}
+            />
+            <Input
               isClearable
-              onChange={(e) => {
-                setFilter({ ...filter, nameEmployee: e.target.value });
-                props.nameEmployee(e.target.value);
-              }}
-              startContent={<Search />}
               className="w-full border dark:border-white rounded-xl  dark:text-white"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Nombre"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
+              label="Telefono"
+              labelPlacement="outside"
               placeholder="Escribe para buscar..."
-            />
-            <Input
+              startContent={<Search />}
               value={filter.phoneEmployee}
-              onClear={() => {
-                setFilter({ ...filter, phoneEmployee: '' });
-              }}
-              isClearable
+              variant="bordered"
               onChange={(e) => {
                 setFilter({ ...filter, phoneEmployee: e.target.value });
                 props.phoneEmployee(e.target.value);
               }}
-              startContent={<Search />}
+              onClear={() => {
+                setFilter({ ...filter, phoneEmployee: '' });
+              }}
+            />
+            <Input
+              isClearable
               className="w-full border dark:border-white rounded-xl  dark:text-white"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Telefono"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
+              label="Codigo"
+              labelPlacement="outside"
               placeholder="Escribe para buscar..."
-            />
-            <Input
+              startContent={<Search />}
               value={filter.codeEmployee}
-              onClear={() => {
-                setFilter({ ...filter, codeEmployee: '' });
-              }}
-              isClearable
+              variant="bordered"
               onChange={(e) => {
                 setFilter({ ...filter, codeEmployee: e.target.value });
                 props.codeEmpleyee(e.target.value);
               }}
-              startContent={<Search />}
-              className="w-full border dark:border-white rounded-xl  dark:text-white"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Codigo"
-              classNames={{
-                label: 'font-semibold text-gray-700',
-                inputWrapper: 'pr-0',
+              onClear={() => {
+                setFilter({ ...filter, codeEmployee: '' });
               }}
-              placeholder="Escribe para buscar..."
             />
             <div>
-              <label className="font-semibold dark:text-white text-sm">Fecha Inicial</label>
+              <span className="font-semibold dark:text-white text-sm">Fecha Inicial</span>
 
               <Input
+                className="w-full dark:text-white  rounded-xl border border-white"
+                classNames={{
+                  base: 'font-semibold dark:text-white text-sm',
+                  label: 'font-semibold dark:text-white text-sm',
+                }}
+                defaultValue={filter.startDate}
+                labelPlacement="outside"
                 type="date"
+                variant="bordered"
                 onChange={(e) => {
                   props.startDate(e.target.value),
                     setFilter({ ...filter, startDate: e.target.value });
                 }}
-                defaultValue={filter.startDate}
-                variant="bordered"
-                labelPlacement="outside"
-                classNames={{
-                  base: 'font-semibold dark:text-white text-sm',
-                  label: 'font-semibold dark:text-white text-sm',
-                }}
-                className="w-full dark:text-white  rounded-xl border border-white"
               />
             </div>
             <div>
-              <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
+              <span className="font-semibold dark:text-white text-sm">Fecha Final</span>
               <Input
-                type="date"
-                onChange={(e) => {
-                  props.endDate(e.target.value), setFilter({ ...filter, endDate: e.target.value });
-                }}
-                defaultValue={filter.endDate}
-                variant="bordered"
-                labelPlacement="outside"
+                className="w-full dark:text-white  rounded-xl border border-white"
                 classNames={{
                   base: 'font-semibold dark:text-white text-sm',
                   label: 'font-semibold dark:text-white text-sm',
                 }}
-                className="w-full dark:text-white  rounded-xl border border-white"
+                defaultValue={filter.endDate}
+                labelPlacement="outside"
+                type="date"
+                variant="bordered"
+                onChange={(e) => {
+                  props.endDate(e.target.value), setFilter({ ...filter, endDate: e.target.value });
+                }}
               />
             </div>
-            <label className="dark:text-white">Sucursal </label>
+            <span className="dark:text-white">Sucursal </span>
             <Autocomplete
-              onSelectionChange={(value) => {
-                const selectRol = branch_list.find((rol) => rol.name === value);
-                setFilter({
-                  nameEmployee: '',
-                  phoneEmployee: '',
-                  codeEmployee: '',
-                  startDate: fechaActualString,
-                  endDate: fechaActualString,
-                  nameBranchEmployee: selectRol?.name || '',
-                });
-                props.branchName(selectRol?.name ?? '');
+              className="dark:text-white border dark:border-white rounded-xl"
+              classNames={{
+                base: 'text-gray-500 text-sm',
               }}
-              defaultItems={branch_list}
-              defaultSelectedKey={filter.nameBranchEmployee}
               clearButtonProps={{
                 onClick: () => {
                   setFilter({
@@ -192,24 +186,35 @@ function SearchEmployee(props: IPropsSearchEmployee) {
                   });
                 },
               }}
+              defaultItems={branch_list}
+              defaultSelectedKey={filter.nameBranchEmployee}
               labelPlacement="outside"
               placeholder="Selecciona la sucursal"
               variant="bordered"
-              className="dark:text-white border dark:border-white rounded-xl"
-              classNames={{
-                base: 'text-gray-500 text-sm',
+              onSelectionChange={(value) => {
+                const selectRol = branch_list.find((rol) => rol.name === value);
+
+                setFilter({
+                  nameEmployee: '',
+                  phoneEmployee: '',
+                  codeEmployee: '',
+                  startDate: fechaActualString,
+                  endDate: fechaActualString,
+                  nameBranchEmployee: selectRol?.name || '',
+                });
+                props.branchName(selectRol?.name ?? '');
               }}
             >
               {branch_list.map((dep) => (
-                <AutocompleteItem className="dark:text-white" key={dep.name}>
+                <AutocompleteItem key={dep.name} className="dark:text-white">
                   {dep.name}
                 </AutocompleteItem>
               ))}
             </Autocomplete>
 
             <ButtonUi
-             theme={Colors.Primary}
-              className="mb-10 font-semibold"
+             className="mb-10 font-semibold"
+              theme={Colors.Primary}
               onPress={() => {
                 getEmployeesPaginated(
                   Number(

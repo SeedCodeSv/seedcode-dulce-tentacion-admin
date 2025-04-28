@@ -1,6 +1,7 @@
 import { ElementType, useContext, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Lock } from 'lucide-react';
+
 import { ThemeContext } from '@/hooks/useTheme';
 import { hexToRgba } from '@/layout/utils';
 import { PermissionContext } from '@/hooks/usePermission';
@@ -17,6 +18,7 @@ const SidebarNavLink = ({ viewName, to, icon: Icon, label }: SidebarNavLinkProps
 
   const isActive = useMemo(() => {
     const view = roleActions?.views.find((view) => view.view.name === viewName);
+
     return !!view;
   }, [roleActions, viewName]);
 
@@ -24,14 +26,14 @@ const SidebarNavLink = ({ viewName, to, icon: Icon, label }: SidebarNavLinkProps
 
   return isActive ? (
     <NavLink
-      to={to}
+      className={`group relative flex items-center gap-2.5 font-normal rounded-sm px-3 duration-300 ease-in-out dark:hover:bg-gray-70`}
       style={({ isActive }) => ({
         backgroundColor: isActive
           ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
           : theme.colors[context].menu.background,
         color: theme.colors[context].menu.textColor,
       })}
-      className={`group relative flex items-center gap-2.5 font-normal rounded-sm px-3 duration-300 ease-in-out dark:hover:bg-gray-70`}
+      to={to}
     >
       <Icon size={15} />
       {label}

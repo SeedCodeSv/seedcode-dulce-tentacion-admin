@@ -1,11 +1,12 @@
+import { Input, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
+import { toast } from 'sonner';
+
 import Pagination from '@/components/global/Pagination';
 import { Items } from '@/pages/contablilidad/types/types';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import ThGlobal from '@/themes/ui/th-global';
 import { AccountCatalog } from '@/types/accountCatalogs.types';
-import { Input, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
-import { Dispatch, SetStateAction, useMemo, useState } from 'react';
-import { toast } from 'sonner';
 
 interface PropsItems {
   items: Items[];
@@ -30,6 +31,7 @@ function CatalogItemsPaginated(props: PropsItems) {
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredData, currentPage]);
 
@@ -44,9 +46,11 @@ function CatalogItemsPaginated(props: PropsItems) {
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
+
       return;
     }
     const items = [...props.items];
+
     items[props.index].codCuenta = item.code;
     props.setItems([...items]);
     props.onClose();
@@ -59,11 +63,11 @@ function CatalogItemsPaginated(props: PropsItems) {
         <div>
           <Input
             classNames={{ base: 'font-semibold' }}
-            labelPlacement="outside"
-            variant="bordered"
             label="Buscar por código"
+            labelPlacement="outside"
             placeholder="Escribe para buscar..."
             value={search}
+            variant="bordered"
             onChange={(e) => {
               setSearch(e.target.value);
               setCurrentPage(1);
@@ -96,10 +100,10 @@ function CatalogItemsPaginated(props: PropsItems) {
       <ModalFooter className="w-full">
         <Pagination
           currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
           nextPage={currentPage + 1}
           previousPage={currentPage - 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
         />
       </ModalFooter>
     </>

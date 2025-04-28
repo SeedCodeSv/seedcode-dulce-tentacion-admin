@@ -6,18 +6,21 @@ import {
   PopoverTrigger,
   useDisclosure,
 } from '@heroui/react';
-import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';
+import { useEffect, useState } from 'react';
+import { BoxIcon } from 'lucide-react';
+
+import { global_styles } from '../../styles/global.styles';
 import { Branches } from '../../types/branches.types';
 import { useBoxStore } from '../../store/Boxes.store';
 import { IBoxPayload } from '../../types/box.types';
-import { useEffect, useState } from 'react';
 import { verify_box } from '../../services/Boxes.service';
-import { BoxIcon } from 'lucide-react';
 import { post_box, save_branch_id } from '../../storage/localStorage';
-import CloseBox from './box/CloseBox';
 import HeadlessModal from '../global/HeadlessModal';
+
+import CloseBox from './box/CloseBox';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -42,6 +45,7 @@ function AddBranch(props: Props) {
         start: values.start,
         branchId: props.branch.id,
       };
+
       postBox(payload);
     }
     props.closeModal();
@@ -60,6 +64,7 @@ function AddBranch(props: Props) {
     props.closeModal();
     props.setBranch(undefined);
   };
+
   useEffect(() => {
     (async () => {
       if (props.branch) {
@@ -89,16 +94,16 @@ function AddBranch(props: Props) {
                 Puedes cerrar la caja y activar una nueva o puedes usar usar la caja activa
               </div>
               <div className="w-full flex justify-center py-5">
-                <BoxIcon size={60} className=" justify-center items-center" />
+                <BoxIcon className=" justify-center items-center" size={60} />
               </div>
             </div>
             <div className="flex justify-between gap-5 mt-5">
-              <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+              <Popover showArrow backdrop="blur" isOpen={isOpen} onClose={onClose}>
                 <PopoverTrigger>
                   <Button
-                    onClick={onOpen}
                     isIconOnly
                     style={{ width: 200, height: 50, ...global_styles().dangerStyles }}
+                    onClick={onOpen}
                   >
                     Métodos de cierre
                   </Button>
@@ -116,9 +121,9 @@ function AddBranch(props: Props) {
                         Cierre contabilizado
                       </ButtonUi>
                       <ButtonUi
-                        onClick={() => handleCloseBoxId()}
                         className="ml-5"
                         theme={Colors.Info}
+                        onClick={() => handleCloseBoxId()}
                       >
                         Solo cerrar caja
                       </ButtonUi>
@@ -146,14 +151,14 @@ function AddBranch(props: Props) {
                   <div className="">
                     <div className="w-full pt-3 mb-4 dark:text-white">
                       <Input
-                        label="Monto inicial "
-                        placeholder="Cantidad"
-                        variant="bordered"
-                        onChange={handleChange('start')}
-                        onBlur={handleBlur('start')}
-                        value={values.start.toString()}
                         classNames={{ label: 'font-semibold' }}
+                        label="Monto inicial "
                         labelPlacement="outside"
+                        placeholder="Cantidad"
+                        value={values.start.toString()}
+                        variant="bordered"
+                        onBlur={handleBlur('start')}
+                        onChange={handleChange('start')}
                       />
                       {errors.start && touched.start && (
                         <span className="text-sm font-semibold text-red-500">{errors.start}</span>
@@ -161,10 +166,10 @@ function AddBranch(props: Props) {
                     </div>
                     <div>
                       <Button
+                        className="w-full font-semibold"
+                        style={global_styles().thirdStyle}
                         type="submit"
                         onClick={() => handleSubmit()}
-                        style={global_styles().thirdStyle}
-                        className="w-full font-semibold"
                       >
                         Guardar
                       </Button>
@@ -178,12 +183,11 @@ function AddBranch(props: Props) {
       </div>
       <HeadlessModal
         isOpen={modalCloseBox.isOpen}
+        size="w-full"
+        title="Cierre de caja"
         onClose={() => {
           modalCloseBox.onClose();
         }}
-        title="Cierre de caja"
-        size="w-full"
-        // isFull
       >
         <CloseBox />
       </HeadlessModal>

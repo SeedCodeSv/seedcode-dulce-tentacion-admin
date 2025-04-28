@@ -1,12 +1,14 @@
-import Layout from "@/layout/Layout";
-import { useEmployeeStore } from "@/store/employee.store";
 import { Tab, Tabs } from "@heroui/react";
 import { ArrowDown01, ArrowUp01, BadgeDollarSign, HelpCircle } from "lucide-react";
 import { useEffect } from "react";
+
 import ContingenceFC_CCF from "./contingence/ContingenceFC_CFF";
 import ContingenceND from "./contingence/ContingenceND";
 import ContingenceNC from "./contingence/ContingenceNC";
 import ContingenceFSE from "./contingence/ContingenceFSE";
+
+import { useEmployeeStore } from "@/store/employee.store";
+import Layout from "@/layout/Layout";
 
 function ContingenceSection() {
     const { getEmployeesList } = useEmployeeStore();
@@ -20,8 +22,8 @@ function ContingenceSection() {
             <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
                 <div className="w-full h-full p-3 mt-3 bg-white shadow rounded-xl dark:bg-gray-900 overflow-y-auto overflow-x-auto">
                     <Tabs
-                        className="px-2 grid lg:grid-cols-1 gap-4"
                         aria-label="Options"
+                        className="px-2 grid lg:grid-cols-1 gap-4"
                         color="primary"
                     >
                         <Tab

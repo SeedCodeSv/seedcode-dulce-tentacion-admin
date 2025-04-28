@@ -1,7 +1,9 @@
 import { create } from 'zustand';
-import { ISaleStatusStore } from './types/sale_status.store.types';
-import { get_sales_status } from '../services/sales_status.service';
 import { toast } from 'sonner';
+
+import { get_sales_status } from '../services/sales_status.service';
+
+import { ISaleStatusStore } from './types/sale_status.store.types';
 
 export const useSaleStatusStore = create<ISaleStatusStore>((set) => ({
   saleStatus: [],

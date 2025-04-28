@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { ThemeStore } from './types/theme_store.types';
+
 import { get_themes_paginated } from '../services/theme.service';
+
+import { ThemeStore } from './types/theme_store.types';
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   themes: [],

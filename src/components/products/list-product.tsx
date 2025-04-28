@@ -13,28 +13,32 @@ import {
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { EditIcon, SearchIcon, CreditCard, Table as ITable, RefreshCcw, Trash } from 'lucide-react';
+import { ButtonGroup } from '@heroui/react';
+import classNames from 'classnames';
+import { useNavigate } from 'react-router';
+
 import AddButton from '../global/AddButton';
 import { useProductsStore } from '../../store/products.store';
 import Pagination from '../global/Pagination';
 import { Product } from '../../types/products.types';
 import { useCategoriesStore } from '../../store/categories.store';
-import { ButtonGroup } from '@heroui/react';
 import { CategoryProduct } from '../../types/categories.types';
-import UpdateProduct from './update-product';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import useWindowSize from '../../hooks/useWindowSize';
-import classNames from 'classnames';
+
+import UpdateProduct from './update-product';
+import SearchProduct from './search-product';
+import CardProduct from './card-product';
+
 import { useSubCategoryStore } from '@/store/sub-category';
-import { useNavigate } from 'react-router';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import NO_DATA from '@/assets/svg/no_data.svg';
-import SearchProduct from './search-product';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import ThGlobal from '@/themes/ui/th-global';
-import CardProduct from './card-product';
+
 
 interface Props {
   actions: string[];
@@ -93,6 +97,7 @@ function ListProducts({ actions }: Props) {
     });
   };
   const navigate = useNavigate();
+
   return (
     <>
       <div className=" w-full h-full bg-white dark:bg-gray-900">
@@ -100,10 +105,10 @@ function ListProducts({ actions }: Props) {
           <div className="flex justify-between items-end ">
             <SearchProduct
               categoryProduct={(category: string) => setCategory(category)}
-              subCategoryProduct={(subCategory: string) => setSubCategory(subCategory)}
               codeProduct={(code: string) => setCode(code)}
               nameProduct={(name: string) => setSearch(name)}
-            ></SearchProduct>
+              subCategoryProduct={(subCategory: string) => setSubCategory(subCategory)}
+             />
             {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
@@ -115,38 +120,38 @@ function ListProducts({ actions }: Props) {
           <div className="hidden w-full gap-5 md:flex">
             <div className="grid w-full grid-cols-5 gap-3 items-end">
               <Input
-                startContent={<SearchIcon />}
+                isClearable
                 className="w-full text-gray-900 dark:text-white  border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                label="Nombre"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<SearchIcon />}
+                value={search}
+                variant="bordered"
+                onChange={(e) => setSearch(e.target.value)}
                 onClear={() => {
                   setSearch('');
                   handleSearch('');
                 }}
               />
               <Input
-                startContent={<SearchIcon />}
+                isClearable
                 className="w-full dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Código"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
+                label="Código"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<SearchIcon />}
+                value={code}
+                variant="bordered"
+                onChange={(e) => setCode(e.target.value)}
                 onClear={() => {
                   // handleSearch("");
                   setCode('');
@@ -155,28 +160,29 @@ function ListProducts({ actions }: Props) {
               />
 
               <div className="w-full">
-                <label className="font-semibold dark:text:white text-sm">Categoría</label>
+                <span className="font-semibold dark:text:white text-sm">Categoría</span>
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                      setCategory(branchSelected.name);
-                      setCategoryId(branchSelected.id);
-                    }
-                  }}
                   className="w-full dark:text-white border border-white rounded-xl "
-                  placeholder="Selecciona la categoría"
-                  variant="bordered"
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
-                  value={category}
                   clearButtonProps={{
                     onClick: () => {
                       setCategory('');
                       handleSearch('');
                       // setCategoryId(0);
                     },
+                  }}
+                  placeholder="Selecciona la categoría"
+                  value={category}
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const branchSelected = JSON.parse(key as string) as CategoryProduct;
+
+                      setCategory(branchSelected.name);
+                      setCategoryId(branchSelected.id);
+                    }
                   }}
                 >
                   {list_categories.map((bra) => (
@@ -188,29 +194,30 @@ function ListProducts({ actions }: Props) {
               </div>
 
               <div className="w-full">
-                <label className="font-semibold dark:text-white text-sm">Sub Categoría</label>
+                <span className="font-semibold dark:text-white text-sm">Sub Categoría</span>
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                      setSubCategory(branchSelected.name);
-                    }
-                  }}
                   className="w-full dark:text-white border border-white rounded-xl "
-                  placeholder="Selecciona la sub categoría"
-                  variant="bordered"
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
-                  value={category}
-                  items={
-                    subcategories.length > 0 || categoryId > 0 ? subcategories : sub_categories
-                  }
                   clearButtonProps={{
                     onClick: () => {
                       setSubCategory('');
                       handleSearch('');
                     },
+                  }}
+                  items={
+                    subcategories.length > 0 || categoryId > 0 ? subcategories : sub_categories
+                  }
+                  placeholder="Selecciona la sub categoría"
+                  value={category}
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const branchSelected = JSON.parse(key as string) as CategoryProduct;
+
+                      setSubCategory(branchSelected.name);
+                    }
                   }}
                 >
                   {(item) => (
@@ -222,8 +229,8 @@ function ListProducts({ actions }: Props) {
               </div>
               <ButtonUi
                 className="hidden  md:flex "
-                theme={Colors.Primary}
                 startContent={<SearchIcon className="w-10" />}
+                theme={Colors.Primary}
                 onPress={() => {
                   handleSearch(undefined);
                 }}
@@ -237,12 +244,12 @@ function ListProducts({ actions }: Props) {
             <div className="flex justify-start order-2 lg:order-1">
               <div className="xl:mt-10">
                 <Switch
-                  onValueChange={(active) => setActive(active)}
-                  isSelected={active}
                   classNames={{
                     thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                     wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
                   }}
+                  isSelected={active}
+                  onValueChange={(active) => setActive(active)}
                 >
                   <span className="text-sm sm:text-base whitespace-nowrap">
                     Mostrar {active ? 'inactivos' : 'activos'}
@@ -252,16 +259,16 @@ function ListProducts({ actions }: Props) {
             </div>
             <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
               <div className="w-[150px]">
-                <label className="  font-semibold text-white text-sm">Mostrar</label>
+                <span className="  font-semibold text-white text-sm">Mostrar</span>
                 <Select
                   className="max-w-44 dark:text-white border border-white rounded-xl "
-                  variant="bordered"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={['5']}
                   classNames={{
                     label: 'font-semibold',
                   }}
+                  defaultSelectedKeys={['5']}
+                  labelPlacement="outside"
                   value={limit}
+                  variant="bordered"
                   onChange={(e) => {
                     setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                   }}
@@ -275,15 +282,15 @@ function ListProducts({ actions }: Props) {
               </div>
               <ButtonGroup className="mt-4">
                 <ButtonUi
-                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('table')}
                 >
                   <ITable />
                 </ButtonUi>
                 <ButtonUi
-                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('grid')}
                 >
                   <CreditCard />
@@ -294,13 +301,13 @@ function ListProducts({ actions }: Props) {
 
           {(view === 'grid' || view === 'list') && (
             <CardProduct
+              DeletePopover={DeletePopover}
               actions={actions}
+              handleActivate={(id) => handleActivate(id)}
               openEditModal={(prd) => {
                 setSelectedProduct(prd);
                 setIsOpenModalUpdate(true);
               }}
-              DeletePopover={DeletePopover}
-              handleActivate={(id) => handleActivate(id)}
             />
           )}
           {view === 'table' && (
@@ -319,9 +326,9 @@ function ListProducts({ actions }: Props) {
                   <tbody className="max-h-[600px] w-full overflow-y-auto">
                     {loading_products ? (
                       <tr>
-                        <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                           <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader"></div>
+                            <div className="loader" />
                             <p className="mt-3 text-xl font-semibold">Cargando...</p>
                           </div>
                         </td>
@@ -330,8 +337,8 @@ function ListProducts({ actions }: Props) {
                       <>
                         {paginated_products.products.length > 0 ? (
                           <>
-                            {paginated_products.products.map((product) => (
-                              <tr className="border-b border-slate-200">
+                            {paginated_products.products.map((product, index) => (
+                              <tr key={index} className="border-b border-slate-200">
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   {product.id}
                                 </td>
@@ -348,13 +355,13 @@ function ListProducts({ actions }: Props) {
                                   <div className="flex w-full gap-5">
                                     {actions.includes('Editar') && product.isActive && (
                                       <ButtonUi
+                                        isIconOnly
                                         className="border border-white"
+                                        theme={Colors.Success}
                                         onPress={() => {
                                           setSelectedProduct(product);
                                           setIsOpenModalUpdate(true);
                                         }}
-                                        isIconOnly
-                                        theme={Colors.Success}
                                       >
                                         <EditIcon size={20} />
                                       </ButtonUi>
@@ -368,9 +375,9 @@ function ListProducts({ actions }: Props) {
                                           <>
                                             {!product.isActive && (
                                               <ButtonUi
+                                                isIconOnly
                                                 theme={Colors.Info}
                                                 onPress={() => handleActivate(product.id)}
-                                                isIconOnly
                                               >
                                                 <RefreshCcw />
                                               </ButtonUi>
@@ -387,7 +394,7 @@ function ListProducts({ actions }: Props) {
                           <tr>
                             <td colSpan={5}>
                               <div className="flex flex-col items-center justify-center w-full">
-                                <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                <img alt="X" className="w-32 h-32" src={NO_DATA} />
                                 <p className="mt-3 text-xl dark:text-white">
                                   No se encontraron resultados
                                 </p>
@@ -406,9 +413,9 @@ function ListProducts({ actions }: Props) {
             <>
               <div className="hidden w-full mt-5 md:flex">
                 <Pagination
-                  previousPage={paginated_products.prevPag}
-                  nextPage={paginated_products.nextPag}
                   currentPage={paginated_products.currentPag}
+                  nextPage={paginated_products.nextPag}
+                  previousPage={paginated_products.prevPag}
                   totalPages={paginated_products.totalPag}
                   onPageChange={(page) => {
                     serPage(page);
@@ -418,6 +425,7 @@ function ListProducts({ actions }: Props) {
               </div>
               <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
+                  currentPage={paginated_products.currentPag}
                   handleNext={() => {
                     serPage(paginated_products.nextPag);
                     getPaginatedProducts(
@@ -440,7 +448,6 @@ function ListProducts({ actions }: Props) {
                       code
                     );
                   }}
-                  currentPage={paginated_products.currentPag}
                   totalPages={paginated_products.totalPag}
                 />
               </div>
@@ -449,8 +456,8 @@ function ListProducts({ actions }: Props) {
         </div>
         <UpdateProduct
           isOpen={isOpenModalUpdate}
-          onCloseModal={() => setIsOpenModalUpdate(false)}
           product={selectedProduct}
+          onCloseModal={() => setIsOpenModalUpdate(false)}
         />
       </div>
     </>
@@ -478,8 +485,8 @@ export const DeletePopover = ({ product }: PopProps) => {
       <Popover
         className="border border-white rounded-2xl"
         {...deleteDisclosure}
-        backdrop="blur"
         showArrow
+        backdrop="blur"
       >
         <PopoverTrigger>
           <Button isIconOnly style={style}>
@@ -494,9 +501,9 @@ export const DeletePopover = ({ product }: PopProps) => {
             </p>
             <div className="flex justify-center mt-4 gap-5">
               <ButtonUi
+                className="border border-white"
                 theme={Colors.Default}
                 onPress={deleteDisclosure.onClose}
-                className="border border-white"
               >
                 No, cancelar
               </ButtonUi>

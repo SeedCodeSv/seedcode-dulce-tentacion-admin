@@ -1,8 +1,10 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useContext } from 'react';
+
+import { ThemeContext } from '@/hooks/useTheme';
 
 const useGlobalStyles = () => {
   const { theme, context } = useContext(ThemeContext);
+
   return {
     darkStyle: {
       backgroundColor: theme.colors[context].buttons.colors.primary,

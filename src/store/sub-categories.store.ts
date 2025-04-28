@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { ISubCategoryStore } from "./types/sub_categories_store.types";
+
 import { get_subcategories } from "../services/sub-category.service";
+
+import { ISubCategoryStore } from "./types/sub_categories_store.types";
 
 export const useSubCategoriesStore = create<ISubCategoryStore>((set) => ({
   subcategories: [],

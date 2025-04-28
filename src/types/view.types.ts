@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+
 import { IPagination } from './global.types';
 
 export interface ArrayAction {

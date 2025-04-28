@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { IBranchStore } from './types/branch.store';
+import { toast } from 'sonner';
+
 import {
   get_branches_pagination,
   patch_branch,
@@ -11,7 +12,9 @@ import {
   save_active_branch,
 } from '../services/branches.service';
 import { messages } from '../utils/constants';
-import { toast } from 'sonner';
+
+import { IBranchStore } from './types/branch.store';
+
 
 export const useBranchesStore = create<IBranchStore>((set, get) => ({
   branches_paginated: {
@@ -55,10 +58,12 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       .then(({ data }) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
@@ -88,10 +93,12 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       .then((result) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
         toast.success(messages.success);
+
         return result.data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
@@ -100,21 +107,26 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       .then(({ data }) => {
         get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
   async deleteBranch(id) {
     try {
       const { data } = await delete_branch(id);
+
       get().getBranchesPaginated(1, get().limit, '', '', '', get().active);
       toast.success(messages.success);
+
       return data.ok;
     } catch {
       toast.error(messages.error);
+
       return false;
     }
   },

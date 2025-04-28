@@ -9,11 +9,10 @@ function GlobalLoading({ show }: Props) {
     <>
       {show && (
         <motion.div
-          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
           className="flex justify-center items-center flex-col"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
           style={{
             position: 'fixed',
             top: 0,
@@ -23,8 +22,9 @@ function GlobalLoading({ show }: Props) {
             backgroundColor: 'rgba(0, 0, 0, 0.6)',
             zIndex: 200000,
           }}
+          transition={{ duration: 0.5 }}
         >
-          <div className="loader"></div>
+          <div className="loader" />
           <p className="text-xl mt-5 text-white">Cargando...</p>
         </motion.div>
       )}

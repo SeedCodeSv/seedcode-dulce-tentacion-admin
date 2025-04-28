@@ -103,6 +103,7 @@ const total_iva = (cart_products: ICartProduct[]) => {
     })
     .reduce((a, b) => a + b, 0);
 };
+
 function calcularPorcentajeDescuento(totalSinDescuento: number, totalDescuento: number): number {
   return ((totalSinDescuento - totalDescuento) / totalSinDescuento) * 100;
 }
@@ -118,10 +119,12 @@ const total_with_discount = (cart_products: ICartProduct[]) => {
   return cart_products
     .map((prd) => {
       const price = Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
+
       return price * prd.quantity;
     })
     .reduce((a, b) => a + b, 0);
 };
+
 export const generate_credito_fiscal = (
   emisor: ITransmitter,
   valueTipo: ITipoDocumento,

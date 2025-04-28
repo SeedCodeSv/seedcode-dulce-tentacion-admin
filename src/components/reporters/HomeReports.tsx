@@ -38,7 +38,7 @@ function HomeReports() {
           backgroundImage: `linear-gradient(to right, #00509d, #003f88)`,
         }}
       >
-        <p className="text-base tracking-wide px-[10px] pt-[10px] font-bold text-white uppercase"></p>
+        <p className="text-base tracking-wide px-[10px] pt-[10px] font-bold text-white uppercase" />
       </div>
     </div>
   );

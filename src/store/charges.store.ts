@@ -1,8 +1,10 @@
 import { create } from "zustand"
-import { IChargesStore } from "./types/charges.store.types";
-import { activate_charge, create_charge, delete_charge, get_charges_list, get_charges_paginated, update_charge } from "../services/charges.service";
 import { toast } from "sonner";
+
+import { activate_charge, create_charge, delete_charge, get_charges_list, get_charges_paginated, update_charge } from "../services/charges.service";
 import { messages } from "../utils/constants";
+
+import { IChargesStore } from "./types/charges.store.types";
 
 
 export const useChargesStore = create<IChargesStore>((set, get) => ({
@@ -71,20 +73,25 @@ export const useChargesStore = create<IChargesStore>((set, get) => ({
     return await delete_charge(id).then((res) => {
       get().getChargesPaginated(1, 5, '', 1);
       toast.success(messages.success);
+
       return res.data.ok;
     }).catch(() => {
       toast.error(messages.error);
+
       return false;
     });
   },
   async activateCharge(id) {
     try {
       const res = await activate_charge(id);
+
       get().getChargesPaginated(1, 5, '', 1);
       toast.success(messages.success);
+
       return res.data.ok;
     } catch {
       toast.error(messages.error);
+
       return false;
     }
   }

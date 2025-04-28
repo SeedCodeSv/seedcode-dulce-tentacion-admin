@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { ICategoriesExpensesStore } from './types/categories_expenses.store';
+import { toast } from 'sonner';
+
 import {
   get_List_categories_expenses,
   get_categories_expenses_paginated,
@@ -7,8 +8,9 @@ import {
   update_categories_expenses,
   delete_categories_expenses,
 } from '../services/categories_expenses.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+
+import { ICategoriesExpensesStore } from './types/categories_expenses.store';
 
 export const useCategoriesExpenses = create<ICategoriesExpensesStore>((set, get) => ({
   paginated_categories_expenses: {
@@ -75,10 +77,12 @@ export const useCategoriesExpenses = create<ICategoriesExpensesStore>((set, get)
       .then(({ data }) => {
         get().getPaginatedCategoriesExpenses(1, 5, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

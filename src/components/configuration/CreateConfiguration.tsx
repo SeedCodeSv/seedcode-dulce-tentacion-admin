@@ -1,11 +1,13 @@
 import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Image as NextImage, Input, Checkbox } from "@heroui/react";
+import compressImage from 'browser-image-compression';
+
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { ICreacteConfiguaration } from '../../types/configuration.types';
 import DefaultImage from '../../assets/react.svg';
 import { useAuthStore } from '../../store/auth.store';
-import compressImage from 'browser-image-compression';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -36,9 +38,11 @@ function CreateConfiguration(props: Props) {
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       if (file.type !== 'image/png') {
         toast.error('Solo se permiten imágenes en formato .png');
+
         return;
       }
 
@@ -57,6 +61,7 @@ function CreateConfiguration(props: Props) {
         });
 
         const compressedImageUrl = URL.createObjectURL(convertedFile);
+
         setSelectedImage(compressedImageUrl);
 
         setFormData((prevData) => ({
@@ -111,41 +116,41 @@ function CreateConfiguration(props: Props) {
     <div className="p-4 dark:text-white">
       <div className="flex flex-col items-center justify-center m-4 2xl:mt-10">
         <NextImage
-          src={selectedImage}
           alt="Cargando..."
-          fallbackSrc={DefaultImage}
           className="h-720 w-72 rounded-lg object-cover"
+          fallbackSrc={DefaultImage}
+          src={selectedImage}
         />
         <div className="mt-2">
           <label htmlFor="fileInput">
             <ButtonUi
               className="text-white font-semibold px-5"
-              onPress={handleButtonClick}
-              theme={Colors.Primary}
               disabled={loading}
+              theme={Colors.Primary}
+              onPress={handleButtonClick}
             >
               {loading ? 'Cargando...' : 'Selecciona un archivo'}
             </ButtonUi>
           </label>
           <input
-            type="file"
-            id="fileInput"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
             ref={fileInputRef}
+            accept="image/*"
+            id="fileInput"
+            style={{ display: 'none' }}
+            type="file"
+            onChange={handleFileChange}
           />
         </div>
         <div className="mt-2 w-full">
           <Input
             isRequired
-            type="text"
-            name="name"
-            variant="bordered"
-            placeholder="Nombre"
-            value={formData.name}
-            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
             label="Ingrese el nombre"
+            name="name"
+            placeholder="Nombre"
+            type="text"
+            value={formData.name}
+            variant="bordered"
+            onChange={(event) => setFormData({ ...formData, name: event.target.value })}
           />
         </div>
         <div className="mt-2 w-full">
@@ -157,11 +162,11 @@ function CreateConfiguration(props: Props) {
           </Checkbox>
         </div>
         <ButtonUi
-          color="primary"
           className="font-semibold w-full mt-4 text-sm text-white shadow-lg"
-          onPress={handleSave}
-          theme={Colors.Primary}
+          color="primary"
           disabled={loading}
+          theme={Colors.Primary}
+          onPress={handleSave}
         >
           {loading ? 'Guardando...' : 'Guardar'}
         </ButtonUi>

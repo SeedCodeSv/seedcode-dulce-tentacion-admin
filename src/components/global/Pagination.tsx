@@ -2,6 +2,7 @@ import { Button } from "@heroui/react";
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+
 import { ThemeContext } from '../../hooks/useTheme';
 
 /* eslint-disable no-unused-vars */
@@ -43,10 +44,10 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         pages.push(
           <Button
             key={i}
-            style={props.currentPage === i ? activeStyle : inactiveStyle}
-            onPress={() => handlePageChange(i)}
             isIconOnly
             className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
+            style={props.currentPage === i ? activeStyle : inactiveStyle}
+            onPress={() => handlePageChange(i)}
           >
             {i}
           </Button>
@@ -70,10 +71,10 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         pages.push(
           <Button
             key={i}
-            style={props.currentPage === i ? activeStyle : inactiveStyle}
-            onPress={() => handlePageChange(i)}
             isIconOnly
             className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
+            style={props.currentPage === i ? activeStyle : inactiveStyle}
+            onPress={() => handlePageChange(i)}
           >
             {i}
           </Button>
@@ -82,14 +83,14 @@ const Pagination: React.FC<PaginationProps> = (props) => {
 
       if (props.currentPage > leftSide + 1) {
         pages.unshift(
-          <Button style={inactiveStyle} isIconOnly key="leftDots">
+          <Button key="leftDots" isIconOnly style={inactiveStyle}>
             ...
           </Button>
         );
       }
       if (props.currentPage < totalPages - rightSide) {
         pages.push(
-          <Button style={inactiveStyle} isIconOnly key="rightDots">
+          <Button key="rightDots" isIconOnly style={inactiveStyle}>
             ...
           </Button>
         );
@@ -122,28 +123,28 @@ const Pagination: React.FC<PaginationProps> = (props) => {
   return (
     <>
       <div className="hidden lg:flex gap-2 pagination w-full">
-        <Button style={activeStyle} isIconOnly onPress={goToFirstPage}>
+        <Button isIconOnly style={activeStyle} onPress={goToFirstPage}>
           <ChevronsLeft />
         </Button>
-        <Button style={activeStyle} isIconOnly onPress={goToPrevPage}>
+        <Button isIconOnly style={activeStyle} onPress={goToPrevPage}>
           <ChevronLeft />
         </Button>
         {renderPageNumbers()}
-        <Button style={activeStyle} isIconOnly onPress={goToNextPage}>
+        <Button isIconOnly style={activeStyle} onPress={goToNextPage}>
           <ChevronRight />
         </Button>
-        <Button style={activeStyle} isIconOnly onPress={goToLastPage}>
+        <Button isIconOnly style={activeStyle} onPress={goToLastPage}>
           <ChevronsRight />
         </Button>
       </div>
       <div className='flex lg:hidden w-full'>
         <div className="flex justify-between w-full lg:hidden gap-2 pagination">
 
-          <Button style={activeStyle} isIconOnly onPress={goToPrevPage}>
+          <Button isIconOnly style={activeStyle} onPress={goToPrevPage}>
             <ChevronLeft />
           </Button>
           {props.currentPage} de {totalPages}
-          <Button style={activeStyle} isIconOnly onPress={goToNextPage}>
+          <Button isIconOnly style={activeStyle} onPress={goToNextPage}>
             <ChevronRight />
           </Button>
         </div>

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { ISupplierStore } from './types/supplier_store.types';
+import { toast } from 'sonner';
+
 import {
   activate_supplier,
   add_supplier,
@@ -9,8 +10,10 @@ import {
   get_supplier_pagination,
   update_supplier,
 } from '../services/supplier.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+
+import { ISupplierStore } from './types/supplier_store.types';
+
 import { Supplier } from '@/types/supplier.types';
 
 export const useSupplierStore = create<ISupplierStore>((set, get) => ({
@@ -56,14 +59,17 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
         if (data) {
           get().getSupplierPagination(1, 5, '', '', '', 1);
           toast.success(messages.success);
+
           return true;
         } else {
           toast.warning(messages.error);
+
           return false;
         }
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },
@@ -73,6 +79,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       .then(({ data }) => {
         if (data) {
           const supplier = get().supplier_type;
+
           get().getSupplierPagination(1, 5, '', '', supplier, 1);
           toast.success(messages.success);
         } else {
@@ -98,13 +105,16 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     return await delete_supplier(id)
       .then(({ data }) => {
         const supplier = get().supplier_type;
+
         get().getSupplierPagination(1, 5, '', '', supplier, 1);
 
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

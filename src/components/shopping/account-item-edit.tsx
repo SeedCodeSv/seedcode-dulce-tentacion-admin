@@ -1,10 +1,12 @@
 import { Accordion, AccordionItem, Input, Select, SelectItem, Textarea } from '@heroui/react';
 import classNames from 'classnames';
 import { useEffect } from 'react';
-import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { Plus, Trash } from 'lucide-react';
+
 import { AccountItemProps } from './types/shopping-manual.types';
 import { CodCuentaSelect } from './manual/cod-cuenta-select';
+
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import ThGlobal from '@/themes/ui/th-global';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -43,6 +45,7 @@ function AccountItemEdit({
       } else if (Number(exenta) > 0) {
         return item;
       }
+
       return {
         ...item,
         descTran: text,
@@ -59,6 +62,7 @@ function AccountItemEdit({
   useEffect(() => {
     if (list_type_of_account.length > 0) {
       const find = list_type_of_account.find((w) => w.name.toLocaleLowerCase().includes('compras'));
+
       setSelectedType(find?.id ?? 0);
     }
   }, [list_type_of_account]);
@@ -131,8 +135,8 @@ function AccountItemEdit({
       <div className="w-full mt-4 border p-3 rounded-[12px]">
         <Accordion>
           <AccordionItem
-            textValue="Partida contable"
             key="1"
+            textValue="Partida contable"
             title={<p className="text-xl font-semibold">Partida contable</p>}
           >
             <div>
@@ -141,24 +145,24 @@ function AccountItemEdit({
                   classNames={{
                     base: 'font-semibold',
                   }}
-                  labelPlacement="outside"
-                  variant="bordered"
-                  type="date"
                   label="Fecha de la partida"
-                  value={date}
+                  labelPlacement="outside"
                   readOnly={isReadOnly}
+                  type="date"
+                  value={date}
+                  variant="bordered"
                   onChange={(e) => setDate(e.target.value)}
-                ></Input>
+                 />
                 <Select
                   classNames={{
                     base: 'font-semibold',
                   }}
-                  labelPlacement="outside"
-                  variant="bordered"
-                  label="Tipo de partida"
-                  placeholder="Selecciona el tipo de partida"
                   isDisabled={isReadOnly}
+                  label="Tipo de partida"
+                  labelPlacement="outside"
+                  placeholder="Selecciona el tipo de partida"
                   selectedKeys={selectedType > 0 ? [selectedType.toString()] : []}
+                  variant="bordered"
                   onSelectionChange={(key) => {
                     if (key) {
                       setSelectedType(Number(key.currentKey));
@@ -174,15 +178,15 @@ function AccountItemEdit({
               </div>
               <div className="mt-3">
                 <Textarea
-                  isReadOnly={isReadOnly}
-                  label="Concepto de la partida"
-                  placeholder="Ingresa el concepto de la partida"
-                  variant="bordered"
                   classNames={{
                     base: 'font-semibold',
                   }}
+                  isReadOnly={isReadOnly}
+                  label="Concepto de la partida"
                   labelPlacement="outside"
+                  placeholder="Ingresa el concepto de la partida"
                   value={description}
+                  variant="bordered"
                   onValueChange={handleChangeDes}
                 />
               </div>
@@ -208,25 +212,25 @@ function AccountItemEdit({
                       .sort((a, b) => a.no - b.no)
                       .map((item, index) => (
                         <tr
+                          key={index}
                           className={classNames(
                             'border-b border-slate-200',
                             index === selectedIndex && 'bg-slate-100 dark:bg-slate-900'
                           )}
                           onClick={() => setSelectedIndex(index)}
-                          key={index}
                         >
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <CodCuentaSelect
-                              openCatalogModal={openCatalogModal}
-                              onClose={onClose}
-                              items={items}
-                              setItems={setItems}
                               index={index}
                               isReadOnly={
                                 item.codCuenta === ivaShoppingCod ||
                                 index === items.length - 1 ||
                                 (!editAccount && isReadOnly)
                               }
+                              items={items}
+                              openCatalogModal={openCatalogModal}
+                              setItems={setItems}
+                              onClose={onClose}
                             />
                           </td>
 
@@ -236,14 +240,14 @@ function AccountItemEdit({
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <Input
                               aria-labelledby="Concepto"
-                              placeholder="Ingresa el concepto de la partida"
-                              variant="bordered"
                               classNames={{
                                 base: 'font-semibold',
                               }}
-                              labelPlacement="outside"
-                              value={item.descTran} // Usar "item" en lugar de "items[index]"
                               isReadOnly={isReadOnly}
+                              labelPlacement="outside"
+                              placeholder="Ingresa el concepto de la partida"
+                              value={item.descTran} // Usar "item" en lugar de "items[index]"
+                              variant="bordered"
                               onChange={(e) => {
                                 const itemss = [...items];
                                 const currentValue = e.target.value;
@@ -260,12 +264,9 @@ function AccountItemEdit({
                             <Input
                               aria-labelledby="Debe"
                               className="min-w-24"
-                              placeholder="0.00"
-                              variant="bordered"
                               classNames={{
                                 base: 'font-semibold',
                               }}
-                              labelPlacement="outside"
                               isReadOnly={
                                 Number(item.haber) > 0 || // Usar "item" en lugar de "items[index]"
                                 index === items.length - 1 ||
@@ -274,7 +275,10 @@ function AccountItemEdit({
                                 item.isExenta ||
                                 item.debe === exenta
                               }
+                              labelPlacement="outside"
+                              placeholder="0.00"
                               value={item.debe} // Usar "item" en lugar de "items[index]"
+                              variant="bordered"
                               onChange={(e) => {
                                 handleInputChange(index, 'debe', e.target.value);
                               }}
@@ -284,12 +288,9 @@ function AccountItemEdit({
                             <Input
                               aria-labelledby="Haber"
                               className="min-w-24"
-                              placeholder="0.00"
-                              variant="bordered"
                               classNames={{
                                 base: 'font-semibold',
                               }}
-                              labelPlacement="outside"
                               isReadOnly={
                                 Number(item.debe) > 0 || // Usar "item" en lugar de "items[index]"
                                 index === items.length - 1 ||
@@ -298,7 +299,10 @@ function AccountItemEdit({
                                 item.isExenta ||
                                 item.debe === exenta
                               }
+                              labelPlacement="outside"
+                              placeholder="0.00"
                               value={item.haber} // Usar "item" en lugar de "items[index]"
+                              variant="bordered"
                               onChange={(e) => {
                                 handleInputChange(index, 'haber', e.target.value);
                               }}
@@ -321,51 +325,51 @@ function AccountItemEdit({
                         </tr>
                       ))}
                     <tr>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <p className="text-lg font-semibold">Totales:</p>
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <Input
-                          placeholder="0.00"
-                          variant="bordered"
+                          readOnly
                           classNames={{ base: 'font-semibold' }}
                           labelPlacement="outside"
+                          placeholder="0.00"
                           value={$debe.toFixed(2)}
-                          readOnly
+                          variant="bordered"
                         />
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <Input
-                          placeholder="0.00"
-                          variant="bordered"
+                          readOnly
                           classNames={{ base: 'font-semibold' }}
                           labelPlacement="outside"
+                          placeholder="0.00"
                           value={$haber.toFixed(2)}
-                          readOnly
+                          variant="bordered"
                         />
                       </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                     </tr>
                     <tr>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <p className="text-lg font-semibold">Diferencia:</p>
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         <Input
-                          placeholder="0.00"
-                          variant="bordered"
+                          readOnly
                           classNames={{ base: 'font-semibold' }}
                           labelPlacement="outside"
+                          placeholder="0.00"
                           value={$total.toString()}
-                          readOnly
+                          variant="bordered"
                         />
                       </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100"></td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
                     </tr>
                   </tbody>
                 </table>

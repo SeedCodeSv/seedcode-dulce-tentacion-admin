@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import { messages } from '../utils/constants';
-import { IContractTypeStore } from './types/contratType.store';
 import {
   activate_contract_type,
   create_contract_type,
@@ -9,6 +9,8 @@ import {
   get_contract_type,
   update_contract_type,
 } from '../services/typeContract.service';
+
+import { IContractTypeStore } from './types/contratType.store';
 
 export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
   paginated_contract_type: {
@@ -51,10 +53,12 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
       .then(() => {
         get().getPaginatedContractType(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return { ok: true }; // Devuelve el objeto esperado
       })
       .catch(() => {
         toast.error(messages.error);
+
         return { ok: false }; // Devuelve el objeto esperado en caso de error
       });
   },
@@ -64,10 +68,12 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
       .then(() => {
         get().getPaginatedContractType(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.success);
+
         return { ok: false };
       });
   },
@@ -76,10 +82,12 @@ export const useContractTypeStore = create<IContractTypeStore>((set, get) => ({
       .then(({ data }) => {
         get().getPaginatedContractType(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

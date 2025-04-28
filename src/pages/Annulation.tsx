@@ -1,10 +1,13 @@
-import Layout from '@/layout/Layout';
 import { useParams } from 'react-router';
+
 import Annulation05 from './anulaciones/Annulation05';
 import Annulation06 from './anulaciones/Annulation06';
 
+import Layout from '@/layout/Layout';
+
 function Annulation() {
   const params = useParams<{ id: string; tipoDte: string }>();
+
   return (
     <Layout
       title={(() => {

@@ -1,6 +1,7 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Dispatch, SetStateAction, useContext } from 'react';
+
+import { ThemeContext } from '@/hooks/useTheme';
 
 interface Props {
   isOpen: boolean;
@@ -17,15 +18,15 @@ export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ x: -300 }}
             animate={{ x: 0 }}
+            className="fixed z-50 w-80 h-screen shadow-2xl"
             exit={{ x: -300 }}
-            transition={{ duration: 0.3 }}
+            initial={{ x: -300 }}
             style={{
               backgroundColor: theme.colors[context].menu.background,
               color: theme.colors[context].menu.textColor
             }}
-            className="fixed z-50 w-80 h-screen shadow-2xl"
+            transition={{ duration: 0.3 }}
           >
             {items()}
           </motion.div>
@@ -33,13 +34,13 @@ export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
       </AnimatePresence>
       {isOpen && (
         <motion.div
-          initial={{ opacity: 0 }}
           animate={{ opacity: 0.5 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
           className="fixed inset-0 bg-black z-40"
+          exit={{ opacity: 0 }}
+          initial={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
           onClick={() => setIsOpen(false)}
-        ></motion.div>
+         />
       )}
     </>
   );

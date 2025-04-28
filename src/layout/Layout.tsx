@@ -1,15 +1,18 @@
 import { useContext, useEffect, useState } from 'react';
-import { ThemeContext } from '../hooks/useTheme';
-import NavBar from './nav-bar';
-import { SideBar } from './side-bar';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router';
+
+import { ThemeContext } from '../hooks/useTheme';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import { useAuthStore } from '../store/auth.store';
-import { Helmet } from 'react-helmet-async';
 import { ActionsContext } from '../hooks/useActions';
 import { useActionsRolStore } from '../store/actions_rol.store';
 import { encryptData } from '../plugins/crypto';
-import { useLocation } from 'react-router';
+
+import { SideBar } from './side-bar';
+import NavBar from './nav-bar';
+
 
 interface Props {
   children: JSX.Element;

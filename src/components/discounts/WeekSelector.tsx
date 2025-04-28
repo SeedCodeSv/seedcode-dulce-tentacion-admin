@@ -28,6 +28,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ startDate, endDate, onDaysS
       const start = parseISO(startDate);
       const end = parseISO(endDate);
       const days = eachDayOfInterval({ start, end }).map((date) => format(date, 'EEEE'));
+
       setDaysInRange(days.length > 7 ? daysOfWeek.map((day) => day.value) : days);
     }
   }, [startDate, endDate]);
@@ -36,6 +37,7 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ startDate, endDate, onDaysS
     const updatedSelectedDays = selectedDays.includes(day)
       ? selectedDays.filter((d) => d !== day)
       : [...selectedDays, day];
+
     setSelectedDays(updatedSelectedDays);
     onDaysSelected(updatedSelectedDays);
   };
@@ -45,10 +47,10 @@ const WeekSelector: React.FC<WeekSelectorProps> = ({ startDate, endDate, onDaysS
       {daysInRange.map((day) => (
         <Button
           key={day}
-          onClick={() => handleDayClick(day)}
           className={`${
             selectedDays.includes(day) ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'
           }`}
+          onClick={() => handleDayClick(day)}
         >
           {day}
         </Button>

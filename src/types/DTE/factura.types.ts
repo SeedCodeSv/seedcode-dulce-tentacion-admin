@@ -1,4 +1,5 @@
 import { ITransmitter } from '../transmitter.types';
+
 import { CuerpoDocumento } from './credito_fiscal.types';
 import { Pago } from './sub_interface/payment.types';
 import { Receptor } from './sub_interface/receiver.types';

@@ -1,7 +1,5 @@
-import { useReportNoteSalesStore } from '@/store/report_notes_sale.store';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import Layout from '@/layout/Layout';
 import { ArrowLeft, CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
 import {
   Button,
@@ -12,8 +10,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@heroui/react";
-import { formatCurrency } from '@/utils/dte';
+
 import useGlobalStyles from '../global/global.styles';
+
+import { formatCurrency } from '@/utils/dte';
+import Layout from '@/layout/Layout';
+import { useReportNoteSalesStore } from '@/store/report_notes_sale.store';
 import { get_sale_pdf_debit_note } from '@/services/sales.service';
 
 function NotesDebitBySale() {
@@ -41,10 +43,10 @@ function NotesDebitBySale() {
       <>
         <div className="flex flex-col p-10 overflow-x-hidden bg-gray-50 dark:bg-gray-800">
           <div className="grid w-full grid-cols-3 gap-5">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
+            <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
               <ArrowLeft className="dark:text-white" />
               <p className=" whitespace-nowrap dark:text-white">Regresar</p>
-            </div>
+            </button>
           </div>
           <div className="overflow-x-auto custom-scrollbar mt-10">
             <table className="w-full">
@@ -75,7 +77,7 @@ function NotesDebitBySale() {
               </thead>
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {notasDebitos.map((sale, index) => (
-                  <tr className="border-b border-slate-200" key={index}>
+                  <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       {sale.fecEmi} - {sale.horEmi}
@@ -120,21 +122,21 @@ function NotesDebitBySale() {
                           </PopoverTrigger>
                           <PopoverContent className="p-1">
                             {sale.salesStatus.name === 'PROCESADO' && (
-                              <Listbox className="dark:text-white" aria-label="Actions">
+                              <Listbox aria-label="Actions" className="dark:text-white">
                                 <ListboxItem
-                                  classNames={{ base: 'font-semibold' }}
-                                  variant="flat"
-                                  color="danger"
                                   key="show-pdf"
+                                  classNames={{ base: 'font-semibold' }}
+                                  color="danger"
+                                  variant="flat"
                                   onClick={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
                                 >
                                   Ver comprobante
                                 </ListboxItem>
                                 <ListboxItem
-                                  classNames={{ base: 'font-semibold' }}
-                                  variant="flat"
-                                  color="danger"
                                   key="invalidate-nde"
+                                  classNames={{ base: 'font-semibold' }}
+                                  color="danger"
+                                  variant="flat"
                                   onClick={() => navigation("/annulation/06/" + sale.id)}
                                 >
                                   Invalidar
@@ -143,12 +145,12 @@ function NotesDebitBySale() {
                             )}
                             {sale.salesStatus.name === 'INVALIDADO' && (
                               <>
-                                <Listbox className="dark:text-white" aria-label="Actions">
+                                <Listbox aria-label="Actions" className="dark:text-white">
                                   <ListboxItem
-                                    classNames={{ base: 'font-semibold' }}
-                                    variant="flat"
-                                    color="danger"
                                     key=""
+                                    classNames={{ base: 'font-semibold' }}
+                                    color="danger"
+                                    variant="flat"
                                   >
                                     <CircleX size={20} />
                                   </ListboxItem>
@@ -167,7 +169,7 @@ function NotesDebitBySale() {
           {loadingPdf && (
             <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
               <div className="flex flex-col items-center justify-center w-full h-full">
-                <LoaderCircle size={100} className="animate-spin" />
+                <LoaderCircle className="animate-spin" size={100} />
                 <p className="mt-4 text-lg font-semibold">Cargando...</p>
               </div>
             </div>
@@ -175,25 +177,25 @@ function NotesDebitBySale() {
           {pdfPath && (
             <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
               <Button
+                isIconOnly
+                className="fixed bg-red-600 bottom-10 left-10"
+                style={styles.dangerStyles}
                 onClick={() => {
                   setPdfPath('');
                 }}
-                style={styles.dangerStyles}
-                isIconOnly
-                className="fixed bg-red-600 bottom-10 left-10"
               >
                 <X />
               </Button>
               {loadingPdf ? (
                 <div className="flex flex-col items-center justify-center w-full h-full">
-                  <LoaderCircle size={100} className="animate-spin" />
+                  <LoaderCircle className="animate-spin" size={100} />
                   <p className="mt-4 text-lg font-semibold">Cargando...</p>
                 </div>
               ) : (
                 <>
                   {pdfPath !== '' ? (
                     <div className="w-full h-full">
-                      <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
+                      <iframe className="w-screen h-screen z-[2000]" src={pdfPath} title='pdf' />
                     </div>
                   ) : (
                     <div className="flex items-center justify-center w-full h-full">

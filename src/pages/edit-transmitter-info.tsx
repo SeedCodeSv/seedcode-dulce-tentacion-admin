@@ -1,6 +1,7 @@
+import { Tab, Tabs } from "@heroui/react"
+
 import GeneralData from '@/components/edit-transmitter/GeneralData'
 import Layout from '@/layout/Layout'
-import { Tab, Tabs } from "@heroui/react"
 
 function EditTransmitterInfo() {
     return (

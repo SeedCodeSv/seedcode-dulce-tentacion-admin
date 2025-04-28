@@ -1,7 +1,9 @@
 import { Input } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+
 import { useStatusEmployeeStore } from '../../../store/statusEmployee';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -33,23 +35,23 @@ const AddStatusEmployee = (props: Props) => {
   return (
     <div className="p-5 w-full">
       <Formik
-        validationSchema={validationSchema}
         initialValues={{ name: props.statusEmployees?.name ?? '' }}
+        validationSchema={validationSchema}
         onSubmit={handleSave}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div className="flex flex-col w-full dark:text-white">
               <Input
-                name="name"
-                labelPlacement="outside"
-                value={values.name}
-                onChange={handleChange('name')}
-                onBlur={handleBlur('name')}
-                placeholder="Ingresa el nombre de la categoría"
                 classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                variant="bordered"
                 label="Nombre"
+                labelPlacement="outside"
+                name="name"
+                placeholder="Ingresa el nombre de la categoría"
+                value={values.name}
+                variant="bordered"
+                onBlur={handleBlur('name')}
+                onChange={handleChange('name')}
               />
               {errors.name && touched.name && (
                 <>
@@ -58,9 +60,9 @@ const AddStatusEmployee = (props: Props) => {
               )}
             </div>
             <ButtonUi
-              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               theme={Colors.Primary}
+              onPress={() => handleSubmit()}
             >
               Guardar
             </ButtonUi>

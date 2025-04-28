@@ -1,15 +1,18 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
-import { useBranchesStore } from '../../store/branches.store';
 import { useEffect, useState } from 'react';
+import { ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { useBranchesStore } from '../../store/branches.store';
 import { useChargesStore } from '../../store/charges.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
 import { useContractTypeStore } from '../../store/contract_type.store';
 import { useStudyLevelStore } from '../../store/study_level.store';
-import { ArrowLeft } from 'lucide-react';
 import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
-import { toast } from 'sonner';
+
+
 import { PropsUpdateEmployee } from '@/types/sub_categories.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -24,6 +27,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState(props.data?.address?.departamento ?? '');
   const [codigoGenerado, setCodigoGenerado] = useState('');
+
   useEffect(() => {
     getBranchesList();
     getChargesList();
@@ -100,6 +104,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   const createEmployee = async () => {
     try {
       const data = await patchEmployee(filledData, props.data?.id || 0);
+
       if (data) {
         props.id(0);
       }
@@ -113,22 +118,25 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
     const initials = name.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
     const randomNum = Math.floor(1000 + Math.random() * 9000);
     const code = `${initials}-${randomNum}`;
+
     dataCreate.code = code;
     setCodigoGenerado(code);
     const verify = await verifyCode(code);
+
     if (verify) {
       toast.success('Código disponible');
       setError(false);
     } else {
       setError(true);
     }
+
     return code;
   };
 
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
       <div className="w-full h-full  border border-white p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-        <Button onClick={() => props.id(0)} className="bg-transparent dark:text-white">
+        <Button className="bg-transparent dark:text-white" onClick={() => props.id(0)}>
           <ArrowLeft className="dark:text-white" />
           Atras
         </Button>
@@ -138,145 +146,145 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
               <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, firstName: e.target.value })}
-                    name="firstName"
-                    defaultValue={props.data?.firstName}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el primer nombre"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Primer Nombre"
                     autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.firstName}
+                    label="Primer Nombre"
+                    labelPlacement="outside"
+                    name="firstName"
+                    placeholder="Ingresa el primer nombre"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, firstName: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, secondName: e.target.value })}
-                    name="secondName"
-                    defaultValue={props.data?.secondName}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el segundo nombre"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Segundo Nombre"
                     autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.secondName}
+                    label="Segundo Nombre"
+                    labelPlacement="outside"
+                    name="secondName"
+                    placeholder="Ingresa el segundo nombre"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, secondName: e.target.value })}
                   />
                 </div>
                 <div className="mt-3">
                   <Input
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.firstLastName}
+                    label="Primer Apellido"
+                    labelPlacement="outside"
+                    name="firstLastName"
+                    placeholder="Ingresa el primer apellido"
+                    variant="bordered"
                     onChange={(e) =>
                       setDataCreate({ ...dataCreate, firstLastName: e.target.value })
                     }
-                    name="firstLastName"
-                    defaultValue={props.data?.firstLastName}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el primer apellido"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Primer Apellido"
-                    autoComplete="off"
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.secondLastName}
+                    label="Segundo Apellido"
+                    labelPlacement="outside"
+                    name="secondLastName"
+                    placeholder="Ingresa el segundo apellido"
+                    variant="bordered"
                     onChange={(e) =>
                       setDataCreate({ ...dataCreate, secondLastName: e.target.value })
                     }
-                    defaultValue={props.data?.secondLastName}
-                    name="secondLastName"
-                    labelPlacement="outside"
-                    placeholder="Ingresa el segundo apellido"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Segundo Apellido"
-                    autoComplete="off"
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, bankAccount: e.target.value })}
-                    name="bankAccount"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.bankAccount}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el numero de cuenta"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Numero de cuenta bancaria"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="bankAccount"
+                    placeholder="Ingresa el numero de cuenta"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, bankAccount: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, dui: e.target.value })}
-                    name="dui"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.dui}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el numero de DUI"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="DUI"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="dui"
+                    placeholder="Ingresa el numero de DUI"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, dui: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, nit: e.target.value })}
-                    name="nit"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.nit}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el numero de NIT"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="NIT"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="nit"
+                    placeholder="Ingresa el numero de NIT"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, nit: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, isss: e.target.value })}
-                    name="isss"
-                    labelPlacement="outside"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.isss}
-                    placeholder="Ingresa el numero de ISSS"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="ISSS"
+                    labelPlacement="outside"
+                    name="isss"
+                    placeholder="Ingresa el numero de ISSS"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, isss: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, afp: e.target.value })}
-                    name="afp"
-                    defaultValue={props.data?.afp}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el numero de AFP"
                     classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
+                    defaultValue={props.data?.afp}
                     label="AFP"
+                    labelPlacement="outside"
+                    name="afp"
+                    placeholder="Ingresa el numero de AFP"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, afp: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-row gap-1 mt-3">
                   <div>
                     <Input
-                      onChange={(e) => setDataCreate({ ...dataCreate, code: e.target.value })}
                       className="w-[150px] xl:w-full"
-                      name="code"
-                      value={dataCreate.code}
-                      labelPlacement="outside"
-                      placeholder="Ingresa el codigo"
                       classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                      variant="bordered"
                       label="Codigo"
+                      labelPlacement="outside"
+                      name="code"
+                      placeholder="Ingresa el codigo"
+                      value={dataCreate.code}
+                      variant="bordered"
+                      onChange={(e) => setDataCreate({ ...dataCreate, code: e.target.value })}
                     />
                     {error && <p className="text-xs text-red-500">{'Este código ya existe'}</p>}
                   </div>
                   <div className="mt-3">
                     <ButtonUi
+                      className="xl:w-full w-[140px] mt-3 text-sm"
+                      theme={Colors.Info}
                       onPress={() => {
                         generateCode();
                       }}
-                      className="xl:w-full w-[140px] mt-3 text-sm"
-                      theme={Colors.Info}
                     >
                       Generar
                     </ButtonUi>
@@ -284,102 +292,102 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, phone: e.target.value })}
-                    type="number"
-                    name="name"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.phone}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el numero de teléfono"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Teléfono"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="name"
+                    placeholder="Ingresa el numero de teléfono"
+                    type="number"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, phone: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, age: e.target.value })}
-                    type="number"
-                    name="age"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.age}
-                    labelPlacement="outside"
-                    placeholder="Ingresa la edad"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Edad"
-                    autoComplete="off"
-                  />
-                </div>
-                <div className="flex flex-col mt-3">
-                  <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, salary: e.target.value })}
+                    labelPlacement="outside"
+                    name="age"
+                    placeholder="Ingresa la edad"
                     type="number"
-                    name="salary"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, age: e.target.value })}
+                  />
+                </div>
+                <div className="flex flex-col mt-3">
+                  <Input
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.salary}
-                    labelPlacement="outside"
-                    placeholder="Ingresa el salario mensual"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Salario Mensual"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="salary"
+                    placeholder="Ingresa el salario mensual"
+                    type="number"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, salary: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfBirth: e.target.value })}
-                    type="date"
-                    name="dateOfBirth"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.dateOfBirth}
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Fecha de Nacimiento"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="dateOfBirth"
+                    type="date"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfBirth: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfEntry: e.target.value })}
-                    type="date"
-                    name="dateOfEntry"
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
                     defaultValue={props.data?.dateOfEntry}
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
                     label="Fecha de Ingreso"
-                    autoComplete="off"
+                    labelPlacement="outside"
+                    name="dateOfEntry"
+                    type="date"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfEntry: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfExit: e.target.value })}
-                    type="date"
-                    defaultValue={props.data?.dateOfExit}
-                    name="dateOfExit"
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Fecha de Salida"
                     autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.dateOfExit}
+                    label="Fecha de Salida"
+                    labelPlacement="outside"
+                    name="dateOfExit"
+                    type="date"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, dateOfExit: e.target.value })}
                   />
                 </div>
                 <div className="flex flex-col mt-3">
                   <Autocomplete
-                    variant="bordered"
-                    label="Nivel de Estudio"
-                    labelPlacement="outside"
                     className="dark:text-white"
-                    placeholder={props.data?.studyLevel.name ?? 'Seleccione el nivel de estudio'}
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
                     defaultInputValue={props.data?.studyLevel.name ?? ''}
+                    label="Nivel de Estudio"
+                    labelPlacement="outside"
+                    placeholder={props.data?.studyLevel.name ?? 'Seleccione el nivel de estudio'}
+                    variant="bordered"
                   >
                     {study_level?.map((item) => (
                       <AutocompleteItem
-                        onClick={() => setDataCreate({ ...dataCreate, studyLevelId: item.id })}
                         key={JSON.stringify(item)}
                         className="dark:text-white"
+                        onClick={() => setDataCreate({ ...dataCreate, studyLevelId: item.id })}
                       >
                         {item.name}
                       </AutocompleteItem>
@@ -388,23 +396,23 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="flex flex-col mt-3">
                   <Autocomplete
-                    variant="bordered"
-                    label="Estado del Empleado"
-                    labelPlacement="outside"
-                    placeholder={
-                      props.data?.employeeStatus.name ?? ' Seleccione el estado del empleado'
-                    }
                     className="dark:text-white"
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
                     defaultInputValue={props.data?.employeeStatus.name ?? ''}
+                    label="Estado del Empleado"
+                    labelPlacement="outside"
+                    placeholder={
+                      props.data?.employeeStatus.name ?? ' Seleccione el estado del empleado'
+                    }
+                    variant="bordered"
                   >
                     {employee_status?.map((item) => (
                       <AutocompleteItem
-                        onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                         key={JSON.stringify(item)}
                         className="dark:text-white"
+                        onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                       >
                         {item.name}
                       </AutocompleteItem>
@@ -413,21 +421,21 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="flex flex-col mt-3">
                   <Autocomplete
-                    variant="bordered"
-                    label="Tipo de contratacion"
-                    labelPlacement="outside"
                     className="dark:text-white"
-                    placeholder={props.data?.contractType.name ?? ' Seleccione el tipo de contrato'}
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
                     defaultInputValue={props.data?.contractType.name ?? ''}
+                    label="Tipo de contratacion"
+                    labelPlacement="outside"
+                    placeholder={props.data?.contractType.name ?? ' Seleccione el tipo de contrato'}
+                    variant="bordered"
                   >
                     {contract_type.map((item) => (
                       <AutocompleteItem
-                        onClick={() => setDataCreate({ ...dataCreate, contractTypeId: item.id })}
                         key={JSON.stringify(item)}
                         className="dark:text-white"
+                        onClick={() => setDataCreate({ ...dataCreate, contractTypeId: item.id })}
                       >
                         {item.name}
                       </AutocompleteItem>
@@ -436,38 +444,38 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="flex flex-col mt-3">
                   <Input
+                    autoComplete="off"
+                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                    defaultValue={props.data?.responsibleContact}
+                    label="Contacto Responsable"
+                    labelPlacement="outside"
+                    name="responsibleContact"
+                    placeholder="Ingresa el contacto responsable"
+                    type="text"
+                    variant="bordered"
                     onChange={(e) =>
                       setDataCreate({ ...dataCreate, responsibleContact: e.target.value })
                     }
-                    type="text"
-                    defaultValue={props.data?.responsibleContact}
-                    name="responsibleContact"
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                    variant="bordered"
-                    label="Contacto Responsable"
-                    placeholder="Ingresa el contacto responsable"
-                    autoComplete="off"
                   />
                 </div>
 
                 <div className="flex flex-col mt-3">
                   <Autocomplete
-                    variant="bordered"
-                    label="Cargo"
-                    labelPlacement="outside"
                     className="dark:text-white"
-                    placeholder={props.data?.charge.name ?? 'Seleccione el cargo'}
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
                     defaultInputValue={props.data?.charge.name ?? ''}
+                    label="Cargo"
+                    labelPlacement="outside"
+                    placeholder={props.data?.charge.name ?? 'Seleccione el cargo'}
+                    variant="bordered"
                   >
                     {charges.map((item) => (
                       <AutocompleteItem
-                        onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                         key={JSON.stringify(item)}
                         className="dark:text-white"
+                        onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                       >
                         {item.name}
                       </AutocompleteItem>
@@ -476,21 +484,21 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="mt-3">
                   <Autocomplete
-                    label="Sucursal"
-                    labelPlacement="outside"
-                    placeholder={props.data?.branch.name ?? 'Selecciona la sucursal'}
-                    variant="bordered"
                     className="dark:text-white"
                     classNames={{
                       base: 'font-semibold text-sm',
                     }}
                     defaultInputValue={props.data?.branch.name ?? ''}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder={props.data?.branch.name ?? 'Selecciona la sucursal'}
+                    variant="bordered"
                   >
                     {branch_list.map((bra) => (
                       <AutocompleteItem
-                        onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
-                        className="dark:text-white"
                         key={JSON.stringify(bra)}
+                        className="dark:text-white"
+                        onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
                       >
                         {bra.name}
                       </AutocompleteItem>
@@ -499,6 +507,11 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="mt-3">
                   <Autocomplete
+                    className="dark:text-white"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    defaultInputValue={props.data?.address?.nombreDepartamento ?? ''}
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
@@ -506,14 +519,11 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                     }
                     variant="bordered"
                     onChange={(e) => setCodeDepartamento(e.target.value)}
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    className="dark:text-white"
-                    defaultInputValue={props.data?.address?.nombreDepartamento ?? ''}
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
                         onClick={() => {
                           setCodeDepartamento(dep.codigo),
                             setDataCreate({
@@ -522,8 +532,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                               departmentName: dep.valores,
                             });
                         }}
-                        key={JSON.stringify(dep)}
-                        className="dark:text-white"
                       >
                         {dep.valores}
                       </AutocompleteItem>
@@ -532,19 +540,21 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                 </div>
                 <div className="mt-3">
                   <Autocomplete
-                    label="Municipio"
-                    labelPlacement="outside"
-                    placeholder={props.data?.address?.nombreMunicipio ?? 'Seleccione el municipio'}
                     className="dark:text-white"
-                    variant="bordered"
-                    onChange={(e) => setDataCreate({ ...dataCreate, municipality: e.target.value })}
                     classNames={{
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
                     defaultInputValue={props.data?.address?.nombreMunicipio ?? ''}
+                    label="Municipio"
+                    labelPlacement="outside"
+                    placeholder={props.data?.address?.nombreMunicipio ?? 'Seleccione el municipio'}
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, municipality: e.target.value })}
                   >
                     {cat_013_municipios.map((dep) => (
                       <AutocompleteItem
+                        key={JSON.stringify(dep)}
+                        className="dark:text-white"
                         onClick={() => {
                           setDataCreate({
                             ...dataCreate,
@@ -552,8 +562,6 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                             municipalityName: dep.valores,
                           });
                         }}
-                        key={JSON.stringify(dep)}
-                        className="dark:text-white"
                       >
                         {dep.valores}
                       </AutocompleteItem>
@@ -566,24 +574,24 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
               <div className="grid xl:grid-cols-2 gap-4 mt-5">
                 <div>
                   <Input
-                    onChange={(e) => setDataCreate({ ...dataCreate, complement: e.target.value })}
-                    label="Complemento de dirección"
-                    defaultValue={props.data?.address?.complemento ?? ''}
                     classNames={{
                       label: 'font-semibold text-gray-500 text-sm',
                     }}
+                    defaultValue={props.data?.address?.complemento ?? ''}
+                    label="Complemento de dirección"
                     labelPlacement="outside"
-                    variant="bordered"
-                    placeholder="Ingresa el complemento de dirección"
                     name="complement"
+                    placeholder="Ingresa el complemento de dirección"
+                    variant="bordered"
+                    onChange={(e) => setDataCreate({ ...dataCreate, complement: e.target.value })}
                   />
                 </div>
 
                 <div className="mt-3 md:mt-3">
                   <ButtonUi
-                    onPress={createEmployee}
                     className="w-full mt-3 text-sm font-semibold"
                     theme={Colors.Primary}
+                    onPress={createEmployee}
                   >
                     Guardar
                   </ButtonUi>

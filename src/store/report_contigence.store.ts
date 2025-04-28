@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+
 import { ISalesContigenceStore } from '../types/report_contigence';
 import { IPagination } from '../types/global.types';
 import {
@@ -20,6 +21,7 @@ export const useReportContigenceStore = create<ISalesContigenceStore>((set) => (
     endDate: string
   ) => {
     const { data } = await get_contigence_report(id, page, limit, startDate, endDate);
+
     set({
       sales: data.sales,
       pagination_sales: {
@@ -41,6 +43,7 @@ export const useReportContigenceStore = create<ISalesContigenceStore>((set) => (
     endDate: string
   ) => {
     const { data } = await get_contigence_not_report(id, page, limit, startDate, endDate);
+
     set({
       sales: data.saless,
       pagination_saless: {
@@ -64,6 +67,7 @@ export const useReportContigenceStore = create<ISalesContigenceStore>((set) => (
     status: number
   ) => {
     const { data } = await get_sales_by_status(id, page, limit, startDate, endDate, status);
+
     set({
       // sales: data.sales,
       pagination_sales: {

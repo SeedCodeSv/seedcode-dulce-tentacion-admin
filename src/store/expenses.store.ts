@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { IExpenseStore } from './types/expenses.store';
+import { toast } from 'sonner';
+
 import {
   get_expenses_paginated,
   save_expenses,
@@ -7,10 +8,11 @@ import {
   delete_expenses,
   get_expense_attachment,
 } from '../services/expenses.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { IExpensePayloads } from '../types/expenses.types';
 import { get_box } from '../storage/localStorage';
+
+import { IExpenseStore } from './types/expenses.store';
 
 export const useExpenseStore = create<IExpenseStore>((set, get) => ({
 
@@ -59,6 +61,7 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
   },
   postExpenses: (payload: IExpensePayloads) => {
     const currentBox = Number(get_box());
+
     save_expenses(payload)
       .then(() => {
         get().getExpensesPaginated(currentBox, 1, 5, '');
@@ -70,27 +73,33 @@ export const useExpenseStore = create<IExpenseStore>((set, get) => ({
   },
   patchExpenses(id, payload) {
     const currentBox = Number(get_box());
+
     return patch_expenses(id, payload)
       .then(({ data }) => {
         get().getExpensesPaginated(currentBox, 1, 5, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
   deleteExpenses(id) {
     const currentBox = Number(get_box());
+
     return delete_expenses(id)
       .then(({ data }) => {
         get().getExpensesPaginated(currentBox, 1, 5, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },

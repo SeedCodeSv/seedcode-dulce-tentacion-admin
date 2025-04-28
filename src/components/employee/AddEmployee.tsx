@@ -1,24 +1,28 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
-import { useBranchesStore } from '../../store/branches.store';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import * as yup from 'yup';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
+import { Formik } from 'formik';
+
+import { useBranchesStore } from '../../store/branches.store';
 import { useChargesStore } from '../../store/charges.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
 import { useContractTypeStore } from '../../store/contract_type.store';
 import { useStudyLevelStore } from '../../store/study_level.store';
 import Layout from '../../layout/Layout';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router';
 import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
-import { toast } from 'sonner';
-import { Formik } from 'formik';
+
+import { SetFieldValue } from './types/employee.types';
+
 import { Branch } from '@/types/auth.types';
 import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { Departamento } from '@/types/billing/cat-012-departamento.types';
-import { SetFieldValue } from './types/employee.types';
-import ButtonUi from '@/themes/ui/button-ui';3
+import ButtonUi from '@/themes/ui/button-ui';
+3;
 import { Colors } from '@/types/themes.types';
 
 function AddEmployee() {
@@ -115,8 +119,10 @@ function AddEmployee() {
   const createEmployee = async (values: EmployeePayload) => {
     const codigoFinal = values.code || codigo;
     const verify = await verifyCode(codigoFinal);
+
     if (!verify) {
       toast.error('Ya existe un empleado con este código');
+
       return;
     }
     const updatedValues = {
@@ -130,6 +136,7 @@ function AddEmployee() {
 
     try {
       const data = await postEmployee(updatedValues);
+
       if (data) {
         navigate('/employees');
       }
@@ -152,6 +159,7 @@ function AddEmployee() {
       toast.error(
         'Necesitas ingresar el primer nombre y el primer apellido para generar el código.'
       );
+
       return;
     }
 
@@ -171,13 +179,14 @@ function AddEmployee() {
   };
 
   const navigate = useNavigate();
+
   return (
     <Layout title="Agregar Empleado">
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <Button
-            onClick={() => navigate('/employees')}
             className=" bg-transparent dark:text-white text-black"
+            onClick={() => navigate('/employees')}
           >
             <ArrowLeft className="dark:text-white text-black" />
             Regresar
@@ -202,24 +211,24 @@ function AddEmployee() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                       <div className="flex flex-col mt-3">
                         <Input
+                          autoComplete="off"
+                          className="font-semibold"
+                          classNames={{
+                            label: 'text-gray-500 text-sm font-semibold',
+                          }}
+                          errorMessage={touched.firstName && errors.firstName}
+                          isInvalid={touched.firstName && !!errors.firstName}
+                          label="Primer Nombre"
+                          labelPlacement="outside"
+                          name="firstName"
+                          placeholder="Ingresa el primer nombre"
                           value={values.firstName}
+                          variant="bordered"
+                          onBlur={handleBlur('firstName')}
                           onChange={(e) => {
                             handleChange('firstName')(e);
                             setFirstName(e.target.value);
                           }}
-                          onBlur={handleBlur('firstName')}
-                          name="firstName"
-                          labelPlacement="outside"
-                          className="font-semibold"
-                          isInvalid={touched.firstName && !!errors.firstName}
-                          errorMessage={touched.firstName && errors.firstName}
-                          placeholder="Ingresa el primer nombre"
-                          classNames={{
-                            label: 'text-gray-500 text-sm font-semibold',
-                          }}
-                          variant="bordered"
-                          label="Primer Nombre"
-                          autoComplete="off"
                         />
                         {/* {errors.firstName && touched.firstName && (
                           <span className="text-sm font-semibold text-red-500">
@@ -229,73 +238,62 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.secondName}
-                          onChange={handleChange('secondName')}
-                          onBlur={handleBlur('secondName')}
-                          name="secondName"
-                          labelPlacement="outside"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          placeholder="Ingresa el segundo nombre"
-                          isInvalid={touched.secondName && !!errors.secondName}
-                          errorMessage={touched.secondName && errors.secondName}
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
+                          errorMessage={touched.secondName && errors.secondName}
+                          isInvalid={touched.secondName && !!errors.secondName}
                           label="Segundo Nombre"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="secondName"
+                          placeholder="Ingresa el segundo nombre"
+                          value={values.secondName}
+                          variant="bordered"
+                          onBlur={handleBlur('secondName')}
+                          onChange={handleChange('secondName')}
                         />
-                        {/* {errors.secondName && touched.secondName && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.secondName}
-                          </span>
-                        )} */}
                       </div>
                       <div className="mt-3">
                         <Input
+                          autoComplete="off"
+                          className="dark:text-white font-semibold"
+                          classNames={{
+                            label: 'font-semibold text-sm  text-gray-600',
+                          }}
+                          errorMessage={touched.firstLastName && errors.firstLastName}
+                          isInvalid={touched.firstLastName && !!errors.firstLastName}
+                          label="Primer Apellido"
+                          labelPlacement="outside"
+                          name="firstLastName"
+                          placeholder="Ingresa el primer apellido"
                           value={values.firstLastName}
-                          // onChange={handleChange('firstLastName')}
+                          variant="bordered"
+                          onBlur={handleBlur('firstLastName')}
                           onChange={(e) => {
                             handleChange('firstLastName')(e);
                             setLastName(e.target.value);
                           }}
-                          onBlur={handleBlur('firstLastName')}
-                          name="firstLastName"
-                          className="dark:text-white font-semibold"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el primer apellido"
-                          isInvalid={touched.firstLastName && !!errors.firstLastName}
-                          errorMessage={touched.firstLastName && errors.firstLastName}
-                          classNames={{
-                            label: 'font-semibold text-sm  text-gray-600',
-                          }}
-                          variant="bordered"
-                          label="Primer Apellido"
-                          autoComplete="off"
                         />
-                        {/* {errors.firstLastName && touched.firstLastName && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.firstLastName}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.secondLastName}
-                          onChange={handleChange('secondLastName')}
-                          onBlur={handleBlur('secondLastName')}
-                          name="secondLastName"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el segundo apellido"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          isInvalid={touched.secondLastName && !!errors.secondLastName}
                           errorMessage={touched.secondLastName && errors.secondLastName}
-                          variant="bordered"
+                          isInvalid={touched.secondLastName && !!errors.secondLastName}
                           label="Segundo Apellido"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="secondLastName"
+                          placeholder="Ingresa el segundo apellido"
+                          value={values.secondLastName}
+                          variant="bordered"
+                          onBlur={handleBlur('secondLastName')}
+                          onChange={handleChange('secondLastName')}
                         />
                         {/* {errors.secondLastName && touched.secondLastName && (
                           <span className="text-sm font-semibold text-red-500">
@@ -305,21 +303,21 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.bankAccount}
-                          onChange={handleChange('bankAccount')}
-                          onBlur={handleBlur('bankAccount')}
-                          name="bankAccount"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de cuenta"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          isInvalid={touched.bankAccount && !!errors.bankAccount}
                           errorMessage={touched.bankAccount && errors.bankAccount}
-                          variant="bordered"
+                          isInvalid={touched.bankAccount && !!errors.bankAccount}
                           label="Número de cuenta bancaria"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="bankAccount"
+                          placeholder="Ingresa el número de cuenta"
+                          value={values.bankAccount}
+                          variant="bordered"
+                          onBlur={handleBlur('bankAccount')}
+                          onChange={handleChange('bankAccount')}
                         />
                         {/* {errors.bankAccount && touched.bankAccount && (
                           <span className="text-sm font-semibold text-red-500">
@@ -329,21 +327,21 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.dui}
-                          onChange={handleChange('dui')}
-                          onBlur={handleBlur('dui')}
-                          name="dui"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de DUI"
-                          isInvalid={touched.dui && !!errors.dui}
-                          errorMessage={touched.dui && errors.dui}
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
+                          errorMessage={touched.dui && errors.dui}
+                          isInvalid={touched.dui && !!errors.dui}
                           label="DUI"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="dui"
+                          placeholder="Ingresa el número de DUI"
+                          value={values.dui}
+                          variant="bordered"
+                          onBlur={handleBlur('dui')}
+                          onChange={handleChange('dui')}
                         />
                         {/* {errors.dui && touched.dui && (
                           <span className="text-sm font-semibold text-red-500">{errors.dui}</span>
@@ -351,18 +349,18 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.nit}
-                          onChange={handleChange('nit')}
-                          onBlur={handleBlur('nit')}
-                          name="nit"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de NIT"
+                          autoComplete="off"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
                           label="NIT"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="nit"
+                          placeholder="Ingresa el número de NIT"
+                          value={values.nit}
+                          variant="bordered"
+                          onBlur={handleBlur('nit')}
+                          onChange={handleChange('nit')}
                         />
                         {errors.nit && touched.nit && (
                           <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
@@ -370,17 +368,17 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.isss}
-                          onChange={handleChange('isss')}
-                          onBlur={handleBlur('isss')}
-                          name="isss"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de ISSS"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
                           label="ISSS"
+                          labelPlacement="outside"
+                          name="isss"
+                          placeholder="Ingresa el número de ISSS"
+                          value={values.isss}
+                          variant="bordered"
+                          onBlur={handleBlur('isss')}
+                          onChange={handleChange('isss')}
                         />
                         {/* {errors.isss && touched.isss && (
                           <span className="text-sm font-semibold text-red-500">{errors.isss}</span>
@@ -388,17 +386,17 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.afp}
-                          onChange={handleChange('afp')}
-                          onBlur={handleBlur('afp')}
-                          name="afp"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de AFP"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
                           label="AFP"
+                          labelPlacement="outside"
+                          name="afp"
+                          placeholder="Ingresa el número de AFP"
+                          value={values.afp}
+                          variant="bordered"
+                          onBlur={handleBlur('afp')}
+                          onChange={handleChange('afp')}
                         />
                         {errors.afp && touched.afp && (
                           <span className="text-sm font-semibold text-red-500">{errors.afp}</span>
@@ -408,26 +406,28 @@ function AddEmployee() {
                         <div>
                           <Input
                             className="xl:w-full w-[150px] font-semibold"
+                            classNames={{
+                              label: 'font-semibold text-sm text-gray-600',
+                            }}
+                            errorMessage={touched.code && errors.code}
+                            isInvalid={touched.code && !!errors.code}
+                            label="Código "
+                            labelPlacement="outside"
+                            name="code"
+                            placeholder="Ingresa el código"
                             value={codigo || dataCreate.code}
+                            variant="bordered"
                             onBlur={handleBlur('code')}
                             onChange={(e) => {
                               handleChange('code')(e);
                               setCodigoGenerado(e.target.value);
                             }}
-                            isInvalid={touched.code && !!errors.code}
-                            errorMessage={touched.code && errors.code}
-                            name="code"
-                            labelPlacement="outside"
-                            placeholder="Ingresa el código"
-                            classNames={{
-                              label: 'font-semibold text-sm text-gray-600',
-                            }}
-                            variant="bordered"
-                            label="Código "
                           />
                         </div>
                         <div className="mt-3">
                           <ButtonUi
+                            className="xl:w-full w-[140px] mt-3"
+                            theme={Colors.Info}
                             onPress={() =>
                               generateCode(
                                 setFieldValue,
@@ -436,8 +436,6 @@ function AddEmployee() {
                                 setCodigoGenerado // Aquí debes pasar la función para generar el código
                               )
                             }
-                            className="xl:w-full w-[140px] mt-3"
-                            theme={Colors.Info}
                           >
                             Generar
                           </ButtonUi>
@@ -446,22 +444,22 @@ function AddEmployee() {
 
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.phone}
-                          onChange={handleChange('phone')}
-                          onBlur={handleBlur('phone')}
-                          type="number"
-                          name="phone"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          labelPlacement="outside"
-                          placeholder="Ingresa el número de teléfono"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
-                          label="Teléfono"
-                          autoComplete="off"
-                          isInvalid={touched.phone && !!errors.phone}
                           errorMessage={touched.phone && errors.phone}
+                          isInvalid={touched.phone && !!errors.phone}
+                          label="Teléfono"
+                          labelPlacement="outside"
+                          name="phone"
+                          placeholder="Ingresa el número de teléfono"
+                          type="number"
+                          value={values.phone}
+                          variant="bordered"
+                          onBlur={handleBlur('phone')}
+                          onChange={handleChange('phone')}
                         />
                         {/* {errors.phone && touched.phone && (
                           <span className="text-sm font-semibold text-red-500">{errors.phone}</span>
@@ -469,22 +467,22 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.age}
-                          onChange={handleChange('age')}
-                          onBlur={handleBlur('age')}
-                          type="number"
-                          name="age"
-                          labelPlacement="outside"
-                          placeholder="Ingresa la edad"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
-                          label="Edad"
-                          autoComplete="off"
-                          isInvalid={touched.age && !!errors.age}
                           errorMessage={touched.age && errors.age}
+                          isInvalid={touched.age && !!errors.age}
+                          label="Edad"
+                          labelPlacement="outside"
+                          name="age"
+                          placeholder="Ingresa la edad"
+                          type="number"
+                          value={values.age}
+                          variant="bordered"
+                          onBlur={handleBlur('age')}
+                          onChange={handleChange('age')}
                         />
                         {/* {errors.age && touched.age && (
                           <span className="text-sm font-semibold text-red-500">{errors.age}</span>
@@ -492,22 +490,22 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.salary}
-                          onChange={handleChange('salary')}
-                          onBlur={handleBlur('salary')}
-                          type="number"
-                          name="salary"
-                          labelPlacement="outside"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          placeholder="Ingresa el salario mensual"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          isInvalid={touched.salary && !!errors.salary}
                           errorMessage={touched.salary && errors.salary}
-                          variant="bordered"
+                          isInvalid={touched.salary && !!errors.salary}
                           label="Salario Mensual"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="salary"
+                          placeholder="Ingresa el salario mensual"
+                          type="number"
+                          value={values.salary}
+                          variant="bordered"
+                          onBlur={handleBlur('salary')}
+                          onChange={handleChange('salary')}
                         />
                         {/* {errors.salary && touched.salary && (
                           <span className="text-sm font-semibold text-red-500">
@@ -517,21 +515,21 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.dateOfBirth}
-                          onChange={handleChange('dateOfBirth')}
-                          onBlur={handleBlur('dateOfBirth')}
-                          type="date"
-                          name="dateOfBirth"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          labelPlacement="outside"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          isInvalid={touched.dateOfBirth && !!errors.dateOfBirth}
                           errorMessage={touched.dateOfBirth && errors.dateOfBirth}
-                          variant="bordered"
+                          isInvalid={touched.dateOfBirth && !!errors.dateOfBirth}
                           label="Fecha de Nacimiento"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="dateOfBirth"
+                          type="date"
+                          value={values.dateOfBirth}
+                          variant="bordered"
+                          onBlur={handleBlur('dateOfBirth')}
+                          onChange={handleChange('dateOfBirth')}
                         />
                         {/* {errors.dateOfBirth && touched.dateOfBirth && (
                           <span className="text-sm font-semibold text-red-500">
@@ -541,21 +539,21 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.dateOfEntry}
-                          onChange={handleChange('dateOfEntry')}
-                          onBlur={handleBlur('dateOfEntry')}
-                          type="date"
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          name="dateOfEntry"
-                          labelPlacement="outside"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          isInvalid={touched.dateOfEntry && !!errors.dateOfEntry}
                           errorMessage={touched.dateOfEntry && errors.dateOfEntry}
-                          variant="bordered"
+                          isInvalid={touched.dateOfEntry && !!errors.dateOfEntry}
                           label="Fecha de Ingreso"
-                          autoComplete="off"
+                          labelPlacement="outside"
+                          name="dateOfEntry"
+                          type="date"
+                          value={values.dateOfEntry}
+                          variant="bordered"
+                          onBlur={handleBlur('dateOfEntry')}
+                          onChange={handleChange('dateOfEntry')}
                         />
                         {/* {errors.dateOfEntry && touched.dateOfEntry && (
                           <span className="text-sm font-semibold text-red-500">
@@ -565,17 +563,17 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.complement}
-                          onChange={handleChange('complement')}
-                          onBlur={handleBlur('complement')}
-                          label="Complemento de dirección"
                           classNames={{
                             label: 'font-semibold text-gray-500 text-sm',
                           }}
+                          label="Complemento de dirección"
                           labelPlacement="outside"
-                          variant="bordered"
-                          placeholder="Ingresa el complemento de dirección"
                           name="complement"
+                          placeholder="Ingresa el complemento de dirección"
+                          value={values.complement}
+                          variant="bordered"
+                          onBlur={handleBlur('complement')}
+                          onChange={handleChange('complement')}
                         />
                         {errors.complement && touched.complement && (
                           <span className="text-sm font-semibold text-red-500">
@@ -586,36 +584,37 @@ function AddEmployee() {
 
                       <div className="flex flex-col mt-3">
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-sm',
+                          }}
+                          errorMessage={touched.studyLevelId && errors.studyLevelId}
+                          isInvalid={touched.studyLevelId && !!errors.studyLevelId}
+                          label="Nivel de Estudio"
+                          labelPlacement="outside"
+                          placeholder="Seleccione el nivel de estudio"
                           value={values.studyLevelId}
+                          variant="bordered"
+                          onBlur={handleBlur('studyLevelId')}
+                          onChange={handleChange('studyLevelId')}
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as EmployeePayload;
+
                               handleChange('studyLevelId')(depSelected?.id?.toString() ?? '');
                             }
-                          }}
-                          onChange={handleChange('studyLevelId')}
-                          onBlur={handleBlur('studyLevelId')}
-                          variant="bordered"
-                          isInvalid={touched.studyLevelId && !!errors.studyLevelId}
-                          errorMessage={touched.studyLevelId && errors.studyLevelId}
-                          label="Nivel de Estudio"
-                          labelPlacement="outside"
-                          className="dark:text-white"
-                          placeholder="Seleccione el nivel de estudio"
-                          classNames={{
-                            base: 'font-semibold text-sm',
                           }}
                         >
                           {study_level?.map((item) => (
                             <AutocompleteItem
+                              key={JSON.stringify(item)}
+                              className="dark:text-white"
                               onClick={() =>
                                 setDataCreate({
                                   ...dataCreate,
                                   studyLevelId: item.id,
                                 })
                               }
-                              key={JSON.stringify(item)}
-                              className="dark:text-white"
                             >
                               {item.name}
                             </AutocompleteItem>
@@ -629,31 +628,32 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
-                          value={values.statusId}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as EmployeePayload;
-                              handleChange('statusId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                          onChange={handleChange('statusId')}
-                          onBlur={handleBlur('statusId')}
-                          variant="bordered"
-                          label="Estado del Empleado"
-                          labelPlacement="outside"
                           className="dark:text-white"
-                          placeholder="Seleccione el estado del empleado"
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          isInvalid={touched.statusId && !!errors.statusId}
                           errorMessage={touched.statusId && errors.statusId}
+                          isInvalid={touched.statusId && !!errors.statusId}
+                          label="Estado del Empleado"
+                          labelPlacement="outside"
+                          placeholder="Seleccione el estado del empleado"
+                          value={values.statusId}
+                          variant="bordered"
+                          onBlur={handleBlur('statusId')}
+                          onChange={handleChange('statusId')}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+
+                              handleChange('statusId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
                         >
                           {employee_status?.map((item) => (
                             <AutocompleteItem
-                              onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                               key={JSON.stringify(item)}
                               className="dark:text-white"
+                              onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                             >
                               {item.name}
                             </AutocompleteItem>
@@ -667,36 +667,37 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
-                          value={values.contractTypeId}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as EmployeePayload;
-                              handleChange('contractTypeId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                          onChange={handleChange('contractTypeId')}
-                          onBlur={handleBlur('contractTypeId')}
-                          variant="bordered"
-                          label="Tipo de contratacion"
-                          labelPlacement="outside"
                           className="dark:text-white"
-                          placeholder="Seleccione el tipo de contrato"
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          isInvalid={touched.contractTypeId && !!errors.contractTypeId}
                           errorMessage={touched.contractTypeId && errors.contractTypeId}
+                          isInvalid={touched.contractTypeId && !!errors.contractTypeId}
+                          label="Tipo de contratacion"
+                          labelPlacement="outside"
+                          placeholder="Seleccione el tipo de contrato"
+                          value={values.contractTypeId}
+                          variant="bordered"
+                          onBlur={handleBlur('contractTypeId')}
+                          onChange={handleChange('contractTypeId')}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+
+                              handleChange('contractTypeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
                         >
                           {contract_type.map((item) => (
                             <AutocompleteItem
+                              key={JSON.stringify(item)}
+                              className="dark:text-white"
                               onClick={() =>
                                 setDataCreate({
                                   ...dataCreate,
                                   contractTypeId: item.id,
                                 })
                               }
-                              key={JSON.stringify(item)}
-                              className="dark:text-white"
                             >
                               {item.name}
                             </AutocompleteItem>
@@ -705,22 +706,22 @@ function AddEmployee() {
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
-                          value={values.responsibleContact}
-                          onChange={handleChange('responsibleContact')}
-                          onBlur={handleBlur('responsibleContact')}
+                          autoComplete="off"
                           className="dark:text-white font-semibold"
-                          type="text"
-                          name="responsibleContact"
-                          labelPlacement="outside"
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          variant="bordered"
-                          label="Contacto Responsable"
-                          isInvalid={touched.responsibleContact && !!errors.responsibleContact}
                           errorMessage={touched.responsibleContact && errors.responsibleContact}
+                          isInvalid={touched.responsibleContact && !!errors.responsibleContact}
+                          label="Contacto Responsable"
+                          labelPlacement="outside"
+                          name="responsibleContact"
                           placeholder="Ingresa el contacto responsable"
-                          autoComplete="off"
+                          type="text"
+                          value={values.responsibleContact}
+                          variant="bordered"
+                          onBlur={handleBlur('responsibleContact')}
+                          onChange={handleChange('responsibleContact')}
                         />
                         {/* {errors.responsibleContact && touched.responsibleContact && (
                           <span className="text-sm font-semibold text-red-500">
@@ -731,31 +732,32 @@ function AddEmployee() {
 
                       <div className="flex flex-col mt-3">
                         <Autocomplete
-                          value={values.chargeId}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as EmployeePayload;
-                              handleChange('chargeId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                          onChange={handleChange('chargeId')}
-                          onBlur={handleBlur('chargeId')}
-                          variant="bordered"
-                          label="Cargo"
-                          labelPlacement="outside"
                           className="dark:text-white"
-                          placeholder="Seleccione el cargo"
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          isInvalid={touched.chargeId && !!errors.chargeId}
                           errorMessage={touched.chargeId && errors.chargeId}
+                          isInvalid={touched.chargeId && !!errors.chargeId}
+                          label="Cargo"
+                          labelPlacement="outside"
+                          placeholder="Seleccione el cargo"
+                          value={values.chargeId}
+                          variant="bordered"
+                          onBlur={handleBlur('chargeId')}
+                          onChange={handleChange('chargeId')}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as EmployeePayload;
+
+                              handleChange('chargeId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
                         >
                           {charges.map((item) => (
                             <AutocompleteItem
-                              onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                               key={JSON.stringify(item)}
                               className="dark:text-white"
+                              onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                             >
                               {item.name}
                             </AutocompleteItem>
@@ -770,28 +772,31 @@ function AddEmployee() {
 
                       <div className="mt-3">
                         <Autocomplete
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as Municipio;
-                              // setSelectedCodeDep(depSelected.codigo);
-                              handleChange('department')(depSelected.codigo);
-                              handleChange('departmentName')(depSelected.valores);
-                            }
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
                           }}
+                          errorMessage={touched.department && errors.department}
+                          isInvalid={touched.department && !!errors.department}
                           label="Departamento"
                           labelPlacement="outside"
                           placeholder="Selecciona el departamento"
                           variant="bordered"
                           onChange={(e) => setCodeDepartamento(e.target.value)}
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Municipio;
+
+                              // setSelectedCodeDep(depSelected.codigo);
+                              handleChange('department')(depSelected.codigo);
+                              handleChange('departmentName')(depSelected.valores);
+                            }
                           }}
-                          isInvalid={touched.department && !!errors.department}
-                          errorMessage={touched.department && errors.department}
-                          className="dark:text-white"
                         >
                           {cat_012_departamento.map((dep) => (
                             <AutocompleteItem
+                              key={JSON.stringify(dep)}
+                              className="dark:text-white"
                               onClick={() => {
                                 setCodeDepartamento(dep.codigo),
                                   setDataCreate({
@@ -800,8 +805,6 @@ function AddEmployee() {
                                     departmentName: dep.valores,
                                   });
                               }}
-                              key={JSON.stringify(dep)}
-                              className="dark:text-white"
                             >
                               {dep.valores}
                             </AutocompleteItem>
@@ -815,26 +818,29 @@ function AddEmployee() {
                       </div>
                       <div className="mt-3">
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          errorMessage={touched.municipality && errors.municipality}
+                          isInvalid={touched.municipality && !!errors.municipality}
+                          label="Municipio"
+                          labelPlacement="outside"
+                          placeholder="Municipio"
+                          variant="bordered"
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = JSON.parse(key as string) as Departamento;
+
                               handleChange('municipality')(depSelected.codigo);
                               handleChange('municipalityName')(depSelected.valores);
                             }
                           }}
-                          label="Municipio"
-                          labelPlacement="outside"
-                          placeholder="Municipio"
-                          className="dark:text-white"
-                          variant="bordered"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          isInvalid={touched.municipality && !!errors.municipality}
-                          errorMessage={touched.municipality && errors.municipality}
                         >
                           {cat_013_municipios.map((dep) => (
                             <AutocompleteItem
+                              key={JSON.stringify(dep)}
+                              className="dark:text-white"
                               onClick={() => {
                                 setCodeDepartamento(dep.codigo),
                                   setDataCreate({
@@ -843,8 +849,6 @@ function AddEmployee() {
                                     municipalityName: dep.valores,
                                   });
                               }}
-                              key={JSON.stringify(dep)}
-                              className="dark:text-white"
                             >
                               {dep.valores}
                             </AutocompleteItem>
@@ -858,31 +862,32 @@ function AddEmployee() {
                       </div>
                       <div className="mt-3">
                         <Autocomplete
-                          value={values.branchId}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as Branch;
-                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                          onChange={handleChange('branchId')}
-                          onBlur={handleBlur('branchId')}
-                          label="Sucursal"
-                          labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
-                          variant="bordered"
                           className="dark:text-white"
                           classNames={{
                             base: 'font-semibold text-sm',
                           }}
-                          isInvalid={touched.branchId && !!errors.branchId}
                           errorMessage={touched.branchId && errors.branchId}
+                          isInvalid={touched.branchId && !!errors.branchId}
+                          label="Sucursal"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la sucursal"
+                          value={values.branchId}
+                          variant="bordered"
+                          onBlur={handleBlur('branchId')}
+                          onChange={handleChange('branchId')}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
                         >
                           {branch_list.map((bra) => (
                             <AutocompleteItem
-                              onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
-                              className="dark:text-white"
                               key={JSON.stringify(bra)}
+                              className="dark:text-white"
+                              onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
                             >
                               {bra.name}
                             </AutocompleteItem>
@@ -900,9 +905,9 @@ function AddEmployee() {
                     <div className="grid grid-cols-1 gap-4 mt-3 md:grid-cols-2">
                       <div className="mt-0 md:mt-3">
                         <ButtonUi
-                          onPress={() => handleSubmit()}
                           className="w-full mt-3 text-sm font-semibold"
                           theme={Colors.Primary}
+                          onPress={() => handleSubmit()}
                         >
                           Guardar
                         </ButtonUi>

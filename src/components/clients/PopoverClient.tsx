@@ -9,7 +9,7 @@ interface Props {
 
 export default function App(props: Props) {
   return (
-    <Popover isOpen={props.isOpen} onOpenChange={(open) => props.setIsOpen(open)} backdrop="blur">
+    <Popover backdrop="blur" isOpen={props.isOpen} onOpenChange={(open) => props.setIsOpen(open)}>
       <PopoverTrigger>
         <Button
           className="h-10 max-w-72 bg-coffee-green text-background"

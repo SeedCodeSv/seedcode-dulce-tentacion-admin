@@ -1,5 +1,6 @@
-import { Correlatives } from '@/types/correlatives.types';
 import { Correlativo } from '../../types/correlatives_dte.types';
+
+import { Correlatives } from '@/types/correlatives.types';
 import { IPointOfSaleCorrelativo } from '@/types/point-of-sales.types';
 
 export interface ICorrelativesDteStore {

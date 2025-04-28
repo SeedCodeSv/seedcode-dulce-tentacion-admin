@@ -1,9 +1,10 @@
-import { Employee } from '@/types/employees.types';
 import jsPDF from 'jspdf';
 import { Notebook } from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Employee } from '@/types/employees.types';
 import logo from '@/assets/MADNESS.png';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { toast } from 'sonner';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -16,15 +17,19 @@ function ProofSalary({ employee, actions }: Props) {
   const convertImageToBase64 = (url: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
+
       img.crossOrigin = 'Anonymous';
       img.src = url;
       img.onload = () => {
         const canvas = document.createElement('canvas');
+
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext('2d');
+
         ctx?.drawImage(img, 0, 0);
         const dataURL = canvas.toDataURL('image/png');
+
         resolve(dataURL);
       };
       img.onerror = (error) => {
@@ -107,6 +112,7 @@ function ProofSalary({ employee, actions }: Props) {
 
     // Abrir el PDF en una nueva pestaña
     const pdfBlobUrl = doc.output('bloburl');
+
     window.open(pdfBlobUrl, '_blank'); // Abrir en nueva pestaña
   };
 
@@ -115,12 +121,12 @@ function ProofSalary({ employee, actions }: Props) {
       {actions.includes('Constancia de Trabajo') && employee.isActive && (
         <TooltipGlobal text="Generar Constancia de Trabajo">
           <ButtonUi
+            isIconOnly
             className="border border-white"
+            theme={Colors.Warning}
             onClick={() => {
               generatePDF();
             }}
-            isIconOnly
-            theme={Colors.Warning}
           >
             <Notebook size={20} />
           </ButtonUi>

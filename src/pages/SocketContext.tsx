@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react';
 import { connect } from 'socket.io-client';
-import { WS_URL } from '../utils/constants';
 import { toast } from 'sonner';
+
+import { WS_URL } from '../utils/constants';
+
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductReportStore } from '@/store/reports/branch_product.store';
@@ -23,6 +25,7 @@ function SocketContext() {
     getSalesByBranchAndMonth,
   } = salesReportStore();
   const { getMostProductMostSelled } = useBranchProductReportStore();
+
   useEffect(() => {
     socket.on('connect', () => {});
 

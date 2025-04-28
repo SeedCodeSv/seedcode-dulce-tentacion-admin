@@ -1,12 +1,13 @@
-import { Correlativo } from "@/types/correlatives_dte.types";
-import { SVFE_NC_SEND } from "@/types/svf_dte/nc.types";
-import { ND_ApendiceItems, ND_CuerpoDocumentoItems, ND_DocumentoRelacionadoItems, ND_Emisor, ND_Extension, ND_Receptor, ND_Resumen, ND_VentaTercerosItems } from "@/types/svf_dte/nd.types";
-import { ITransmitter } from "@/types/transmitter.types";
 import { generate_uuid } from "../random/random";
 import { generate_control } from "../dte";
 import { formatearNumero } from "../make-dte";
 import { ambiente } from "../constants";
 import { getElSalvadorDateTime } from "../dates";
+
+import { ITransmitter } from "@/types/transmitter.types";
+import { ND_ApendiceItems, ND_CuerpoDocumentoItems, ND_DocumentoRelacionadoItems, ND_Emisor, ND_Extension, ND_Receptor, ND_Resumen, ND_VentaTercerosItems } from "@/types/svf_dte/nd.types";
+import { SVFE_NC_SEND } from "@/types/svf_dte/nc.types";
+import { Correlativo } from "@/types/correlatives_dte.types";
 
 export const generateNotaCredito = (
     emisor: ITransmitter,
@@ -20,6 +21,7 @@ export const generateNotaCredito = (
     apendice: ND_ApendiceItems[] | null
 ): SVFE_NC_SEND => {
     const dataEmisor = {...emisor, tipoEstablecimiento: correlative.tipoEstablecimiento}
+
     return {
         nit: emisor.nit,
         activo: true,

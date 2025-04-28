@@ -1,20 +1,20 @@
+import { Button, Select, SelectItem } from '@heroui/react';
+import { Fragment, useEffect, useState } from 'react';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import { toast } from 'sonner';
+import saveAs from 'file-saver';
+
+import { export_excel_facturacion } from '../excel/generate_excel';
+
 import useGlobalStyles from '@/components/global/global.styles';
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
-import { Button, Select, SelectItem } from '@heroui/react';
-import { Fragment, useEffect, useState } from 'react';
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
-import { toast } from 'sonner';
-import { export_excel_facturacion } from '../excel/generate_excel';
-import saveAs from 'file-saver';
 import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { useViewsStore } from '@/store/views.store';
-// import { jsPDF } from "jspdf"
-// import autoTable from "jspdf-autotable"
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -45,9 +45,11 @@ function FEBookIVA() {
   const handleExportExcel = async () => {
     if (facturas_by_month.length === 0) {
       toast.warning('No se encontraron facturas para el mes seleccionado');
+
       return;
     }
     const vouchers: Array<{ name: string; items: Array<Array<string | number>> }> = [];
+
     facturas_by_month.forEach((voucher) => {
       const formatName = (type: string) => {
         switch (type) {
@@ -104,17 +106,17 @@ function FEBookIVA() {
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={`${monthSelected}`}
+                label="Meses"
+                labelPlacement="outside"
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setMonthSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                label="Meses"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {months.map((month) => (
                   <SelectItem key={month.value}>{month.name}</SelectItem>
@@ -123,17 +125,17 @@ function FEBookIVA() {
             </div>
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
+                label="Año"
+                labelPlacement="outside"
                 selectedKeys={[`${yearSelected}`]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setYearSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                label="Año"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {years.map((years) => (
                   <SelectItem key={years.value}>{years.name}</SelectItem>
@@ -142,18 +144,18 @@ function FEBookIVA() {
             </div>
             <div className="w-full">
               <Select
+                className="w-full"
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={`${branchId}`}
+                label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Selecciona la sucursal"
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setBranchId(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-full"
-                placeholder="Selecciona la sucursal"
-                classNames={{ label: 'font-semibold' }}
-                label="Sucursal"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {branch_list.map((branch) => (
                   <SelectItem key={branch.id}>{branch.name}</SelectItem>
@@ -166,10 +168,10 @@ function FEBookIVA() {
               </Button> */}
               {actionView.includes('Exportar Excel') && (
                 <Button
-                  onClick={handleExportExcel}
+                  className="text-white font-semibold"
                   color="success"
                   style={styles.thirdStyle}
-                  className="text-white font-semibold"
+                  onClick={handleExportExcel}
                 >
                   Exportar a excel
                   <PiMicrosoftExcelLogoBold size={25} />
@@ -182,13 +184,13 @@ function FEBookIVA() {
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_facturas ? (
                 <div className="w-full flex justify-center p-20 items-center flex-col">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
                 </div>
               ) : (
                 <>
                   {facturas_by_month.map((facturas, index) => (
-                    <Fragment>
+                    <Fragment key={index}>
                       {facturas.sales.length > 0 ? (
                         <>
                           <div className="w-full py-10">
@@ -217,12 +219,6 @@ function FEBookIVA() {
                                 <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Numero Control Final
                                 </th>
-                                {/* <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Sello Recibido Inicial
-                                </th> */}
-                                {/* <th className="p-3 w-32 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                Sello Recibido Final
-                                </th> */}
                                 <th className="p-3 text-xs font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                                   Total
                                 </th>

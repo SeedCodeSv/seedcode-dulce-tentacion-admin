@@ -1,14 +1,17 @@
-import Layout from '../../layout/Layout';
 import { Button, Input, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { Filter, SearchIcon } from 'lucide-react';
+
+import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
+
 import GraphicProductCategory from './Product/GraphicProductCategory';
+
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import { global_styles } from '@/styles/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import { useBranchesStore } from '@/store/branches.store';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { useAuthStore } from '@/store/auth.store';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -60,37 +63,38 @@ function VentasPorProducto() {
         <div className="w-full h-full border border-white p-5 overflow-y-auto  bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
+              className="w-full"
+              classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
               labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
-              variant="bordered"
-              className="w-full"
               type="date"
               value={startDate}
+              variant="bordered"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <Input
+              className="w-full"
+              classNames={{ label: 'font-semibold' }}
               label="Fecha final"
               labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
-              variant="bordered"
-              className="w-full"
               type="date"
               value={endDate}
+              variant="bordered"
               onChange={(e) => setEndDate(e.target.value)}
             />
             <Select
-              variant="bordered"
-              label="Sucursal"
-              placeholder="Selecciona una sucursal"
-              labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
               className="w-full"
-              value={typePayment}
+              classNames={{ label: 'font-semibold' }}
               defaultSelectedKeys={typePayment}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona una sucursal"
+              value={typePayment}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const payment = new Set(key);
+
                   setTypePayment(payment.values().next().value as string);
                 } else {
                   setTypePayment('');
@@ -106,10 +110,10 @@ function VentasPorProducto() {
 
             <div className="flex flex-col w-full mt-6">
               <ButtonUi
-                theme={Colors.Primary}
                 className="hidden font-semibold md:flex"
                 color="primary"
                 endContent={<SearchIcon size={15} />}
+                theme={Colors.Primary}
                 onClick={() => {
                   handleSearch(undefined);
                   setOpenVaul(false);
@@ -123,10 +127,10 @@ function VentasPorProducto() {
           {/* Parte responsiva para movil */}
           <div className="flex items-center gap-5">
             <div className="flex-1 block md:hidden">
-              <TooltipGlobal text="Filtros disponibles" color="primary">
+              <TooltipGlobal color="primary" text="Filtros disponibles">
                 <Button
-                  style={global_styles().thirdStyle}
                   isIconOnly
+                  style={global_styles().thirdStyle}
                   type="button"
                   onClick={() => setOpenVaul(true)}
                 >
@@ -134,45 +138,46 @@ function VentasPorProducto() {
                 </Button>
               </TooltipGlobal>
               <BottomDrawer
-                title="Filtros disponibles"
                 open={openVaul}
+                title="Filtros disponibles"
                 onClose={() => setOpenVaul(false)}
               >
                 <Input
+                  className="w-full"
+                  classNames={{ label: 'font-semibold' }}
                   label="Fecha inicial"
                   labelPlacement="outside"
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  className="w-full"
                   type="date"
                   value={startDate}
+                  variant="bordered"
                   onChange={(e) => setStartDate(e.target.value)}
                 />
                 <div className="pt-4">
                   <Input
+                    className="w-full mt-4"
+                    classNames={{ label: 'font-semibold' }}
                     label="Fecha final"
                     labelPlacement="outside"
-                    classNames={{ label: 'font-semibold' }}
-                    variant="bordered"
-                    className="w-full mt-4"
                     type="date"
                     value={endDate}
+                    variant="bordered"
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                 </div>
                 <div className="pt-4">
                   <Select
-                    variant="bordered"
-                    label="Sucursal"
-                    placeholder="Selecciona una sucursal"
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold' }}
                     className="w-full"
-                    value={typePayment}
+                    classNames={{ label: 'font-semibold' }}
                     defaultSelectedKeys={typePayment}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una sucursal"
+                    value={typePayment}
+                    variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
                         const payment = new Set(key);
+
                         setTypePayment(payment.values().next().value as string);
                       } else {
                         setTypePayment('');
@@ -188,11 +193,11 @@ function VentasPorProducto() {
                 </div>
 
                 <Button
+                  className="w-full mt-5"
                   onClick={() => {
                     handleSearch(undefined);
                     setOpenVaul(false);
                   }}
-                  className="w-full mt-5"
                 >
                   Aplicar filtros
                 </Button>
@@ -204,7 +209,7 @@ function VentasPorProducto() {
             <div className="w-full mt-5">
               {loading_sales_products ? (
                 <div className="flex flex-col items-center justify-center w-full h-64">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-3 text-xl font-semibold">Cargando...</p>
                 </div>
               ) : (
@@ -222,8 +227,8 @@ function VentasPorProducto() {
                         <ThGlobal className="text-left p-3">Total en ventas</ThGlobal>
                         </tr>
                       </thead>
-                      {sales_products.map((product) => (
-                        <tr className="border-b border-slate-200">
+                      {sales_products.map((product,index) => (
+                        <tr key={index} className="border-b border-slate-200">
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             {product.productName}
                           </td>
@@ -237,7 +242,7 @@ function VentasPorProducto() {
                 </>
               )}
             </div>
-            <GraphicProductCategory startDate={startDate} endDate={endDate} branch="" />
+            <GraphicProductCategory branch="" endDate={endDate} startDate={startDate} />
           </div>
         </div>
       </div>

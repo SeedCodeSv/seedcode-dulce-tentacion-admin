@@ -1,5 +1,6 @@
-import { Items } from "@/pages/contablilidad/types/types"
 import { Dispatch, SetStateAction } from "react"
+
+import { Items } from "@/pages/contablilidad/types/types"
 
 export interface ResumeShoppingProps {
     afecta: string,

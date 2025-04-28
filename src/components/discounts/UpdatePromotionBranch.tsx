@@ -12,13 +12,15 @@ import {
   import { Formik } from 'formik';
   import { useEffect, useState } from 'react';
   import * as yup from 'yup';
-  import WeekSelector from './WeekSelector';
+
   import { useBranchesStore } from '../../store/branches.store';
-  
   import { operadores } from '../../utils/constants';
   import { Promotion } from '../../types/promotions.types';
   import { useBranchProductStore } from '../../store/branch_product.store';
   import { usePromotionsStore } from '../../store/promotions/promotions.store';
+
+  import WeekSelector from './WeekSelector';
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
   
@@ -81,6 +83,7 @@ import { Colors } from "@/types/themes.types";
     });
     const { getPaginatedBranchProducts } = useBranchProductStore();
     const { patchPromotions } = usePromotionsStore();
+
     useEffect(() => {
       if (selectedBranchId) {
         getPaginatedBranchProducts(Number(selectedBranchId));
@@ -101,6 +104,7 @@ import { Colors } from "@/types/themes.types";
         days: daysArrayString.toString(),
         priority: selectedPriority,
       };
+
       patchPromotions(
         { ...payload, startDate: startDateUpdate as string, endDate: endDateUpdate as string },
         id
@@ -151,8 +155,8 @@ import { Colors } from "@/types/themes.types";
       <>
         <div className="flex flex-col justify-center items-center  p-8">
           <Formik
-            validationSchema={validationSchema}
             initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={handleSave}
           >
             {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
@@ -161,16 +165,16 @@ import { Colors } from "@/types/themes.types";
                   {/* Columna 1 */}
                   <div>
                     <Input
-                      name="name"
-                      labelPlacement="outside"
-                      value={values.name}
-                      onChange={handleChange('name')}
-                      onBlur={handleBlur('name')}
-                      placeholder="Ingresa el nombre "
-                      classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                      variant="bordered"
-                      label="Nombre"
                       className='dark:text-white'
+                      classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
+                      label="Nombre"
+                      labelPlacement="outside"
+                      name="name"
+                      placeholder="Ingresa el nombre "
+                      value={values.name}
+                      variant="bordered"
+                      onBlur={handleBlur('name')}
+                      onChange={handleChange('name')}
                     />
                     {errors.name && touched.name && (
                       <span className="text-sm font-semibold text-red-600">{errors.name}</span>
@@ -179,17 +183,17 @@ import { Colors } from "@/types/themes.types";
                     <div className="grid grid-cols-2 gap-5 mt-4">
                       <div>
                         <Input
+                          className='dark:text-white'
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                           label="Precio"
                           labelPlacement="outside"
                           name="price"
-                          value={values.price.toString()}
-                          onChange={handleChange('price')}
-                          onBlur={handleBlur('price')}
                           placeholder="0"
-                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                          variant="bordered"
                           type="number"
-                          className='dark:text-white'
+                          value={values.price.toString()}
+                          variant="bordered"
+                          onBlur={handleBlur('price')}
+                          onChange={handleChange('price')}
                         />
                         {errors.price && touched.price && (
                           <span className="text-sm font-semibold text-red-500">{errors.price}</span>
@@ -197,14 +201,14 @@ import { Colors } from "@/types/themes.types";
                       </div>
                       <div>
                         <Select
-                          variant="bordered"
-                          placeholder="Selecciona el operador"
-                          defaultSelectedKeys={promotion?.operatorPrice}
                           className="w-full dark:text-white"
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                          defaultSelectedKeys={promotion?.operatorPrice}
                           label="Operador de precio"
                           labelPlacement="outside"
-                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                          placeholder="Selecciona el operador"
                           value={values.operatorPrice}
+                          variant="bordered"
                           onChange={(e) => setFieldValue('operatorPrice', e.target.value)}
                         >
                           {operadores.map((operator) => (
@@ -226,13 +230,13 @@ import { Colors } from "@/types/themes.types";
                     <div className="grid grid-cols-2 gap-5 mt-4">
                       <div>
                         <Input
-                          type="date"
-                          variant="bordered"
+                          className="dark:text-white"
+                          classNames={{ label: 'font-semibold' }}
+                          defaultValue={promotion?.startDate.toString()}
                           label="Fecha inicial"
                           labelPlacement="outside"
-                          className="dark:text-white"
-                          defaultValue={promotion?.startDate.toString()}
-                          classNames={{ label: 'font-semibold' }}
+                          type="date"
+                          variant="bordered"
                           onChange={(e) => setStartDateUpdate(e.target.value)}
                           // value={startDate}
                         />
@@ -244,13 +248,13 @@ import { Colors } from "@/types/themes.types";
                       </div>
                       <div>
                         <Input
-                          type="date"
-                          variant="bordered"
-                          label="Fecha final"
-                          labelPlacement="outside"
-                          defaultValue={promotion?.endDate.toString()}
                           className="dark:text-white"
                           classNames={{ label: 'font-semibold' }}
+                          defaultValue={promotion?.endDate.toString()}
+                          label="Fecha final"
+                          labelPlacement="outside"
+                          type="date"
+                          variant="bordered"
                           onChange={(e) => setEndDateUpdate(e.target.value)}
                           // value={endDate}
                         />
@@ -262,17 +266,16 @@ import { Colors } from "@/types/themes.types";
   
                     <div className="mt-5">
                       <Textarea
+                        className='dark:text-white'
+                        classNames={{ label: 'font-semibold text-gray-500 text-sm ' }}
                         label="Descripción"
                         labelPlacement="outside"
                         name="description"
-                        //   defaultValue={promotion?.description}
-                        value={values.description}
-                        onChange={handleChange('description')}
-                        onBlur={handleBlur('description')}
                         placeholder="Ingresa la descripción"
-                        classNames={{ label: 'font-semibold text-gray-500 text-sm ' }}
+                        value={values.description}
                         variant="bordered"
-                        className='dark:text-white'
+                        onBlur={handleBlur('description')}
+                        onChange={handleChange('description')}
                       />
                       {errors.description && touched.description && (
                         <span className="text-sm font-semibold text-red-500">
@@ -286,33 +289,32 @@ import { Colors } from "@/types/themes.types";
                       </h1>
                       <div className=" grid grid-cols-6 items-start ">
                         <WeekSelector
-                          startDate={startDateUpdate as string}
                           endDate={endDateUpdate as string}
+                          startDate={startDateUpdate as string}
                           onDaysSelected={handleDaysSelected}
                         />
                       </div>
                     </div>
                   </div>
-  
-                  {/* Columna 2 */}
+
                   <div>
                     <Autocomplete
                       className="font-semibold dark:text-white"
-                      label="Sucursal"
-                      name="branchId"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona la sucursal'}
                       defaultSelectedKey={`${promotion?.branchId}`}
+                      label="Sucursal"
+                      labelPlacement="outside"
+                      name="branchId"
+                      placeholder={'Selecciona la sucursal'}
                       value={values.branchId}
                       variant="bordered"
                       onChange={(e) => setFieldValue('branchId', e.target.value)}
                     >
                       {branch_list.map((branch) => (
                         <AutocompleteItem
-                          onClick={() => setBranchId(branch.id)}
-                          className="dark:text-white"
                           key={branch.id}
+                          className="dark:text-white"
                           textValue={branch.name}
+                          onClick={() => setBranchId(branch.id)}
                         >
                           {branch.name}
                         </AutocompleteItem>
@@ -325,25 +327,25 @@ import { Colors } from "@/types/themes.types";
                     <div className="mt-10">
                       <div>
                         <Input
+                          className='dark:text-white'
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                          defaultValue={promotion?.percentage.toString()}
                           label="Porcentaje de descuento"
                           labelPlacement="outside"
                           name="percentage"
-                          // value={values.percentage.toString()}
-                          defaultValue={promotion?.percentage.toString()}
+                          placeholder="0"
+                          startContent="%"
+                          type="number"
+                          variant="bordered"
+                          onBlur={handleBlur('percentage')}
                           onChange={(e) => {
                             const newValue = parseFloat(e.target.value);
+
                             handleChange('percentage')(newValue.toString());
                             if (newValue > 0) {
                               setFieldValue('fixedPrice', 0);
                             }
                           }}
-                          onBlur={handleBlur('percentage')}
-                          placeholder="0"
-                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                          variant="bordered"
-                          type="number"
-                          startContent="%"
-                          className='dark:text-white'
                         />
                         {errors.percentage && touched.percentage && (
                           <span className="text-sm font-semibold text-red-500">
@@ -361,25 +363,25 @@ import { Colors } from "@/types/themes.types";
                       >
                         <div>
                           <Input
+                            className='dark:text-white'
+                            classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                            defaultValue={promotion?.fixedPrice.toString()}
                             label="Precio Fijo"
                             labelPlacement="outside"
                             name="fixedPrice"
-                            defaultValue={promotion?.fixedPrice.toString()}
-                            //   value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                            placeholder="0"
+                            startContent="$"
+                            type="number"
+                            variant="bordered"
+                            onBlur={handleBlur('fixedPrice')}
                             onChange={(e) => {
                               const newValue = parseFloat(e.target.value);
+                              
                               handleChange('fixedPrice')(newValue.toString());
                               if (newValue > 0) {
                                 setFieldValue('percentage', 0);
                               }
                             }}
-                            onBlur={handleBlur('fixedPrice')}
-                            placeholder="0"
-                            classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                            variant="bordered"
-                            type="number"
-                            startContent="$"
-                            className='dark:text-white'
                           />
                         </div>
                       </Tooltip>
@@ -390,11 +392,11 @@ import { Colors } from "@/types/themes.types";
                         classNames={{
                           label: 'font-semibold text-black text-md dark:text-white',
                         }}
+                        label="Prioridad"
                         orientation="horizontal"
+                        size="lg"
                         value={selectedPriority ? [selectedPriority] : []}
                         onChange={handlePriorityChange}
-                        label="Prioridad"
-                        size="lg"
                       >
                         {priority.map((p) => (
                           <Checkbox key={p} value={p}>
@@ -414,9 +416,9 @@ import { Colors } from "@/types/themes.types";
                 </div>
                 <div className="mt-4 flex flex-row justify-center">
                   <ButtonUi
-                    type="submit"
-                    theme={Colors.Primary}
                     className="flex w-44 font-semibold h-full py-2"
+                    theme={Colors.Primary}
+                    type="submit"
                   >
                     Actualizar Promoción
                   </ButtonUi>

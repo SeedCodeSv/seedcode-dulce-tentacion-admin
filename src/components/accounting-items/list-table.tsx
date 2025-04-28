@@ -1,4 +1,3 @@
-import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import {
   Button,
   Input,
@@ -12,16 +11,20 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
-import useGlobalStyles from '../global/global.styles';
-import Pagination from '../global/Pagination';
-import { limit_options, typeOrden } from '@/utils/constants';
 import { Pencil, Plus, Trash, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { PiFilePdfDuotone } from 'react-icons/pi';
-import ItemPdf from './ItemPdf';
+
+import Pagination from '../global/Pagination';
+import useGlobalStyles from '../global/global.styles';
 import FullPageLayout from '../global/FullOverflowLayout';
+
+import ItemPdf from './ItemPdf';
+
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
+import { limit_options, typeOrden } from '@/utils/constants';
+import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { useAuthStore } from '@/store/auth.store';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -79,6 +82,7 @@ function List() {
   const handleDelete = () => {
     if (selectedId === 0) {
       toast.warning('Debe seleccionar una partida contable');
+
       return;
     }
     deleteItem(selectedId, transId)
@@ -116,29 +120,29 @@ function List() {
           <Input
             classNames={{ label: 'font-semibold' }}
             label="Fecha inicial"
-            type="date"
-            variant="bordered"
             labelPlacement="outside"
-            onChange={(e) => setStartDate(e.target.value)}
+            type="date"
             value={startDate}
-          ></Input>
+            variant="bordered"
+            onChange={(e) => setStartDate(e.target.value)}
+           />
           <Input
             classNames={{ label: 'font-semibold' }}
             label="Fecha final"
-            type="date"
-            variant="bordered"
             labelPlacement="outside"
-            onChange={(e) => setEndDate(e.target.value)}
+            type="date"
             value={endDate}
-          ></Input>
-          <Select
             variant="bordered"
+            onChange={(e) => setEndDate(e.target.value)}
+           />
+          <Select
             className=""
             classNames={{ base: 'font-semibold' }}
             label="Tipo de partida"
-            placeholder="Selecciona un tipo de partida"
             labelPlacement="outside"
+            placeholder="Selecciona un tipo de partida"
             selectedKeys={[typeItem]}
+            variant="bordered"
             onSelectionChange={(key) => {
               if (key) {
                 setTypeItem(String(key.currentKey));
@@ -152,13 +156,13 @@ function List() {
         </div>
         <div className="w-full flex justify-between items-end mt-2">
           <Select
-            variant="bordered"
             className="w-64"
             classNames={{ base: 'font-semibold' }}
             label="Cantidad a mostrar"
-            placeholder="Selecciona un limite"
             labelPlacement="outside"
+            placeholder="Selecciona un limite"
             selectedKeys={[limit.toString()]}
+            variant="bordered"
             onSelectionChange={(key) => {
               if (key) {
                 setLimit(Number(key.currentKey));
@@ -170,13 +174,13 @@ function List() {
             ))}
           </Select>
           <Select
-            variant="bordered"
             className="w-64"
             classNames={{ base: 'font-semibold' }}
             label="Ordenar registros"
-            placeholder="Selecciona un tipo"
             labelPlacement="outside"
+            placeholder="Selecciona un tipo"
             selectedKeys={[typeOrder]}
+            variant="bordered"
             onSelectionChange={(key) => {
               if (key) {
                 setTypeOrder(String(key.currentKey));
@@ -216,9 +220,9 @@ function List() {
               {loading ? (
                 <>
                   <tr>
-                    <td colSpan={7} className="p-3 text-sm text-center text-slate-500">
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
                       <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader"></div>
+                        <div className="loader" />
                         <p className="mt-3 text-xl font-semibold">Cargando...</p>
                       </div>
                     </td>
@@ -228,7 +232,7 @@ function List() {
                 <>
                   {accounting_items.length > 0 ? (
                     accounting_items.map((type, index) => (
-                      <tr className="border-b border-slate-200" key={index}>
+                      <tr key={index} className="border-b border-slate-200">
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {type.noPartida}
                         </td>
@@ -278,7 +282,7 @@ function List() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={7} className="p-3 text-sm text-center text-slate-500">
+                      <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
                         <div className="flex flex-col items-center justify-center w-full h-64">
                           <p className="mt-3 text-xl font-semibold">
                             No se encontraron partidas contables
@@ -296,9 +300,9 @@ function List() {
           <>
             <div className="hidden w-full mt-5 md:flex">
               <Pagination
-                previousPage={accounting_items_pagination.prevPag}
-                nextPage={accounting_items_pagination.nextPag}
                 currentPage={accounting_items_pagination.currentPag}
+                nextPage={accounting_items_pagination.nextPag}
+                previousPage={accounting_items_pagination.prevPag}
                 totalPages={accounting_items_pagination.totalPag}
                 onPageChange={(page) => {
                   getAccountingItems(transId, page, limit, startDate, endDate, typeItem, typeOrder);
@@ -331,14 +335,14 @@ function List() {
       <FullPageLayout show={showFullLayout.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
+            isIconOnly
+            className="absolute bottom-6 left-6"
             color="danger"
             onPress={closeShowPdf}
-            className="absolute bottom-6 left-6"
-            isIconOnly
           >
             <X />
           </Button>
-          <ItemPdf JSONData={report_for_item} date={date} correlative={correlative} />
+          <ItemPdf JSONData={report_for_item} correlative={correlative} date={date} />
         </div>
       </FullPageLayout>
     </>

@@ -1,7 +1,9 @@
+import { createContext, useState } from 'react';
+
+import { IPermissionContext } from './types/actions.types';
+
 import { get_role_actions } from '@/storage/localStorage';
 import { IRoleAction } from '@/types/actions_rol.types';
-import { createContext, useState } from 'react';
-import { IPermissionContext } from './types/actions.types';
 
 export const PermissionContext = createContext<IPermissionContext>({
   roleActions: get_role_actions(),

@@ -1,9 +1,12 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import { RefreshCcw, EditIcon, FileText } from 'lucide-react';
+
 import { useEmployeeStore } from '../../store/employee.store';
+
 import { IMobileView } from './types/mobile-view.types';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -28,28 +31,28 @@ function MobileView(props: IMobileView) {
           </CardBody>
           <CardHeader className="flex gap-5">
             {actions.includes('Editar') && item.isActive && (
-              <ButtonUi onPress={() => openEditModal(item)} isIconOnly theme={Colors.Success}>
+              <ButtonUi isIconOnly theme={Colors.Success} onPress={() => openEditModal(item)}>
                 <EditIcon className="dark:text-white" size={20} />
               </ButtonUi>
             )}
             {actions.includes('Eliminar') && item.isActive && <DeletePopover employee={item} />}
             {actions.includes('Activar') && !item.isActive && (
-              <ButtonUi theme={Colors.Info} onPress={() => handleActivate(item.id)} isIconOnly>
+              <ButtonUi isIconOnly theme={Colors.Info} onPress={() => handleActivate(item.id)}>
                 <RefreshCcw />
               </ButtonUi>
             )}
 
             <ButtonUi
-              className="border border-white"
-              onPress={() => WorkConstancy(item)}
               isIconOnly
+              className="border border-white"
               theme={Colors.Info}
+              onPress={() => WorkConstancy(item)}
             >
               <FileText className="text-white" size={20} />
             </ButtonUi>
 
-            <ProofSalary employee={item} actions={actions}></ProofSalary>
-            <ProofeOfEmployment employee={item} actions={actions}></ProofeOfEmployment>
+            <ProofSalary actions={actions} employee={item} />
+            <ProofeOfEmployment actions={actions} employee={item} />
           </CardHeader>
         </Card>
       ))}

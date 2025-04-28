@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useBranchesStore } from '../../store/branches.store';
 import {
   Button,
   ButtonGroup,
@@ -24,24 +23,28 @@ import {
   Store,
   Trash,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import classNames from 'classnames';
+
+import { useBranchesStore } from '../../store/branches.store';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
-import AddBranch from './AddBranch';
 import { limit_options, messages } from '../../utils/constants';
-import TableBranch from './TableBranch';
-import MobileView from './MobileView';
 import { Branches } from '../../types/branches.types';
-import { toast } from 'sonner';
-import ListBranchProduct from './branch_product/ListBranchProduct';
-import BoxBranch from './BoxBranch';
-import classNames from 'classnames';
 import HeadlessModal from '../global/HeadlessModal';
 import TooltipGlobal from '../global/TooltipGlobal';
 import SmPagination from '../global/SmPagination';
-import { ArrayAction } from '@/types/view.types';
-import useWindowSize from '@/hooks/useWindowSize';
+
+import AddBranch from './AddBranch';
+import TableBranch from './TableBranch';
+import MobileView from './MobileView';
+import ListBranchProduct from './branch_product/ListBranchProduct';
+import BoxBranch from './BoxBranch';
 import SearchBranch from './search_branch/SearchBranch';
 import AddPointOfSales from './AddPointOfSales';
+
+import { ArrayAction } from '@/types/view.types';
+import useWindowSize from '@/hooks/useWindowSize';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
@@ -60,6 +63,7 @@ function ListBranch({ actions }: ArrayAction) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
+
   useEffect(() => {
     getBranchesPaginated(1, limit, name, phone, address, active);
   }, [limit, active]);
@@ -96,36 +100,37 @@ function ListBranch({ actions }: ArrayAction) {
   const clearClose = () => {
     setBranch(undefined);
   };
+
   return (
     <>
       {BranchId >= 1 ? (
-        <ListBranchProduct onclick={() => setBranchId(0)} id={BranchId} />
+        <ListBranchProduct id={BranchId} onclick={() => setBranchId(0)} />
       ) : (
         <div className=" w-full h-full bg-white dark:bg-gray-900">
           <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
             <div className="flex justify-between items-end ">
               <SearchBranch
+                addressBranch={setAddress}
                 nameBranch={setName}
                 phoneBranch={setPhone}
-                addressBranch={setAddress}
-              ></SearchBranch>
+               />
               {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
             </div>
             <div className="hidden w-full gap-5 md:flex">
               <div className="grid w-full grid-cols-4 gap-3">
                 <Input
-                  startContent={<User />}
+                  isClearable
                   className="w-full dark:text-white border border-white rounded-xl"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  label="Nombre"
                   classNames={{
                     label: 'font-semibold text-gray-700',
                     inputWrapper: 'pr-0',
                   }}
-                  isClearable
-                  value={name}
+                  label="Nombre"
+                  labelPlacement="outside"
                   placeholder="Escribe para buscar..."
+                  startContent={<User />}
+                  value={name}
+                  variant="bordered"
                   onChange={(e) => setName(e.target.value)}
                   onClear={() => {
                     setName('');
@@ -134,18 +139,18 @@ function ListBranch({ actions }: ArrayAction) {
                 />
 
                 <Input
-                  labelPlacement="outside"
-                  label="Teléfono"
-                  placeholder="Escribe para buscar..."
-                  startContent={<PhoneIcon />}
+                  isClearable
                   className="w-full dark:text-white border border-white rounded-xl"
                   classNames={{
                     label: 'font-semibold text-gray-700',
                     inputWrapper: 'pr-0',
                   }}
-                  variant="bordered"
-                  isClearable
+                  label="Teléfono"
+                  labelPlacement="outside"
+                  placeholder="Escribe para buscar..."
+                  startContent={<PhoneIcon />}
                   value={phone}
+                  variant="bordered"
                   onChange={(e) => setPhone(e.target.value)}
                   onClear={() => {
                     setPhone('');
@@ -154,18 +159,18 @@ function ListBranch({ actions }: ArrayAction) {
                 />
 
                 <Input
-                  placeholder="Escribe para buscar..."
-                  startContent={<MapPinIcon />}
-                  className="w-full dark:text-white border border-white rounded-xl"
-                  variant="bordered"
                   isClearable
-                  labelPlacement="outside"
-                  label="Dirección"
+                  className="w-full dark:text-white border border-white rounded-xl"
                   classNames={{
                     label: 'font-semibold text-gray-700',
                     inputWrapper: 'pr-0',
                   }}
+                  label="Dirección"
+                  labelPlacement="outside"
+                  placeholder="Escribe para buscar..."
+                  startContent={<MapPinIcon />}
                   value={address}
+                  variant="bordered"
                   onChange={(e) => setAddress(e.target.value)}
                   onClear={() => {
                     setAddress('');
@@ -173,11 +178,11 @@ function ListBranch({ actions }: ArrayAction) {
                   }}
                 />
                 <ButtonUi
-                  theme={Colors.Primary}
                   className="hidden mt-6 font-semibold md:flex border border-white rounded-xl"
                   color="primary"
-                  onPress={() => handleSearch()}
+                  theme={Colors.Primary}
                   type="button"
+                  onPress={() => handleSearch()}
                 >
                   Buscar
                 </ButtonUi>
@@ -200,22 +205,22 @@ function ListBranch({ actions }: ArrayAction) {
               </div>
               <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
                 <div>
-                  <label className="dark:text-white font-semibold text-sm">Mostrar</label>
+                  <span className="dark:text-white font-semibold text-sm">Mostrar</span>
                   <Select
                     className="w-44 dark:text-white border border-white rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
                     classNames={{
                       label: 'font-semibold',
                     }}
                     defaultSelectedKeys={['5']}
+                    labelPlacement="outside"
                     value={limit}
+                    variant="bordered"
                     onChange={(e) => {
                       setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                     }}
                   >
                     {limit_options.map((option) => (
-                      <SelectItem className="w-full dark:text-white" key={option}>
+                      <SelectItem key={option} className="w-full dark:text-white">
                         {option}
                       </SelectItem>
                     ))}
@@ -223,15 +228,15 @@ function ListBranch({ actions }: ArrayAction) {
                 </div>
                 <ButtonGroup className="mt-4">
                   <ButtonUi
-                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     isIconOnly
+                    theme={view === 'table' ? Colors.Primary : Colors.Default}
                     onPress={() => setView('table')}
                   >
                     <ITable />
                   </ButtonUi>
                   <ButtonUi
-                    theme={view === 'grid' ? Colors.Primary : Colors.Default}
                     isIconOnly
+                    theme={view === 'grid' ? Colors.Primary : Colors.Default}
                     onPress={() => setView('grid')}
                   >
                     <CreditCard />
@@ -248,11 +253,11 @@ function ListBranch({ actions }: ArrayAction) {
                       {actions.includes('Editar') && item.isActive && (
                         <>
                           <ButtonUi
+                            isIconOnly
+                            theme={Colors.Success}
                             onPress={() => {
                               handleEdit(item);
                             }}
-                            isIconOnly
-                            theme={Colors.Success}
                           >
                             <Edit />
                           </ButtonUi>
@@ -260,12 +265,12 @@ function ListBranch({ actions }: ArrayAction) {
                       )}
                       {actions.includes('Ver Productos') && item.isActive && (
                         <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
                           onPress={() => {
                             setBranchId(item.id);
                             modalBranchProduct.onOpen();
                           }}
-                          isIconOnly
-                          theme={Colors.Primary}
                         >
                           <ShoppingBag />
                         </ButtonUi>
@@ -276,11 +281,11 @@ function ListBranch({ actions }: ArrayAction) {
 
                       <TooltipGlobal text="Asignar punto de venta">
                         <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
                           onPress={() => {
                             handlePointOfSales(item.id);
                           }}
-                          isIconOnly
-                          theme={Colors.Primary}
                         >
                           <Store />
                         </ButtonUi>
@@ -288,11 +293,11 @@ function ListBranch({ actions }: ArrayAction) {
                       {actions.includes('Activar Sucursal') && !item.isActive && (
                         <TooltipGlobal text="Activar la sucursal">
                           <ButtonUi
+                            isIconOnly
+                            theme={Colors.Info}
                             onPress={() => {
                               handleInactive(item);
                             }}
-                            isIconOnly
-                            theme={Colors.Info}
                           >
                             <RefreshCcw />
                           </ButtonUi>
@@ -307,13 +312,13 @@ function ListBranch({ actions }: ArrayAction) {
               <>
                 <MobileView
                   actions={actions}
+                  deletePopover={DeletePopUp}
                   handleActive={() => {
                     handleInactive;
                   }}
-                  deletePopover={DeletePopUp}
-                  handleEdit={handleEdit}
-                  handleBranchProduct={handleBranchProduct}
                   handleBox={handleBox}
+                  handleBranchProduct={handleBranchProduct}
+                  handleEdit={handleEdit}
                   layout={view as 'grid' | 'list'}
                 />
               </>
@@ -322,9 +327,9 @@ function ListBranch({ actions }: ArrayAction) {
               <>
                 <div className="hidden w-full mt-5 md:flex">
                   <Pagination
-                    previousPage={branches_paginated.prevPag}
-                    nextPage={branches_paginated.nextPag}
                     currentPage={branches_paginated.currentPag}
+                    nextPage={branches_paginated.nextPag}
+                    previousPage={branches_paginated.prevPag}
                     totalPages={branches_paginated.totalPag}
                     onPageChange={(page) => {
                       getBranchesPaginated(page, limit, name, phone, address, active);
@@ -333,6 +338,7 @@ function ListBranch({ actions }: ArrayAction) {
                 </div>
                 <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                   <SmPagination
+                    currentPage={branches_paginated.currentPag}
                     handleNext={() => {
                       getBranchesPaginated(
                         branches_paginated.nextPag,
@@ -353,7 +359,6 @@ function ListBranch({ actions }: ArrayAction) {
                         active
                       );
                     }}
-                    currentPage={branches_paginated.currentPag}
                     totalPages={branches_paginated.totalPag}
                   />
                 </div>
@@ -362,34 +367,34 @@ function ListBranch({ actions }: ArrayAction) {
           </div>
           <HeadlessModal
             isOpen={modalAdd.isOpen}
+            size="w-[90vw] md:w-[600px]"
+            title={selectedBranch ? 'Editar sucursal' : 'Nueva sucursal'}
             onClose={() => {
               modalAdd.onClose();
               setSelectedBranch(undefined);
             }}
-            title={selectedBranch ? 'Editar sucursal' : 'Nueva sucursal'}
-            size="w-[90vw] md:w-[600px]"
           >
             <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
           </HeadlessModal>
 
           <HeadlessModal
-            title=""
             isOpen={modalBoxBranch.isOpen}
+            size="w-[350px] md:w-[500px]"
+            title=""
             onClose={() => {
               clearClose();
               modalBoxBranch.onClose();
             }}
-            size="w-[350px] md:w-[500px]"
           >
             <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
           </HeadlessModal>
           <HeadlessModal
             isOpen={modalAddPointOfSales.isOpen}
-            onClose={modalAddPointOfSales.onClose}
-            title="Agregar punto de venta"
             size="w-[380px] md:w-[700px] p-1"
+            title="Agregar punto de venta"
+            onClose={modalAddPointOfSales.onClose}
           >
-            <AddPointOfSales onClose={modalAddPointOfSales.onClose} branchId={selectedBranchId} />
+            <AddPointOfSales branchId={selectedBranchId} onClose={modalAddPointOfSales.onClose} />
           </HeadlessModal>
         </div>
       )}
@@ -435,8 +440,8 @@ const DeletePopUp = ({ branch }: Props) => {
       <Popover
         className="border border-white rounded-2xl"
         {...deleteDisclosure}
-        backdrop="blur"
         showArrow
+        backdrop="blur"
       >
         <PopoverTrigger>
           <Button isIconOnly style={style}>
@@ -451,9 +456,9 @@ const DeletePopUp = ({ branch }: Props) => {
             </p>
             <div className="flex justify-center mt-4 gap-5">
               <ButtonUi
+                className="border border-white"
                 theme={Colors.Default}
                 onPress={deleteDisclosure.onClose}
-                className="border border-white"
               >
                 No, cancelar
               </ButtonUi>

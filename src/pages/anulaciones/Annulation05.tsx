@@ -1,19 +1,3 @@
-import HeadlessModal from '@/components/global/HeadlessModal';
-import { firmarDocumentoInvalidacionCredito, send_to_mh_invalidations } from '@/services/DTE.service';
-import { return_mh_token } from '@/storage/localStorage';
-import { useAuthStore } from '@/store/auth.store';
-import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
-import { useEmployeeStore } from '@/store/employee.store';
-import { useCreditNotes } from '@/store/notes_credits.store';
-import { useTransmitterStore } from '@/store/transmitter.store';
-import { global_styles } from '@/styles/global.styles';
-import { AnnulationSalePayload } from '@/types/credit_notes.types';
-import { Employee } from '@/types/employees.types';
-import { SVFE_InvalidacionCredito_SEND } from '@/types/svf_dte/InvalidationCredito';
-import { ErrorMHInvalidation } from '@/types/svf_dte/InvalidationDebito';
-import { ambiente, API_URL, sending_steps } from '@/utils/constants';
-import { getElSalvadorDateTime } from '@/utils/dates';
-import { generate_uuid } from '@/utils/random/random';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -32,6 +16,23 @@ import { useNavigate } from 'react-router';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import * as yup from 'yup';
+
+import HeadlessModal from '@/components/global/HeadlessModal';
+import { firmarDocumentoInvalidacionCredito, send_to_mh_invalidations } from '@/services/DTE.service';
+import { return_mh_token } from '@/storage/localStorage';
+import { useAuthStore } from '@/store/auth.store';
+import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
+import { useEmployeeStore } from '@/store/employee.store';
+import { useCreditNotes } from '@/store/notes_credits.store';
+import { useTransmitterStore } from '@/store/transmitter.store';
+import { global_styles } from '@/styles/global.styles';
+import { AnnulationSalePayload } from '@/types/credit_notes.types';
+import { Employee } from '@/types/employees.types';
+import { SVFE_InvalidacionCredito_SEND } from '@/types/svf_dte/InvalidationCredito';
+import { ErrorMHInvalidation } from '@/types/svf_dte/InvalidationDebito';
+import { ambiente, API_URL, sending_steps } from '@/utils/constants';
+import { getElSalvadorDateTime } from '@/utils/dates';
+import { generate_uuid } from '@/utils/random/random';
 
 interface Props {
   id: string;
@@ -66,6 +67,7 @@ function Invalidation05({ id }: Props) {
         .get009TipoDeEstablecimiento()
         .find((item) => item.codigo === json_credit.emisor.tipoEstablecimiento);
     }
+
     return undefined;
   }, [json_credit]);
 
@@ -75,6 +77,7 @@ function Invalidation05({ id }: Props) {
         .get024TipoDeInvalidacion()
         .find((item) => item.codigo === selectedMotivo.toString());
     }
+
     return undefined;
   }, [selectedMotivo]);
 
@@ -97,11 +100,13 @@ function Invalidation05({ id }: Props) {
   const handleAnnulation = async (values: AnnulationSalePayload) => {
     if (selectedMotivo !== 2 && codigoGeneracionR !== '') {
       toast.error('Debes seleccionar la venta a reemplazar');
+
       return;
     }
 
     if (!motivo) {
       toast.error('Debes seleccionar el motivo de la anulación');
+
       return;
     }
 
@@ -109,6 +114,7 @@ function Invalidation05({ id }: Props) {
       .then((res) => res)
       .catch(() => {
         toast.error('Error al obtener los correlativos');
+
         return;
       });
 
@@ -159,6 +165,7 @@ function Invalidation05({ id }: Props) {
         },
       },
     };
+
     setLoading(true);
     firmarDocumentoInvalidacionCredito(generate).then((firma) => {
       setCurrentStep(1);
@@ -195,6 +202,7 @@ function Invalidation05({ id }: Props) {
                     setLoading(false);
                     setCurrentStep(0);
                     navigation(-1);
+
                     return;
                   }),
                 {
@@ -216,6 +224,7 @@ function Invalidation05({ id }: Props) {
                 setCurrentStep(0);
                 setTitle(error.response?.data.descripcionMsg ?? 'Error al procesar venta');
                 modalError.onOpen();
+
                 return;
               }
               setLoading(false);
@@ -238,13 +247,13 @@ function Invalidation05({ id }: Props) {
 
   return (
     <>
-      <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
+      <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
         <ArrowLeft />
         <p className=" whitespace-nowrap">Volver a listado</p>
-      </div>
+      </button>
       {loading_credit && (
         <div className="w-full h-full flex flex-col justify-center items-center">
-          <div className="loader"></div>
+          <div className="loader" />
           <p className="mt-3 text-xl font-semibold">Cargando...</p>
         </div>
       )}
@@ -282,18 +291,18 @@ function Invalidation05({ id }: Props) {
         </div>
       )}
       <HeadlessModal
-        size="w-96 p-5"
         isOpen={modalError.isOpen}
-        onClose={modalError.onClose}
+        size="w-96 p-5"
         title={title}
+        onClose={modalError.onClose}
       >
         <div className="w-full">
           <div className="flex flex-col justify-center items-center">
-            <ShieldAlert size={75} color="red" />
+            <ShieldAlert color="red" size={75} />
             <p className="text-lg font-semibold dark:text-white">{errorMessage}</p>
           </div>
           <div className="flex justify-end items-end mt-5 w-full">
-            <Button onClick={modalError.onClose} style={style.dangerStyles} className="w-full">
+            <Button className="w-full" style={style.dangerStyles} onClick={modalError.onClose}>
               Aceptar
             </Button>
           </div>
@@ -322,26 +331,27 @@ function Invalidation05({ id }: Props) {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2 mt-10">
             <Select
               className="my-3 dark:text-white z-0"
+              classNames={{ label: 'text-sm font-semibold' }}
+              defaultSelectedKeys={[selectedMotivo.toString()]}
               label="Motivo de invalidación"
               labelPlacement="outside"
               placeholder="Selecciona un motivo"
+              value={selectedMotivo}
               variant="bordered"
-              classNames={{ label: 'text-sm font-semibold' }}
               onSelectionChange={(e) => {
                 if (e) {
                   const array = Array.from(new Set(e).values());
+
                   setSelectedMotivo(Number(array[0]) as 1 | 2 | 3);
                 } else {
                   setSelectedMotivo(1);
                 }
               }}
-              value={selectedMotivo}
-              defaultSelectedKeys={[selectedMotivo.toString()]}
             >
               {services.get024TipoDeInvalidacion().map((item) => (
                 <SelectItem
-                  className="dark:text-white"
                   key={item.id}
+                  className="dark:text-white"
                   textValue={item.valores}
                 >
                   {item.valores}
@@ -351,11 +361,13 @@ function Invalidation05({ id }: Props) {
             {(selectedMotivo === 1 || selectedMotivo === 3) && (
               <Select
                 className="my-3"
+                classNames={{ label: 'text-sm font-semibold' }}
+                defaultSelectedKeys={[selectedMotivo.toString()]}
                 label="Código de generación que reemplaza"
                 labelPlacement="outside"
                 placeholder="Nota de débito que reemplaza"
+                value={selectedMotivo}
                 variant="bordered"
-                classNames={{ label: 'text-sm font-semibold' }}
                 onSelectionChange={(e) => {
                   if (e) {
                     setCodigoGeneracionR(new Set(e).values().next().value as string);
@@ -363,8 +375,6 @@ function Invalidation05({ id }: Props) {
                     setCodigoGeneracionR('');
                   }
                 }}
-                value={selectedMotivo}
-                defaultSelectedKeys={[selectedMotivo.toString()]}
               >
                 {recent_credit_notes.map((item) => (
                   <SelectItem
@@ -379,7 +389,6 @@ function Invalidation05({ id }: Props) {
           </div>
           <div className="mt-5">
             <Formik
-              validationSchema={validationSchema}
               initialValues={{
                 nameResponsible: '',
                 nameApplicant: '',
@@ -388,6 +397,7 @@ function Invalidation05({ id }: Props) {
                 typeDocResponsible: '',
                 typeDocApplicant: '',
               }}
+              validationSchema={validationSchema}
               onSubmit={handleAnnulation}
             >
               {({
@@ -405,15 +415,16 @@ function Invalidation05({ id }: Props) {
                     <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
                       <Autocomplete
                         className="dark:text-white font-semibold text-sm z-0"
-                        variant="bordered"
+                        errorMessage={touched.nameResponsible ? errors.nameResponsible : undefined}
                         label="Nombre"
                         labelPlacement="outside"
                         placeholder="Selecciona al responsable"
-                        errorMessage={touched.nameResponsible ? errors.nameResponsible : undefined}
+                        variant="bordered"
                         onBlur={handleBlur}
                         onSelectionChange={(key) => {
                           if (key) {
                             const employee = JSON.parse(key as string) as Employee;
+
                             handleChange('nameResponsible')(
                               `${employee.firstName + ' ' + employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`
                             );
@@ -437,34 +448,34 @@ function Invalidation05({ id }: Props) {
                         ))}
                       </Autocomplete>
                       <Input
-                        variant="bordered"
-                        label="Tipo de documento"
-                        labelPlacement="outside"
+                        isReadOnly
                         className="w-full text-sm dark:text-white"
                         classNames={{ label: 'text-xs font-semibold' }}
-                        placeholder="DUI"
-                        isReadOnly
-                        type="text"
                         id="docNumberResponsible"
+                        label="Tipo de documento"
+                        labelPlacement="outside"
                         name="docNumberResponsible"
+                        placeholder="DUI"
+                        type="text"
                         value={
                           services
                             .get022TipoDeDocumentoDeIde()
                             .find((doc) => doc.codigo === typeDocResponsible)?.valores
                         }
+                        variant="bordered"
                       />
                       <Input
-                        variant="bordered"
-                        label="Numero de documento"
-                        labelPlacement="outside"
+                        isReadOnly
                         className="w-full text-sm dark:text-white"
                         classNames={{ label: 'text-xs font-semibold' }}
+                        id="docNumberResponsible"
+                        label="Numero de documento"
+                        labelPlacement="outside"
+                        name="docNumberResponsible"
                         placeholder="00000000-0"
                         type="text"
-                        isReadOnly
-                        id="docNumberResponsible"
-                        name="docNumberResponsible"
                         value={docResponsible}
+                        variant="bordered"
                       />
                     </div>
                   </div>
@@ -475,40 +486,40 @@ function Invalidation05({ id }: Props) {
                         <Input
                           className="w-full text-sm dark:text-white z-0"
                           classNames={{ label: 'text-xs font-semibold' }}
-                          type="text"
-                          id="nameApplicant"
-                          name="nameApplicant"
-                          labelPlacement="outside"
-                          label="Nombre de solicitante"
-                          placeholder="Ingresa el nombre del solicitante"
-                          variant="bordered"
-                          value={values.nameApplicant}
-                          onChange={handleChange('nameApplicant')}
-                          onBlur={handleBlur('nameApplicant')}
-                          isInvalid={touched.nameApplicant && !!errors.nameApplicant}
                           errorMessage={errors.nameApplicant}
+                          id="nameApplicant"
+                          isInvalid={touched.nameApplicant && !!errors.nameApplicant}
+                          label="Nombre de solicitante"
+                          labelPlacement="outside"
+                          name="nameApplicant"
+                          placeholder="Ingresa el nombre del solicitante"
+                          type="text"
+                          value={values.nameApplicant}
+                          variant="bordered"
+                          onBlur={handleBlur('nameApplicant')}
+                          onChange={handleChange('nameApplicant')}
                         />
                       </div>
                       <div>
                         <Select
                           className="dark:text-white"
-                          variant="bordered"
-                          size="md"
-                          label="Tipo de documento de identificación"
-                          placeholder="Selecciona el tipo de documento"
-                          labelPlacement="outside"
                           classNames={{
                             label: 'font-semibold text-xs',
                           }}
-                          value={values.typeDocApplicant}
-                          onChange={handleChange('typeDocApplicant')}
-                          isInvalid={touched.typeDocApplicant && !!errors.typeDocApplicant}
                           errorMessage={errors.typeDocApplicant}
+                          isInvalid={touched.typeDocApplicant && !!errors.typeDocApplicant}
+                          label="Tipo de documento de identificación"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el tipo de documento"
+                          size="md"
+                          value={values.typeDocApplicant}
+                          variant="bordered"
+                          onChange={handleChange('typeDocApplicant')}
                         >
                           {services.get022TipoDeDocumentoDeIde().map((doc) => (
                             <SelectItem
-                              className="dark:text-white"
                               key={doc.codigo}
+                              className="dark:text-white"
                             >
                               {doc.valores}
                             </SelectItem>
@@ -516,30 +527,30 @@ function Invalidation05({ id }: Props) {
                         </Select>
                       </div>
                       <Input
-                        variant="bordered"
-                        label="Numero de documento"
-                        labelPlacement="outside"
                         className="w-full text-sm dark:text-white"
                         classNames={{ label: 'text-xs font-semibold' }}
+                        errorMessage={errors.docNumberApplicant}
+                        id="`docNumberApplicant`"
+                        isInvalid={touched.docNumberApplicant && !!errors.docNumberApplicant}
+                        label="Numero de documento"
+                        labelPlacement="outside"
+                        name="docNumberApplicant"
                         placeholder="Ingresa el numero de documento"
                         type="text"
-                        id="`docNumberApplicant`"
-                        name="docNumberApplicant"
                         value={values.docNumberApplicant}
-                        onChange={handleChange('docNumberApplicant')}
+                        variant="bordered"
                         onBlur={handleBlur('docNumberApplicant')}
-                        isInvalid={touched.docNumberApplicant && !!errors.docNumberApplicant}
-                        errorMessage={errors.docNumberApplicant}
-                      ></Input>
+                        onChange={handleChange('docNumberApplicant')}
+                       />
                     </div>
                   </div>
                   <div className="w-full flex justify-end mt-10 pb-10">
                     <Button
-                      style={styles.thirdStyle}
-                      onClick={() => handleSubmit()}
-                      type="submit"
                       className="w-full md:w-auto px-20"
                       disabled={isSubmitting}
+                      style={styles.thirdStyle}
+                      type="submit"
+                      onClick={() => handleSubmit()}
                     >
                       Procesar anulación
                     </Button>

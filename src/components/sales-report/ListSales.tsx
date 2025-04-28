@@ -1,7 +1,3 @@
-import { useSalesStore } from '@/store/sales.store';
-import { global_styles } from '@/styles/global.styles';
-import { formatDate } from '@/utils/dates';
-import { formatCurrency } from '@/utils/dte';
 import {
   Button,
   Chip,
@@ -18,8 +14,13 @@ import {
 import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import Pagination from '../global/Pagination';
-// import { ambiente, MH_QUERY } from "@/utils/constants";
+
+import { formatCurrency } from '@/utils/dte';
+import { formatDate } from '@/utils/dates';
+import { global_styles } from '@/styles/global.styles';
+import { useSalesStore } from '@/store/sales.store';
 import { get_sale_pdf } from '@/services/sales.service';
 import { useBranchesStore } from '@/store/branches.store';
 import { usePointOfSales } from '@/store/point-of-sales.store';
@@ -75,7 +76,9 @@ function ListSales() {
   const verifyNotes = (id: number) => {
     getNotesOfSale(id).then((res) => {
       const { debits, credits } = res;
+
       setNotes({ debits, credits });
+
       return;
     });
     setNotes({ debits: 0, credits: 0 });
@@ -85,32 +88,32 @@ function ListSales() {
     <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full flex flex-col p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
         <Filters
+          branch={branch}
+          dateInitial={dateInitial}
+          endDate={dateEnd}
+          pointOfSale={pointOfSale}
+          setBranch={setBranch}
           setDateInitial={setDateInitial}
           setEndDate={setDateEnd}
-          endDate={dateEnd}
-          dateInitial={dateInitial}
-          setBranch={setBranch}
-          branch={branch}
-          state={state}
-          setState={setState}
-          typeVoucher={typeVoucher}
-          setTypeVoucher={setTypeVoucher}
-          pointOfSale={pointOfSale}
           setPointOfSale={setPointOfSale}
+          setState={setState}
+          setTypeVoucher={setTypeVoucher}
+          state={state}
+          typeVoucher={typeVoucher}
         />
         <div className="flex items-end justify-end mt-3">
           <div>
             <Select
               className="w-44"
-              variant="bordered"
-              label="Cantidad a mostrar"
-              placeholder="Selecciona la cantidad a mostrar"
-              labelPlacement="outside"
-              defaultSelectedKeys={['5']}
               classNames={{
                 label: 'font-semibold',
               }}
+              defaultSelectedKeys={['5']}
+              label="Cantidad a mostrar"
+              labelPlacement="outside"
+              placeholder="Selecciona la cantidad a mostrar"
               value={limit}
+              variant="bordered"
               onChange={(e) => {
                 setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
               }}
@@ -152,7 +155,7 @@ function ListSales() {
             </thead>
             <tbody className="max-h-[600px] w-full overflow-y-auto">
               {sales_dates?.map((sale, index) => (
-                <tr className="border-b border-slate-200" key={index}>
+                <tr key={index} className="border-b border-slate-200">
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
                   <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                     {sale.fecEmi + ' - ' + sale.horEmi}
@@ -186,7 +189,7 @@ function ListSales() {
                     {!pdfPath && (
                       <Popover showArrow>
                         <PopoverTrigger>
-                          <Button onClick={() => verifyNotes(sale.id)} isIconOnly>
+                          <Button isIconOnly onClick={() => verifyNotes(sale.id)}>
                             <EllipsisVertical size={20} />
                           </Button>
                         </PopoverTrigger>
@@ -194,42 +197,18 @@ function ListSales() {
                           {sale.salesStatus.name === 'CONTINGENCIA' ? (
                             <>
                               <Listbox
-                                className="dark:text-white"
                                 aria-label="Actions"
-                                // onAction={(key) => {
-                                //   if (key === "verify") {
-                                //     setSelectedSale(sale)
-                                //     modalVerify.onOpen()
-                                //   }
-                                //   if (key === "show-pdf") {
-                                //     showPDF(sale)
-                                //   }
-                                // }}
-                                // onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
+                                className="dark:text-white"
                               >
                                 <ListboxItem
-                                  classNames={{ base: 'font-semibold' }}
-                                  variant="flat"
-                                  color="danger"
                                   key="show-pdf"
-                                  onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
+                                  classNames={{ base: 'font-semibold' }}
+                                  color="danger"
+                                  variant="flat"
+                                  onPress={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                                 >
                                   Ver comprobante
                                 </ListboxItem>
-                                {/* <ListboxItem
-                                  classNames={{ base: "font-semibold" }}
-                                  variant="flat"
-                                  color="danger"
-                                  key="verify"
-                                >
-                                  Verificar
-                                </ListboxItem> */}
-                                {/* <ListboxItem
-                                  classNames={{ base: "font-semibold" }}
-                                  key="/get-credit-note/"
-                                >
-                                  Enviar a contingencia
-                                </ListboxItem> */}
                               </Listbox>
                             </>
                           ) : (
@@ -239,8 +218,8 @@ function ListSales() {
                                   {sale.tipoDte === '03' ? (
                                     <>
                                       <Listbox
-                                        className="dark:text-white"
                                         aria-label="Actions"
+                                        className="dark:text-white"
                                         onAction={(key) => {
                                           switch (key) {
                                             case 'debit-note':
@@ -262,19 +241,19 @@ function ListSales() {
                                       >
                                         {notes.debits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="primary"
                                             key="show-debit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="primary"
+                                            variant="flat"
                                           >
                                             Ver notas de débito
                                           </ListboxItem>
                                         ) : (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="danger"
                                             key="debit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="danger"
+                                            variant="flat"
                                           >
                                             Nota de débito
                                           </ListboxItem>
@@ -282,19 +261,19 @@ function ListSales() {
 
                                         {notes.credits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="primary"
                                             key="show-credit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="primary"
+                                            variant="flat"
                                           >
                                             Ver notas de crédito
                                           </ListboxItem>
                                         ) : (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="danger"
                                             key="credit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="danger"
+                                            variant="flat"
                                           >
                                             Nota de crédito
                                           </ListboxItem>
@@ -305,32 +284,18 @@ function ListSales() {
                                     <></>
                                   )}
                                   <Listbox
-                                    className="dark:text-white"
                                     aria-label="Actions"
-                                    // onAction={(key) => {
-                                    //   if (key === "show-pdf") {
-                                    //     showPDF(sale)
-                                    //   }
-                                    // }}
+                                    className="dark:text-white"
                                   >
                                     <ListboxItem
-                                      classNames={{ base: 'font-semibold' }}
-                                      variant="flat"
-                                      color="danger"
                                       key="show-pdf"
+                                      classNames={{ base: 'font-semibold' }}
+                                      color="danger"
+                                      variant="flat"
                                       onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                                     >
                                       Ver comprobante
                                     </ListboxItem>
-                                    {/* <ListboxItem
-                                      classNames={{ base: "font-semibold" }}
-                                      variant="flat"
-                                      onClick={() => navigation("/annulation/01/" + sale.id)}
-                                      color="danger"
-                                      key="invalidate"
-                                    >
-                                      Invalidar
-                                    </ListboxItem> */}
                                   </Listbox>
                                 </>
                               ) : (
@@ -339,12 +304,12 @@ function ListSales() {
                             </>
                           )}
                           {sale.salesStatus.name === 'INVALIDADO' && (
-                            <Listbox className="dark:text-white" aria-label="Actions">
+                            <Listbox aria-label="Actions" className="dark:text-white">
                               <ListboxItem
-                                classNames={{ base: 'font-semibold' }}
-                                variant="flat"
-                                color="danger"
                                 key=""
+                                classNames={{ base: 'font-semibold' }}
+                                color="danger"
+                                variant="flat"
                               >
                                 <CircleX size={20} />
                               </ListboxItem>
@@ -363,6 +328,8 @@ function ListSales() {
           <div className="mt-5 w-full dark:bg-gray-900">
             <Pagination
               currentPage={sales_dates_pagination.currentPag}
+              nextPage={sales_dates_pagination.prevPag}
+              previousPage={sales_dates_pagination.nextPag}
               totalPages={sales_dates_pagination.totalPag}
               onPageChange={(page) => {
                 getSalesByDatesAndStatus(
@@ -376,8 +343,6 @@ function ListSales() {
                   pointOfSale
                 );
               }}
-              nextPage={sales_dates_pagination.prevPag}
-              previousPage={sales_dates_pagination.nextPag}
             />
           </div>
         )}
@@ -385,7 +350,7 @@ function ListSales() {
       {loadingPdf && (
         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
           <div className="flex flex-col items-center justify-center w-full h-full">
-            <LoaderCircle size={100} className="animate-spin" />
+            <LoaderCircle className="animate-spin" size={100} />
             <p className="mt-4 text-lg font-semibold">Cargando...</p>
           </div>
         </div>
@@ -393,25 +358,25 @@ function ListSales() {
       {pdfPath && (
         <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
           <Button
+            isIconOnly
+            className="fixed bg-red-600 bottom-10 left-10"
+            style={styles.dangerStyles}
             onClick={() => {
               setPdfPath('');
             }}
-            style={styles.dangerStyles}
-            isIconOnly
-            className="fixed bg-red-600 bottom-10 left-10"
           >
             <X />
           </Button>
           {loadingPdf ? (
             <div className="flex flex-col items-center justify-center w-full h-full">
-              <LoaderCircle size={100} className="animate-spin" />
+              <LoaderCircle className="animate-spin" size={100} />
               <p className="mt-4 text-lg font-semibold">Cargando...</p>
             </div>
           ) : (
             <>
               {pdfPath !== '' ? (
                 <div className="w-full h-full">
-                  <iframe src={pdfPath} className="w-screen h-screen z-[2000]" />
+                  <iframe className="w-screen h-screen z-[2000]" src={pdfPath} title="pdf" />
                 </div>
               ) : (
                 <div className="flex items-center justify-center w-full h-full">
@@ -465,8 +430,10 @@ const Filters = (props: FiltersProps) => {
       const pointOfSalesArray = Object.values(
         point_of_sales_list.pointOfSales
       ).flat() as Array<PointOfSale>;
+
       return pointOfSalesArray.filter((point) => point.typeVoucher === 'FE');
     }
+
     return [];
   }, [point_of_sales_list]);
 
@@ -474,44 +441,45 @@ const Filters = (props: FiltersProps) => {
     <div className="grid grid-cols-3 gap-5">
       <Input
         className="z-0"
-        onChange={(e) => props.setDateInitial(e.target.value)}
-        value={props.dateInitial}
+        classNames={{
+          input: 'dark:text-white dark:border-gray-600',
+          label: 'text-sm font-semibold dark:text-white',
+        }}
         defaultValue={formatDate()}
-        placeholder="Buscar por nombre..."
-        type="date"
-        variant="bordered"
         label="Fecha inicial"
         labelPlacement="outside"
-        classNames={{
-          input: 'dark:text-white dark:border-gray-600',
-          label: 'text-sm font-semibold dark:text-white',
-        }}
+        placeholder="Buscar por nombre..."
+        type="date"
+        value={props.dateInitial}
+        variant="bordered"
+        onChange={(e) => props.setDateInitial(e.target.value)}
       />
       <Input
-        onChange={(e) => props.setEndDate(e.target.value)}
-        value={props.endDate}
-        placeholder="Buscar por nombre..."
-        variant="bordered"
-        label="Fecha final"
-        type="date"
-        labelPlacement="outside"
         classNames={{
           input: 'dark:text-white dark:border-gray-600',
           label: 'text-sm font-semibold dark:text-white',
         }}
+        label="Fecha final"
+        labelPlacement="outside"
+        placeholder="Buscar por nombre..."
+        type="date"
+        value={props.endDate}
+        variant="bordered"
+        onChange={(e) => props.setEndDate(e.target.value)}
       />
       <Select
         className="z-0"
-        placeholder="Selecciona la sucursal"
-        variant="bordered"
-        label="Sucursal"
-        labelPlacement="outside"
         classNames={{
           label: 'text-sm font-semibold dark:text-white',
         }}
+        label="Sucursal"
+        labelPlacement="outside"
+        placeholder="Selecciona la sucursal"
+        variant="bordered"
         onSelectionChange={(key) => {
           if (key) {
             const branchId = Number(new Set(key).values().next().value);
+
             props.setBranch(branchId);
           } else {
             props.setBranch(0);
@@ -525,16 +493,17 @@ const Filters = (props: FiltersProps) => {
         ))}
       </Select>
       <Select
-        placeholder="Selecciona un punto de venta"
-        variant="bordered"
-        label="Punto de venta"
-        labelPlacement="outside"
         classNames={{
           label: 'text-sm font-semibold dark:text-white',
         }}
+        label="Punto de venta"
+        labelPlacement="outside"
+        placeholder="Selecciona un punto de venta"
+        variant="bordered"
         onSelectionChange={(key) => {
           if (key) {
             const pointOfSale = String(new Set(key).values().next().value);
+
             props.setPointOfSale(pointOfSale);
           } else {
             props.setPointOfSale('');
@@ -548,13 +517,13 @@ const Filters = (props: FiltersProps) => {
         ))}
       </Select>
       <Select
-        placeholder="Selecciona el tipo de comprobante"
-        variant="bordered"
-        label="Tipo de comprobante"
-        labelPlacement="outside"
         classNames={{
           label: 'text-sm font-semibold dark:text-white',
         }}
+        label="Tipo de comprobante"
+        labelPlacement="outside"
+        placeholder="Selecciona el tipo de comprobante"
+        variant="bordered"
         onChange={(e) => props.setTypeVoucher(e.target.value)}
       >
         <SelectItem key="01">
@@ -565,19 +534,19 @@ const Filters = (props: FiltersProps) => {
         </SelectItem>
       </Select>
       <Select
+        className="dark:text-white"
         classNames={{
           label: 'text-sm font-semibold dark:text-white',
         }}
-        className="dark:text-white"
-        variant="bordered"
-        placeholder="Selecciona un estado"
         label="Mostrar por estado"
         labelPlacement="outside"
+        placeholder="Selecciona un estado"
         value={props.state}
+        variant="bordered"
         onChange={(e) => props.setState(e.target.value)}
       >
         {estadosV.map((e) => (
-          <SelectItem className="dark:text-white" key={e.value}>
+          <SelectItem key={e.value} className="dark:text-white">
             {e.label}
           </SelectItem>
         ))}

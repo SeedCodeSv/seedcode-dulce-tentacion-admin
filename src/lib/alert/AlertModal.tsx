@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, XCircle, Info, X } from 'lucide-react';
+
 import { AlertOptions } from './alert.types';
 
 const icons = {
@@ -25,28 +26,29 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
   useEffect(() => {
     if (isAutoClose && timer) {
       const timeout = setTimeout(onClose, timer);
+
       return () => clearTimeout(timeout);
     }
   }, [timer, onClose, isAutoClose]);
 
   return (
     <motion.div
-      className="fixed inset-0 z-[99999999999] flex items-center justify-center p-4 bg-black/50"
-      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      className="fixed inset-0 z-[99999999999] flex items-center justify-center p-4 bg-black/50"
       exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-[20px] shadow-xl w-full max-w-md transform transition-all"
-        initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
+        className="bg-white rounded-[20px] shadow-xl w-full max-w-md transform transition-all"
         exit={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.1 }}
       >
         <div className="relative p-6">
           <button
-            onClick={onClose}
             className="absolute right-4 top-4 text-gray-400 hover:text-gray-600"
+            onClick={onClose}
           >
             <X className="w-6 h-6" />
           </button>
@@ -63,22 +65,22 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
             <div className="flex gap-3">
               {(onCancel || cancelText) && (
                 <button
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                   onClick={() => {
                     onCancel?.();
                     onClose();
                   }}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   {cancelText || 'Cancel'}
                 </button>
               )}
 
               <button
+                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
                 onClick={() => {
                   onConfirm?.();
                   onClose();
                 }}
-                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
               >
                 {confirmText}
               </button>

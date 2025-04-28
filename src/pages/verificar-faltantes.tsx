@@ -15,9 +15,11 @@ export default function VerificadorCorrelativos() {
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) return;
 
     const reader = new FileReader();
+
     reader.onload = () => {
       const text = reader.result as string;
       const json: Data = JSON.parse(text);
@@ -26,10 +28,12 @@ export default function VerificadorCorrelativos() {
 
       json.rows.forEach(({ numeroControl }) => {
         const match = numeroControl.match(/(P\d{3})-(\d{15})$/);
+
         if (!match) return;
         const [, serie, correlativo] = match;
 
         const num = parseInt(correlativo, 10);
+
         if (!seriesMap[serie]) seriesMap[serie] = [];
         seriesMap[serie].push(num);
       });
@@ -41,6 +45,7 @@ export default function VerificadorCorrelativos() {
         const min = sorted[0];
         const max = sorted[sorted.length - 1];
         const missing = [];
+
         for (let i = min; i <= max; i++) {
           if (!sorted.includes(i)) missing.push(i);
         }
@@ -55,7 +60,7 @@ export default function VerificadorCorrelativos() {
 
   return (
     <div className="p-4">
-      <input type="file" accept=".json" onChange={handleFile} className="mb-4" />
+      <input accept=".json" className="mb-4" type="file" onChange={handleFile} />
       {Object.entries(missing).map(([serie, faltantes]) => (
         <div key={serie} className="mb-4">
           <h2 className="font-bold">{serie}</h2>

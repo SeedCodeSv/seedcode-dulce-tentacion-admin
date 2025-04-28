@@ -1,5 +1,6 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import React, { useContext } from 'react';
+
+import { ThemeContext } from '@/hooks/useTheme';
 
 interface PuiProps
   extends React.DetailedHTMLProps<

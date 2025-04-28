@@ -1,6 +1,7 @@
+import axios from 'axios';
+
 import { GetItemsByDailyMajor, GetItemsByMajor, GetItemsForBalance, GetMajorAccounts, IGetItemsDates } from '@/types/items.types';
 import { API_URL } from '@/utils/constants';
-import axios from 'axios';
 
 export const get_items_by_dates = (transId: number, startDate: string, endDate: string) => {
   return axios.get<IGetItemsDates>(
@@ -33,6 +34,7 @@ export const get_items_by_daily_major_account = (
 ) => {
 
   const params = new URLSearchParams();
+
   params.append('startDate', startDate);
   params.append('endDate', endDate);
   account.forEach((acc) => params.append('account', acc));

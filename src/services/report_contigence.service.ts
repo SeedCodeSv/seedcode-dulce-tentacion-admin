@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { IResponseContigence, IResponseNotContigence } from '../types/report_contigence';
 import { API_URL } from '../utils/constants';
 import { IGetRecentSales } from '../types/DTE/invalidation.types';

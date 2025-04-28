@@ -9,15 +9,17 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@heroui/react';
-import { formatDate, formatDateForReports } from '@/utils/dates';
 import { useState } from 'react';
-import { useItemsStore } from '@/store/items.store';
-import { useAuthStore } from '@/store/auth.store';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Item } from '@/types/items.types';
-import FullPageLayout from '../global/FullOverflowLayout';
 import { X } from 'lucide-react';
+
+import FullPageLayout from '../global/FullOverflowLayout';
+
+import { formatDate, formatDateForReports } from '@/utils/dates';
+import { useItemsStore } from '@/store/items.store';
+import { useAuthStore } from '@/store/auth.store';
+import { Item } from '@/types/items.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
@@ -197,12 +199,14 @@ function DailyBook({ disclosure }: Props) {
       });
     };
     let startY = 35;
+
     itemsList.forEach((table, index) => {
       if (hasSaltOfPage) {
         if (index > 0) doc.addPage();
       } else {
         const pageHeight = doc.internal.pageSize.getHeight();
         const remainingSpace = pageHeight - startY;
+
         if (remainingSpace < 50) {
           doc.addPage();
           startY = 35;
@@ -256,6 +260,7 @@ function DailyBook({ disclosure }: Props) {
       });
       let finalY =
         (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY || 30;
+
       footer(doc, finalY, searchItem(table.data[0][0]));
       finalY = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY;
       startY = finalY + 5;
@@ -367,11 +372,13 @@ function DailyBook({ disclosure }: Props) {
 
     if (type === 'download') {
       doc.save('libro-diario.pdf');
+
       return;
     }
 
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
+
     setLoadingPdf(false);
     setPdf(url);
   };
@@ -388,24 +395,24 @@ function DailyBook({ disclosure }: Props) {
       <FullPageLayout show={previewModal.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
+            isIconOnly
+            className="absolute bottom-6 left-6"
             color="danger"
             onPress={() => previewModal.onClose()}
-            className="absolute bottom-6 left-6"
-            isIconOnly
           >
             <X />
           </Button>
           {loadingPdf ? (
             <div className="w-full h-full flex flex-col justify-center items-center">
-              <div className="loader"></div>
+              <div className="loader" />
               <p className="mt-5 text-xl">Cargando...</p>
             </div>
           ) : (
-            <iframe className="w-full h-full" src={pdf}></iframe>
+            <iframe className="w-full h-full" src={pdf} title='pdf' />
           )}
         </div>
       </FullPageLayout>
-      <Modal {...disclosure} size="xl" isDismissable={false}>
+      <Modal {...disclosure} isDismissable={false} size="xl">
         <ModalContent>
           <>
             <ModalHeader>
@@ -413,80 +420,80 @@ function DailyBook({ disclosure }: Props) {
             </ModalHeader>
             <ModalBody>
               <Input
-                labelPlacement="outside"
+                className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 label="Fecha inicial"
+                labelPlacement="outside"
                 type="date"
-                variant="bordered"
                 value={startDate}
-                className='dark:text-white'
+                variant="bordered"
                 onChange={(e) => setStartDate(e.target.value)}
               />
               <Input
-                labelPlacement="outside"
+                className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 label="Fecha final"
+                labelPlacement="outside"
                 type="date"
-                className='dark:text-white'
-                variant="bordered"
                 value={endDate}
+                variant="bordered"
                 onChange={(e) => setEndDate(e.target.value)}
               />
               <Checkbox
-                onValueChange={(e) => setHasNumberPages(e)}
-                isSelected={hasNumberPages}
-                checked={hasNumberPages}
-                size="lg"
                 lineThrough
+                checked={hasNumberPages}
+                isSelected={hasNumberPages}
+                size="lg"
+                onValueChange={(e) => setHasNumberPages(e)}
               >
                 Numerar paginas {hasNumberPages ? '✓' : ''}
               </Checkbox>
               <Checkbox
-                onValueChange={(e) => setHasIncludeSignature(e)}
+                lineThrough
                 checked={hasIncludeSignature}
                 isSelected={hasIncludeSignature}
                 size="lg"
-                lineThrough
+                onValueChange={(e) => setHasIncludeSignature(e)}
               >
                 Incluir firmantes {hasIncludeSignature ? '✓' : ''}
               </Checkbox>
               <Checkbox
-                onValueChange={(e) => setHasSaltOfPage(e)}
+                lineThrough
                 checked={hasSaltOfPage}
                 isSelected={hasSaltOfPage}
                 size="lg"
-                lineThrough
+                onValueChange={(e) => setHasSaltOfPage(e)}
               >
                 Incluir saltos de pagina por partida {hasSaltOfPage ? '✓' : ''}
               </Checkbox>
               <ButtonUi
-                onPress={handleGetItems}
-                isLoading={loadingItems}
                 className="w-full"
+                isLoading={loadingItems}
                 theme={Colors.Primary}
+                onPress={handleGetItems}
               >
                 Buscar
               </ButtonUi>
             </ModalBody>
             <ModalFooter>
-              <ButtonUi onPress={disclosure.onClose} isLoading={loadingItems} theme={Colors.Default} className="px-10">
+              <ButtonUi className="px-10" isLoading={loadingItems} theme={Colors.Default} onPress={disclosure.onClose}>
                 Cancelar
               </ButtonUi>
               <ButtonUi
-                onPress={handleShowPreview}
+                className="px-10"
                 isDisabled={items.length === 0}
                 isLoading={loadingItems || loadingPdf}
-                className="px-10"
                 theme={Colors.Info}
+                onPress={handleShowPreview}
               >
                 Visualizar
               </ButtonUi>
               <ButtonUi
-                onPress={() => generatePDF('download')}
+                className="px-10"
                 isDisabled={items.length === 0}
                 isLoading={loadingItems}
-                className="px-10"
                 theme={Colors.Success}
+                onPress={() => generatePDF('download')}
               >
                 Descargar PDF
               </ButtonUi>

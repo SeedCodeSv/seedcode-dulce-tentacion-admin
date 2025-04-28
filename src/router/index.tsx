@@ -1,7 +1,9 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from 'react-router-dom';
 import { lazy } from 'react';
-import { IRoleAction } from '@/types/role-actions.types';
+
 import AnimatedRoute from './animated-route';
+
+import { IRoleAction } from '@/types/role-actions.types';
 import VerificadorCorrelativos from '@/pages/verificar-faltantes';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
@@ -74,531 +76,533 @@ const Configuration = lazy(() => import('../pages/Configuration'));
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
     const find_view = roleActions?.views.find((r) => r.view.name === name);
+
     if (find_view) return true;
+
     return false;
   };
 
   const mainRoutes = createRoutesFromElements(
     <>
       <Route
-        path="/"
         element={
           <AnimatedRoute>
             <Home />
           </AnimatedRoute>
         }
+        path="/"
       />
       <Route
-        path="/products"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Productos') ? <Product /> : <Home />}
           </AnimatedRoute>
         }
+        path="/products"
       />
       <Route
-        path="/add-product"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Productos') ? <AddProduct /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-product"
       />
       <Route
-        path="/add-account-catalog"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Catalogos de Cuentas') ? <AddAccountCatalogs /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-account-catalog"
       />
       <Route
-        path="/categories"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Categorias de Productos') ? <ProductsCategories /> : <Home />}
           </AnimatedRoute>
         }
+        path="/categories"
       />
       <Route
-        path="/sub-categories"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Sub Categorias') ? <SubCategories /> : <Home />}
           </AnimatedRoute>
         }
+        path="/sub-categories"
       />
       <Route
-        path="/shopping"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Compras') ? <Shopping /> : <Home />}
           </AnimatedRoute>
         }
+        path="/shopping"
       />
       <Route
-        path="/create-shopping"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Compras') ? <CreateShopping /> : <Home />}
           </AnimatedRoute>
         }
+        path="/create-shopping"
       />
       <Route
-        path="/users"
         element={
           <AnimatedRoute>{handleCheckPermission('Usuarios') ? <Users /> : <Home />}</AnimatedRoute>
         }
+        path="/users"
       />
       <Route
-        path="/employees"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Empleados') ? <Employees /> : <Home />}
           </AnimatedRoute>
         }
+        path="/employees"
       />
       <Route
-        path="/add-employee"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Empleados') ? <AddEmployee /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-employee"
       />
       <Route
-        path="/suppliers"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <Supplier /> : <Home />}
           </AnimatedRoute>
         }
+        path="/suppliers"
       />
       <Route
-        path="/add-supplier-normal"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <AddNormalSupplier /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-supplier-normal"
       />
       <Route
-        path="/update-supplier-normal/:id"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <UpdateNormalSupplier /> : <Home />}
           </AnimatedRoute>
         }
+        path="/update-supplier-normal/:id"
       />
       <Route
-        path="/add-supplier-tribute"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <AddTributeSupplier /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-supplier-tribute"
       />
       <Route
-        path="/update-supplier-tribute/:id"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <UpdateTributeSupplier /> : <Home />}
           </AnimatedRoute>
         }
+        path="/update-supplier-tribute/:id"
       />
       <Route
-        path="/branches"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Sucursales') ? <Branch /> : <Home />}
           </AnimatedRoute>
         }
+        path="/branches"
       />
       <Route
-        path="/clients"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Clientes') ? <Customers /> : <Home />}
           </AnimatedRoute>
         }
+        path="/clients"
       />
       <Route
-        path="/points-of-sales"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Puntos de Venta') ? <PointOfSales /> : <Home />}
           </AnimatedRoute>
         }
+        path="/points-of-sales"
       />
       <Route
-        path="/action-rol"
         element={
           <AnimatedRoute>
             <ActionRol />
           </AnimatedRoute>
         }
+        path="/action-rol"
       />
       <Route
-        path="/birthday-calendar"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Empleados') ? <BirthdayCalendar /> : <Home />}
           </AnimatedRoute>
         }
+        path="/birthday-calendar"
       />
       <Route
-        path="/sales-by-period"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ventas por Periodo') ? <VentasPorPeriodo /> : <Home />}
           </AnimatedRoute>
         }
+        path="/sales-by-period"
       />
       <Route
-        path="/sales-by-product"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
           </AnimatedRoute>
         }
+        path="/sales-by-product"
       />
       <Route
-        path="/study-level"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Nivel de Estudio') ? <StudyLevel /> : <Home />}
           </AnimatedRoute>
         }
+        path="/study-level"
       />
       <Route
-        path="/contract-types"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Tipo de Contratacion') ? <ContratType /> : <Home />}
           </AnimatedRoute>
         }
+        path="/contract-types"
       />
       <Route
-        path="/status-employee"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Estados del Empleado') ? <StatusEmployee /> : <Home />}
           </AnimatedRoute>
         }
+        path="/status-employee"
       />
       <Route
-        path="/correlative"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Correlativos') ? <CorrelativePage /> : <Home />}
           </AnimatedRoute>
         }
+        path="/correlative"
       />
       <Route
-        path="/charges"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Cargos de Empleados') ? <Charges /> : <Home />}
           </AnimatedRoute>
         }
+        path="/charges"
       />
       <Route
-        path="/discounts"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Descuentos') ? <Discount /> : <Home />}
           </AnimatedRoute>
         }
+        path="/discounts"
       />
       <Route
-        path="/configuration"
         element={
           <AnimatedRoute>
             <Configuration />
           </AnimatedRoute>
         }
+        path="/configuration"
       />
       <Route
-        path="/add-client-contributor/:id"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Clientes') ? <AddClientContributor /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-client-contributor/:id"
       />
       <Route
-        path="/add-client"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Clientes') ? <AddClientNormal /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-client"
       />
       <Route
-        path="/add-customer/:id/:type"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Clientes') ? <AddCustomer /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-customer/:id/:type"
       />
       <Route
-        path="/add-client-contributor"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <AddClientContributor /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-client-contributor"
       />
       <Route
-        path="/update-client-contributor/:id"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Proveedores') ? <UpdateClientContributor /> : <Home />}
           </AnimatedRoute>
         }
+        path="/update-client-contributor/:id"
       />
       <Route
-        path="/add-promotions"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Descuentos') ? <AddPromotions /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-promotions"
       />
       <Route
-        path="/add-action-rol"
         element={
           <AnimatedRoute>
             <AddActionRol />
           </AnimatedRoute>
         }
+        path="/add-action-rol"
       />
       <Route
-        path="/cash-cuts-big-z"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Corte Gran Z') ? <CushCatsBigZ /> : <Home />}
           </AnimatedRoute>
         }
+        path="/cash-cuts-big-z"
       />
       <Route
-        path="/account-catalogs"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Catalogos de Cuentas') ? <AccountCatalogs /> : <Home />}
           </AnimatedRoute>
         }
+        path="/account-catalogs"
       />
       <Route
-        path="/cash-cuts-x"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Corte X') ? <CashCutsX /> : <Home />}
           </AnimatedRoute>
         }
+        path="/cash-cuts-x"
       />
       <Route
-        path="/cash-cuts-z"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Corte Z') ? <CushCatsZ /> : <Home />}
           </AnimatedRoute>
         }
+        path="/cash-cuts-z"
       />
       <Route
-        path="/iva/shopping-book"
         element={
           <AnimatedRoute>
             {handleCheckPermission('IVA de Compras') ? <ShoppingBookIVA /> : <Home />}
           </AnimatedRoute>
         }
+        path="/iva/shopping-book"
       />
       <Route
-        path="/iva/ccf-book"
         element={
           <AnimatedRoute>
             {handleCheckPermission('IVA de CCF') ? <CFFBookIVA /> : <Home />}
           </AnimatedRoute>
         }
+        path="/iva/ccf-book"
       />
       <Route
-        path="/iva/fe-book"
         element={
           <AnimatedRoute>
             {handleCheckPermission('IVA de FE') ? <FEBookIVA /> : <Home />}
           </AnimatedRoute>
         }
+        path="/iva/fe-book"
       />
       <Route
-        path="*"
         element={
           <AnimatedRoute>
             <Error404 />
           </AnimatedRoute>
         }
+        path="*"
       />
       <Route
-        path="/add-theme"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Configuración') ? <CreateTheme /> : <Home />}
           </AnimatedRoute>
         }
+        path="/add-theme"
       />
       <Route
-        path="/sales"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ventas') ? <SalesPage /> : <Home />}
           </AnimatedRoute>
         }
+        path="/sales"
       />
       <Route
-        path="/sales-ticket"
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ventas Ticket') ? <TicketSales /> : <Home />}
           </AnimatedRoute>
         }
+        path="/sales-ticket"
       />
       <Route
-        path="/get-debit-note/:id"
         element={
           <AnimatedRoute>
             <NotesDebitBySale />
           </AnimatedRoute>
         }
+        path="/get-debit-note/:id"
       />
       <Route
-        path="/get-credit-note/:id"
         element={
           <AnimatedRoute>
             <NotesCreditBySale />
           </AnimatedRoute>
         }
+        path="/get-credit-note/:id"
       />
       <Route
-        path="/contingence-section"
         element={
           <AnimatedRoute>
             <ContingenceSection />
           </AnimatedRoute>
         }
+        path="/contingence-section"
       />
       <Route
-        path="/annulation/:tipoDte/:id"
         element={
           <AnimatedRoute>
             <Annulation />
           </AnimatedRoute>
         }
+        path="/annulation/:tipoDte/:id"
       />
       <Route
-        path="/edit-shopping/:id/:controlNumber"
         element={
           <AnimatedRoute>
             <EditShopping />
           </AnimatedRoute>
         }
+        path="/edit-shopping/:id/:controlNumber"
       />
       <Route
-        path="/update-account-catalog/:id"
         element={
           <AnimatedRoute>
             <UpdateAccountCatalogs />
           </AnimatedRoute>
         }
+        path="/update-account-catalog/:id"
       />
       <Route
-        path="/edit-transmitter-info"
         element={
           <AnimatedRoute>
             <EditTransmitterInfo />
           </AnimatedRoute>
         }
+        path="/edit-transmitter-info"
       />
       {/* Reportes contables */}
       <Route
-        path="/accounting-items"
         element={
           <AnimatedRoute>
             <AccountingItems />
           </AnimatedRoute>
         }
+        path="/accounting-items"
       />
       <Route
-        path="/add-accounting-items"
         element={
           <AnimatedRoute>
             <AddAccountingItems />
           </AnimatedRoute>
         }
+        path="/add-accounting-items"
       />
       <Route
-        path="/add-item-by-sales"
         element={
           <AnimatedRoute>
             <AddItemsBySales />
           </AnimatedRoute>
         }
+        path="/add-item-by-sales"
       />
       <Route
-        path="/edit-accounting-items/:id"
         element={
           <AnimatedRoute>
             <EditAccountingItems />
           </AnimatedRoute>
         }
+        path="/edit-accounting-items/:id"
       />
       <Route
-        path="/type-accounting"
         element={
           <AnimatedRoute>
             <TypeAccountingItem />
           </AnimatedRoute>
         }
+        path="/type-accounting"
       />
       <Route
-        path="/report-accounting"
         element={
           <AnimatedRoute>
             <Reports />
           </AnimatedRoute>
         }
+        path="/report-accounting"
       />
       {/* Anexos de IVA */}
       <Route
-        path="/anexos-iva-compras"
         element={
           <AnimatedRoute>
             <AnexosCompras />
           </AnimatedRoute>
         }
+        path="/anexos-iva-compras"
       />
       <Route
-        path="/anexos-fe"
         element={
           <AnimatedRoute>
             <AnexoFe />
           </AnimatedRoute>
         }
+        path="/anexos-fe"
       />
       <Route
-        path="/anexos-ccfe"
         element={
           <AnimatedRoute>
             <AnexoCcfe />
           </AnimatedRoute>
         }
+        path="/anexos-ccfe"
       />
       <Route
-        path="/verificar-faltantes"
         element={
           <AnimatedRoute>
             <VerificadorCorrelativos />
           </AnimatedRoute>
         }
+        path="/verificar-faltantes"
       />
     </>
   );

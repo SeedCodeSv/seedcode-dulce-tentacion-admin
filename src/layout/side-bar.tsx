@@ -8,16 +8,19 @@ import {
   DropdownTrigger,
   User,
 } from "@heroui/react";
-import { SmLayout } from './sm-layout';
-import { LayoutItems } from './layout-items';
-import { LgLayout } from './lg-layout';
+import { useNavigate } from 'react-router';
+import classNames from 'classnames';
+
 import USER from '../assets/user.png';
 import { ThemeContext } from '../hooks/useTheme';
 import { useAuthStore } from '../store/auth.store';
-import { useNavigate } from 'react-router';
 import { SessionContext } from '../hooks/useSession';
 import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
-import classNames from 'classnames';
+
+import { LgLayout } from './lg-layout';
+import { LayoutItems } from './layout-items';
+import { SmLayout } from './sm-layout';
+
 
 interface Props {
   children: ReactNode;
@@ -79,9 +82,9 @@ export const SideBar = (props: Props) => {
   return (
     <div className="flex w-screen h-screen overflow-x-hidden">
       {windowSize.width < 1280 ? (
-        <SmLayout isOpen={openInMobile} setIsOpen={setOpenInMobile} items={() => <LayoutItems setIsOpen={setOpenInMobile} isOpen={openInMobile} />} />
+        <SmLayout isOpen={openInMobile} items={() => <LayoutItems isOpen={openInMobile} setIsOpen={setOpenInMobile} />} setIsOpen={setOpenInMobile} />
       ) : (
-        <LgLayout isOpen={isOpen} setIsOpen={setIsOpen} items={() => <LayoutItems setIsOpen={setIsOpen} isOpen={isOpen} />} />
+        <LgLayout isOpen={isOpen} items={() => <LayoutItems isOpen={isOpen} setIsOpen={setIsOpen} />} setIsOpen={setIsOpen} />
       )}
       <div className={classNames('flex flex-col w-full', isOpen ? 'xl:ml-72' : 'xl:ml-0')}>
         <div
@@ -110,7 +113,7 @@ export const SideBar = (props: Props) => {
             <p className="text-sm font-bold uppercase whitespace-nowrap start">{props.title}</p>
           </div>
           <div className="flex items-end justify-end w-full">
-            <Dropdown placement="bottom-start" showArrow>
+            <Dropdown showArrow placement="bottom-start">
               <DropdownTrigger>
                 <User
                   as="button"
@@ -119,10 +122,10 @@ export const SideBar = (props: Props) => {
                     src: USER,
                     alt: 'No image',
                   }}
+                  className="transition-transform"
                   classNames={{
                     description: 'text-gray-400 lg:block hidden',
                   }}
-                  className="transition-transform"
                   description={
                     <span className="hidden text-gray-400 lg:block">{user?.userName}</span>
                   }
@@ -136,17 +139,17 @@ export const SideBar = (props: Props) => {
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
+                  className="dark:text-white"
                   color="primary"
                   onClick={() => navigate('/configuration')}
-                  className="dark:text-white"
                 >
                   Configuración
                 </DropdownItem>
                 <DropdownItem
                   key="logout"
+                  className="dark:text-white"
                   color="danger"
                   onClick={() => close_login()}
-                  className="dark:text-white"
                 >
                   Cerrar sesión
                 </DropdownItem>

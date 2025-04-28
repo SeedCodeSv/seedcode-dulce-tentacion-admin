@@ -1,8 +1,10 @@
 import { Checkbox, Input } from "@heroui/react";
-import { useConfigurationStore } from '../../store/perzonalitation.store';
 import * as yup from 'yup';
 import { Formik } from 'formik';
+
+import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { IConfiguration } from '../../types/configuration.types';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -39,26 +41,26 @@ function UpdateConfigurationName(props: Props) {
   return (
     <div className="p-4 dark:text-white">
       <Formik
+        enableReinitialize
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => handleSave(values)}
-        enableReinitialize
       >
         {({ errors, touched, handleChange, handleBlur, handleSubmit, values, setFieldValue }) => (
           <>
             <div className="">
               <Input
-                label="Ingrese un nombre"
-                labelPlacement="outside"
-                name="name"
-                value={values.name}
-                onChange={handleChange('name')}
-                onBlur={handleBlur('name')}
-                placeholder="Ingresa un nombre"
                 classNames={{
                   label: 'font-semibold text-gray-500 text-sm',
                 }}
+                label="Ingrese un nombre"
+                labelPlacement="outside"
+                name="name"
+                placeholder="Ingresa un nombre"
+                value={values.name}
                 variant="bordered"
+                onBlur={handleBlur('name')}
+                onChange={handleChange('name')}
               />
               {errors.name && touched.name && (
                 <span className="text-sm font-semibold text-red-500">{errors.name}</span>
@@ -66,17 +68,17 @@ function UpdateConfigurationName(props: Props) {
             </div>
             <div className="mt-2 w-full">
               <Checkbox
-                isSelected={values.wantPrint}
                 checked={values.wantPrint}
+                isSelected={values.wantPrint}
                 onChange={() => setFieldValue('wantPrint', !values.wantPrint)}
               >
                 {values.wantPrint === true ? 'Deshabilitar impresión' : 'Habilitar impresión'}
               </Checkbox>
             </div>
             <ButtonUi
-              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               theme={Colors.Success}
+              onPress={() => handleSubmit()}
             >
               Guardar
             </ButtonUi>

@@ -1,6 +1,7 @@
 import { Input, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
 import * as yup from 'yup';
+
 import { useStatusStudyLevel } from '@/store/studyLevel';
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
@@ -35,52 +36,52 @@ const AddStatusEmployee = (props: Props) => {
   return (
     <div className="mt-4 w-full">
       <Formik
-        validationSchema={validationSchema}
         initialValues={{
           name: props.studyLevel?.name ?? '',
           description: props.studyLevel?.description ?? '',
         }}
+        validationSchema={validationSchema}
         onSubmit={handleSave}
       >
         {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <>
             <div className="flex flex-col w-full dark:text-white">
               <Input
-                name="name"
-                labelPlacement="outside"
-                value={values.name}
-                onChange={handleChange('name')}
-                onBlur={handleBlur('name')}
-                placeholder="Ingresa el nombre de la categoría"
                 classNames={{ base: 'font-semibold text-sm  ' }}
-                variant="bordered"
-                isInvalid={!!errors.name && touched.name}
                 errorMessage={errors.name}
+                isInvalid={!!errors.name && touched.name}
                 label="Nombre"
+                labelPlacement="outside"
+                name="name"
+                placeholder="Ingresa el nombre de la categoría"
+                value={values.name}
+                variant="bordered"
+                onBlur={handleBlur('name')}
+                onChange={handleChange('name')}
               />
             </div>
             <div className="mt-2 ">
               <Textarea
-                label="Descripción"
                 className="dark:text-white font-semibold"
-                labelPlacement="outside"
-                name="description"
-                value={values.description}
-                onChange={handleChange('description')}
-                onBlur={handleBlur('description')}
-                isInvalid={!!errors.description && touched.description}
-                errorMessage={errors.description}
-                placeholder="Ingresa la descripción"
                 classNames={{
                   label: 'font-semibold text-sm ',
                 }}
+                errorMessage={errors.description}
+                isInvalid={!!errors.description && touched.description}
+                label="Descripción"
+                labelPlacement="outside"
+                name="description"
+                placeholder="Ingresa la descripción"
+                value={values.description}
                 variant="bordered"
+                onBlur={handleBlur('description')}
+                onChange={handleChange('description')}
               />
             </div>
             <ButtonUi
-              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               theme={Colors.Primary}
+              onPress={() => handleSubmit()}
             >
               Guardar
             </ButtonUi>

@@ -1,4 +1,5 @@
 import { ResponseMHSuccess } from "../DTE/contingencia.types";
+
 import { CF_Receptor } from "./cf.types";
 import { FC_ApendiceItems, FC_DocumentoRelacionadoItems, FC_Extension, FC_Identificacion, FC_VentaTercerosItems } from "./fc.types";
 import { NC_CuerpoDocumentoItems, NC_Resumen } from "./nc.types";

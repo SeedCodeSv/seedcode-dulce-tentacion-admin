@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { ThemePayload } from '../types/themes.types';
 import { API_URL } from '../utils/constants';
 

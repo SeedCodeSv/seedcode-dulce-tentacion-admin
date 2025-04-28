@@ -22,5 +22,6 @@ export const formatActionsRole = (actions_roles: RoleAction[]) => {
   });
 
   const resultArray: GroupedAction[] = Object.values(groupedActions);
+
   return resultArray;
 };

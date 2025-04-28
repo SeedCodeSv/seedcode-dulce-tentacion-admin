@@ -2,21 +2,37 @@ import { Button } from "@heroui/react";
 import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { EditIcon, RefreshCcw, ScrollIcon } from 'lucide-react';
+
 import { global_styles } from '../../styles/global.styles';
-import { GridProps, MobileViewProps } from './types/mobile_view.types';
 import { useChargesStore } from '../../store/charges.store';
 import TooltipGlobal from '../global/TooltipGlobal';
+
+import { GridProps, MobileViewProps } from './types/mobile_view.types';
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
 function MobileView(props: MobileViewProps) {
   const { layout, deletePopover, handleEdit, actions, handleActive } = props;
   const { charges_paginated } = useChargesStore();
+
   return (
     <div className="w-full pb-10">
       <DataView
-        value={charges_paginated.charges}
         gutter
+        className='dark:text-white'
+        color="surface"
+        emptyMessage="No se encontraron resultados"
+        itemTemplate={(cat) => (
+          <GridItem
+            actions={actions}
+            charges={cat}
+            deletePopover={deletePopover}
+            handleActive={handleActive}
+            handleEdit={handleEdit}
+            layout={layout}
+          />
+        )}
         layout={layout}
         pt={{
           grid: () => ({
@@ -24,19 +40,7 @@ function MobileView(props: MobileViewProps) {
               "w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5",
           }),
         }}
-        color="surface"
-        className='dark:text-white'
-        itemTemplate={(cat) => (
-          <GridItem
-            charges={cat}
-            layout={layout}
-            deletePopover={deletePopover}
-            handleEdit={handleEdit}
-            actions={actions}
-            handleActive={handleActive}
-          />
-        )}
-        emptyMessage="No se encontraron resultados"
+        value={charges_paginated.charges}
       />
     </div>
   );
@@ -46,14 +50,15 @@ export default MobileView;
 
 const GridItem = (props: GridProps) => {
   const { charges, layout, deletePopover, handleEdit, actions, handleActive } = props;
+
   return (
     <>
       {layout === 'grid' ? (
         <div
+          key={charges.id}
           className={classNames(
             "w-full shadow dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl"
           )}
-          key={charges.id}
         >
           <div className="flex w-full gap-2">
             <ScrollIcon className="text-[#274c77] dark:text-gray-400" size={35} />
@@ -63,9 +68,9 @@ const GridItem = (props: GridProps) => {
             {actions.includes('Editar') && (
                
               <ButtonUi
-                onPress={() => handleEdit(charges)}
                 isIconOnly
                 theme={Colors.Success}
+                onPress={() => handleEdit(charges)}
               >
                 <EditIcon size={20} />
               </ButtonUi>
@@ -77,9 +82,9 @@ const GridItem = (props: GridProps) => {
                   deletePopover({ charges })
                 ) : (
                   <Button
-                    onClick={() => handleActive(charges.id)}
                     isIconOnly
                     style={global_styles().thirdStyle}
+                    onClick={() => handleActive(charges.id)}
                   >
                     <RefreshCcw />
                   </Button>
@@ -90,12 +95,12 @@ const GridItem = (props: GridProps) => {
         </div>
       ) : (
         <ListItem
-          handleActive={handleActive}
-          charges={charges}
-          layout="list"
-          deletePopover={deletePopover}
-          handleEdit={handleEdit}
           actions={actions}
+          charges={charges}
+          deletePopover={deletePopover}
+          handleActive={handleActive}
+          handleEdit={handleEdit}
+          layout="list"
         />
       )}
     </>
@@ -104,6 +109,7 @@ const GridItem = (props: GridProps) => {
 
 const ListItem = (props: GridProps) => {
   const { charges, deletePopover, handleEdit, actions, handleActive } = props;
+
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border shadow rounded-2xl ">
@@ -117,9 +123,9 @@ const ListItem = (props: GridProps) => {
           {actions.includes('Editar') && (
              <TooltipGlobal text="Editar">
             <Button
-              onClick={() => handleEdit(charges)}
               isIconOnly
               style={global_styles().secondaryStyle}
+              onClick={() => handleEdit(charges)}
             >
               <EditIcon size={20} />
             </Button>
@@ -131,9 +137,9 @@ const ListItem = (props: GridProps) => {
                 deletePopover({ charges })
               ) : (
                 <Button
-                  onClick={() => handleActive(charges.id)}
                   isIconOnly
                   style={global_styles().thirdStyle}
+                  onClick={() => handleActive(charges.id)}
                 >
                   <RefreshCcw />
                 </Button>

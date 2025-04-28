@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import { messages } from '../utils/constants';
-import { ICorrelativesStore } from './types/correlatives_store.types';
 import { get_correlatives } from '../services/correlatives.service';
+
+import { ICorrelativesStore } from './types/correlatives_store.types';
 
 export const useCorrelativesStore = create<ICorrelativesStore>((set) => ({
   list_correlatives: [],

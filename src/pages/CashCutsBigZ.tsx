@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import { IoPrintSharp } from 'react-icons/io5';
+import { toast } from 'sonner';
+
 import { global_styles } from '../styles/global.styles';
 import { ZCashCutsResponse } from '../types/cashCuts.types';
-
 import { get_cashCuts } from '../services/facturation/cashCuts.service';
 import { useBranchesStore } from '../store/branches.store';
 import { fechaActualString } from '../utils/dates';
 import { formatCurrency } from '../utils/dte';
 import { Correlatives } from '../types/correlatives.types';
 import { get_correlatives } from '../services/correlatives.service';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
-import { IoPrintSharp } from 'react-icons/io5';
-import { toast } from 'sonner';
+
 import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 
@@ -35,20 +36,24 @@ const CushCatsBigZ = () => {
     const getIdBranch = async () => {
       try {
         const response = await get_cashCuts(branchId, dateInitial, dateEnd, codeSelected);
+
         setData(response.data.data);
       } catch (error) {
         toast.error('Error al cargar los cortes de caja');
       }
       if (branchId > 0) {
         const data = await get_correlatives(branchId);
+
         setCodeSale(data.data.correlatives);
       }
     };
+
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
 
   const calculateIVA = (total: number) => total / 1.13;
   const { getBranchesList, branch_list } = useBranchesStore();
+
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -65,6 +70,7 @@ const CushCatsBigZ = () => {
 
   const printBigZ = () => {
     const iframe = document.createElement('iframe');
+
     iframe.style.height = '0';
     iframe.style.visibility = 'hidden';
     iframe.style.width = '0';
@@ -75,8 +81,10 @@ const CushCatsBigZ = () => {
     });
     iframe.addEventListener('load', () => {
       const body = iframe.contentDocument?.body;
+
       if (!body) return;
       const style = document.createElement('style');
+
       style.innerHTML = `
           @page {
               margin: 0;
@@ -89,6 +97,7 @@ const CushCatsBigZ = () => {
       iframe.contentDocument?.head.appendChild(style);
       body.style.textAlign = 'center';
       const otherParent = document.createElement('div');
+
       otherParent.style.display = 'flex';
       otherParent.style.justifyContent = 'center';
       otherParent.style.alignItems = 'center';
@@ -203,6 +212,7 @@ const CushCatsBigZ = () => {
       </div>
     `;
       const div = document.createElement('div');
+
       div.innerHTML = customContent;
       body.appendChild(div);
 
@@ -252,6 +262,7 @@ const CushCatsBigZ = () => {
     });
 
     const workbook = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
     const excelBuffer = XLSX.write(workbook, {
@@ -259,6 +270,7 @@ const CushCatsBigZ = () => {
       type: 'array',
     });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
     saveAs(blob, `Corte_gran _z_${branchName}_${Date.now()}.xlsx`);
   };
 
@@ -270,26 +282,26 @@ const CushCatsBigZ = () => {
             <div className="flex flex-col items-center p-4">
               <div className="grid grid-cols-1 md:grid-cols-4  gap-4 w-full">
                 <Input
+                  className="mt-4"
                   defaultValue={fechaActualString}
                   label="Fecha Inicio"
-                  variant="bordered"
                   labelPlacement="outside"
-                  className="mt-4"
                   type="date"
+                  variant="bordered"
                   onChange={(e) => setInitial(e.target.value)}
                 />
                 <Input
-                  label="Fecha Final"
-                  defaultValue={fechaActualString}
                   className="mt-4"
-                  variant="bordered"
+                  defaultValue={fechaActualString}
+                  label="Fecha Final"
                   labelPlacement="outside"
                   type="date"
+                  variant="bordered"
                   onChange={(e) => setEnd(e.target.value)}
                 />
                 <Autocomplete
-                  labelPlacement="outside"
                   label="Sucursal"
+                  labelPlacement="outside"
                   placeholder="Selecciona la sucursal"
                   variant="bordered"
                 >
@@ -307,15 +319,15 @@ const CushCatsBigZ = () => {
                   ))}
                 </Autocomplete>
                 <Autocomplete
+                  label="Punto de Venta"
                   labelPlacement="outside"
                   placeholder="Selecciona el punto de venta"
                   variant="bordered"
-                  label="Punto de Venta"
                 >
                   {codeSale
                     .filter((item) => item.typeVoucher === 'T')
                     .map((item) => (
-                      <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.code}>
+                      <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
                         {item.code}
                       </AutocompleteItem>
                     ))}
@@ -495,10 +507,10 @@ const CushCatsBigZ = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 w-full">
                     {actionsView.includes('Exportar Excel') && (
                       <Button
+                        className="w-full "
                         color="success"
                         startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
                         onClick={exportDataToExcel}
-                        className="w-full "
                       >
                         <p className="text-white">Exportar a excel</p>
                       </Button>
@@ -506,9 +518,9 @@ const CushCatsBigZ = () => {
                     {actionsView.includes('Imprimir') && (
                       <Button
                         className="w-full"
+                        startContent={<IoPrintSharp size={25} />}
                         style={global_styles().secondaryStyle}
                         onClick={() => printBigZ()}
-                        startContent={<IoPrintSharp size={25} />}
                       >
                         <p className="text-white">Imprimir y Cerrar</p>
                       </Button>

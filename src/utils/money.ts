@@ -53,12 +53,14 @@ export function convertCurrencyFormat(input: string) {
     if (num < 100) {
       const unit = num % 10;
       const ten = Math.floor(num / 10);
+
       return unit === 0 ? tens[ten] : `${tens[ten]} Y ${units[unit]}`;
     }
     if (num < 1000) {
       const hundred = Math.floor(num / 100);
       const remainder = num % 100;
       const remainderInWords = remainder > 0 ? ` ${numberToWords(remainder)}` : '';
+
       return hundreds[hundred] + remainderInWords;
     }
     if (num < 1000000) {
@@ -66,8 +68,10 @@ export function convertCurrencyFormat(input: string) {
       const remainder = num % 1000;
       const thousandsInWords = thousands > 1 ? numberToWords(thousands) + ' MIL' : 'MIL';
       const remainderInWords = remainder > 0 ? ` ${numberToWords(remainder)}` : '';
+
       return thousandsInWords + remainderInWords;
     }
+
     return '';
   };
 

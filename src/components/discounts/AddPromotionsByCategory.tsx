@@ -12,7 +12,8 @@ import {
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import WeekSelector from './WeekSelector';
+import { useNavigate } from 'react-router';
+
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
 import { operadores } from '../../utils/constants';
@@ -20,7 +21,10 @@ import { PromotionCategories } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { usePromotionsByCategoryStore } from '../../store/promotions/promotionsByCategory.store';
 import { useCategoriesStore } from '../../store/categories.store';
-import { useNavigate } from 'react-router';
+
+import WeekSelector from './WeekSelector';
+
+
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -34,11 +38,13 @@ function AddPromotionsByCategory() {
   const [startDate, setStartDate] = useState(formatDate());
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const { getBranchesList, branch_list } = useBranchesStore();
+
   useEffect(() => {
     getListCategoriesList();
   }, []);
   type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
   const priority: Priority[] = ['LOW', 'MEDIUM', 'HIGH'];
+
   interface PriorityInfo {
     label: string;
     color: string;
@@ -64,6 +70,7 @@ function AddPromotionsByCategory() {
 
   const { getPaginatedBranchProducts } = useBranchProductStore();
   const { postPromotions } = usePromotionsByCategoryStore();
+
   useEffect(() => {
     if (selectedBranchId) {
       getPaginatedBranchProducts(Number(selectedBranchId));
@@ -87,6 +94,7 @@ function AddPromotionsByCategory() {
       priority: selectedPriority,
       categories: selectedCategories.map((categories) => ({ categoryId: Number(categories) })),
     };
+
     postPromotions(payload);
     navigate('/discounts');
   };
@@ -96,7 +104,6 @@ function AddPromotionsByCategory() {
     <>
       <div className="flex flex-col justify-center items-center w-full">
         <Formik
-          validationSchema={validationSchema}
           initialValues={{
             name: '',
             branchId: 0,
@@ -115,6 +122,7 @@ function AddPromotionsByCategory() {
             priority: '',
             categories: [],
           }}
+          validationSchema={validationSchema}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit, setFieldValue }) => (
@@ -124,15 +132,15 @@ function AddPromotionsByCategory() {
                 <div>
                   <div>
                     <Input
-                      name="name"
-                      labelPlacement="outside"
-                      value={values.name}
-                      onChange={handleChange('name')}
-                      onBlur={handleBlur('name')}
-                      placeholder="Ingresa el nombre "
                       classNames={{ label: 'font-semibold text-sm  text-gray-600' }}
-                      variant="bordered"
                       label="Nombre"
+                      labelPlacement="outside"
+                      name="name"
+                      placeholder="Ingresa el nombre "
+                      value={values.name}
+                      variant="bordered"
+                      onBlur={handleBlur('name')}
+                      onChange={handleChange('name')}
                     />
                     {errors.name && touched.name && (
                       <>
@@ -143,20 +151,20 @@ function AddPromotionsByCategory() {
                   <div className="grid grid-cols-2 gap-2 mt-6">
                     <div className="">
                       <Input
-                        label="Precio"
-                        labelPlacement="outside"
-                        name="price"
-                        value={values.price.toString()}
-                        onChange={handleChange('price')}
-                        onBlur={handleBlur('price')}
-                        placeholder="0"
+                        className="dark:text-white"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        variant="bordered"
-                        type="number"
+                        label="Precio"
+                        labelPlacement="outside"
+                        name="price"
+                        placeholder="0"
                         startContent=""
-                        className="dark:text-white"
+                        type="number"
+                        value={values.price.toString()}
+                        variant="bordered"
+                        onBlur={handleBlur('price')}
+                        onChange={handleChange('price')}
                       />
                       {errors.price && touched.price && (
                         <span className="text-sm font-semibold text-red-500">{errors.price}</span>
@@ -164,15 +172,15 @@ function AddPromotionsByCategory() {
                     </div>
                     <div className="">
                       <Select
-                        variant="bordered"
-                        placeholder="Selecciona el operador"
                         className="w-full dark:text-white"
-                        label="Operador de precio"
-                        labelPlacement="outside"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Operador de precio"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el operador"
                         value={values.operatorPrice}
+                        variant="bordered"
                         onChange={(e) => setFieldValue('operatorPrice', e.target.value)}
                       >
                         {operadores.map((operator) => (
@@ -195,16 +203,16 @@ function AddPromotionsByCategory() {
                   <div className="grid grid-cols-2  gap-4 mt-6">
                     <div className="">
                       <Input
-                        type="date"
-                        variant="bordered"
-                        label="Fecha inicial"
-                        labelPlacement="outside"
                         className="dark:text-white"
                         classNames={{
                           label: 'font-semibold',
                         }}
-                        onChange={(e) => setStartDate(e.target.value)}
+                        label="Fecha inicial"
+                        labelPlacement="outside"
+                        type="date"
                         value={startDate}
+                        variant="bordered"
+                        onChange={(e) => setStartDate(e.target.value)}
                       />
                       {errors.startDate && touched.startDate && (
                         <>
@@ -216,16 +224,16 @@ function AddPromotionsByCategory() {
                     </div>
                     <div>
                       <Input
-                        type="date"
-                        variant="bordered"
-                        label="Fecha final"
-                        labelPlacement="outside"
                         className="dark:text-white"
                         classNames={{
                           label: 'font-semibold',
                         }}
-                        onChange={(e) => setEndDate(e.target.value)}
+                        label="Fecha final"
+                        labelPlacement="outside"
+                        type="date"
                         value={endDate}
+                        variant="bordered"
+                        onChange={(e) => setEndDate(e.target.value)}
                       />
                       {errors.endDate && touched.endDate && (
                         <>
@@ -240,17 +248,17 @@ function AddPromotionsByCategory() {
                   {/* Descripción  */}
                   <div className="mt-2">
                     <Textarea
-                      label="Descripción"
-                      labelPlacement="outside"
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      placeholder="Ingresa la descripción"
                       classNames={{
                         label: 'font-semibold text-gray-500 text-sm ',
                       }}
+                      label="Descripción"
+                      labelPlacement="outside"
+                      name="description"
+                      placeholder="Ingresa la descripción"
+                      value={values.description}
                       variant="bordered"
+                      onBlur={handleBlur('description')}
+                      onChange={handleChange('description')}
                     />
                     {errors.description && touched.description && (
                       <span className="text-sm font-semibold text-red-500">
@@ -266,8 +274,8 @@ function AddPromotionsByCategory() {
                       </h1>
                       <div className=" grid grid-cols-6 items-start mt-2">
                         <WeekSelector
-                          startDate={startDate}
                           endDate={endDate}
+                          startDate={startDate}
                           onDaysSelected={handleDaysSelected}
                         />
                       </div>
@@ -287,9 +295,9 @@ function AddPromotionsByCategory() {
                     >
                       {branch_list.map((branch) => (
                         <AutocompleteItem
-                          onClick={() => setBranchId(branch.id)}
-                          className="dark:text-white"
                           key={branch.id}
+                          className="dark:text-white"
+                          onClick={() => setBranchId(branch.id)}
                         >
                           {branch.name}
                         </AutocompleteItem>
@@ -300,13 +308,18 @@ function AddPromotionsByCategory() {
                     <div className="grid grid-cols-2 gap-2 mt-4">
                       <div>
                         <Input
+                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                           label="Porcentaje"
                           labelPlacement="outside"
                           name="percentage"
+                          placeholder="0"
                           type="number"
                           value={values.percentage ? values.percentage.toString() : ''}
+                          variant="bordered"
+                          onBlur={handleBlur('percentage')}
                           onChange={(e) => {
                             const newValue = parseFloat(e.target.value);
+
                             handleChange('percentage')(e);
                             if (newValue > 0) {
                               setFieldValue('fixedPrice', 0);
@@ -316,29 +329,30 @@ function AddPromotionsByCategory() {
                               // setShowTooltip(true);
                             }
                           }}
-                          onBlur={handleBlur('percentage')}
-                          placeholder="0"
-                          classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                          variant="bordered"
                         />
                       </div>
                       <div>
                         <Tooltip
-                          color="primary"
                           className="capitize"
+                          color="primary"
                           content="Solo puedes llenar uno de los campos: porcentaje o precio fijo"
                           isOpen={showTooltipFixedPrice}
-                          onOpenChange={setShowTooltipFixedPrice}
                           placement="bottom-start"
+                          onOpenChange={setShowTooltipFixedPrice}
                         >
                           <Input
+                            classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
                             label="Precio Fijo"
                             labelPlacement="outside"
                             name="fixedPrice"
+                            placeholder="0"
                             type="number"
                             value={values.fixedPrice ? values.fixedPrice.toString() : ''}
+                            variant="bordered"
+                            onBlur={handleBlur('fixedPrice')}
                             onChange={(e) => {
                               const newValue = parseFloat(e.target.value);
+
                               handleChange('fixedPrice')(e);
                               if (newValue > 0) {
                                 setFieldValue('percentage', 0);
@@ -348,10 +362,6 @@ function AddPromotionsByCategory() {
                                 setShowTooltipFixedPrice(true);
                               }
                             }}
-                            onBlur={handleBlur('fixedPrice')}
-                            placeholder="0"
-                            classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
-                            variant="bordered"
                           />
                         </Tooltip>
                       </div>
@@ -359,23 +369,26 @@ function AddPromotionsByCategory() {
                     <div className="grid grid-cols-1 gap-5 mt-6">
                       <Select
                         multiple
-                        variant="bordered"
-                        placeholder="Selecciona las categorías"
-                        selectedKeys={selectedCategories}
-                        label="Categorías"
-                        onBlur={handleBlur('branch')}
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
-                        name="categories"
+                        label="Categorías"
                         labelPlacement="outside"
+                        name="categories"
+                        placeholder="Selecciona las categorías"
+                        selectedKeys={selectedCategories}
+                        variant="bordered"
+                        onBlur={handleBlur('branch')}
                         onSelectionChange={(keys) => {
                           const setkeys = new Set(keys as unknown as string[]);
                           const keysArray = Array.from(setkeys);
+
                           if (keysArray.length > 0) {
                             const includes_key = selectedCategories.includes(keysArray[0]);
+
                             if (!includes_key) {
                               const news = [...selectedCategories, ...keysArray];
+
                               setSelectedCategories(news);
                               setFieldValue('categories', news);
                             } else {
@@ -394,18 +407,18 @@ function AddPromotionsByCategory() {
                           </SelectItem>
                         ))}
                       </Select>
-                      <div></div>
+                      <div />
                     </div>
                     <div className="mt-6">
                       <CheckboxGroup
                         classNames={{
                           label: 'font-semibold text-black text-md dark:text-white',
                         }}
+                        label="Prioridad"
                         orientation="horizontal"
+                        size="lg"
                         value={selectedPriority ? [selectedPriority] : []}
                         onChange={handlePriorityChange}
-                        label="Prioridad"
-                        size="lg"
                       >
                         {priority.map((p) => (
                           <Checkbox key={p} value={p}>
@@ -426,9 +439,9 @@ function AddPromotionsByCategory() {
               </div>
               <div className="mt-4 flex flex-row justify-center">
                 <ButtonUi
-                  onPress={() => handleSubmit()}
                   className="hidden font-semibold md:flex w-44 h-full py-2"
                   theme={Colors.Primary}
+                  onPress={() => handleSubmit()}
                 >
                   Crear Promoción
                 </ButtonUi>

@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react';
+
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 
@@ -10,7 +11,7 @@ interface Props {
 function AddButton(props: Props) {
   return (
     <>
-      <ButtonUi onPress={props.onClick} theme={Colors.Success} isIconOnly>
+      <ButtonUi isIconOnly theme={Colors.Success} onPress={props.onClick}>
         <Plus />
       </ButtonUi>
     </>

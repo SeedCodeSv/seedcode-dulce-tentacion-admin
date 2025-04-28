@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useBranchesStore } from '../../../store/branches.store';
 import {
   Button,
   Input,
@@ -10,16 +9,20 @@ import {
   ButtonGroup,
 } from '@heroui/react';
 import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
-import MobileView from './MobileView';
+
+import { useBranchesStore } from '../../../store/branches.store';
 import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
 import Pagination from '../../global/Pagination';
 import SmPagination from '../../global/SmPagination';
-import { limit_options } from '@/utils/constants';
+import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
+
+import MobileView from './MobileView';
+
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
-import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
+import { limit_options } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 interface Props {
@@ -46,79 +49,82 @@ function ListEmployee({ id, onclick }: Props) {
   const changePage = () => {
     getBranchProducts(id, page, limit, name, category, code);
   };
+
   useEffect(() => {
     getBranchProducts(id, page, limit, name, category, code);
   }, [id, limit]);
   useEffect(() => {
     getListCategories();
   }, []);
+
   return (
     <>
       <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
-          <div onClick={onclick} className="mb-4  w-24 cursor-pointer flex">
+          <button className="mb-4  w-24 cursor-pointer flex" onClick={onclick}>
             <ArrowLeft className="dark:text-white mr-2" />
             <p className="dark:text-white">Regresar</p>
-          </div>
+          </button>
           <div className="hidden w-full   gap-2 mb-4 md:grid">
             <div className="flex gap-5 ">
               <Input
+                isClearable
+                autoComplete="search"
+                className="w-full  order-1"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                className="w-full  order-1"
-                placeholder="Buscar por nombre..."
-                startContent={<Search />}
-                variant="bordered"
+                id="searchName"
                 label="Nombre"
                 labelPlacement="outside"
                 name="searchName"
-                id="searchName"
+                placeholder="Buscar por nombre..."
+                startContent={<Search />}
                 value={name}
-                autoComplete="search"
+                variant="bordered"
                 onChange={(e) => setName(e.target.value)}
-                isClearable
                 onClear={() => setName('')}
               />
               <Input
+                isClearable
+                autoComplete="search"
+                className="w-full  order-2"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                className="w-full  order-2"
-                placeholder="Buscar por codigo..."
-                startContent={<Search />}
-                variant="bordered"
-                name="searCode"
+                id="searCode"
                 label="Código"
                 labelPlacement="outside"
-                id="searCode"
+                name="searCode"
+                placeholder="Buscar por codigo..."
+                startContent={<Search />}
                 value={code}
-                autoComplete="search"
+                variant="bordered"
                 onChange={(e) => setCode(e.target.value)}
-                isClearable
                 onClear={() => setCode('')}
               />
 
               <Autocomplete
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                    setCategory(branchSelected.name);
-                  }
-                }}
                 className="w-full  order-3"
-                labelPlacement="outside"
-                label="Categoria"
-                placeholder="Selecciona la categoría"
-                variant="bordered"
                 classNames={{
                   base: 'font-semibold text-gray-500 text-sm',
                 }}
-                value={category}
                 clearButtonProps={{
                   onClick: () => setCategory(''),
+                }}
+                label="Categoria"
+                labelPlacement="outside"
+                placeholder="Selecciona la categoría"
+                value={category}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const branchSelected = JSON.parse(key as string) as CategoryProduct;
+
+                    setCategory(branchSelected.name);
+                  }
                 }}
               >
                 {list_categories.map((bra) => (
@@ -129,19 +135,19 @@ function ListEmployee({ id, onclick }: Props) {
               </Autocomplete>
             </div>
           </div>
-          <SearchBranchProduct></SearchBranchProduct>
+          <SearchBranchProduct />
           <div className="w-full flex items-end justify-between">
             <ButtonGroup className="mt-4">
               <ButtonUi
-                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 onPress={() => setView('table')}
               >
                 <ITable />
               </ButtonUi>
               <ButtonUi
-                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 onPress={() => setView('grid')}
               >
                 <CreditCard />
@@ -152,14 +158,14 @@ function ListEmployee({ id, onclick }: Props) {
               <div>
                 <Select
                   className="w-44"
-                  variant="bordered"
-                  label="Mostrar"
-                  placeholder="Mostrar"
-                  labelPlacement="outside"
                   classNames={{
                     label: 'font-semibold',
                   }}
+                  label="Mostrar"
+                  labelPlacement="outside"
+                  placeholder="Mostrar"
                   value={limit}
+                  variant="bordered"
                   onChange={(e) => {
                     setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                   }}
@@ -172,7 +178,7 @@ function ListEmployee({ id, onclick }: Props) {
                 </Select>
               </div>
               <div className="hidden md:flex">
-                <ButtonUi theme={Colors.Primary} color="primary" onPress={() => changePage()}>
+                <ButtonUi color="primary" theme={Colors.Primary} onPress={() => changePage()}>
                   Buscar
                 </ButtonUi>
               </div>
@@ -184,68 +190,68 @@ function ListEmployee({ id, onclick }: Props) {
               <div className="flex items-center gap-5">
                 <div className="block md:hidden">
                   <BottomDrawer
-                    title="Filtros disponibles"
                     open={openVaul}
+                    title="Filtros disponibles"
                     onClose={() => setOpenVaul(false)}
                   >
                     <div className="flex flex-col gap-3">
                       <>
                         <Input
+                          isClearable
+                          autoComplete="search"
+                          className="w-full xl:w-96"
                           classNames={{
                             label: 'font-semibold text-gray-700',
                             inputWrapper: 'pr-0',
                           }}
-                          className="w-full xl:w-96"
-                          placeholder="Buscar por nombre..."
-                          startContent={<Search />}
-                          variant="bordered"
+                          id="searchName"
                           label="Nombre"
                           labelPlacement="outside"
                           name="searchName"
-                          id="searchName"
+                          placeholder="Buscar por nombre..."
+                          startContent={<Search />}
                           value={name}
-                          autoComplete="search"
+                          variant="bordered"
                           onChange={(e) => setName(e.target.value)}
-                          isClearable
                           onClear={() => setName('')}
                         />
                         <Input
+                          isClearable
+                          autoComplete="search"
+                          className="w-full xl:w-96"
                           classNames={{
                             label: 'font-semibold text-gray-700',
                             inputWrapper: 'pr-0',
                           }}
-                          className="w-full xl:w-96"
-                          placeholder="Buscar por código..."
-                          startContent={<Search />}
-                          variant="bordered"
-                          name="searCode"
+                          id="searCode"
                           label="Código"
                           labelPlacement="outside"
-                          id="searCode"
+                          name="searCode"
+                          placeholder="Buscar por código..."
+                          startContent={<Search />}
                           value={code}
-                          autoComplete="search"
+                          variant="bordered"
                           onChange={(e) => setCode(e.target.value)}
-                          isClearable
                           onClear={() => setCode('')}
                         />
                         <Autocomplete
+                          className="w-full xl:w-80"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          clearButtonProps={{
+                            onClick: () => setCategory(''),
+                          }}
+                          defaultSelectedKey={`${category}`}
+                          label="Categoría"
+                          labelPlacement="outside"
+                          placeholder="Selecciona la categoría"
+                          value={category}
+                          variant="bordered"
                           onSelectionChange={(key) => {
                             if (key) {
                               setCategory(key as string);
                             }
-                          }}
-                          className="w-full xl:w-80"
-                          labelPlacement="outside"
-                          label="Categoría"
-                          placeholder="Selecciona la categoría"
-                          variant="bordered"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          value={category}
-                          defaultSelectedKey={`${category}`}
-                          clearButtonProps={{
-                            onClick: () => setCategory(''),
                           }}
                         >
                           {list_categories.map((bra) => (
@@ -293,9 +299,9 @@ function ListEmployee({ id, onclick }: Props) {
                   <tbody className="max-h-[600px] w-full overflow-y-auto">
                     {loading_branch_product ? (
                       <tr>
-                        <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                        <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                           <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader"></div>
+                            <div className="loader" />
                             <p className="mt-3 text-xl font-semibold">Cargando...</p>
                           </div>
                         </td>
@@ -304,8 +310,8 @@ function ListEmployee({ id, onclick }: Props) {
                       <>
                         {branch_products_list.length > 0 ? (
                           <>
-                            {branch_products_list.map((cat) => (
-                              <tr className="border-b border-slate-200">
+                            {branch_products_list.map((cat, index) => (
+                              <tr key={index} className="border-b border-slate-200">
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   {cat.id}
                                 </td>
@@ -325,7 +331,7 @@ function ListEmployee({ id, onclick }: Props) {
                           <tr>
                             <td colSpan={5}>
                               <div className="flex flex-col items-center justify-center w-full">
-                                <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                <img alt="X" className="w-32 h-32" src={NO_DATA} />
                                 <p className="mt-3 text-xl">No se encontraron resultados</p>
                               </div>
                             </td>
@@ -344,9 +350,9 @@ function ListEmployee({ id, onclick }: Props) {
             <>
               <div className="hidden w-full mt-5 md:flex">
                 <Pagination
-                  previousPage={branch_product_Paginated.prevPag}
-                  nextPage={branch_product_Paginated.nextPag}
                   currentPage={branch_product_Paginated.currentPag}
+                  nextPage={branch_product_Paginated.nextPag}
+                  previousPage={branch_product_Paginated.prevPag}
                   totalPages={branch_product_Paginated.totalPag}
                   onPageChange={(page) => {
                     serPage(page);
@@ -356,6 +362,7 @@ function ListEmployee({ id, onclick }: Props) {
               </div>
               <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
+                  currentPage={branch_product_Paginated.currentPag}
                   handleNext={() => {
                     serPage(branch_product_Paginated.nextPag);
 
@@ -379,7 +386,6 @@ function ListEmployee({ id, onclick }: Props) {
                       code
                     );
                   }}
-                  currentPage={branch_product_Paginated.currentPag}
                   totalPages={branch_product_Paginated.totalPag}
                 />
               </div>

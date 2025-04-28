@@ -2,10 +2,12 @@ import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Formik } from 'formik';
 import { useEffect } from 'react';
 import * as yup from 'yup';
+
 import { useRolesStore } from '../../store/roles.store';
 import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { User, UserUpdate } from '../../types/users.types';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -52,17 +54,17 @@ function AddUsers(props: Props) {
             <div className="mt-5 flex flex-col">
               <div className="mt-2">
                 <Input
-                  label="Nombre de usuario"
-                  labelPlacement="outside"
-                  name="userName"
-                  value={values.userName}
-                  onChange={handleChange('userName')}
-                  onBlur={handleBlur('userName')}
-                  placeholder="Ingresa el nombre de usuario"
                   classNames={{
                     label: 'font-semibold text-gray-500 text-sm',
                   }}
+                  label="Nombre de usuario"
+                  labelPlacement="outside"
+                  name="userName"
+                  placeholder="Ingresa el nombre de usuario"
+                  value={values.userName}
                   variant="bordered"
+                  onBlur={handleBlur('userName')}
+                  onChange={handleChange('userName')}
                 />
                 {errors.userName && touched.userName && (
                   <span className="text-sm font-semibold text-red-500">{errors.userName}</span>
@@ -70,21 +72,22 @@ function AddUsers(props: Props) {
               </div>
               <div className="mt-2  ">
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as Role;
-                      handleChange('roleId')(depSelected.id.toString());
-                    }
-                  }}
-                  onBlur={handleBlur('roleId')}
-                  label="Rol"
-                  labelPlacement="outside"
-                  placeholder={props.user?.role.name ? props.user?.role.name : 'Selecciona el rol'}
-                  variant="bordered"
                   classNames={{
                     base: 'font-semibold text-sm',
                   }}
                   defaultInputValue={props.user?.role.name || ''}
+                  label="Rol"
+                  labelPlacement="outside"
+                  placeholder={props.user?.role.name ? props.user?.role.name : 'Selecciona el rol'}
+                  variant="bordered"
+                  onBlur={handleBlur('roleId')}
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as Role;
+
+                      handleChange('roleId')(depSelected.id.toString());
+                    }
+                  }}
                 >
                   {roles_list
                     .filter((rol) => rol.name !== 'TIENDA')
@@ -98,9 +101,9 @@ function AddUsers(props: Props) {
               </div>
 
               <ButtonUi
-                onPress={() => handleSubmit()}
                 className="w-full mt-4 text-sm font-semibold mb-3"
                 theme={Colors.Primary}
+                onPress={() => handleSubmit()}
               >
                 Guardar
               </ButtonUi>

@@ -1,11 +1,14 @@
+import { Button, Select, SelectItem, Spinner } from '@heroui/react';
+import { useEffect, useState } from 'react';
+
+import NO_DATA from '../../assets/no.png';
+
+import { annexes_iva_fe, csvmaker_fe } from './utils';
+
 import Layout from '@/layout/Layout';
 import { useIvaFeStore } from '@/store/reports/iva-fe.store';
 import { formatCurrency } from '@/utils/dte';
-import { Button, Select, SelectItem, Spinner } from '@heroui/react';
-import { useEffect, useState } from 'react';
-import { annexes_iva_fe, csvmaker_fe } from './utils';
 import { global_styles } from '@/styles/global.styles';
-import NO_DATA from '../../assets/no.png';
 import { useAuthStore } from '@/store/auth.store';
 import { months } from '@/utils/constants';
 
@@ -37,6 +40,7 @@ function AnexoFe() {
     const blob = await annexes_iva_fe(annexes_iva);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
+
     link.href = url;
     link.download = 'anexos-iva-fe.xlsx';
     link.click();
@@ -47,6 +51,7 @@ function AnexoFe() {
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
+
     link.href = url;
     link.download = 'CONSUMIDOR_FINAL.csv';
     link.click();
@@ -58,34 +63,34 @@ function AnexoFe() {
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex justify-between gap-5">
             <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Meses"
+              labelPlacement="outside"
               selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setMonthSelected(Number(new Set(key).values().next().value));
                 }
               }}
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Meses"
-              labelPlacement="outside"
-              variant="bordered"
             >
               {months.map((month) => (
                 <SelectItem key={month.value}>{month.name}</SelectItem>
               ))}
             </Select>
             <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
               selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setYearSelected(Number(new Set(key).values().next().value));
                 }
               }}
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Año"
-              labelPlacement="outside"
-              variant="bordered"
             >
               {years.map((years) => (
                 <SelectItem key={years.value}>{years.name}</SelectItem>
@@ -181,7 +186,7 @@ function AnexoFe() {
                   ) : (
                     <>
                       <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                        <img className="w-44 mt-10" src={NO_DATA} alt="" />
+                        <img alt="" className="w-44 mt-10" src={NO_DATA} />
                         <p className="mt-5 dark:text-white text-gray-600 text-xl">
                           No se encontraron resultados
                         </p>

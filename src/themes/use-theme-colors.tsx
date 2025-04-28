@@ -1,7 +1,9 @@
+import { useContext } from 'react';
+
+import DefaultTheme from './default-theme.json';
+
 import { ThemeContext } from '@/hooks/useTheme';
 import { Colors } from '@/types/themes.types';
-import { useContext } from 'react';
-import DefaultTheme from './default-theme.json';
 
 function useThemeColors({ name }: { name: Colors }) {
   const { theme, context } = useContext(ThemeContext);
@@ -12,6 +14,7 @@ function useThemeColors({ name }: { name: Colors }) {
         backgroundColor: theme.colors[context].buttons.colors.default,
         color: theme.colors[context].buttons.textDefaultColor,
       };
+
     return {
       backgroundColor: theme.colors[context].buttons.colors[name],
       color: theme.colors[context].buttons.textColor,
@@ -23,6 +26,7 @@ function useThemeColors({ name }: { name: Colors }) {
       backgroundColor: DefaultTheme.colors[context].buttons.colors.default,
       color: DefaultTheme.colors[context].buttons.textDefaultColor,
     };
+
   return {
     backgroundColor: DefaultTheme.colors[context].buttons.colors[name],
     color: DefaultTheme.colors[context].buttons.textColor,

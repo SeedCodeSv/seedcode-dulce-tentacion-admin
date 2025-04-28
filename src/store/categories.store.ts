@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { ICategoriesStore } from './types/categories_store.types';
+import { toast } from 'sonner';
+
 import {
   create_category,
   get_categories,
@@ -9,8 +10,9 @@ import {
   activate_category,
   get_products_categories_list,
 } from '../services/categories.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+
+import { ICategoriesStore } from './types/categories_store.types';
 
 export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
   paginated_categories: {
@@ -69,10 +71,12 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+
         return { ok: false };
       });
   },
@@ -81,10 +85,12 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.success);
+
         return { ok: false };
       });
   },
@@ -93,10 +99,12 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
       .then(({ data }) => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

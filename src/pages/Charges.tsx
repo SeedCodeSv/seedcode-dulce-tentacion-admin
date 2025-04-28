@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
+
 import Layout from '../layout/Layout';
 import ListCharges from '../components/charges/ListCharges';
-import { useEffect } from 'react';
+
 import { useViewsStore } from '@/store/views.store';
 
 function ProductsCategories() {
@@ -8,6 +10,7 @@ function ProductsCategories() {
 
   const chargesView = viewasAction.find((view) => view.view.name === 'Cargos de Empleados');
   const actions = chargesView?.actions?.name || [];
+
   useEffect(() => {
     OnGetViewasAction();
   }, []);

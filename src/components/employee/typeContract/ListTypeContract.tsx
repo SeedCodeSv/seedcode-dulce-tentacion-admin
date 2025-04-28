@@ -18,19 +18,22 @@ import {
   RefreshCcw,
   SearchIcon,
 } from 'lucide-react';
+import classNames from 'classnames';
+
 import AddButton from '../../global/AddButton';
 import Pagination from '../../global/Pagination';
 import HeadlessModal from '../../global/HeadlessModal';
 import SmPagination from '../../global/SmPagination';
 import { limit_options } from '../../../utils/constants';
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { statusEmployee } from '../../../types/statusEmployee.types';
-import AddTypeContract from './AddTypeContract';
 import { useContractTypeStore } from '../../../store/contractType';
 import { ContractType } from '../../../types/contarctType.types';
+
+import AddTypeContract from './AddTypeContract';
+
+import NO_DATA from '@/assets/svg/no_data.svg';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import BottomDrawer from '@/components/global/BottomDrawer';
-import classNames from 'classnames';
 import { ArrayAction } from '@/types/view.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -76,6 +79,7 @@ function ListContractType({ actions }: ArrayAction) {
       getPaginatedContractType(1, limit, search, isActive ? 1 : 0);
     });
   };
+
   return (
     <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
       <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
@@ -83,27 +87,27 @@ function ListContractType({ actions }: ArrayAction) {
           <div className="grid w-full grid-cols-2 gap-5 md:flex ">
             <div className="w-full flex gap-4">
               <Input
-                startContent={<User />}
+                isClearable
                 className="w-full xl:w-96 dark:text-white border border-white rounded-xl hidden md:flex"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                label="Nombre"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<User />}
+                value={search}
+                variant="bordered"
+                onChange={(e) => setSearch(e.target.value)}
                 onClear={() => {
                   setSearch('');
                   handleSearch('');
                 }}
               />
               <ButtonUi
-                theme={Colors.Primary}
                 startContent={<SearchIcon className="w-10" />}
+                theme={Colors.Primary}
                 onPress={() => handleSearch(undefined)}
               >
                 Buscar
@@ -123,39 +127,39 @@ function ListContractType({ actions }: ArrayAction) {
               </div>
               <div className="block md:hidden">
                 <TooltipGlobal text="Filtrar">
-                  <ButtonUi theme={Colors.Info} isIconOnly onPress={() => setOpenVaul(true)}>
+                  <ButtonUi isIconOnly theme={Colors.Info} onPress={() => setOpenVaul(true)}>
                     <Filter />
                   </ButtonUi>
                 </TooltipGlobal>
                 <BottomDrawer
                   open={openVaul}
-                  onClose={() => setOpenVaul(false)}
                   title="Filtros disponibles"
+                  onClose={() => setOpenVaul(false)}
                 >
                   <div className="flex flex-col  gap-2">
                     <Input
-                      startContent={<User />}
+                      isClearable
                       className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Nombre"
                       classNames={{
                         label: 'font-semibold text-gray-700',
                         inputWrapper: 'pr-0',
                       }}
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
+                      label="Nombre"
+                      labelPlacement="outside"
                       placeholder="Escribe para buscar..."
-                      isClearable
+                      startContent={<User />}
+                      value={search}
+                      variant="bordered"
+                      onChange={(e) => setSearch(e.target.value)}
                       onClear={() => {
                         setSearch('');
                         handleSearch('');
                       }}
                     />
                     <ButtonUi
-                      theme={Colors.Primary}
-                      startContent={<SearchIcon className="w-10" />}
                       className="mt-6 font-semibold border border-white rounded-xl"
+                      startContent={<SearchIcon className="w-10" />}
+                      theme={Colors.Primary}
                       onPress={() => {
                         handleSearch(undefined);
                         setOpenVaul(false);
@@ -173,12 +177,12 @@ function ListContractType({ actions }: ArrayAction) {
           <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
-                onValueChange={(isActive) => setActive(isActive)}
-                isSelected={isActive}
                 classNames={{
                   thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
                   wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
                 }}
+                isSelected={isActive}
+                onValueChange={(isActive) => setActive(isActive)}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {isActive ? 'inactivos' : 'activos'}
@@ -188,16 +192,16 @@ function ListContractType({ actions }: ArrayAction) {
           </div>
           <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
             <div className="w-[150px]">
-              <label className="  font-semibold text-white text-sm">Mostrar</label>
+              <span className="  font-semibold text-white text-sm">Mostrar</span>
               <Select
                 className="w-44 dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                defaultSelectedKeys={['5']}
                 classNames={{
                   label: 'font-semibold',
                 }}
+                defaultSelectedKeys={['5']}
+                labelPlacement="outside"
                 value={limit}
+                variant="bordered"
                 onChange={(e) => {
                   setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
                 }}
@@ -224,9 +228,9 @@ function ListContractType({ actions }: ArrayAction) {
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {loading_contract_type ? (
                   <tr>
-                    <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                       <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader"></div>
+                        <div className="loader" />
                         <p className="mt-3 text-xl font-semibold">Cargando...</p>
                       </div>
                     </td>
@@ -235,8 +239,8 @@ function ListContractType({ actions }: ArrayAction) {
                   <>
                     {paginated_contract_type.contractTypes.length > 0 ? (
                       <>
-                        {paginated_contract_type.contractTypes.map((contractType) => (
-                          <tr className="border-b border-slate-200">
+                        {paginated_contract_type.contractTypes.map((contractType, index) => (
+                          <tr key={index} className="border-b border-slate-200">
                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                               {contractType.id}
                             </td>
@@ -248,12 +252,12 @@ function ListContractType({ actions }: ArrayAction) {
                                 {actions.includes('Editar') && contractType.isActive && (
                                   <>
                                     <ButtonUi
+                                      isIconOnly
+                                      theme={Colors.Success}
                                       onPress={() => {
                                         handleEdit(contractType);
                                         modalAdd.onOpen();
                                       }}
-                                      isIconOnly
-                                      theme={Colors.Success}
                                     >
                                       <EditIcon size={20} />
                                     </ButtonUi>
@@ -266,9 +270,9 @@ function ListContractType({ actions }: ArrayAction) {
                                   <>
                                     {actions.includes('Activar') && (
                                       <ButtonUi
-                                        onPress={() => handleActivate(contractType.id)}
                                         isIconOnly
                                         theme={Colors.Primary}
+                                        onPress={() => handleActivate(contractType.id)}
                                       >
                                         <RefreshCcw />
                                       </ButtonUi>
@@ -284,7 +288,7 @@ function ListContractType({ actions }: ArrayAction) {
                       <tr>
                         <td colSpan={5}>
                           <div className="flex flex-col items-center justify-center w-full">
-                            <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
                             <p className="mt-3 text-xl">No se encontraron resultados</p>
                           </div>
                         </td>
@@ -300,9 +304,9 @@ function ListContractType({ actions }: ArrayAction) {
           <>
             <div className="hidden w-full mt-5 md:flex">
               <Pagination
-                previousPage={paginated_contract_type.prevPag}
-                nextPage={paginated_contract_type.nextPag}
                 currentPage={paginated_contract_type.currentPag}
+                nextPage={paginated_contract_type.nextPag}
+                previousPage={paginated_contract_type.prevPag}
                 totalPages={paginated_contract_type.totalPag}
                 onPageChange={(page) => {
                   getPaginatedContractType(page, limit, search);
@@ -312,13 +316,13 @@ function ListContractType({ actions }: ArrayAction) {
             <div className="flex w-full mt-5 md:hidden">
               <div className="flex w-full mt-5 md:hidden">
                 <SmPagination
+                  currentPage={paginated_contract_type.currentPag}
                   handleNext={() => {
                     getPaginatedContractType(paginated_contract_type.nextPag, limit, search);
                   }}
                   handlePrev={() => {
                     getPaginatedContractType(paginated_contract_type.prevPag, limit, search);
                   }}
-                  currentPage={paginated_contract_type.currentPag}
                   totalPages={paginated_contract_type.totalPag}
                 />
               </div>
@@ -327,12 +331,12 @@ function ListContractType({ actions }: ArrayAction) {
         )}
       </div>
       <HeadlessModal
+        isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
         title={selectedContractType ? 'Editar tipo de contrato' : 'Nuevo tipo de contrato'}
-        isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
-        <AddTypeContract closeModal={modalAdd.onClose} ContractTypes={selectedContractType} />
+        <AddTypeContract ContractTypes={selectedContractType} closeModal={modalAdd.onClose} />
       </HeadlessModal>
     </div>
   );
@@ -356,9 +360,9 @@ const DeletePopUp = ({ ContractTypes }: Props) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover showArrow backdrop="blur" isOpen={isOpen} onClose={onClose}>
         <PopoverTrigger>
-          <Button onPress={onOpen} isIconOnly style={style}>
+          <Button isIconOnly style={style} onPress={onOpen}>
             <TrashIcon size={20} />
           </Button>
         </PopoverTrigger>
@@ -374,7 +378,7 @@ const DeletePopUp = ({ ContractTypes }: Props) => {
               <ButtonUi theme={Colors.Default} onPress={onClose}>
                 No, cancelar
               </ButtonUi>
-              <ButtonUi onPress={() => handleDelete()} className="ml-5" theme={Colors.Error}>
+              <ButtonUi className="ml-5" theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
               </ButtonUi>
             </div>

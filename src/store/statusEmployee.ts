@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
+
 import { messages } from '../utils/constants';
 import {
   activate_status_employee,
@@ -8,6 +9,7 @@ import {
   get_status_employee,
   update_status_employee,
 } from '../services/statusEmployee.service';
+
 import { IStatusEmployeeStore } from './types/statusEmployee.store';
 
 export const useStatusEmployeeStore = create<IStatusEmployeeStore>((set, get) => ({
@@ -71,10 +73,12 @@ export const useStatusEmployeeStore = create<IStatusEmployeeStore>((set, get) =>
       .then(({ data }) => {
         get().getPaginatedStatusEmployee(1, get().limit_filter, '');
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

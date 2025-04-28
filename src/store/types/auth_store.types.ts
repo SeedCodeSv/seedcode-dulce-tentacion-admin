@@ -1,5 +1,6 @@
-import { ITransmitter } from '@/types/transmitter.types';
 import { IAuthPayload, IAuthResponse, User } from '../../types/auth.types';
+
+import { ITransmitter } from '@/types/transmitter.types';
 
 export interface IAuthStore {
   token: string;

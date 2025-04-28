@@ -1,6 +1,8 @@
 import { create } from "zustand";
-import { IStudyLevelStore } from "./types/study_level.store.types";
+
 import { get_study_levels } from "../services/study_level.service";
+
+import { IStudyLevelStore } from "./types/study_level.store.types";
 
 export const useStudyLevelStore = create<IStudyLevelStore>((set) => ({
     study_level: [],

@@ -1,11 +1,13 @@
+import ExcelJS from 'exceljs';
+
 import { SaleAnnexe } from '@/store/types/iva-ccfe.types';
 import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
-import ExcelJS from 'exceljs';
 
 const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-');
+
     return `${day}/${month}/${year}`;
 };
 
@@ -133,6 +135,7 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
     });
 
     let nextLine = 2;
+
     for (const shopping of shoppingReport) {
         worksheet.getCell(`A${nextLine}`).value = formatDate(shopping.fecEmi);
         worksheet.getCell(`B${nextLine}`).value = formatTypes(shopping).classDocument;
@@ -210,6 +213,7 @@ const formatNumDocument = (supplier: Supplier) => {
     if (formatNit(supplier) === "") {
         return supplier.numDocumento && supplier.numDocumento.length > 0 && supplier.numDocumento !== "" && supplier.numDocumento !== "0" && supplier.numDocumento !== "N/A" ? supplier.numDocumento : "";
     }
+
     return ""
 }
 
@@ -223,6 +227,7 @@ export const formatTypes = (shopping: ShoppingReport, onlyCodes: boolean = false
             classDocument: shopping.classDocumentCode,
         }
     }
+
     return {
         typeOperation: `${shopping.operationTypeCode} ${shopping.operationTypeValue} `,
         classification: `${shopping.classificationCode} ${shopping.classificationValue} `,
@@ -259,6 +264,7 @@ export const csvmaker = (shoppingReport: ShoppingReport[]) => {
             3,
         ]
     })
+
     return payload.map((row) => row.join(';')).join('\n');
 }
 
@@ -266,6 +272,7 @@ export const formatControlNumber = (controlNumber: string) => {
     if (controlNumber !== "" && controlNumber !== "N/A" && controlNumber.length > 0) {
         return controlNumber.replace(/-/g, "")
     }
+
     return ""
 }
 
@@ -475,6 +482,7 @@ export const formatResolution = (iva: IvaSale) => {
     if (iva.type === "DTE") {
         return iva.firstNumeroControl; // Mostrar `firstNumeroControl` si es Factura (FE)
     }
+
     return iva.resolution; // Mostrar `resolution` para otros casos
 };
 
@@ -489,6 +497,7 @@ export const formatSeries = (iva: IvaSale) => {
     if (iva.type === "DTE") {
         return iva.firstSelloRecibido; // Mostrar `firstNumeroControl` si es Factura (FE)
     }
+
     return iva.series; // Mostrar `resolution` para otros casos
 };
 
@@ -508,6 +517,7 @@ export const formatNumberControlDelAl = (iva: IvaSale) => {
 
 export const formatPointOfSale = (iva: IvaSale) => {
     if (iva.type === "DTE") return ""
+
     return iva.code
 }
 
@@ -538,6 +548,7 @@ export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
             2
         ]
     })
+
     return payload.map((row) => row.join(';')).join('\n');
 }
 
@@ -648,6 +659,7 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
 
     annexe_ccfe.forEach((line, index) => {
         const nextLine = index + 2;
+
         worksheet.getCell(`A${nextLine}`).value = formatDate(line.fecEmi);
         worksheet.getCell(`B${nextLine}`).value = line.tipoDte === "03" ? "4. DOCUMENTO TRIBUTARIO ELECTRONICO (DTE)" : "1. IMPRESO POR IMPRENTA O TIQUETES"
         worksheet.getCell(`C${nextLine}`).value = "03. COMPROBANTE DE CRÉDITO FISCAL";
@@ -708,5 +720,6 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             1
         ]
     })
+
     return payload.map((row) => row.join(';')).join('\n');
 }

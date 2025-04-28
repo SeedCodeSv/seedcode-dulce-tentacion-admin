@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { toast } from 'sonner';
+
 import { IGetProductsPaginated } from '../types/products.types';
 import {
   create_products,
@@ -8,10 +10,10 @@ import {
   activate_product,
   get_promotions_products_list,
 } from '../services/products.service';
-import { IProductsStore } from './types/products.store';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
 import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-item.service';
+
+import { IProductsStore } from './types/products.store';
 
 export const useProductsStore = create<IProductsStore>((set, get) => ({
   cat_011_tipo_de_item: [],
@@ -85,10 +87,12 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       .then(() => {
         get().getPaginatedProducts(1, 5, '', '', '', '');
         toast.success(messages.success);
+
         return { ok: true };
       })
       .catch(() => {
         toast.error(messages.error);
+
         return { ok: false };
       });
   },

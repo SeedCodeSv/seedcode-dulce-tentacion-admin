@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import ApexChart from 'react-apexcharts';
+
 import { salesReportStore } from '../../store/reports_seller/sales_report_seller.store';
 import { useAuthStore } from '../../store/auth.store';
 
 function SalesMonthBranches() {
   const { user } = useAuthStore();
   const { getSalesByDays, sales_by_day } = salesReportStore();
+
   useEffect(() => {
     getSalesByDays(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
@@ -20,6 +22,7 @@ function SalesMonthBranches() {
     ],
     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
   };
+
   return (
     <>
       <div
@@ -34,10 +37,7 @@ function SalesMonthBranches() {
         </p>
 
         <ApexChart
-          type="line"
-          series={sales.series}
           height={150}
-          width={'100%'}
           options={{
             yaxis: {
               labels: {
@@ -73,6 +73,9 @@ function SalesMonthBranches() {
               enabled: false,
             },
           }}
+          series={sales.series}
+          type="line"
+          width={'100%'}
         />
       </div>
     </>

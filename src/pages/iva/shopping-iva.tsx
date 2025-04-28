@@ -1,23 +1,26 @@
-import Layout from '@/layout/Layout';
-import { useTransmitterStore } from '@/store/transmitter.store';
-import { months } from '@/utils/constants';
-import { formatDateToMMDDYYYY } from '@/utils/dates';
-import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem, useDisclosure } from '@heroui/react';
 import saveAs from 'file-saver';
 import { useEffect, useMemo, useState } from 'react';
 import { PiFilePdfDuotone, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';
-import NO_DATA from '../../assets/no.png';
-import { useViewsStore } from '@/store/views.store';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { useShoppingStore } from '@/store/shopping.store';
-import { useExcludedSubjectStore } from '@/store/excluded_subjects.store';
 import { ArrowLeft, Printer, X } from 'lucide-react';
-import { generate_shopping_excel } from './excel_functions/shopping.excel';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+
+import NO_DATA from '../../assets/no.png';
+
+import { generate_shopping_excel } from './excel_functions/shopping.excel';
+
+import { useExcludedSubjectStore } from '@/store/excluded_subjects.store';
+import { useShoppingStore } from '@/store/shopping.store';
+import { useViewsStore } from '@/store/views.store';
+import { formatCurrency } from '@/utils/dte';
+import { formatDateToMMDDYYYY } from '@/utils/dates';
+import { months } from '@/utils/constants';
+import { useTransmitterStore } from '@/store/transmitter.store';
+import Layout from '@/layout/Layout';
 import FullPageLayout from '@/components/global/FullOverflowLayout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -43,6 +46,7 @@ function ShoppingBookIVA() {
   const [pdf, setPdf] = useState('');
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore();
   const { excluded_subjects_month, getExcludedSubjectByMonth } = useExcludedSubjectStore();
+
   useEffect(() => {
     onGetShoppingByMonth(
       Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id),
@@ -140,6 +144,7 @@ function ShoppingBookIVA() {
       doc.setFontSize(6.2);
 
       const text1 = doc.splitTextToSize('No. Corr.', 5);
+
       doc.text(text1, 7, margin_top + 5);
       doc.text('Fecha', margin_left + 15, margin_top + 5);
       doc.text('No. Doc.', margin_left + 35, margin_top + 5);
@@ -156,10 +161,13 @@ function ShoppingBookIVA() {
       doc.text('Internaciones', margin_left + 206, margin_top + 8);
       doc.text('Importaciones', margin_left + 220.5, margin_top + 8);
       const text2 = doc.splitTextToSize('Total Compras', 10);
+
       doc.text(text2, margin_left + 243.5, margin_top + 4, { align: 'center' });
       const text3 = doc.splitTextToSize('Anticipo a cuenta IVA percibido', 15);
+
       doc.text(text3, margin_left + 262, margin_top + 3, { align: 'center' });
       const text4 = doc.splitTextToSize('Compras a Suj. Excluidos', 15);
+
       doc.text(text4, margin_left + 280, margin_top + 4, { align: 'center' });
     };
 
@@ -235,6 +243,7 @@ function ShoppingBookIVA() {
     }
     if (type === 'download') {
       doc.save(`LIBRO_COMPRAS_${month}_${yearSelected}.pdf`);
+
       return undefined;
     } else {
       return doc.output('blob');
@@ -250,6 +259,7 @@ function ShoppingBookIVA() {
 
     if (blob) {
       const url = URL.createObjectURL(blob);
+
       setPdf(url);
       setLoadingPdf(false);
     } else {
@@ -264,6 +274,7 @@ function ShoppingBookIVA() {
   const handleExportExcel = async () => {
     if (shopping_by_months.length === 0) {
       toast.warning('No se encontaron ventas para el mes seleccionado');
+
       return;
     }
     const data = shopping_by_months.map((shop) => {
@@ -326,46 +337,47 @@ function ShoppingBookIVA() {
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'IVA de Compras');
   const actionView = viewName?.actions.name || [];
+
   return (
     <Layout title="IVA de Compras">
       <>
         <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
           <div className="w-full flex pb-5 mt-10">
-            <Link to="/" className=" dark:text-white flex">
+            <Link className=" dark:text-white flex" to="/">
               <ArrowLeft /> Regresar
             </Link>
           </div>
           <div className="w-full  mt-2">
             <div className="w-full flex justify-between gap-5">
               <Select
+                className="w-44"
+                classNames={{ label: 'font-semibold' }}
+                label="Meses"
+                labelPlacement="outside"
                 selectedKeys={[`${monthSelected}`]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setMonthSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-44"
-                classNames={{ label: 'font-semibold' }}
-                label="Meses"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {months.map((month) => (
                   <SelectItem key={month.value}>{month.name}</SelectItem>
                 ))}
               </Select>
               <Select
+                className="w-44"
+                classNames={{ label: 'font-semibold' }}
+                label="Año"
+                labelPlacement="outside"
                 selectedKeys={[`${yearSelected}`]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setYearSelected(Number(new Set(key).values().next().value));
                   }
                 }}
-                className="w-44"
-                classNames={{ label: 'font-semibold' }}
-                label="Año"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {years.map((years) => (
                   <SelectItem key={years.value}>{years.name}</SelectItem>
@@ -376,8 +388,8 @@ function ShoppingBookIVA() {
                   <ButtonUi
                     className="px-10"
                     endContent={<Printer size={20} />}
-                    onPress={() => showPdf()}
                     theme={Colors.Info}
+                    onPress={() => showPdf()}
                   >
                     Ver e imprimir
                   </ButtonUi>
@@ -386,8 +398,8 @@ function ShoppingBookIVA() {
                 {actionView.includes('Exportar PDF') && (
                   <ButtonUi
                     className="px-10"
-                    theme={Colors.Error}
                     endContent={<PiFilePdfDuotone size={20} />}
+                    theme={Colors.Error}
                     onPress={() => export_to_pdf('download')}
                   >
                     Exportar a PDF
@@ -397,8 +409,8 @@ function ShoppingBookIVA() {
                 {actionView.includes('Exportar Excel') && (
                   <ButtonUi
                     className="px-10"
-                    theme={Colors.Success}
                     endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                    theme={Colors.Success}
                     onPress={handleExportExcel}
                   >
                     Exportar a excel
@@ -410,7 +422,7 @@ function ShoppingBookIVA() {
               <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
                 {loading_shopping ? (
                   <div className="w-full flex justify-center p-20 items-center flex-col">
-                    <div className="loader"></div>
+                    <div className="loader" />
                     <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
                   </div>
                 ) : (
@@ -473,7 +485,7 @@ function ShoppingBookIVA() {
                     ) : (
                       <>
                         <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                          <img className="w-44 mt-10" src={NO_DATA} alt="" />
+                          <img alt="" className="w-44 mt-10" src={NO_DATA} />
                           <p className="mt-5 dark:text-white text-gray-600 text-xl">
                             No se encontraron resultados
                           </p>
@@ -483,70 +495,6 @@ function ShoppingBookIVA() {
                   </>
                 )}
               </div>
-              {/* <div>
-                <p className="mt-5 text-xl font-semibold">Compras a sujetos excluidos</p>
-                <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                  <table className="w-full">
-                    <thead className="sticky top-0 z-20 bg-white">
-                      <tr>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                        >
-                          Fecha
-                        </th>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                        >
-                          No. doc
-                        </th>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                        >
-                          NIT O DUI
-                        </th>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                        >
-                          Nombre del proveedor
-                        </th>
-                        <th
-                          style={styles.darkStyle}
-                          className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                        >
-                          Total compras
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {excluded_subjects_month.map((shop, index) => (
-                        <tr key={index} className="border-b border-slate-200">
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {formatDateToMMDDYYYY(shop.fecEmi)}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {shop.codigoGeneracion}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {shop.subject.tipoDocumento !== "N/A"
-                              ? shop.subject.numDocumento
-                              : shop.subject.nit}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {shop.subject.nombre}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {formatCurrency(Number(shop.totalCompra))}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
@@ -562,20 +510,20 @@ function ShoppingBookIVA() {
             {typeOverlay === 2 && (
               <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
                 <Button
+                  isIconOnly
+                  className="absolute bottom-6 left-6"
                   color="danger"
                   onClick={() => showFullLayout.onClose()}
-                  className="absolute bottom-6 left-6"
-                  isIconOnly
                 >
                   <X />
                 </Button>
                 {loadingPdf ? (
                   <div className="w-full h-full flex flex-col justify-center items-center">
-                    <div className="loader"></div>
+                    <div className="loader" />
                     <p className="mt-5 text-xl">Cargando...</p>
                   </div>
                 ) : (
-                  <iframe className="w-full h-full" src={pdf}></iframe>
+                  <iframe className="w-full h-full" src={pdf} title='pdf' />
                 )}
               </div>
             )}

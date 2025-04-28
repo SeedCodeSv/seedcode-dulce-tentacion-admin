@@ -1,11 +1,13 @@
-import Layout from '../layout/Layout';
 import { Tab, Tabs } from "@heroui/react";
-import AddClientNormal from '../components/clients/AddClientNormal';
-import AddClientContributor from '../components/clients/AddClientContributor';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from "@heroui/react";
+
+import AddClientContributor from '../components/clients/AddClientContributor';
+import AddClientNormal from '../components/clients/AddClientNormal';
+import Layout from '../layout/Layout';
+
 import { useCustomerStore } from '@/store/customers.store';
 import GlobalLoading from '@/components/global/GlobalLoading';
 
@@ -23,21 +25,22 @@ function AddCustomer() {
   }, []);
 
   const { loading_save } = useCustomerStore();
+
   return (
     <Layout title={type == '0' ? 'Agregar cliente' : 'Actualizar cliente'}>
       <>
         <GlobalLoading show={loading_save} />
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 mt-3 overflow-y-auto custom-scrollbar bg-white shadow rounded-xl dark:bg-gray-900">
-            <Button onClick={() => navigate('/clients')} className="bg-transparent">
+            <Button className="bg-transparent" onClick={() => navigate('/clients')}>
               <ArrowLeft />
               <p className="">Regresar</p>
             </Button>
             <Tabs
+              className="flex justify-center mt-3 md:mt-0"
+              color="secondary"
               selectedKey={selected}
               variant="bordered"
-              color="secondary"
-              className="flex justify-center mt-3 md:mt-0"
             >
               <Tab key="normal" title="Consumidor final">
                 <div className="mt-2">

@@ -1,6 +1,5 @@
 import { Button, Switch } from '@heroui/react';
 import { NavLink, useLocation } from 'react-router-dom';
-import LOGO from '../assets/MADNESS.png';
 import {
   Home,
   ChevronDown,
@@ -29,16 +28,21 @@ import {
   X,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
-import { ThemeContext } from '../hooks/useTheme';
-import { useConfigurationStore } from '../store/perzonalitation.store';
-import useWindowSize from '../hooks/useWindowSize';
-import { validate_pathname } from '@/utils/filters';
-import SidebarLinkGroup from './SidebarLinkGroup';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
-import SidebarLinkList from '@/components/global/SidebarLinkList ';
+
+import LOGO from '../assets/MADNESS.png';
+import { ThemeContext } from '../hooks/useTheme';
+import { useConfigurationStore } from '../store/perzonalitation.store';
+import useWindowSize from '../hooks/useWindowSize';
+
+import SidebarLinkGroup from './SidebarLinkGroup';
 import { hexToRgba } from './utils';
+
+import { validate_pathname } from '@/utils/filters';
+import SidebarLinkList from '@/components/global/SidebarLinkList ';
+
 
 interface Props {
   isOpen: boolean;
@@ -47,6 +51,7 @@ interface Props {
 
 export const LayoutItems = (props: Props) => {
   const { theme, toggleContext, context } = useContext(ThemeContext);
+
   useEffect(() => {
     if (context === 'dark') {
       document.getElementsByTagName('body')[0].classList.add('dark');
@@ -299,18 +304,19 @@ export const LayoutItems = (props: Props) => {
   const handleGroupClick = (group: string) => {
     setOpenGroup(openGroup === group ? null : group);
   };
+
   return (
     <>
       <div className="flex justify-between items-center h-[70px]">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
-            <img src={LOGO} className="max-h-12" />
+            <img alt='LOGO' className="max-h-12" src={LOGO} />
           </div>
         ) : (
           <>
             {personalization.map((item) => (
               <div key={item.id} className="flex items-center justify-center w-full shadow">
-                <img src={item.logo} className="max-h-12" />
+                <img alt='LOGO' className="max-h-12" src={item.logo} />
               </div>
             ))}
           </>
@@ -325,15 +331,15 @@ export const LayoutItems = (props: Props) => {
         <ul className="mt-2">
           <li>
             <NavLink
-              to="/"
+              className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700
+                `}
               style={({ isActive }) => ({
                 backgroundColor: isActive
                   ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
                   : theme.colors[context].menu.background,
                 color: theme.colors[context].menu.textColor,
               })}
-              className={`group relative flex items-center gap-2.5 rounded-sm py-4 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700
-                `}
+              to="/"
             >
               <Home />
               Inicio
@@ -357,7 +363,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium duration-300 ease-in-out'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           'products',
@@ -370,9 +379,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium duration-300 ease-in-out'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -383,15 +389,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={linksProductManagement} />
                     </motion.div>
@@ -419,7 +425,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           'employees',
@@ -433,9 +442,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -446,15 +452,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={linkAdministration} />
                     </motion.div>
@@ -473,16 +479,16 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, ['gestion-reports'])
                           ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -493,15 +499,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={linkReports} />
                     </motion.div>
@@ -526,7 +532,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           'Nivel de Estudio',
@@ -537,9 +546,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -550,15 +556,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={linkPlanification} />
                     </motion.div>
@@ -582,7 +588,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           '/anexos-iva-compras',
@@ -593,9 +602,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -606,15 +612,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={annexesLinks} />
                     </motion.div>
@@ -638,7 +644,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           '/iva/shopping-book',
@@ -649,9 +658,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -662,15 +668,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={booksLinks} />
                     </motion.div>
@@ -699,7 +705,10 @@ export const LayoutItems = (props: Props) => {
               >
                 {(handleClick, open) => (
                   <>
-                    <div
+                    <button
+                      className={classNames(
+                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                      )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
                           'cash-cuts-big-z',
@@ -715,9 +724,6 @@ export const LayoutItems = (props: Props) => {
                           : theme.colors[context].menu.background,
                         color: theme.colors[context].menu.textColor,
                       }}
-                      className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
-                      )}
                       onClick={handleClick}
                     >
                       <div className="flex items-center gap-2.5">
@@ -728,15 +734,15 @@ export const LayoutItems = (props: Props) => {
                         className={classNames(open && ' rotate-180', 'items-end justify-end ')}
                         size={iconSize}
                       />
-                    </div>
+                    </button>
                     <motion.div
-                      initial={{ opacity: 0, height: 0 }}
                       animate={{
                         opacity: open ? 1 : 0,
                         height: open ? 'auto' : 0,
                       }}
-                      transition={{ duration: 0.3 }}
                       className="overflow-hidden transform translate"
+                      initial={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
                     >
                       <SidebarLinkList links={linkAccounting} />
                     </motion.div>
@@ -749,21 +755,21 @@ export const LayoutItems = (props: Props) => {
       </>
 
       <div
+        className={' flex w-full py-4 pl-5 cursor-pointer :-coffee-green hover:font-semibold'}
         style={{
           backgroundColor: theme.colors[context].menu.background,
           color: theme.colors[context].menu.textColor,
         }}
-        className={' flex w-full py-4 pl-5 cursor-pointer :-coffee-green hover:font-semibold'}
       >
         <Switch
           className="relative"
-          onValueChange={(isDark) => toggleContext(isDark ? 'dark' : 'light')}
           isSelected={context === 'dark'}
           size={windowSize.width > 768 ? undefined : 'sm'}
+          onValueChange={(isDark) => toggleContext(isDark ? 'dark' : 'light')}
         >
           <p
-            style={{ color: theme.colors[context].menu.textColor }}
             className="relative text-sm lg:text-base"
+            style={{ color: theme.colors[context].menu.textColor }}
           >
             {context === 'dark' ? 'Modo claro' : 'Modo oscuro'}
           </p>

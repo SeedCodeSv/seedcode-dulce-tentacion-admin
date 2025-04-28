@@ -12,14 +12,17 @@ import {
 import { useEffect, useState } from 'react';
 import { EditIcon, User, TrashIcon, Filter, RefreshCcw, SearchIcon } from 'lucide-react';
 import classNames from 'classnames';
-import NO_DATA from '@/assets/svg/no_data.svg';
+
 import AddButton from '../../global/AddButton';
 import Pagination from '../../global/Pagination';
 import HeadlessModal from '../../global/HeadlessModal';
 import { limit_options } from '../../../utils/constants';
 import { useStatusEmployeeStore } from '../../../store/statusEmployee';
-import AddStatusEmployee from './AddStatusEmployee';
 import { statusEmployee } from '../../../types/statusEmployee.types';
+
+import AddStatusEmployee from './AddStatusEmployee';
+
+import NO_DATA from '@/assets/svg/no_data.svg';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ArrayAction } from '@/types/view.types';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -75,29 +78,29 @@ function ListStatusEmployee({ actions }: ArrayAction) {
         <div className="grid w-full grid-cols-2 gap-5 md:flex">
           <div className="w-full flex gap-4">
             <Input
-              startContent={<User />}
+              isClearable
               className="w-full xl:w-96 dark:text-white hidden md:flex"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Nombre"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              label="Nombre"
+              labelPlacement="outside"
               placeholder="Escribe para buscar..."
-              isClearable
+              startContent={<User />}
+              value={search}
+              variant="bordered"
+              onChange={(e) => setSearch(e.target.value)}
               onClear={() => {
                 setSearch('');
                 handleSearch('');
               }}
             />
             <ButtonUi
-              theme={Colors.Primary}
               className="mt-6 font-semibold hidden md:flex"
               color="primary"
               startContent={<SearchIcon size={15} />}
+              theme={Colors.Primary}
               onPress={() => handleSearch(undefined)}
             >
               Buscar
@@ -107,41 +110,41 @@ function ListStatusEmployee({ actions }: ArrayAction) {
           <div className="flex mt-6 justify-between">
             <div className="md:hidden justify-start">
               <ButtonUi
-                theme={Colors.Info}
                 isIconOnly
-                onPress={() => setOpenVaul(true)}
+                theme={Colors.Info}
                 type="button"
+                onPress={() => setOpenVaul(true)}
               >
                 <Filter />
               </ButtonUi>
               <BottomDrawer
                 open={openVaul}
-                onClose={() => setOpenVaul(false)}
                 title="Filtros disponibles"
+                onClose={() => setOpenVaul(false)}
               >
                 <div className="flex flex-col  gap-2">
                   <Input
-                    startContent={<User />}
+                    isClearable
                     className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
-                    variant="bordered"
-                    labelPlacement="outside"
-                    label="Nombre"
                     classNames={{
                       label: 'font-semibold text-gray-700',
                       inputWrapper: 'pr-0',
                     }}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    label="Nombre"
+                    labelPlacement="outside"
                     placeholder="Escribe para buscar..."
-                    isClearable
+                    startContent={<User />}
+                    value={search}
+                    variant="bordered"
+                    onChange={(e) => setSearch(e.target.value)}
                     onClear={() => {
                       setSearch('');
                       handleSearch('');
                     }}
                   />
                   <ButtonUi
-                    theme={Colors.Primary}
                     className="mt-6 font-semibold"
+                    theme={Colors.Primary}
                     onPress={() => {
                       handleSearch(undefined);
                       setOpenVaul(false);
@@ -169,12 +172,12 @@ function ListStatusEmployee({ actions }: ArrayAction) {
           <div className="flex justify-start order-2 lg:order-1">
             <div className="xl:mt-10">
               <Switch
-                onValueChange={(isActive) => setActive(isActive)}
-                isSelected={isActive}
                 classNames={{
                   thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
                   wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
                 }}
+                isSelected={isActive}
+                onValueChange={(isActive) => setActive(isActive)}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {isActive ? 'inactivos' : 'activos'}
@@ -184,16 +187,16 @@ function ListStatusEmployee({ actions }: ArrayAction) {
           </div>
           <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
             <div className="w-[150px]">
-              <label className="  font-semibold text-white text-sm">Mostrar</label>
+              <span className="  font-semibold text-white text-sm">Mostrar</span>
               <Select
                 className="max-w-44 dark:text-white border border-white rounded-xl "
-                variant="bordered"
-                defaultSelectedKeys={['5']}
-                labelPlacement="outside"
                 classNames={{
                   label: 'font-semibold',
                 }}
+                defaultSelectedKeys={['5']}
+                labelPlacement="outside"
                 value={limit}
+                variant="bordered"
                 onChange={(e) => {
                   setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
                 }}
@@ -209,7 +212,7 @@ function ListStatusEmployee({ actions }: ArrayAction) {
         </div>
 
         <div className="flex justify-end items-end w-full mb-4 gap-5">
-          <div className="flex items-center"></div>
+          <div className="flex items-center" />
         </div>
         <>
           <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
@@ -224,9 +227,9 @@ function ListStatusEmployee({ actions }: ArrayAction) {
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {loading_status_employee ? (
                   <tr>
-                    <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                       <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader"></div>
+                        <div className="loader" />
                         <p className="mt-3 text-xl font-semibold">Cargando...</p>
                       </div>
                     </td>
@@ -235,8 +238,8 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                   <>
                     {paginated_status_employee.employeeStatus.length > 0 ? (
                       <>
-                        {paginated_status_employee.employeeStatus.map((employeeStatus) => (
-                          <tr className="border-b border-slate-200">
+                        {paginated_status_employee.employeeStatus.map((employeeStatus, index) => (
+                          <tr key={index} className="border-b border-slate-200">
                             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                               {employeeStatus.id}
                             </td>
@@ -247,12 +250,12 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                               <div className="flex w-full gap-5">
                                 {actions.includes('Editar') && employeeStatus.isActive && (
                                   <ButtonUi
+                                    isIconOnly
+                                    theme={Colors.Success}
                                     onPress={() => {
                                       handleEdit(employeeStatus);
                                       modalAdd.onOpen();
                                     }}
-                                    isIconOnly
-                                    theme={Colors.Success}
                                   >
                                     <EditIcon size={20} />
                                   </ButtonUi>
@@ -264,9 +267,9 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                                   <>
                                     {actions.includes('Activar') && (
                                       <ButtonUi
-                                        onPress={() => handleActivate(employeeStatus.id)}
                                         isIconOnly
                                         theme={Colors.Primary}
+                                        onPress={() => handleActivate(employeeStatus.id)}
                                       >
                                         <RefreshCcw />
                                       </ButtonUi>
@@ -282,7 +285,7 @@ function ListStatusEmployee({ actions }: ArrayAction) {
                       <tr>
                         <td colSpan={5}>
                           <div className="flex flex-col items-center justify-center w-full">
-                            <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
                             <p className="mt-3 text-xl">No se encontraron resultados</p>
                           </div>
                         </td>
@@ -299,9 +302,9 @@ function ListStatusEmployee({ actions }: ArrayAction) {
           <>
             <div className=" w-full mt-5 ">
               <Pagination
-                previousPage={paginated_status_employee.prevPag}
-                nextPage={paginated_status_employee.nextPag}
                 currentPage={paginated_status_employee.currentPag}
+                nextPage={paginated_status_employee.nextPag}
+                previousPage={paginated_status_employee.prevPag}
                 totalPages={paginated_status_employee.totalPag}
                 onPageChange={(page) => {
                   getPaginatedStatusEmployee(page, limit, search);
@@ -312,9 +315,9 @@ function ListStatusEmployee({ actions }: ArrayAction) {
         )}
       </div>
       <HeadlessModal
+        isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
         title={selectedStatusEmployee ? 'Editar estado de empleado' : 'Nuevo estado de empleado'}
-        isOpen={modalAdd.isOpen}
         onClose={modalAdd.onClose}
       >
         <AddStatusEmployee closeModal={modalAdd.onClose} statusEmployees={selectedStatusEmployee} />
@@ -341,9 +344,9 @@ const DeletePopUp = ({ statusEmployees }: Props) => {
 
   return (
     <>
-      <Popover isOpen={isOpen} onClose={onClose} backdrop="blur" showArrow>
+      <Popover showArrow backdrop="blur" isOpen={isOpen} onClose={onClose}>
         <PopoverTrigger>
-          <Button onPress={onOpen} isIconOnly style={style}>
+          <Button isIconOnly style={style} onPress={onOpen}>
             <TrashIcon size={20} />
           </Button>
         </PopoverTrigger>
@@ -359,7 +362,7 @@ const DeletePopUp = ({ statusEmployees }: Props) => {
               <ButtonUi theme={Colors.Default} onPress={onClose}>
                 No, cancelar
               </ButtonUi>
-              <ButtonUi onPress={() => handleDelete()} className="ml-5" theme={Colors.Error}>
+              <ButtonUi className="ml-5" theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
               </ButtonUi>
             </div>

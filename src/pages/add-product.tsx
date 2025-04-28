@@ -1,19 +1,20 @@
-import Layout from '@/layout/Layout';
 import { Autocomplete, AutocompleteItem, Input, Select, SelectItem, Textarea } from '@heroui/react';
 import { ArrowLeft } from 'lucide-react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import { useEffect, useState } from 'react';
-import { useBranchesStore } from '@/store/branches.store';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
+
+import Layout from '@/layout/Layout';
+import { useBranchesStore } from '@/store/branches.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useSupplierStore } from '@/store/supplier.store';
-import { toast } from 'sonner';
 import { verify_code_product } from '@/services/products.service';
 import { useProductsStore } from '@/store/products.store';
 import { ProductPayloadFormik } from '@/types/products.types';
-import { useNavigate } from 'react-router';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 
@@ -104,9 +105,11 @@ function AddProduct() {
 
     if (letvalue) {
       const verify = await verifyCode(values.code);
+
       if (!verify) {
         toast.error('Código  en uso');
         setError(true);
+
         return;
       }
     }
@@ -119,6 +122,7 @@ function AddProduct() {
         return { id: Number(branch) };
       }),
     };
+
     setLoading(true);
     await postProducts(send_payload).then(() => {
       navigate('/products');
@@ -131,6 +135,7 @@ function AddProduct() {
   const generarCodigo = async (name: string) => {
     if (!name) {
       toast.error('Necesitas ingresar el nombre del producto para generar el código.');
+
       return '';
     }
 
@@ -140,16 +145,19 @@ function AddProduct() {
       const characters = '0123456789';
       const charactersLength = characters.length;
       let counter = 0;
+
       while (counter < length) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
         counter += 1;
       }
+
       return result;
     };
 
     const randomNumber = makeid(4);
     const codigoGenerado = `${productNameInitials}${randomNumber}`;
     const verify = await verifyCode(codigoGenerado);
+
     if (verify) {
       setError(false);
     } else {
@@ -163,11 +171,14 @@ function AddProduct() {
     try {
       if (codigo !== 'N/A') {
         const data = await verify_code_product(codigo);
+
         if (data.data.ok === true) {
           return true;
         }
+
         return data.data.ok;
       }
+
       return false;
     } catch (error) {
       return false;
@@ -179,15 +190,15 @@ function AddProduct() {
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
-            onClick={() => navigate('/products')}
             className="flex items-center gap-2 bg-transparent"
+            onClick={() => navigate('/products')}
           >
             <ArrowLeft className=" dark:text-white" />
             <span className="dark:text-white">Regresar</span>
           </button>
           <Formik
-            validationSchema={validationSchema}
             initialValues={initialValues}
+            validationSchema={validationSchema}
             onSubmit={handleSave}
           >
             {({
@@ -203,108 +214,109 @@ function AddProduct() {
                 <div>
                   <div>
                     <Input
-                      variant="bordered"
-                      labelPlacement="outside"
+                      className="dark:text-white font-semibold"
+                      classNames={{
+                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
+                      }}
+                      errorMessage={touched.name && errors.name}
+                      isInvalid={touched.name && !!errors.name}
                       label="Nombre"
+                      labelPlacement="outside"
                       placeholder="Ingresa el nombre"
+                      value={values.name}
+                      variant="bordered"
+                      onBlur={handleBlur('name')}
                       onChange={(e) => {
                         handleChange('name')(e);
                       }}
-                      onBlur={handleBlur('name')}
-                      value={values.name}
-                      isInvalid={touched.name && !!errors.name}
-                      errorMessage={touched.name && errors.name}
-                      className="dark:text-white font-semibold"
-                      classNames={{
-                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
-                      }}
                     />
                   </div>
                   <div className="py-2">
                     <Input
-                      variant="bordered"
-                      labelPlacement="outside"
+                      className="dark:text-white font-semibold"
+                      classNames={{
+                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
+                      }}
+                      errorMessage={touched.costoUnitario && errors.costoUnitario}
+                      isInvalid={touched.costoUnitario && !!errors.costoUnitario}
                       label="Costo unitario"
-                      type="number"
-                      step="0.01"
+                      labelPlacement="outside"
                       placeholder="Ingresa el costo unitario"
                       startContent="$"
-                      className="dark:text-white font-semibold"
-                      onChange={handleChange('costoUnitario')}
-                      onBlur={handleBlur('costoUnitario')}
-                      value={values.costoUnitario}
-                      isInvalid={touched.costoUnitario && !!errors.costoUnitario}
-                      errorMessage={touched.costoUnitario && errors.costoUnitario}
-                      classNames={{
-                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
-                      }}
-                    />
-                  </div>
-                  <div className="py-2">
-                    <Input
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Precio"
-                      placeholder="Ingresa el precio"
-                      type="number"
                       step="0.01"
-                      startContent="$"
-                      className="dark:text-white font-semibold"
-                      onChange={handleChange('price')}
-                      onBlur={handleBlur('price')}
-                      value={values.price}
-                      isInvalid={touched.price && !!errors.price}
-                      errorMessage={touched.price && errors.price}
-                      classNames={{
-                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
-                      }}
+                      type="number"
+                      value={values.costoUnitario}
+                      variant="bordered"
+                      onBlur={handleBlur('costoUnitario')}
+                      onChange={handleChange('costoUnitario')}
                     />
                   </div>
                   <div className="py-2">
                     <Input
-                      variant="bordered"
-                      labelPlacement="outside"
-                      label="Cantidad minima"
-                      placeholder="Ingresa la cantidad minima"
-                      onChange={handleChange('minimumStock')}
                       className="dark:text-white font-semibold"
-                      onBlur={handleBlur('minimumStock')}
-                      value={values.minimumStock}
-                      isInvalid={touched.minimumStock && !!errors.minimumStock}
-                      errorMessage={touched.minimumStock && errors.minimumStock}
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
+                      errorMessage={touched.price && errors.price}
+                      isInvalid={touched.price && !!errors.price}
+                      label="Precio"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el precio"
+                      startContent="$"
+                      step="0.01"
+                      type="number"
+                      value={values.price}
+                      variant="bordered"
+                      onBlur={handleBlur('price')}
+                      onChange={handleChange('price')}
+                    />
+                  </div>
+                  <div className="py-2">
+                    <Input
+                      className="dark:text-white font-semibold"
+                      classNames={{
+                        label: 'font-semibold dark:text-white text-gray-500 text-sm',
+                      }}
+                      errorMessage={touched.minimumStock && errors.minimumStock}
+                      isInvalid={touched.minimumStock && !!errors.minimumStock}
+                      label="Cantidad minima"
+                      labelPlacement="outside"
+                      placeholder="Ingresa la cantidad minima"
+                      value={values.minimumStock}
+                      variant="bordered"
+                      onBlur={handleBlur('minimumStock')}
+                      onChange={handleChange('minimumStock')}
                     />
                   </div>
                   <div>
                     <div className="flex items-end gap-5 py-2">
                       <Input
+                        className="dark:text-white font-semibold"
+                        classNames={{
+                          label: 'font-semibold text-sm text-gray-600',
+                        }}
+                        label="Código de producto"
+                        labelPlacement="outside"
+                        name="code"
+                        placeholder="Ingresa el código"
                         value={codigo || values.code}
+                        variant="bordered"
                         onBlur={handleBlur('code')}
                         onChange={(e) => {
                           handleChange('code')(e);
                           setCodigoGenerado(e.target.value);
                         }}
-                        name="code"
-                        labelPlacement="outside"
-                        className="dark:text-white font-semibold"
-                        placeholder="Ingresa el código"
-                        classNames={{
-                          label: 'font-semibold text-sm text-gray-600',
-                        }}
-                        variant="bordered"
-                        label="Código de producto"
                       />
                       <ButtonUi
+                        className="px-6"
+                        theme={Colors.Info}
                         onPress={async () => {
                           const code = await generarCodigo(values.name);
+
                           if (code) {
                             handleChange('code')(code);
                           }
                         }}
-                        className="px-6"
-                        theme={Colors.Info}
                       >
                         Generar
                       </ButtonUi>
@@ -317,81 +329,86 @@ function AddProduct() {
                   </div>
                   <div className="grid grid-cols-2 gap-3 py-2">
                     <Input
-                      variant="bordered"
-                      label="Precio A"
                       className="dark:text-white"
-                      type="number"
-                      step="0.01"
-                      labelPlacement="outside"
-                      startContent="$"
-                      placeholder="Ingresa el precio A"
-                      onChange={handleChange('priceA')}
-                      onBlur={handleBlur('priceA')}
-                      value={values.priceA}
-                      isInvalid={touched.priceA && !!errors.priceA}
-                      errorMessage={touched.priceA && errors.priceA}
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
+                      errorMessage={touched.priceA && errors.priceA}
+                      isInvalid={touched.priceA && !!errors.priceA}
+                      label="Precio A"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el precio A"
+                      startContent="$"
+                      step="0.01"
+                      type="number"
+                      value={values.priceA}
+                      variant="bordered"
+                      onBlur={handleBlur('priceA')}
+                      onChange={handleChange('priceA')}
                     />
                     <Input
-                      variant="bordered"
-                      label="Precio B"
-                      type="number"
-                      step="0.01"
                       className="dark:text-white"
-                      labelPlacement="outside"
-                      startContent="$"
-                      placeholder="Ingresa el precio B"
-                      onChange={handleChange('priceB')}
-                      onBlur={handleBlur('priceB')}
-                      value={values.priceB}
-                      isInvalid={touched.priceB && !!errors.priceB}
-                      errorMessage={touched.priceB && errors.priceB}
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
+                      errorMessage={touched.priceB && errors.priceB}
+                      isInvalid={touched.priceB && !!errors.priceB}
+                      label="Precio B"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el precio B"
+                      startContent="$"
+                      step="0.01"
+                      type="number"
+                      value={values.priceB}
+                      variant="bordered"
+                      onBlur={handleBlur('priceB')}
+                      onChange={handleChange('priceB')}
                     />
                     <Input
                       className="col-span-2 dark:text-white"
-                      variant="bordered"
-                      label="Precio C"
-                      type="number"
-                      step="0.01"
-                      labelPlacement="outside"
-                      startContent="$"
-                      placeholder="Ingresa el precio C"
-                      onChange={handleChange('priceC')}
-                      onBlur={handleBlur('priceC')}
-                      value={values.priceC}
-                      isInvalid={touched.priceC && !!errors.priceC}
-                      errorMessage={touched.priceC && errors.priceC}
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
+                      errorMessage={touched.priceC && errors.priceC}
+                      isInvalid={touched.priceC && !!errors.priceC}
+                      label="Precio C"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el precio C"
+                      startContent="$"
+                      step="0.01"
+                      type="number"
+                      value={values.priceC}
+                      variant="bordered"
+                      onBlur={handleBlur('priceC')}
+                      onChange={handleChange('priceC')}
                     />
                   </div>
                   <div className="py-2">
                     <Select
                       multiple
-                      variant="bordered"
                       className="dark:text-white font-semibold"
-                      placeholder="Selecciona la sucursal"
-                      selectedKeys={selectedBranches}
-                      label="Sucursales"
-                      onBlur={handleBlur('branch')}
                       classNames={{
                         label: 'font-semibold dark:text-white text-gray-500 text-sm',
                       }}
-                      name="branch"
+                      errorMessage={touched.branch && errors.branch}
+                      isInvalid={touched.branch && !!errors.branch}
+                      label="Sucursales"
                       labelPlacement="outside"
+                      name="branch"
+                      placeholder="Selecciona la sucursal"
+                      selectedKeys={selectedBranches}
+                      variant="bordered"
+                      onBlur={handleBlur('branch')}
                       onSelectionChange={(keys) => {
                         const setkeys = new Set(keys as unknown as string[]);
                         const keysArray = Array.from(setkeys);
+
                         if (keysArray.length > 0) {
                           const includes_key = selectedBranches.includes(keysArray[0]);
+
                           if (!includes_key) {
                             const news = [...selectedBranches, ...keysArray];
+
                             setSelectedBranches(news);
                             setFieldValue('branch', news);
                           } else {
@@ -403,8 +420,6 @@ function AddProduct() {
                           setFieldValue('branch', []);
                         }
                       }}
-                      isInvalid={touched.branch && !!errors.branch}
-                      errorMessage={touched.branch && errors.branch}
                     >
                       {branch_list.map((val) => (
                         <SelectItem key={val.id} className="dark:text-white">
@@ -417,16 +432,19 @@ function AddProduct() {
                 <div>
                   <div>
                     <Autocomplete
-                      variant="bordered"
                       className="dark:text-white font-semibold"
+                      errorMessage={touched.tipoItem && errors.tipoItem}
+                      isInvalid={touched.tipoItem && !!errors.tipoItem}
                       label="Tipo de item"
                       labelPlacement="outside"
                       placeholder={'Ingresa el tipo de item'}
                       value={values.tipoItem}
+                      variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
                           const value = new Set([key]).values().next().value;
                           const item = itemTypes.find((i) => i.codigo === value);
+
                           setFieldValue('tipoItem', value);
                           setFieldValue('tipoDeItem', item?.valores);
                         } else {
@@ -434,8 +452,6 @@ function AddProduct() {
                           setFieldValue('tipoDeItem', '');
                         }
                       }}
-                      isInvalid={touched.tipoItem && !!errors.tipoItem}
-                      errorMessage={touched.tipoItem && errors.tipoItem}
                     >
                       {itemTypes.map((item) => (
                         <AutocompleteItem key={item.codigo} className="dark:text-white">
@@ -447,16 +463,19 @@ function AddProduct() {
                   <div className="py-2">
                     <Autocomplete
                       className="dark:text-white font-semibold"
-                      variant="bordered"
-                      name="unidaDeMedida"
+                      errorMessage={touched.uniMedida && errors.uniMedida}
+                      isInvalid={touched.uniMedida && !!errors.uniMedida}
                       label="Unidad de medida"
                       labelPlacement="outside"
+                      name="unidaDeMedida"
                       placeholder="Selecciona unidad de medida"
                       value={values.uniMedida}
+                      variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
                           const value = new Set([key]).values().next().value;
                           const item = unidadDeMedidaList.find((i) => i.codigo === value);
+
                           setFieldValue('uniMedida', value);
                           setFieldValue('unidaDeMedida', item?.valores);
                         } else {
@@ -464,8 +483,6 @@ function AddProduct() {
                           setFieldValue('unidaDeMedida', '');
                         }
                       }}
-                      isInvalid={touched.uniMedida && !!errors.uniMedida}
-                      errorMessage={touched.uniMedida && errors.uniMedida}
                     >
                       {unidadDeMedidaList.map((item) => (
                         <AutocompleteItem key={item.codigo} className="dark:text-white">
@@ -476,19 +493,19 @@ function AddProduct() {
                   </div>
                   <div className="py-2">
                     <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          getSubcategories(Number(key));
-                        }
+                      className="dark:text-white"
+                      classNames={{
+                        base: 'font-semibold text-sm',
                       }}
                       label="Categoría producto"
                       labelPlacement="outside"
                       placeholder="Selecciona la categoría"
                       variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-sm',
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          getSubcategories(Number(key));
+                        }
                       }}
-                      className="dark:text-white"
                     >
                       {list_categories.map((bra) => (
                         <AutocompleteItem key={bra.id} className="dark:text-white">
@@ -499,13 +516,15 @@ function AddProduct() {
                   </div>
                   <div className="py-2">
                     <Select
-                      name="subCategoryId"
+                      className="dark:text-white"
+                      classNames={{ base: 'font-semibold text-sm' }}
+                      errorMessage={touched.subCategoryId && errors.subCategoryId}
+                      isInvalid={touched.subCategoryId && !!errors.subCategoryId}
                       label="Sub-categoría"
                       labelPlacement="outside"
+                      name="subCategoryId"
                       placeholder="Selecciona la subcategoria"
                       variant="bordered"
-                      classNames={{ base: 'font-semibold text-sm' }}
-                      className="dark:text-white"
                       onSelectionChange={(key) => {
                         if (key) {
                           setFieldValue(
@@ -516,8 +535,6 @@ function AddProduct() {
                           setFieldValue('subCategoryId', 0);
                         }
                       }}
-                      isInvalid={touched.subCategoryId && !!errors.subCategoryId}
-                      errorMessage={touched.subCategoryId && errors.subCategoryId}
                     >
                       {subcategories?.map((sub) => (
                         <SelectItem key={sub.id} className="dark:text-white">
@@ -528,24 +545,36 @@ function AddProduct() {
                   </div>
                   <div className="py-2">
                     <Textarea
-                      label="Descripción"
-                      labelPlacement="outside"
-                      name="description"
-                      value={values.description}
-                      onChange={handleChange('description')}
-                      onBlur={handleBlur('description')}
-                      placeholder="Ingresa la descripción"
+                      className="dark:text-white"
                       classNames={{
                         label: 'font-semibold text-sm ',
                       }}
-                      variant="bordered"
-                      className="dark:text-white"
-                      isInvalid={touched.description && !!errors.description}
                       errorMessage={touched.description && errors.description}
+                      isInvalid={touched.description && !!errors.description}
+                      label="Descripción"
+                      labelPlacement="outside"
+                      name="description"
+                      placeholder="Ingresa la descripción"
+                      value={values.description}
+                      variant="bordered"
+                      onBlur={handleBlur('description')}
+                      onChange={handleChange('description')}
                     />
                   </div>
                   <div className="py-2">
                     <Autocomplete
+                      className="dark:text-white"
+                      classNames={{
+                        base: 'font-semibold text-sm',
+                      }}
+                      errorMessage={touched.supplierId && errors.supplierId}
+                      isInvalid={touched.supplierId && !!errors.supplierId}
+                      label="Proveedor"
+                      labelPlacement="outside"
+                      placeholder={'Selecciona el proveedor'}
+                      value={values.supplierId}
+                      variant="bordered"
+                      onBlur={handleBlur('supplierId')}
                       onSelectionChange={(key) => {
                         if (key) {
                           setFieldValue('supplierId', new Set([key]).values().next().value);
@@ -553,18 +582,6 @@ function AddProduct() {
                           setFieldValue('supplierId', 0);
                         }
                       }}
-                      onBlur={handleBlur('supplierId')}
-                      label="Proveedor"
-                      labelPlacement="outside"
-                      placeholder={'Selecciona el proveedor'}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-sm',
-                      }}
-                      className="dark:text-white"
-                      value={values.supplierId}
-                      isInvalid={touched.supplierId && !!errors.supplierId}
-                      errorMessage={touched.supplierId && errors.supplierId}
                     >
                       {supplier_list.map((bra) => (
                         <AutocompleteItem key={bra.id ?? 0} className="dark:text-white">
@@ -580,7 +597,7 @@ function AddProduct() {
                     </ButtonUi>
                   ) : (
                     <div className="flex flex-col items-center justify-center w-full">
-                      <div className="loaderBranch w-2 h-2 mt-2"></div>
+                      <div className="loaderBranch w-2 h-2 mt-2" />
                       <p className="mt-3 text-sm font-semibold">Cargando...</p>
                     </div>
                   )}

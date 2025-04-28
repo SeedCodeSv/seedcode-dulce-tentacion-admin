@@ -1,9 +1,11 @@
 import { useEffect } from 'react';
+
 import Layout from '../layout/Layout';
 import { salesReportStore } from '../store/reports/sales_report.store';
 import { useAuthStore } from '../store/auth.store';
 import { useBranchProductReportStore } from '../store/reports/branch_product.store';
 import { formatCurrency } from '../utils/dte';
+
 import '../components/home/style.css';
 import Charts from '@/components/home/charts';
 
@@ -46,7 +48,7 @@ function Home() {
             {loading_sales_by_table_date ? (
               <>
                 <div className="flex flex-col items-center justify-center w-full h-64">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-3 text-xl font-semibold">Cargando...</p>
                 </div>
               </>
@@ -67,7 +69,7 @@ function Home() {
                     </tr>
                   </thead>
                   {sales_table_day.map((sl, index) => (
-                    <tr className="border-b border-slate-200 dark:border-slate-500" key={index}>
+                    <tr key={index} className="border-b border-slate-200 dark:border-slate-500">
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {index + 1}
                       </td>

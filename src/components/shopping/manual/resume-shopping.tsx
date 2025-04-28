@@ -1,6 +1,7 @@
 import { Accordion, AccordionItem, Input } from "@heroui/react";
-import { ResumeShoppingProps } from '../types/shopping-manual.types';
 import { useEffect, useState } from 'react';
+
+import { ResumeShoppingProps } from '../types/shopping-manual.types';
 
 function ResumeShopping({
   afecta,
@@ -19,6 +20,7 @@ function ResumeShopping({
   useEffect(() => {
     if (items && items.length > 0) {
       const index = items.findIndex((item) => item.isExenta === true);
+
       if (index !== -1) {
         setExentaItemIndex(index);
         setHasExenta(true);
@@ -40,6 +42,7 @@ function ResumeShopping({
           ...items[exentaItemIndex],
           debe: exenta,
         };
+
         addItems(updatedItem, exentaItemIndex);
       }
     }
@@ -47,6 +50,7 @@ function ResumeShopping({
 
   const handleExentaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+
     setExenta!(newValue);
   };
 
@@ -98,90 +102,90 @@ function ResumeShopping({
                 <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
                   <div>
                     <Input
-                      label="AFECTA"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
+                      readOnly
                       classNames={{
                         label: 'font-semibold',
                         input: 'text-red-600 text-lg font-bold',
                       }}
-                      readOnly
+                      label="AFECTA"
+                      labelPlacement="outside"
+                      placeholder="0.00"
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={afecta}
+                      variant="bordered"
                     />
                   </div>
                   <div>
                     <Input
-                      label="EXENTA"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
                       classNames={{
                         label: 'font-semibold',
                         input: 'text-red-600 text-lg font-bold',
                       }}
+                      label="EXENTA"
+                      labelPlacement="outside"
+                      placeholder="0.00"
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={exenta}
+                      variant="bordered"
                       onChange={handleExentaChange}
                     />
                   </div>
                   <div>
                     <Input
+                      readOnly
+                      classNames={{
+                        label: 'font-semibold',
+                        input: 'text-red-600 text-lg font-bold',
+                      }}
                       label="IVA"
                       labelPlacement="outside"
                       placeholder="0.00"
-                      variant="bordered"
-                      readOnly
-                      classNames={{
-                        label: 'font-semibold',
-                        input: 'text-red-600 text-lg font-bold',
-                      }}
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={totalIva}
+                      variant="bordered"
                     />
                   </div>
                   <div>
                     <Input
+                      readOnly
+                      classNames={{ label: 'font-semibold' }}
                       label="PERCEPCIÓN"
                       labelPlacement="outside"
                       placeholder="0.00"
-                      variant="bordered"
-                      classNames={{ label: 'font-semibold' }}
                       startContent="$"
-                      type="number"
-                      readOnly
-                      value={$1perception.toFixed(2)}
                       step={0.01}
+                      type="number"
+                      value={$1perception.toFixed(2)}
+                      variant="bordered"
                     />
                   </div>
                   <div>
                     <Input
+                      readOnly
+                      classNames={{ label: 'font-semibold' }}
                       label="SUBTOTAL"
                       labelPlacement="outside"
                       placeholder="0.00"
-                      variant="bordered"
-                      classNames={{ label: 'font-semibold' }}
                       startContent="$"
-                      readOnly
+                      step={0.01}
                       type="number"
                       value={afecta}
-                      step={0.01}
+                      variant="bordered"
                     />
                   </div>
                   <div>
                     <Input
-                      label="TOTAL"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      variant="bordered"
+                      readOnly
                       classNames={{
                         label: 'font-semibold',
                         input: 'text-red-600 text-lg font-bold',
                       }}
+                      label="TOTAL"
+                      labelPlacement="outside"
+                      placeholder="0.00"
                       startContent={<span className="text-red-600 font-bold text-lg">$</span>}
                       value={total}
-                      readOnly
+                      variant="bordered"
                     />
                   </div>
                 </div>

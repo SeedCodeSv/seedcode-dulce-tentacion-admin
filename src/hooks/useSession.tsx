@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
+
 import { get_token, is_authenticate, return_seller_mode, get_rolId } from '../storage/localStorage';
 
 interface SessionContextI {
@@ -32,6 +33,7 @@ export default function SessionProvider({ children }: Props) {
   const [isAuth, setIsAuth] = useState(is_authenticate());
   const [mode, setMode] = useState(return_seller_mode() ?? '');
   const [rolId, setRolId] = useState(get_rolId() ?? 0);
+
   return (
     <SessionContext.Provider
       value={{

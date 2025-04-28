@@ -1,13 +1,16 @@
 import { create } from "zustand";
-import { ICreditNotes } from "./types/note_credits.types.store";
-import { get_contingence_credit_notes, get_credit_notes_by_id, get_recent_credit_notes } from "@/services/credit_notes.service";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { s3Client } from "@/plugins/s3";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { SPACES_BUCKET } from "@/utils/constants";
 import axios from "axios";
-import { SVFE_NC_Firmado } from "@/types/svf_dte/nc.types";
 import { toast } from "sonner";
+
+import { ICreditNotes } from "./types/note_credits.types.store";
+
+import { get_contingence_credit_notes, get_credit_notes_by_id, get_recent_credit_notes } from "@/services/credit_notes.service";
+import { s3Client } from "@/plugins/s3";
+import { SPACES_BUCKET } from "@/utils/constants";
+import { SVFE_NC_Firmado } from "@/types/svf_dte/nc.types";
+
 
 export const useCreditNotes = create<ICreditNotes>((set, get) => ({
     json_credit: undefined,
@@ -38,6 +41,7 @@ export const useCreditNotes = create<ICreditNotes>((set, get) => ({
       get_credit_notes_by_id(id)
         .then(async (res) => {
           const { pathJson, sale } = res.data.notaDeCredito;
+
           get().onGetRecentCreditNotes(id, sale.id);
           const url = await getSignedUrl(
             s3Client,

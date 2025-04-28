@@ -1,7 +1,9 @@
 import { jwtDecode } from 'jwt-decode';
+
 import { User, UserLogin } from '../types/auth.types';
 import { RoleViewAction } from '../types/actions_rol.types';
 import { decryptData, encryptData } from '../plugins/crypto';
+
 import { ITransmitter } from '@/types/transmitter.types';
 import { formatDate } from '@/utils/dates';
 import { IGetIRoleAction, IRoleAction } from '@/types/role-actions.types';
@@ -15,21 +17,26 @@ export const get_token = () => {
 
 export const is_expired_token = () => {
   const token = get_token();
+
   if (token) {
     const { exp } = jwtDecode(token);
+
     if (exp) {
       return exp * 1000 < Date.now();
     } else {
       return true;
     }
   }
+
   return true;
 };
 
 export const is_authenticate = () => {
   const token = get_token();
+
   if (token) {
     if (is_expired_token()) return false;
+
     return true;
   }
 
@@ -45,6 +52,7 @@ export const get_user = () => {
 
   if (user) {
     const dec = decryptData(user);
+
     return dec as User;
   }
 
@@ -52,9 +60,11 @@ export const get_user = () => {
 };
 export const get_rolId = () => {
   const user = localStorage.getItem('_RSU');
+
   if (user) {
     const dec = decryptData(user);
     const data = dec as UserLogin;
+
     return data.roleId;
   }
 };
@@ -121,6 +131,7 @@ export const get_return_action = (): RoleViewAction | undefined => {
   if (rva) {
     return decryptData(rva) as RoleViewAction;
   }
+
   return undefined;
 };
 
@@ -130,9 +141,11 @@ export const save_transmitter = (transmitter: ITransmitter) => {
 
 export const get_transmitter_info = () => {
   const transmitter = localStorage.getItem('$TOP');
+
   if (transmitter) {
     return decryptData(transmitter) as ITransmitter;
   }
+
   return undefined;
 };
 
@@ -147,9 +160,11 @@ interface SearchItem {
 
 export const get_accounting_item_search = () => {
   const item = localStorage.getItem('accounting_items');
+
   if (item) {
     return JSON.parse(item) as SearchItem;
   }
+
   return {
     page: 1,
     limit: 10,

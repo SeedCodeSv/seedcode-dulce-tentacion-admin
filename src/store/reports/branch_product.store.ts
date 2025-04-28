@@ -1,7 +1,9 @@
 import { create } from 'zustand';
-import { IBranchProductReportStore } from './types/branch_product_report.store.types';
+
 import { get_most_selled_product } from '../../services/reports/branch_product.report.service';
 import { get_products_most_selled_by_transmitter_grafic } from '../../services/reports/sales.reports.service';
+
+import { IBranchProductReportStore } from './types/branch_product_report.store.types';
 
 export const useBranchProductReportStore = create<IBranchProductReportStore>((set) => ({
   most_product_selled: [],

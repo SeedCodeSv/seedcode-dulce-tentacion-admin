@@ -1,10 +1,12 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import React, { useContext } from 'react';
+
+import { ThemeContext } from '@/hooks/useTheme';
 
 interface Props extends React.ThHTMLAttributes<HTMLTableCellElement> {}
 
 function ThGlobal(props: Props) {
   const { theme, context } = useContext(ThemeContext);
+
   return (
     <th
       style={{

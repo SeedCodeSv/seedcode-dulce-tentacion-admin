@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+
 import { IExcludedSubjectStore } from './types/excluded_subjects.types.store';
+
 import {
   get_contingence_excluded_subject,
   get_excluded_subject_by_month,

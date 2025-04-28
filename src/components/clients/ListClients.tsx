@@ -1,12 +1,4 @@
-import {
-  Input,
-  Select,
-  SelectItem,
-  Switch,
-  Autocomplete,
-  AutocompleteItem,
-} from '@heroui/react';
-import { useCustomerStore } from '../../store/customers.store';
+import { Input, Select, SelectItem, Switch, Autocomplete, AutocompleteItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import {
   EditIcon,
@@ -17,23 +9,25 @@ import {
   RefreshCcw,
   Repeat,
 } from 'lucide-react';
-
 import { ButtonGroup } from '@heroui/react';
+import classNames from 'classnames';
+import { useNavigate } from 'react-router';
+import Lottie from 'lottie-react';
+
+import { useCustomerStore } from '../../store/customers.store';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
-import classNames from 'classnames';
 import TooltipGlobal from '../global/TooltipGlobal';
+import AddButton from '../global/AddButton';
+
+import SearchClient from './search_client/SearchClient';
+import ModeGridClients from './view-modes/ModeGridClients';
+import { DeletePopover } from './view-modes/DeleteClients';
+
 import useWindowSize from '@/hooks/useWindowSize';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
-import { useNavigate } from 'react-router';
-import SearchClient from './search_client/SearchClient';
-import AddButton from '../global/AddButton';
-import ModeGridClients from './view-modes/ModeGridClients';
-
-import Lottie from 'lottie-react';
 import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
-import { DeletePopover } from './view-modes/DeleteClients';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 interface Props {
@@ -51,6 +45,7 @@ const ListClients = ({ actions }: Props) => {
   const [active, setActive] = useState(true);
   const [tipeCustomer, setTypeCustomer] = useState('');
   const { getBranchesList, branch_list } = useBranchesStore();
+
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -89,10 +84,10 @@ const ListClients = ({ actions }: Props) => {
         <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchClient
+              emailCustomer={(email: string) => setEmail(email)}
               nameBranch={(name: string) => setBranch(name)}
               nameCustomer={(name: string) => setSearch(name)}
-              emailCustomer={(email: string) => setEmail(email)}
-            ></SearchClient>
+            />
             {actions.includes('Agregar') && (
               <>
                 <>
@@ -106,73 +101,73 @@ const ListClients = ({ actions }: Props) => {
           <div className="hidden w-full gap-5 md:flex">
             <div className="grid w-full grid-cols-4 gap-3">
               <Input
-                startContent={<User />}
+                isClearable
                 className="w-full dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                label="Nombre"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<User />}
+                value={search}
+                variant="bordered"
+                onChange={(e) => setSearch(e.target.value)}
                 onClear={() => {
                   // handleSearch("");
                   setSearch('');
                 }}
               />
               <Input
-                startContent={<Mail />}
+                isClearable
                 className="w-full dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                label="correo"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                label="correo"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<Mail />}
+                value={email}
+                variant="bordered"
+                onChange={(e) => setEmail(e.target.value)}
                 onClear={() => {
                   // handleSearch("");
                   setEmail('');
                 }}
               />
               <div>
-                <label className="font-semibold dark:text-white text-sm"> Sucursal</label>
+                <span className="font-semibold dark:text-white text-sm"> Sucursal</span>
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      setBranch(key as string);
-                    }
-                  }}
                   className="w-full dark:text-white border border-white rounded-xl"
-                  placeholder="Selecciona una sucursal"
-                  variant="bordered"
-                  defaultSelectedKey={branch}
                   classNames={{
                     base: 'font-semibold text-gray-500 text-sm',
                   }}
                   clearButtonProps={{
                     onClick: () => setBranch(''),
                   }}
+                  defaultSelectedKey={branch}
+                  placeholder="Selecciona una sucursal"
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      setBranch(key as string);
+                    }
+                  }}
                 >
                   {branch_list.map((bra) => (
-                    <AutocompleteItem className="dark:text-white" key={bra.name}>
+                    <AutocompleteItem key={bra.name} className="dark:text-white">
                       {bra.name}
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
               </div>
               <ButtonUi
-                theme={Colors.Primary}
                 className="hidden mt-6 font-semibold md:flex"
                 color="primary"
+                theme={Colors.Primary}
                 onPress={() => handleSearch(undefined)}
               >
                 Buscar
@@ -184,12 +179,12 @@ const ListClients = ({ actions }: Props) => {
             <div className="flex  justify-start order-2 lg:order-1">
               <Switch
                 className="hidden xl:flex"
-                onValueChange={(active) => setActive(active)}
-                isSelected={active}
                 classNames={{
                   thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                   wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
                 }}
+                isSelected={active}
+                onValueChange={(active) => setActive(active)}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
                   Mostrar {active ? 'inactivos' : 'activos'}
@@ -199,65 +194,65 @@ const ListClients = ({ actions }: Props) => {
 
             <div className="flex xl:gap-10 gap-3 w-full  lg:justify-end order-1 lg:order-2">
               <div>
-                <label className="font-semibold text-sm dark:text-white"> Tipo de Cliente</label>
+                <span className="font-semibold text-sm dark:text-white"> Tipo de Cliente</span>
                 <Select
                   className="xl:w-44 w-36 dark:text-white border border-white rounded-xl"
-                  variant="bordered"
-                  placeholder="-- Seleccione tipo de cliente --"
-                  labelPlacement="outside"
                   classNames={{
                     label: 'font-semibold',
                   }}
+                  labelPlacement="outside"
+                  placeholder="-- Seleccione tipo de cliente --"
                   value={String(tipeCustomer)}
+                  variant="bordered"
                   onChange={(e) => {
                     setTypeCustomer(e.target.value !== '' ? e.target.value : '');
                   }}
                 >
-                  <SelectItem className="dark:text-white" key={'1'}>
+                  <SelectItem key={'1'} className="dark:text-white">
                     Contribuyente
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'0'}>
+                  <SelectItem key={'0'} className="dark:text-white">
                     No Contribuyente
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={''}>
+                  <SelectItem key={''} className="dark:text-white">
                     Todos
                   </SelectItem>
                 </Select>
               </div>
               <div>
-                <label className="font-semibold dark:text-white text-sm">Mostrar</label>
+                <span className="font-semibold dark:text-white text-sm">Mostrar</span>
                 <Select
                   className="xl:w-44 w-36 dark:text-white border border-white rounded-xl"
-                  variant="bordered"
-                  defaultSelectedKeys={['5']}
-                  labelPlacement="outside"
                   classNames={{
                     label: 'font-semibold',
                   }}
+                  defaultSelectedKeys={['5']}
+                  labelPlacement="outside"
                   value={limit}
+                  variant="bordered"
                   onChange={(e) => {
                     setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                   }}
                 >
-                  <SelectItem className="dark:text-white" key={'5'}>
+                  <SelectItem key={'5'} className="dark:text-white">
                     5
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'10'}>
+                  <SelectItem key={'10'} className="dark:text-white">
                     10
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'20'}>
+                  <SelectItem key={'20'} className="dark:text-white">
                     20
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'30'}>
+                  <SelectItem key={'30'} className="dark:text-white">
                     30
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'40'}>
+                  <SelectItem key={'40'} className="dark:text-white">
                     40
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'50'}>
+                  <SelectItem key={'50'} className="dark:text-white">
                     50
                   </SelectItem>
-                  <SelectItem className="dark:text-white" key={'100'}>
+                  <SelectItem key={'100'} className="dark:text-white">
                     100
                   </SelectItem>
                 </Select>
@@ -268,12 +263,12 @@ const ListClients = ({ actions }: Props) => {
           <div className="flex items-end justify-end xl:mt-2 gap-12">
             <Switch
               className="xl:hidden flex"
-              onValueChange={(active) => setActive(active)}
-              isSelected={active}
               classNames={{
                 thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                 wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
               }}
+              isSelected={active}
+              onValueChange={(active) => setActive(active)}
             >
               <span className="text-sm sm:text-base whitespace-nowrap">
                 Mostrar {active ? 'inactivos' : 'activos'}
@@ -281,34 +276,34 @@ const ListClients = ({ actions }: Props) => {
             </Switch>
             <ButtonGroup className="mt-4">
               <ButtonUi
-                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 isIconOnly
+                theme={view === 'table' ? Colors.Primary : Colors.Default}
                 onPress={() => setView('table')}
               >
                 <ITable />
               </ButtonUi>
               <ButtonUi
-                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 isIconOnly
+                theme={view === 'grid' ? Colors.Primary : Colors.Default}
                 onPress={() => setView('grid')}
               >
                 <CreditCard />
               </ButtonUi>
             </ButtonGroup>
           </div>
-          <div className="flex items-center justify-center ml-2"></div>
+          <div className="flex items-center justify-center ml-2" />
 
           <>
             {customer_pagination.customers.length > 0 ? (
               <>
                 {view === 'grid' && (
                   <ModeGridClients
-                    handleActivate={(id) => handleActivate(id)}
-                    customers={customer_pagination.customers}
                     actions={actions}
-                  ></ModeGridClients>
+                    customers={customer_pagination.customers}
+                    handleActivate={(id) => handleActivate(id)}
+                  />
                 )}
-                <div className="flex justify-end w-full py-3 md:py-0 bg-first-300"></div>
+                <div className="flex justify-end w-full py-3 md:py-0 bg-first-300" />
                 {view === 'table' && (
                   <>
                     <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
@@ -338,9 +333,9 @@ const ListClients = ({ actions }: Props) => {
                         <tbody className="max-h-[600px] w-full overflow-y-auto">
                           {loading_customer ? (
                             <tr>
-                              <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                              <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                                 <div className="flex flex-col items-center justify-center w-full h-64">
-                                  <div className="loader"></div>
+                                  <div className="loader" />
                                   <p className="mt-3 text-xl font-semibold">Cargando...</p>
                                 </div>
                               </td>
@@ -349,8 +344,8 @@ const ListClients = ({ actions }: Props) => {
                             <>
                               {customer_pagination.customers.length > 0 ? (
                                 <>
-                                  {customer_pagination.customers.map((customer) => (
-                                    <tr className="border-b border-slate-200">
+                                  {customer_pagination.customers.map((customer, index) => (
+                                    <tr key={index} className="border-b border-slate-200">
                                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                         {customer.id}
                                       </td>
@@ -381,12 +376,12 @@ const ListClients = ({ actions }: Props) => {
                                             <TooltipGlobal text="Editar">
                                               <ButtonUi
                                                 isIconOnly
+                                                theme={Colors.Primary}
                                                 onPress={() =>
                                                   navigate(
                                                     `/add-customer/${customer.id}/${customer.esContribuyente ? 'tribute' : 'normal'}`
                                                   )
                                                 }
-                                                theme={Colors.Primary}
                                               >
                                                 <EditIcon size={20} />
                                               </ButtonUi>
@@ -405,13 +400,13 @@ const ListClients = ({ actions }: Props) => {
                                                 {customer.esContribuyente === false && (
                                                   <TooltipGlobal text="Cambiar tipo de Cliente">
                                                     <ButtonUi
+                                                      isIconOnly
+                                                      theme={Colors.Primary}
                                                       onPress={() =>
                                                         navigate(
                                                           `/add-customer/${customer.id}/tribute`
                                                         )
                                                       }
-                                                      isIconOnly
-                                                      theme={Colors.Primary}
                                                     >
                                                       <Repeat size={20} />
                                                     </ButtonUi>
@@ -424,9 +419,9 @@ const ListClients = ({ actions }: Props) => {
                                               {actions.includes('Activar Cliente') && (
                                                 <TooltipGlobal text="Activar">
                                                   <ButtonUi
-                                                    onPress={() => handleActivate(customer.id)}
                                                     isIconOnly
                                                     theme={Colors.Primary}
+                                                    onPress={() => handleActivate(customer.id)}
                                                   >
                                                     <RefreshCcw />
                                                   </ButtonUi>
@@ -443,7 +438,7 @@ const ListClients = ({ actions }: Props) => {
                                 <tr>
                                   <td colSpan={5}>
                                     <div className="flex flex-col items-center justify-center w-full">
-                                      <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                      <img alt="X" className="w-32 h-32" src={NO_DATA} />
                                       <p className="mt-3 text-xl">No se encontraron resultados</p>
                                     </div>
                                   </td>
@@ -459,7 +454,7 @@ const ListClients = ({ actions }: Props) => {
               </>
             ) : (
               <div className="flex flex-col justify-center items-center">
-                <Lottie animationData={EMPTY} className="w-96"></Lottie>
+                <Lottie animationData={EMPTY} className="w-96" />
                 <p className="text-2xl">No se encontraron resultados</p>
               </div>
             )}
@@ -469,9 +464,9 @@ const ListClients = ({ actions }: Props) => {
             <>
               <div className="hidden w-full mt-5 md:flex">
                 <Pagination
-                  previousPage={customer_pagination.prevPag}
-                  nextPage={customer_pagination.nextPag}
                   currentPage={customer_pagination.currentPag}
+                  nextPage={customer_pagination.nextPag}
+                  previousPage={customer_pagination.prevPag}
                   totalPages={customer_pagination.totalPag}
                   onPageChange={(page) => {
                     serPage(page);
@@ -489,6 +484,7 @@ const ListClients = ({ actions }: Props) => {
               </div>
               <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
+                  currentPage={customer_pagination.currentPag}
                   handleNext={() => {
                     serPage(customer_pagination.nextPag);
 
@@ -516,7 +512,6 @@ const ListClients = ({ actions }: Props) => {
                       active ? 1 : 0
                     );
                   }}
-                  currentPage={customer_pagination.currentPag}
                   totalPages={customer_pagination.totalPag}
                 />
               </div>
@@ -527,6 +522,7 @@ const ListClients = ({ actions }: Props) => {
     </>
   );
 };
+
 export default ListClients;
 
 // export const BottomAdd = () => {

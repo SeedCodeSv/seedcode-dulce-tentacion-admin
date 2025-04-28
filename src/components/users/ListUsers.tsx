@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useUsersStore } from '../../store/users.store';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -13,9 +12,6 @@ import {
   Switch,
   useDisclosure,
 } from '@heroui/react';
-
-import AddUsers from './AddUsers';
-import UpdateUsers from './UpdateUsers';
 import {
   Key,
   Table as ITable,
@@ -26,28 +22,35 @@ import {
   RectangleEllipsis,
   Trash,
 } from 'lucide-react';
-import UpdatePassword from './UpdatePassword';
 import { ButtonGroup } from '@heroui/react';
+import classNames from 'classnames';
+import { Search } from 'lucide-react';
+
+import { useUsersStore } from '../../store/users.store';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { User } from '../../types/users.types';
-import classNames from 'classnames';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
-import { Search } from 'lucide-react';
 import HeadlessModal from '../global/HeadlessModal';
-import useWindowSize from '@/hooks/useWindowSize';
 import TooltipGlobal from '../global/TooltipGlobal';
-import NO_DATA from '@/assets/svg/no_data.svg';
+
+import AddUsers from './AddUsers';
+import UpdateUsers from './UpdateUsers';
+import UpdatePassword from './UpdatePassword';
 import SearchUser from './search_user/SearchUser';
+import GenerateCode from './GenerateCode';
+import CardProduct from './MobileView';
+
+import useWindowSize from '@/hooks/useWindowSize';
+import NO_DATA from '@/assets/svg/no_data.svg';
 import { useRolesStore } from '@/store/roles.store';
 import { useAuthStore } from '@/store/auth.store';
-import GenerateCode from './GenerateCode';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
-import CardProduct from './MobileView';
+
 interface Props {
   actionss: string[];
 }
@@ -59,6 +62,7 @@ function ListUsers({ actionss }: Props) {
   const [page, serPage] = useState(1);
   const { roles_list, getRolesList } = useRolesStore();
   const { user } = useAuthStore();
+
   useEffect(() => {
     getUsersPaginated(
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
@@ -110,33 +114,34 @@ function ListUsers({ actionss }: Props) {
       );
     });
   };
+
   return (
     <>
       <div className=" w-full h-full bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchUser
-              nameUser={(userName) => setUserName(userName)}
               nameRol={(rol) => setRol(rol)}
-            ></SearchUser>
+              nameUser={(userName) => setUserName(userName)}
+             />
             {actionss.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
           </div>
           <div className="hidden w-full gap-5 md:flex">
             <div className="grid w-full grid-cols-3 gap-3">
               <Input
-                startContent={<Search />}
+                isClearable
                 className=" dark:text-white border border-white rounded-xl"
-                variant="bordered"
-                labelPlacement="outside"
-                label="Nombre"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
                 }}
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
+                label="Nombre"
+                labelPlacement="outside"
                 placeholder="Escribe para buscar..."
-                isClearable
+                startContent={<Search />}
+                value={userName}
+                variant="bordered"
+                onChange={(e) => setUserName(e.target.value)}
                 onClear={() => {
                   setUserName('');
                   handleSearch('');
@@ -144,15 +149,11 @@ function ListUsers({ actionss }: Props) {
               />
 
               <div className="w-full">
-                <label className="dark:text-white text-sm font-semibold">Rol</label>
+                <span className="dark:text-white text-sm font-semibold">Rol</span>
                 <Autocomplete
-                  onSelectionChange={(value) => {
-                    const selectRol = roles_list.find((rol) => rol.name === value);
-                    setRol(selectRol?.name ?? '');
-                  }}
-                  onClear={() => {
-                    setRol('');
-                    handleSearch('');
+                  className="dark:text-white border border-white rounded-xl"
+                  classNames={{
+                    base: 'text-gray-500 text-sm',
                   }}
                   clearButtonProps={{
                     onClick: () => {
@@ -163,21 +164,26 @@ function ListUsers({ actionss }: Props) {
                   labelPlacement="outside"
                   placeholder="Selecciona el rol"
                   variant="bordered"
-                  className="dark:text-white border border-white rounded-xl"
-                  classNames={{
-                    base: 'text-gray-500 text-sm',
+                  onClear={() => {
+                    setRol('');
+                    handleSearch('');
+                  }}
+                  onSelectionChange={(value) => {
+                    const selectRol = roles_list.find((rol) => rol.name === value);
+
+                    setRol(selectRol?.name ?? '');
                   }}
                 >
                   {roles_list.map((dep) => (
-                    <AutocompleteItem className="dark:text-white" key={dep.name}>
+                    <AutocompleteItem key={dep.name} className="dark:text-white">
                       {dep.name}
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
               </div>
               <ButtonUi
-                theme={Colors.Primary}
                 className="hidden mt-6 font-semibold md:flex border border-white"
+                theme={Colors.Primary}
                 onPress={() => handleSearch(undefined)}
               >
                 Buscar
@@ -189,12 +195,12 @@ function ListUsers({ actionss }: Props) {
             <div className="flex  justify-start order-2 lg:order-1">
               <div className="xl:mt-10">
                 <Switch
-                  onValueChange={(active) => setActive(active)}
-                  isSelected={active}
                   classNames={{
                     thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                     wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
                   }}
+                  isSelected={active}
+                  onValueChange={(active) => setActive(active)}
                 >
                   <span className="text-sm sm:text-base whitespace-nowrap">
                     Mostrar {active ? 'inactivos' : 'activos'}
@@ -204,22 +210,22 @@ function ListUsers({ actionss }: Props) {
             </div>
             <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
               <div className="w-44">
-                <label className="dark:text-white text-sm font-semibold">Mostrar</label>
+                <span className="dark:text-white text-sm font-semibold">Mostrar</span>
                 <Select
                   className="w-44 dark:text-white border border-white rounded-xl"
-                  variant="bordered"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={['5']}
                   classNames={{
                     label: 'font-semibold',
                   }}
+                  defaultSelectedKeys={['5']}
+                  labelPlacement="outside"
                   value={limit}
+                  variant="bordered"
                   onChange={(e) => {
                     setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                   }}
                 >
                   {limit_options.map((limit) => (
-                    <SelectItem className="dark:text-white" key={limit}>
+                    <SelectItem key={limit} className="dark:text-white">
                       {limit}
                     </SelectItem>
                   ))}
@@ -227,15 +233,15 @@ function ListUsers({ actionss }: Props) {
               </div>
               <ButtonGroup className="mt-4">
                 <ButtonUi
-                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('table')}
                 >
                   <ITable />
                 </ButtonUi>
                 <ButtonUi
-                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
                   onPress={() => setView('grid')}
                 >
                   <CreditCard />
@@ -246,13 +252,13 @@ function ListUsers({ actionss }: Props) {
 
           {(view === 'grid' || view === 'list') && (
             <CardProduct
+              DeletePopover={DeletePopUp}
               actions={actionss}
+              handleActivate={handleActivate}
               openEditModal={(user) => {
                 setUser(user);
                 modalUpdate.onOpen();
               }}
-              DeletePopover={DeletePopUp}
-              handleActivate={handleActivate}
               openKeyModal={(user) => {
                 setSelectedId(user.id);
                 modalChangePassword.onOpen();
@@ -267,14 +273,14 @@ function ListUsers({ actionss }: Props) {
                     <ThGlobal className="text-left p-3">No.</ThGlobal>
                     <ThGlobal className="text-left p-3">Nombre de usuario</ThGlobal>
                     <ThGlobal className="text-left p-3">Rol</ThGlobal>
-                    <ThGlobal className="text-left p-3"></ThGlobal>
+                    <ThGlobal className="text-left p-3" />
                   </tr>
                 </thead>
                 <tbody className="max-h-[600px] w-full overflow-y-auto">
                   {users_paginated.users.length > 0 ? (
                     <>
-                      {users_paginated.users.map((item) => (
-                        <tr className="border-b border-slate-200">
+                      {users_paginated.users.map((item, index) => (
+                        <tr key={index} className="border-b border-slate-200">
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             {item.id}
                           </td>
@@ -289,24 +295,24 @@ function ListUsers({ actionss }: Props) {
                               {item.active && actionss.includes('Editar') ? (
                                 <TooltipGlobal text="Editar">
                                   <ButtonUi
+                                    isIconOnly
                                     className="border border-white"
+                                    theme={Colors.Success}
                                     onPress={() => {
                                       setUser(item);
                                       modalUpdate.onOpen();
                                     }}
-                                    isIconOnly
-                                    theme={Colors.Success}
                                   >
                                     <EditIcon size={20} />
                                   </ButtonUi>
                                 </TooltipGlobal>
                               ) : (
                                 <ButtonUi
-                                  type="button"
                                   disabled
-                                  theme={Colors.Secondary}
-                                  className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  theme={Colors.Secondary}
+                                  type="button"
                                 >
                                   <Lock className="text-white" />
                                 </ButtonUi>
@@ -314,24 +320,24 @@ function ListUsers({ actionss }: Props) {
                               {item.active && actionss.includes('Cambiar Contraseña') ? (
                                 <TooltipGlobal text="Cambiar contraseña">
                                   <ButtonUi
+                                    isIconOnly
                                     className="border border-white"
+                                    theme={Colors.Warning}
                                     onPress={() => {
                                       setSelectedId(item.id);
                                       modalChangePassword.onOpen();
                                     }}
-                                    isIconOnly
-                                    theme={Colors.Warning}
                                   >
                                     <Key size={20} />
                                   </ButtonUi>
                                 </TooltipGlobal>
                               ) : (
                                 <ButtonUi
-                                  type="button"
                                   disabled
-                                  theme={Colors.Warning}
-                                  className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  theme={Colors.Warning}
+                                  type="button"
                                 >
                                   <Lock className="text-white" />
                                 </ButtonUi>
@@ -343,11 +349,11 @@ function ListUsers({ actionss }: Props) {
                                 </>
                               ) : (
                                 <ButtonUi
-                                  type="button"
                                   disabled
-                                  theme={Colors.Warning}
-                                  className="flex font-semibold border border-white  cursor-not-allowed"
                                   isIconOnly
+                                  className="flex font-semibold border border-white  cursor-not-allowed"
+                                  theme={Colors.Warning}
+                                  type="button"
                                 >
                                   <Lock className="text-white" />
                                 </ButtonUi>
@@ -357,20 +363,20 @@ function ListUsers({ actionss }: Props) {
                                   {actionss.includes('Activar') ? (
                                     <TooltipGlobal text="Activar">
                                       <ButtonUi
-                                        onPress={() => handleActivate(item.id)}
                                         isIconOnly
                                         theme={Colors.Info}
+                                        onPress={() => handleActivate(item.id)}
                                       >
                                         <RefreshCcw />
                                       </ButtonUi>
                                     </TooltipGlobal>
                                   ) : (
                                     <ButtonUi
-                                      type="button"
                                       disabled
-                                      theme={Colors.Info}
-                                      className="flex font-semibold border border-white  cursor-not-allowed"
                                       isIconOnly
+                                      className="flex font-semibold border border-white  cursor-not-allowed"
+                                      theme={Colors.Info}
+                                      type="button"
                                     >
                                       <Lock />
                                     </ButtonUi>
@@ -379,12 +385,12 @@ function ListUsers({ actionss }: Props) {
                               )}
                               <TooltipGlobal text="Generar código">
                                 <ButtonUi
+                                  isIconOnly
+                                  theme={Colors.Info}
                                   onPress={() => {
                                     setSelectedId(item.id);
                                     generateCodeModal.onOpen();
                                   }}
-                                  isIconOnly
-                                  theme={Colors.Info}
                                 >
                                   <RectangleEllipsis />
                                 </ButtonUi>
@@ -398,7 +404,7 @@ function ListUsers({ actionss }: Props) {
                     <tr>
                       <td colSpan={5}>
                         <div className="flex flex-col items-center justify-center w-full">
-                          <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                          <img alt="X" className="w-32 h-32" src={NO_DATA} />
                           <p className="mt-3 text-xl dark:text-white">
                             No se encontraron resultados
                           </p>
@@ -414,9 +420,9 @@ function ListUsers({ actionss }: Props) {
             <>
               <div className="hidden w-full mt-5 md:flex">
                 <Pagination
-                  previousPage={users_paginated.prevPag}
-                  nextPage={users_paginated.nextPag}
                   currentPage={users_paginated.currentPag}
+                  nextPage={users_paginated.nextPag}
+                  previousPage={users_paginated.prevPag}
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
                     getUsersPaginated(
@@ -434,6 +440,7 @@ function ListUsers({ actionss }: Props) {
               </div>
               <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                 <SmPagination
+                  currentPage={users_paginated.currentPag}
                   handleNext={() => {
                     serPage(users_paginated.nextPag);
                     getUsersPaginated(
@@ -460,7 +467,6 @@ function ListUsers({ actionss }: Props) {
                       active ? 1 : 0
                     );
                   }}
-                  currentPage={users_paginated.currentPag}
                   totalPages={users_paginated.totalPag}
                 />
               </div>
@@ -469,9 +475,9 @@ function ListUsers({ actionss }: Props) {
         </div>
         <HeadlessModal
           isOpen={modalAdd.isOpen}
-          onClose={modalAdd.onClose}
-          title="Agregar usuario"
           size="w-[350px] md:w-[550px]"
+          title="Agregar usuario"
+          onClose={modalAdd.onClose}
         >
           <AddUsers
             reload={() =>
@@ -491,17 +497,17 @@ function ListUsers({ actionss }: Props) {
         </HeadlessModal>
         <HeadlessModal
           isOpen={modalChangePassword.isOpen}
-          onClose={modalChangePassword.onClose}
-          title="Actualizar contraseña"
           size="w-[350px] md:w-[550px]"
+          title="Actualizar contraseña"
+          onClose={modalChangePassword.onClose}
         >
-          <UpdatePassword id={selectId} closeModal={modalChangePassword.onClose} />
+          <UpdatePassword closeModal={modalChangePassword.onClose} id={selectId} />
         </HeadlessModal>
         <HeadlessModal
           isOpen={modalUpdate.isOpen}
-          onClose={modalUpdate.onClose}
-          title="Editar usuario"
           size="w-[350px] md:w-[550px]"
+          title="Editar usuario"
+          onClose={modalUpdate.onClose}
         >
           <UpdateUsers
             reload={() =>
@@ -516,15 +522,15 @@ function ListUsers({ actionss }: Props) {
                 active ? 1 : 0
               )
             }
-            onClose={modalUpdate.onClose}
             user={users}
+            onClose={modalUpdate.onClose}
           />
         </HeadlessModal>
         <HeadlessModal
           isOpen={generateCodeModal.isOpen}
-          onClose={generateCodeModal.onClose}
-          title="Generar código"
           size="w-[350px] md:w-[450px]"
+          title="Generar código"
+          onClose={generateCodeModal.onClose}
         >
           <GenerateCode id={selectId} />
         </HeadlessModal>
@@ -545,13 +551,14 @@ export const DeletePopUp = ({ user }: PopProps) => {
     deleteDisclosure.onClose();
   };
   const style = useThemeColors({ name: Colors.Error });
+
   return (
     <>
       <Popover
         className="border border-white rounded-2xl"
         {...deleteDisclosure}
-        backdrop="blur"
         showArrow
+        backdrop="blur"
       >
         <PopoverTrigger>
           <Button isIconOnly style={style}>
@@ -566,9 +573,9 @@ export const DeletePopUp = ({ user }: PopProps) => {
             </p>
             <div className="flex justify-center mt-4 gap-5">
               <ButtonUi
+                className="border border-white"
                 theme={Colors.Default}
                 onPress={deleteDisclosure.onClose}
-                className="border border-white"
               >
                 No, cancelar
               </ButtonUi>

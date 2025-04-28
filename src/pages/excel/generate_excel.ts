@@ -1,5 +1,6 @@
-import { ITransmitter } from '@/types/transmitter.types';
 import ExcelJS from 'exceljs';
+
+import { ITransmitter } from '@/types/transmitter.types';
 
 export const generate_shopping_excel = async (
   shopping_data: Array<Array<string | number>>,
@@ -8,6 +9,7 @@ export const generate_shopping_excel = async (
 ) => {
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Compras');
+
   worksheet.views = [{ state: 'frozen', xSplit: 5, ySplit: 7 }];
 
   const merges = [
@@ -27,6 +29,7 @@ export const generate_shopping_excel = async (
     'D4:N4',
     'D5:F5',
   ];
+
   merges.forEach((range) => worksheet.mergeCells(range));
 
   worksheet.getCell('A6').value = 'No. Corr.';
@@ -56,6 +59,7 @@ export const generate_shopping_excel = async (
     { cell: 'B5', text: `${month}` },
     { cell: 'D5', text: `AÑO: ${new Date().getFullYear()}` },
   ];
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
     worksheet.getCell(cell).alignment = { horizontal: 'center' };
@@ -114,6 +118,7 @@ export const generate_shopping_excel = async (
     'J7',
     'K7',
   ];
+
   headersCells.forEach((cell) =>
     applyAlignmentAndFont(cell, { horizontal: 'center', wrapText: true }, fontSize8)
   );
@@ -135,8 +140,10 @@ export const generate_shopping_excel = async (
 
   shopping_data.forEach((item, rowIndex) => {
     const row = rowIndex + 8;
+
     item.forEach((value, colIndex) => {
       const cell = String.fromCharCode(65 + colIndex) + row;
+
       if(colIndex === 11){
         worksheet.getCell(cell).value = {
           formula: `SUM(${String.fromCharCode(65 + colIndex - 5)}${row}:${String.fromCharCode(65 + colIndex - 1)}${row})`,
@@ -155,6 +162,7 @@ export const generate_shopping_excel = async (
   });
 
   const nextLine = shopping_data.length + 8;
+
   worksheet.getCell(`F${nextLine}`).value = 'Total';
   ['G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'].forEach((col) => {
     worksheet.getCell(`${col}${nextLine}`).value = {
@@ -242,6 +250,7 @@ export const export_excel_factura = async (
     'I6:I8',
     'J6:J8',
   ];
+
   merges.forEach((range) => worksheet.mergeCells(range));
 
   const borders = {
@@ -271,6 +280,7 @@ export const export_excel_factura = async (
     { cell: 'A5', text: `MES:${month.toUpperCase()}` },
     { cell: 'B5', text: `AÑO: ${new Date().getFullYear()}` },
   ];
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
     worksheet.getCell(cell).alignment = { horizontal: 'center' };
@@ -310,8 +320,10 @@ export const export_excel_factura = async (
 
   factura_data.forEach((item, rowIndex) => {
     const row = rowIndex + 9;
+
     item.forEach((value, colIndex) => {
       const cell = String.fromCharCode(65 + colIndex) + row;
+
       worksheet.getCell(cell).value = value;
       worksheet.getCell(cell).border = borders;
       worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -386,6 +398,7 @@ export const export_excel_factura = async (
   const iva_for_13 = `I${nextLine}`;
 
   const merges1 = [`G${nextLine}:H${nextLine}`];
+
   merges1.forEach((range) => worksheet.mergeCells(range));
 
   nextLine += 1;
@@ -400,6 +413,7 @@ export const export_excel_factura = async (
   worksheet.getCell(`I${nextLine}`).numFmt =
     '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
   const merges2 = [`G${nextLine}:H${nextLine}`];
+
   merges2.forEach((range) => worksheet.mergeCells(range));
 
   ticketData.forEach((group, index) => {
@@ -453,8 +467,10 @@ export const export_excel_factura = async (
     // Agrega los datos del grupo
     group.forEach((item, rowIndex) => {
       const row = rowIndex + nextLine + 5;
+
       item.forEach((value, colIndex) => {
         const cell = String.fromCharCode(65 + colIndex) + row;
+
         worksheet.getCell(cell).value = value;
         worksheet.getCell(cell).border = borders;
         worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -486,6 +502,7 @@ export const export_excel_factura = async (
 
     // Aplicar bordes a la fila de "TOTAL"
     const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
     borders_cells.forEach((cell) => {
       worksheet.getCell(`${cell}${nextLine}`).border = borders;
     });
@@ -511,6 +528,7 @@ export const export_excel_factura = async (
     const iva_13 = `I${nextLine}`;
 
     const merges = [`G${nextLine}:H${nextLine}`];
+
     merges.forEach((range) => worksheet.mergeCells(range));
 
     nextLine += 1;
@@ -528,6 +546,7 @@ export const export_excel_factura = async (
     const iva_for_13 = `I${nextLine}`;
 
     const merges1 = [`G${nextLine}:H${nextLine}`];
+
     merges1.forEach((range) => worksheet.mergeCells(range));
 
     nextLine += 1;
@@ -542,6 +561,7 @@ export const export_excel_factura = async (
     worksheet.getCell(`I${nextLine}`).numFmt =
       '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
     const merges2 = [`G${nextLine}:H${nextLine}`];
+
     merges2.forEach((range) => worksheet.mergeCells(range));
     // nextLine += 1;
     // worksheet.getCell(`G${nextLine}`).value = {
@@ -649,6 +669,7 @@ export const export_excel_credito = async (
     { cell: 'B5', text: `${month}` },
     { cell: 'D5', text: `AÑO: ${new Date().getFullYear()}` },
   ];
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
     worksheet.getCell(cell).alignment = { horizontal: 'center', wrapText: true };
@@ -730,6 +751,7 @@ export const export_excel_credito = async (
       if (colIndex === 4) {
         worksheet.mergeCells(`${String.fromCharCode(69)}${row}:${String.fromCharCode(71)}${row}`);
         const cell = `${String.fromCharCode(69)}${row}`;
+
         worksheet.getCell(cell).value = value;
         worksheet.getCell(cell).border = borders;
         worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -737,6 +759,7 @@ export const export_excel_credito = async (
       } else if (colIndex > 4) {
         actualColIndex = colIndex + 2;
         const cell = String.fromCharCode(65 + actualColIndex) + row;
+
         worksheet.getCell(cell).value = value;
         worksheet.getCell(cell).border = borders;
         worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -747,6 +770,7 @@ export const export_excel_credito = async (
             '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
       } else {
         const cell = String.fromCharCode(65 + colIndex) + row;
+
         if (colIndex === 1) worksheet.getCell(cell).numFmt = 'mm/dd/yyyy';
         worksheet.getCell(cell).value = value;
         worksheet.getCell(cell).border = borders;
@@ -761,6 +785,7 @@ export const export_excel_credito = async (
   });
 
   const nextLine = data.length + 8;
+
   worksheet.getCell(`E${nextLine}`).value = 'TOTAL';
   worksheet.getCell(`E${nextLine}`).font = {
     name: 'Calibri',
@@ -946,6 +971,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
   ];
 
   const merges = ['A3:B3', 'C3:J3', 'C4:J4', 'B5:C5'];
+
   merges.forEach((range) => worksheet.mergeCells(range));
 
   const borders = {
@@ -975,6 +1001,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
     { cell: 'A5', text: `MES:${month.toUpperCase()}` },
     { cell: 'B5', text: `AÑO: ${props.year}` },
   ];
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
     worksheet.getCell(cell).alignment = { horizontal: 'center' };
@@ -1049,8 +1076,10 @@ export const export_excel_facturacion = async (props: ExportProp) => {
 
       item.items.forEach((item, rowIndex) => {
         const row = rowIndex + nextLine + 5;
+
         item.forEach((value, colIndex) => {
           const cell = String.fromCharCode(65 + colIndex) + row;
+
           worksheet.getCell(cell).value = value;
           worksheet.getCell(cell).border = borders;
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -1080,6 +1109,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
 
       // Aplicar bordes a la fila de "TOTAL"
       const borders_cells = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+
       borders_cells.forEach((cell) => {
         worksheet.getCell(`${cell}${nextLine}`).border = borders;
       });
@@ -1104,6 +1134,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
       const iva_13 = `I${nextLine}`;
 
       const merges3 = [`G${nextLine}:H${nextLine}`];
+
       merges3.forEach((range) => worksheet.mergeCells(range));
 
       nextLine += 1;
@@ -1121,6 +1152,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
       const iva_for_13 = `I${nextLine}`;
 
       const merges1 = [`G${nextLine}:H${nextLine}`];
+
       merges1.forEach((range) => worksheet.mergeCells(range));
 
       nextLine += 1;
@@ -1135,6 +1167,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
       worksheet.getCell(`I${nextLine}`).numFmt =
         '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
       const merges2 = [`G${nextLine}:H${nextLine}`];
+
       merges2.forEach((range) => worksheet.mergeCells(range));
     }
     // nextLine += 3;
@@ -1206,6 +1239,7 @@ export const export_excel_facturacion_ccfe = async ({
     { cell: 'C5', text: `SUCURSAL: ${branch}` },
     { cell: 'D5', text: `AÑO: ${yeatSelected}` },
   ];
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text;
     worksheet.getCell(cell).alignment = { horizontal: 'center', wrapText: true };
@@ -1316,6 +1350,7 @@ export const export_excel_facturacion_ccfe = async ({
         if (colIndex === 6) {
           worksheet.mergeCells(`${String.fromCharCode(71)}${row}:${String.fromCharCode(73)}${row}`);
           const cell = `${String.fromCharCode(71)}${row}`;
+
           worksheet.getCell(cell).value = value;
           worksheet.getCell(cell).border = borders;
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -1323,6 +1358,7 @@ export const export_excel_facturacion_ccfe = async ({
         } else if (colIndex > 6) {
           actualColIndex = colIndex + 2;
           const cell = String.fromCharCode(65 + actualColIndex) + row;
+
           worksheet.getCell(cell).value = value;
           worksheet.getCell(cell).border = borders;
           worksheet.getCell(cell).alignment = { horizontal: 'left', wrapText: true };
@@ -1333,6 +1369,7 @@ export const export_excel_facturacion_ccfe = async ({
               '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-';
         } else {
           const cell = String.fromCharCode(65 + colIndex) + row;
+
           if (colIndex === 1) worksheet.getCell(cell).numFmt = 'mm/dd/yyyy';
           worksheet.getCell(cell).value = value;
           worksheet.getCell(cell).border = borders;

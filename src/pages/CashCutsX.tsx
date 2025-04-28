@@ -1,19 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
-import { ZCashCutsResponse } from '../types/cashCuts.types';
-import { fechaActualString } from '../utils/dates';
-import { get_cashCuts_x } from '../services/facturation/cashCuts.service';
-
-import { global_styles } from '../styles/global.styles';
-import { useBranchesStore } from '../store/branches.store';
-import { get_correlatives } from '../services/correlatives.service';
-import { Correlatives } from '../types/correlatives.types';
-import { formatCurrency } from '../utils/dte';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { IoPrintSharp } from 'react-icons/io5';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
+
+import { ZCashCutsResponse } from '../types/cashCuts.types';
+import { fechaActualString } from '../utils/dates';
+import { get_cashCuts_x } from '../services/facturation/cashCuts.service';
+import { global_styles } from '../styles/global.styles';
+import { useBranchesStore } from '../store/branches.store';
+import { get_correlatives } from '../services/correlatives.service';
+import { Correlatives } from '../types/correlatives.types';
+import { formatCurrency } from '../utils/dte';
+
 import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 
@@ -33,19 +34,23 @@ const CashCutsX = () => {
 
   useEffect(() => {
     const getBranchId = () => {};
+
     getBranchId();
     const getIdBranch = async () => {
       try {
         const response = await get_cashCuts_x(branchId, codeSelected);
+
         setData(response.data.data);
       } catch (error) {
         toast.error('Error al cargar los cortes de caja');
       }
       if (branchId > 0) {
         const data = await get_correlatives(branchId);
+
         setCodeSale(data.data.correlatives);
       }
     };
+
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
 
@@ -62,12 +67,14 @@ const CashCutsX = () => {
   }, [data]);
 
   const { getBranchesList, branch_list } = useBranchesStore();
+
   useEffect(() => {
     getBranchesList();
   }, []);
 
   const printCutX = () => {
     const iframe = document.createElement('iframe');
+
     iframe.style.height = '0';
     iframe.style.visibility = 'hidden';
     iframe.style.width = '0';
@@ -78,9 +85,11 @@ const CashCutsX = () => {
     });
     iframe.addEventListener('load', () => {
       const body = iframe.contentDocument?.body;
+
       if (!body) return;
       // Añadir estilos para ocultar encabezados y pies de página
       const style = document.createElement('style');
+
       style.innerHTML = `
           @page {
               margin: 0;
@@ -95,6 +104,7 @@ const CashCutsX = () => {
       body.style.fontFamily = 'Arial, sans-serif';
       body.style.textAlign = 'center';
       const otherParent = document.createElement('div');
+
       otherParent.style.display = 'flex';
       otherParent.style.justifyContent = 'center';
       otherParent.style.alignItems = 'center';
@@ -230,6 +240,7 @@ const CashCutsX = () => {
         </div>
       `;
       const div = document.createElement('div');
+
       div.innerHTML = customContent;
       body.appendChild(div);
 
@@ -561,6 +572,7 @@ const CashCutsX = () => {
     });
 
     const workbook = XLSX.utils.book_new();
+
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
     const excelBuffer = XLSX.write(workbook, {
@@ -568,6 +580,7 @@ const CashCutsX = () => {
       type: 'array',
     });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
     saveAs(blob, `Corte_x_${branchName}_${Date.now()}.xlsx`);
   };
 
@@ -580,8 +593,8 @@ const CashCutsX = () => {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
                 <Autocomplete
                   className="mt-4"
-                  labelPlacement="outside"
                   label="Sucursal"
+                  labelPlacement="outside"
                   placeholder="Selecciona la sucursal"
                   variant="bordered"
                 >
@@ -600,15 +613,15 @@ const CashCutsX = () => {
                 </Autocomplete>
                 <Autocomplete
                   className="mt-4"
+                  label="Punto de Venta"
                   labelPlacement="outside"
                   placeholder="Selecciona el punto de venta"
                   variant="bordered"
-                  label="Punto de Venta"
                 >
                   {codeSale
                     .filter((item) => item.typeVoucher === 'T')
                     .map((item) => (
-                      <AutocompleteItem onClick={() => setCodeSelected(item.code)} key={item.code}>
+                      <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
                         {item.code}
                       </AutocompleteItem>
                     ))}
@@ -832,10 +845,10 @@ const CashCutsX = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
                     {actionsView.includes('Exportar Excel') && (
                       <Button
+                        className="w-full"
                         color="success"
                         startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
                         onClick={exportDataToExcel}
-                        className="w-full"
                       >
                         <p className="text-white"> Exportar a excel</p>{' '}
                       </Button>
@@ -843,9 +856,9 @@ const CashCutsX = () => {
                     {actionsView.includes('Imprimir') && (
                       <Button
                         className="w-full"
+                        startContent={<IoPrintSharp size={25} />}
                         style={global_styles().secondaryStyle}
                         onClick={() => printCutX()}
-                        startContent={<IoPrintSharp size={25} />}
                       >
                         Imprimir y cerrar
                       </Button>

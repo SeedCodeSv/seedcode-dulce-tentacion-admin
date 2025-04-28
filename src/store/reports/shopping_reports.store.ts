@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+
 import { IShoppingReportStore } from './types/shopping_reports.store.types';
+
 import { get_branch_shopping_annexes, get_branch_shopping_report } from '@/services/shopping_report.service';
 
 export const useShoppingReportsStore = create<IShoppingReportStore>((set) => ({

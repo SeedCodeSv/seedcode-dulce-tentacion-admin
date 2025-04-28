@@ -32,7 +32,7 @@ export default function FullDialog(props: Props) {
                     <Dialog.Title as="h3" className="text-base/7 font-medium dark:text-white">
                       {title}
                     </Dialog.Title>
-                    <button onClick={onClose} className="bg-transparent border-0 outline-none">
+                    <button className="bg-transparent border-0 outline-none" onClick={onClose}>
                       <X className="dark:text-white" />
                     </button>
                   </div>

@@ -1,10 +1,11 @@
 import ApexChart from 'react-apexcharts';
-import { formatCurrency } from '@/utils/dte';
-import { salesReportStore } from '@/store/reports/sales_report.store';
-import useWindowSize from '@/hooks/useWindowSize';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Button } from "@heroui/react";
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+import { formatCurrency } from '@/utils/dte';
+import { salesReportStore } from '@/store/reports/sales_report.store';
+import useWindowSize from '@/hooks/useWindowSize';
 import { ThemeContext } from '@/hooks/useTheme';
 import { ApexTooltip } from '@/types/Apex';
 import { SalesGraph } from '@/types/reports/sales_by_period.report';
@@ -29,6 +30,7 @@ function SalesChartPeriod(props: Props) {
 
   const handleFindIndex = (index_p: string) => {
     const findResult = sales_by_period_graph?.data.find((el) => el.branch === index_p);
+
     if (findResult) {
       getSalePointOfSaleByBranch(findResult.id, props.startDate, props.endDate);
       setBranchSelected(findResult);
@@ -95,6 +97,7 @@ function SalesChartPeriod(props: Props) {
 
   const itemTooltip = (label: string) => {
     const findResult = sales_by_period_graph?.data.find((el) => el.branch === label);
+
     if (findResult) {
       return `<p class="bg-gray-200 dark:bg-gray-800 p-2 px-4 font-semibold">${
         findResult.branch
@@ -129,13 +132,13 @@ function SalesChartPeriod(props: Props) {
         )}
       </div>
       <ApexChart
-        type="bar"
-        series={series}
+        height="500"
         options={{
           chart: {
             events: {
               dataPointSelection(_, __, options) {
                 const label_selected = options.w.config.labels[options.dataPointIndex];
+
                 handleFindIndex(label_selected);
               },
             },
@@ -220,95 +223,13 @@ function SalesChartPeriod(props: Props) {
             },
           },
         }}
-        //   width="100%
+        series={series}
+        type="bar"
         width={'100%'}
-        height="500"
-      ></ApexChart>
-
-      {/* <div className="mt-10">
-        {sales_by_point_of_sale_branch && (
-          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-            <div className="w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
-              <ApexChart
-                height={windowSize.width < 600 ? 300 : 300}
-                type="donut"
-                series={[...sales_by_point_of_sale_branch.salesMap.map((el) => el.total)]}
-                options={{
-                  labels: [...sales_by_point_of_sale_branch.salesMap.map((el) => el.code)],
-                  title: {
-                    text: 'Ventas por punto de venta',
-                    style: {
-                      color: context === 'light' ? '#000' : '#fff',
-                    },
-                  },
-                  fill: {
-                    opacity: 1,
-                    type: 'gradient',
-                    gradient: {
-                      type: 'vertical',
-                      shadeIntensity: 1,
-                      inverseColors: false,
-                      opacityFrom: 1,
-                      opacityTo: 1,
-                      stops: [100, 100],
-                    },
-                  },
-                  colors: [...getRandomColorsArray()],
-                  plotOptions: {
-                    pie: {
-                      customScale: 1,
-                      donut: {
-                        size: '55%',
-                        labels: {
-                          show: true,
-                          name: {
-                            show: true,
-                            color: context === 'light' ? '#000' : '#fff',
-                            fontSize: '16px',
-                          },
-                          value: {
-                            show: true,
-                            color: context === 'light' ? '#000' : '#fff',
-                            fontSize: '14px',
-                            formatter(val) {
-                              return formatCurrency(Number(val));
-                            },
-                          },
-                        },
-                      },
-                      offsetY: 20,
-                    },
-                  },
-                  legend: {
-                    show: true,
-                    position: windowSize.width < 600 ? 'bottom' : 'left',
-                    offsetY: windowSize.width < 600 ? 0 : 80,
-                    labels: {
-                      colors: context === 'light' ? '#000' : '#fff',
-                    },
-                  },
-                }}
-              />
-            </div>
-            <div className="flex flex-col items-center justify-center w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
-              <p className="py-2 text-xl font-semibold md:text-2xl">{branchSelected?.branch}</p>
-              <p className="py-2 text-xl font-semibold md:text-2xl ">
-                No de ventas: {branchSelected?.quantity}
-              </p>
-              <p className="py-2 text-xl font-semibold md:text-2xl ">
-                Total:{' '}
-                <span className="font-bold text-green-500">
-                  {formatCurrency(Number(branchSelected?.total ?? 0))}
-                </span>
-              </p>
-            </div>
-          </div>
-        )}
-      </div> */}
-
+       />
       {loading_sales_by_point_of_sale_branch ? (
         <div className="flex flex-col items-center justify-center w-full h-64">
-          <div className="loader"></div>
+          <div className="loader" />
           <p className="mt-3 text-xl font-semibold">Cargando...</p>
         </div>
       ) : (
@@ -318,8 +239,6 @@ function SalesChartPeriod(props: Props) {
               <div className="w-full p-4 border shadow dark:border-gray-600 rounded-2xl">
                 <ApexChart
                   height={windowSize.width < 600 ? 300 : 300}
-                  type="donut"
-                  series={[...sales_by_point_of_sale_branch.salesMap.map((el) => el.total)]}
                   options={{
                     labels: [...sales_by_point_of_sale_branch.salesMap.map((el) => el.code)],
                     title: {
@@ -375,6 +294,8 @@ function SalesChartPeriod(props: Props) {
                       },
                     },
                   }}
+                  series={[...sales_by_point_of_sale_branch.salesMap.map((el) => el.total)]}
+                  type="donut"
                 />
               </div>
               <div className="flex flex-col items-center justify-center w-full p-4 border shadow dark:border-gray-600 rounded-2xl">

@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { IGetSalesStatus } from '../types/sales_status.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';

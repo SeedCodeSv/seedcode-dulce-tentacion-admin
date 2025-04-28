@@ -1,4 +1,7 @@
 import { create } from 'zustand';
+import { toast } from 'sonner';
+
+import { PointOfSalesStore } from './types/point-of-sales.store.types';
 
 import {
   get_point_of_sale,
@@ -7,9 +10,7 @@ import {
   patch_point_of_sale,
   save_point_of_sales,
 } from '@/services/point-of-sales.service';
-import { toast } from 'sonner';
 import { messages } from '@/utils/constants';
-import { PointOfSalesStore } from './types/point-of-sales.store.types';
 import { BranchPointOfSale } from '@/types/point-of-sales.types';
 
 export const usePointOfSales = create<PointOfSalesStore>((set) => ({
@@ -40,6 +41,7 @@ export const usePointOfSales = create<PointOfSalesStore>((set) => ({
   //Metodo listado de puntos de venta
   getPointOfSalesList(branchId) {
     set({ loading_point_of_sales_list: true });
+
     return get_point_of_sale_list(branchId)
       .then(({ data }) => {
         set((state) => ({
@@ -61,10 +63,12 @@ export const usePointOfSales = create<PointOfSalesStore>((set) => ({
     return patch_point_of_sale(payload, id)
       .then(({ data }) => {
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },
@@ -73,10 +77,12 @@ export const usePointOfSales = create<PointOfSalesStore>((set) => ({
     return save_point_of_sales(payload)
       .then((result) => {
         toast.success(messages.success);
+
         return result.data.ok;
       })
       .catch(() => {
         toast.error(messages.error);
+
         return false;
       });
   },

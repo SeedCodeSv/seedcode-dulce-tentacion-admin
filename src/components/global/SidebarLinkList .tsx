@@ -11,10 +11,10 @@ const SidebarLinkList = ({ links }: SidebarLinkListProps) => {
         <SidebarNavLink
          
           key={link.viewName}
-          viewName={link.viewName}
-          to={link.to}
           icon={link.icon}
           label={link.label}
+          to={link.to}
+          viewName={link.viewName}
         />
       ))}
     </ul>

@@ -1,6 +1,6 @@
 import Layout from '../layout/Layout';
-
 import ListContractType from '../components/employee/typeContract/ListTypeContract';
+
 import { useViewsStore } from '@/store/views.store';
 
 function ContratType() {

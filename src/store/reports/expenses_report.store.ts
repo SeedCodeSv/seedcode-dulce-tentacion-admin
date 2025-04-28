@@ -1,10 +1,12 @@
 import { create } from 'zustand';
-import { IExpensesReportStore } from './types/expenses_report.store.types';
+
 import {
   get_expenses_by_branch,
   get_expenses_by_branch_month,
   get_expenses_by_day,
 } from '../../services/reports/expenses_report.service';
+
+import { IExpensesReportStore } from './types/expenses_report.store.types';
 
 export const useReportExpensesStore = create<IExpensesReportStore>((set) => ({
   expenses_branch_month: [],

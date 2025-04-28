@@ -1,5 +1,6 @@
 
 import Lottie from 'lottie-react';
+
 import NO_DATA from '../../assets/svg/NoSelectProduct.json';
 function NoData() {
   return (

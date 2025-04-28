@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
+
 import { FacturacionCcfe } from '@/types/sales_cff.types';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
-import { useMemo } from 'react';
 
 interface Props {
   facturacionCcfe: FacturacionCcfe;
@@ -93,14 +94,14 @@ function FacturacionCcfeItem({ facturacionCcfe }: Props) {
       <div className="w-full overflow-x-auto custom-scrollbar mt-10 p-5 dark:bg-gray-800 bg-white border">
         <div className="min-w-[950px]">
           <div className="grid grid-cols-8 w-full">
-            <span className="border p-1 font-semibold"></span>
+            <span className="border p-1 font-semibold" />
             <span className="border p-1 text-sm md:font-semibold font-semibold">
               Ventas Exentas
             </span>
             <span className="border p-1 text-sm md:font-semibold font-semibold">
               Ventas Gravadas
             </span>
-            <span className="border p-1 text-sm md:font-semibold font-semibold"></span>
+            <span className="border p-1 text-sm md:font-semibold font-semibold" />
             <span className="border p-1 text-sm md:font-semibold font-semibold">Exportaciones</span>
             <span className="border p-1 text-sm md:font-semibold font-semibold">IVA</span>
             <span className="border p-1 text-sm md:font-semibold font-semibold">Retención</span>
@@ -110,7 +111,7 @@ function FacturacionCcfeItem({ facturacionCcfe }: Props) {
             <span className="border p-1">Consumidores finales</span>
             <span className="border p-1">{formatCurrency(0)}</span>
             <span className="border p-1">{formatCurrency(facturacionCcfe.sales_facturacion)}</span>
-            <span className="border p-1"></span>
+            <span className="border p-1" />
             <span className="border p-1">{formatCurrency(0)}</span>
             <span className="border p-1">{formatCurrency(0)}</span>
             <span className="border p-1">{formatCurrency(0)}</span>
@@ -122,7 +123,7 @@ function FacturacionCcfeItem({ facturacionCcfe }: Props) {
             <span className="border p-1">Contribuyentes</span>
             <span className="border p-1">{formatCurrency(totalExenta)}</span>
             <span className="border p-1">{formatCurrency(totalGravada)}</span>
-            <span className="border p-1"></span>
+            <span className="border p-1" />
             <span className="border p-1">{formatCurrency(0)}</span>
             <span className="border p-1">{formatCurrency(totalIva)}</span>
             <span className="border p-1">{formatCurrency(0)}</span>
@@ -134,7 +135,7 @@ function FacturacionCcfeItem({ facturacionCcfe }: Props) {
             <span className="border p-1">
               {formatCurrency(totalGravada + facturacionCcfe.sales_facturacion)}
             </span>
-            <span className="border p-1"></span>
+            <span className="border p-1" />
             <span className="border p-1">{formatCurrency(0)}</span>
             <span className="border p-1">{formatCurrency(totalIva)}</span>
             <span className="border p-1">{formatCurrency(0)}</span>

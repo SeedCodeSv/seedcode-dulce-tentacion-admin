@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { GridProps, IMobileViewProps } from '../types/mobile_correlatives_types';
+
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { global_styles } from '@/styles/global.styles';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
@@ -27,9 +28,18 @@ function MobileView(props: IMobileViewProps) {
   return (
     <div className="w-full pb-10">
       <DataView
-        className="dark:text-white"
-        value={correlatives}
         gutter
+        className="dark:text-white"
+        color="surface"
+        emptyMessage="No se encontraron resultados"
+        itemTemplate={(correlative) => (
+          <GridItem
+            actions={actions}
+            correlative={correlative}
+            layout={layout}
+            openEditModal={openEditModal}
+          />
+        )}
         layout={layout}
         pt={{
           grid: () => ({
@@ -37,22 +47,14 @@ function MobileView(props: IMobileViewProps) {
               'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-5 mt-5',
           }),
         }}
-        color="surface"
-        itemTemplate={(correlative) => (
-          <GridItem
-            correlative={correlative}
-            layout={layout}
-            openEditModal={openEditModal}
-            actions={actions}
-          />
-        )}
-        emptyMessage="No se encontraron resultados"
+        value={correlatives}
       />
     </div>
   );
 }
 const GridItem = (props: GridProps) => {
   const { layout, correlative, openEditModal, actions } = props;
+
   return (
     <>
       {layout === 'grid' ? (
@@ -116,9 +118,9 @@ const GridItem = (props: GridProps) => {
             {actions.includes('Editar') && (
               <TooltipGlobal text="Editar">
                 <Button
-                  onClick={() => openEditModal(correlative)}
                   isIconOnly
                   style={global_styles().secondaryStyle}
+                  onClick={() => openEditModal(correlative)}
                 >
                   <EditIcon size={20} />
                 </Button>
@@ -128,10 +130,10 @@ const GridItem = (props: GridProps) => {
         </div>
       ) : (
         <ListItem
+          actions={actions}
           correlative={correlative}
           layout="list"
           openEditModal={openEditModal}
-          actions={actions}
         />
       )}
     </>
@@ -140,6 +142,7 @@ const GridItem = (props: GridProps) => {
 
 const ListItem = (props: GridProps) => {
   const { correlative, openEditModal, actions } = props;
+
   return (
     <>
       <div className="flex w-full col-span-1 p-5 border border-white shadow rounded-2xl">

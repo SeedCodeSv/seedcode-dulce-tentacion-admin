@@ -1,5 +1,6 @@
-import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 import { Dispatch, SetStateAction } from "react"
+
+import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 
 export interface ICreateShopping {
   branchId: number

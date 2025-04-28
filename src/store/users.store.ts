@@ -1,5 +1,6 @@
 import { create } from 'zustand';
-import { UsersStore } from './types/users_store.types';
+import { toast } from 'sonner';
+
 import {
   activate_user,
   delete_user,
@@ -11,7 +12,9 @@ import {
   save_user,
 } from '../services/users.service';
 import { messages } from '../utils/constants';
-import { toast } from 'sonner';
+
+import { UsersStore } from './types/users_store.types';
+
 
 export const useUsersStore = create<UsersStore>((set) => ({
   users: [],
@@ -62,10 +65,12 @@ export const useUsersStore = create<UsersStore>((set) => ({
     return save_user(payload)
       .then(({ data }) => {
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },
@@ -73,10 +78,12 @@ export const useUsersStore = create<UsersStore>((set) => ({
     return patch_user(payload, id)
       .then((res) => {
         toast.success(messages.success);
+
         return res.data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },
@@ -84,10 +91,12 @@ export const useUsersStore = create<UsersStore>((set) => ({
     return delete_user(id)
       .then(({ data }) => {
         toast.success(messages.success);
+
         return data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },
@@ -95,10 +104,12 @@ export const useUsersStore = create<UsersStore>((set) => ({
     return await patch_password(password, id)
       .then((data) => {
         toast.success(messages.success);
+
         return data.data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },
@@ -115,15 +126,19 @@ export const useUsersStore = create<UsersStore>((set) => ({
   async generateCode(id) {
     try {
       const data = await generate_code(id);
+
       if (data && data.data.ok) {
         toast.success(messages.success);
+
         return data.data.code;
       } else {
         toast.warning(messages.error);
+
         return null;
       }
     } catch (error) {
       toast.warning(messages.error);
+
       return null;
     }
   }

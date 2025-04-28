@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
 import { IInvalidationResponse } from '../types/DTE/invalidation.types';
@@ -10,6 +11,7 @@ import {
   IGetSalesByStatusAndDates,
   IGetSalesContingence,
 } from '../types/sales.types';
+
 import {
   IGetSaleByProduct,
   IGraphicForCategoryProductsForDates,
@@ -26,6 +28,7 @@ export const post_sales = (
   sello: string
 ) => {
   const token = get_token() ?? '';
+
   return axios.post(
     API_URL + '/sales/factura-sale',
     { pdf, dte, cajaId, codigoEmpleado, sello },
@@ -46,6 +49,7 @@ export const post_sales_with_credit = (
   creditId: number
 ) => {
   const token = get_token() ?? '';
+
   return axios.post(
     API_URL + '/sales/credit-sale',
     { pdf, dte, cajaId, codigoEmpleado, sello, creditId },
@@ -59,6 +63,7 @@ export const post_sales_with_credit = (
 
 export const invalidate_sale = (id: number, selloInvalidacion: string) => {
   const token = get_token();
+
   return axios.patch<IInvalidationResponse>(
     API_URL + `/sales/invalidate/${id}`,
     { selloInvalidacion },
@@ -72,6 +77,7 @@ export const invalidate_sale = (id: number, selloInvalidacion: string) => {
 
 export const get_json_sale = (id: number) => {
   const token = get_token();
+
   return axios.get<{ ok: boolean; json: string; status: number }>(
     API_URL + `/sales/get-json/${id}`,
     {
@@ -84,6 +90,7 @@ export const get_json_sale = (id: number) => {
 
 export const update_seal_sale = (pdf: string, dte: string, sello: string) => {
   const token = get_token();
+
   return axios.put(
     API_URL + '/sales/sale-update-transaction',
     { pdf, dte, sello },
@@ -111,6 +118,7 @@ export const get_sales_by_status = (
 
 export const get_sale_details = (id: number) => {
   const token = get_token();
+
   return axios.get<IGetSaleDetails>(API_URL + `/sales/sale-details/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -194,6 +202,7 @@ export const get_sales_status_and_dates = (
 
 export const get_notes_of_sale = (id: number) => {
   const token = get_token();
+
   return axios.get<IGetNotesOfSale>(API_URL + `/nota-de-credito/all-notes-of-sale/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -203,6 +212,7 @@ export const get_notes_of_sale = (id: number) => {
 
 export const get_sale_pdf = (saleId: number, type: string) => {
   const token = get_token();
+
   return axios.get<Blob>(`${API_URL}/pdf/sale/${saleId}?type=${type}`, {
     responseType: 'blob',
     headers: {
@@ -213,6 +223,7 @@ export const get_sale_pdf = (saleId: number, type: string) => {
 
 export const get_sale_pdf_credit_note = (saleId: number, type: string) => {
   const token = get_token();
+
   return axios.get<Blob>(`${API_URL}/pdf/note-credit/${saleId}?type=${type}`, {
     responseType: 'blob',
     headers: {
@@ -223,6 +234,7 @@ export const get_sale_pdf_credit_note = (saleId: number, type: string) => {
 
 export const get_sale_pdf_debit_note = (saleId: number, type: string) => {
   const token = get_token();
+
   return axios.get<Blob>(`${API_URL}/pdf/note-debit/${saleId}?type=${type}`, {
     responseType: 'blob',
     headers: {
@@ -242,6 +254,7 @@ export const get_sales_by_item = (
   branches: number[] | undefined
 ) => {
   const params = new URLSearchParams();
+
   params.append('startDate', startDate);
   params.append('endDate', endDate);
 

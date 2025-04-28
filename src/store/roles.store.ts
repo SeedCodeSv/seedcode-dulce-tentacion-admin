@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { IUseRolesStore } from './types/roles.store';
+
 import { get_all_roles } from '../services/roles.service';
+
+import { IUseRolesStore } from './types/roles.store';
 
 export const useRolesStore = create<IUseRolesStore>((set) => ({
   roles_list: [],

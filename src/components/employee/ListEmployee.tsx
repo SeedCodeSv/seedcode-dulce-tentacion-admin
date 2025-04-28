@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useEmployeeStore } from '../../store/employee.store';
 import {
   Button,
   Input,
@@ -26,28 +25,32 @@ import {
   Store,
   Trash,
 } from 'lucide-react';
+import classNames from 'classnames';
+import { useNavigate } from 'react-router';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+import { useEmployeeStore } from '../../store/employee.store';
 import { Employee, EmployeePayload } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
-import MobileView from './MobileView';
-import AddEmployee from './AddEmployee';
 import { global_styles } from '../../styles/global.styles';
-import classNames from 'classnames';
 import { useBranchesStore } from '../../store/branches.store';
 import { limit_options } from '../../utils/constants';
 import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
-import { useNavigate } from 'react-router';
+
+import AddEmployee from './AddEmployee';
+import MobileView from './MobileView';
 import UpdateEmployee from './update-employee';
+import SearchEmployee from './search_employee/SearchEmployee';
+import ProofSalary from './employees-pdfs/ProofSalary';
+import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
+
 import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-import SearchEmployee from './search_employee/SearchEmployee';
-import ProofSalary from './employees-pdfs/ProofSalary';
 import { fechaActualString } from '@/utils/dates';
-import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
@@ -584,6 +587,7 @@ function ListEmployee({ actions }: Props) {
         lastAutoTable: { finalY: number };
       }
     ).lastAutoTable.finalY;
+
     autoTable(doc, {
       startY: finalYTabale2,
       theme: 'grid',
@@ -719,8 +723,8 @@ function ListEmployee({ actions }: Props) {
     <>
       {dataUpdate.id ? (
         <UpdateEmployee
-          id={(id) => setDataUpdate({ ...dataUpdate, id: id })}
           data={dataUpdate as unknown as Employee}
+          id={(id) => setDataUpdate({ ...dataUpdate, id: id })}
         />
       ) : (
         <>
@@ -729,12 +733,12 @@ function ListEmployee({ actions }: Props) {
               <div className="flex justify-between items-end ">
                 <SearchEmployee
                   branchName={(e) => setBranch(e)}
-                  phoneEmployee={(e) => setPhone(e)}
-                  nameEmployee={(e) => setFirstName(e)}
                   codeEmpleyee={(e) => setCodeEmployee(e)}
-                  startDate={(e) => setStartDate(e)}
                   endDate={(e) => setEndDate(e)}
-                ></SearchEmployee>
+                  nameEmployee={(e) => setFirstName(e)}
+                  phoneEmployee={(e) => setPhone(e)}
+                  startDate={(e) => setStartDate(e)}
+                 />
                 {actions.includes('Agregar') && (
                   <AddButton
                     onClick={() => {
@@ -748,86 +752,86 @@ function ListEmployee({ actions }: Props) {
               <div className="hidden w-full gap-5 md:flex">
                 <div className="grid w-full grid-cols-4 gap-3">
                   <Input
+                    isClearable
+                    autoComplete="search"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     classNames={{
                       label: 'font-semibold text-gray-700',
                       inputWrapper: 'pr-0',
                     }}
-                    labelPlacement="outside"
+                    id="searchName"
                     label="Nombre"
-                    className="w-full dark:text-white border border-white rounded-xl"
+                    labelPlacement="outside"
+                    name="searchName"
                     placeholder="Buscar por nombre..."
                     startContent={<User />}
-                    variant="bordered"
-                    name="searchName"
-                    id="searchName"
                     value={firstName}
-                    autoComplete="search"
+                    variant="bordered"
                     onChange={(e) => setFirstName(e.target.value)}
-                    isClearable
                     onClear={() => setFirstName('')}
                   />
 
                   <Input
+                    isClearable
+                    autoComplete="search"
+                    className="w-full dark:text-white border border-white rounded-xl"
                     classNames={{
                       label: 'font-semibold text-gray-700',
                       inputWrapper: 'pr-0',
                     }}
-                    labelPlacement="outside"
+                    id="searchNameCodeEmployee"
                     label="Código"
-                    className="w-full dark:text-white border border-white rounded-xl"
+                    labelPlacement="outside"
+                    name="searchCodeEmployee"
                     placeholder="Buscar por código..."
                     startContent={<ScanBarcode />}
-                    variant="bordered"
-                    name="searchCodeEmployee"
-                    id="searchNameCodeEmployee"
                     value={codeEmployee}
-                    autoComplete="search"
+                    variant="bordered"
                     onChange={(e) => setCodeEmployee(e.target.value)}
-                    isClearable
                     onClear={() => setCodeEmployee('')}
                   />
                   <Input
+                    isClearable
+                    className="w-full dark:text-white border border-white rounded-xl"
                     classNames={{
                       label: 'font-semibold text-gray-700',
                       inputWrapper: 'pr-0',
                     }}
-                    labelPlacement="outside"
+                    id="searchPhone"
                     label="Teléfono"
+                    labelPlacement="outside"
+                    name="searchPhone"
                     placeholder="Buscar por teléfono..."
                     startContent={<Phone size={20} />}
-                    className="w-full dark:text-white border border-white rounded-xl"
-                    variant="bordered"
-                    name="searchPhone"
                     value={phone}
-                    id="searchPhone"
+                    variant="bordered"
                     onChange={(e) => setPhone(e.target.value)}
-                    isClearable
                     onClear={() => setPhone('')}
                   />
 
                   <div className="w-full">
-                    <label className="font-semibold dark:text-white text-sm">Sucursal</label>
+                    <span className="font-semibold dark:text-white text-sm">Sucursal</span>
                     <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          setBranch(key as string);
-                        }
-                      }}
-                      startContent={<Store />}
                       className="w-full dark:text-white border border-white rounded-xl"
-                      labelPlacement="outside"
-                      placeholder="Selecciona una sucursal"
-                      variant="bordered"
-                      defaultSelectedKey={branch}
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
                       clearButtonProps={{
                         onClick: () => setBranch(''),
                       }}
+                      defaultSelectedKey={branch}
+                      labelPlacement="outside"
+                      placeholder="Selecciona una sucursal"
+                      startContent={<Store />}
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          setBranch(key as string);
+                        }
+                      }}
                     >
                       {branch_list.map((bra) => (
-                        <AutocompleteItem className="dark:text-white" key={bra.name}>
+                        <AutocompleteItem key={bra.name} className="dark:text-white">
                           {bra.name}
                         </AutocompleteItem>
                       ))}
@@ -836,52 +840,52 @@ function ListEmployee({ actions }: Props) {
                   {isDate && (
                     <>
                       <div>
-                        <label className="font-semibold dark:text-white text-sm">
+                        <span className="font-semibold dark:text-white text-sm">
                           Fecha Inicial
-                        </label>
+                        </span>
 
                         <Input
-                          type="date"
-                          onChange={(e) => setStartDate(e.target.value)}
-                          defaultValue={startDate}
-                          variant="bordered"
-                          labelPlacement="outside"
+                          className="w-full dark:text-white  rounded-xl border border-white"
                           classNames={{
                             base: 'font-semibold dark:text-white text-sm',
                             label: 'font-semibold dark:text-white text-sm',
                           }}
-                          className="w-full dark:text-white  rounded-xl border border-white"
+                          defaultValue={startDate}
+                          labelPlacement="outside"
+                          type="date"
+                          variant="bordered"
+                          onChange={(e) => setStartDate(e.target.value)}
                         />
                       </div>
                       <div>
-                        <label className="font-semibold dark:text-white text-sm">Fecha Final</label>
+                        <span className="font-semibold dark:text-white text-sm">Fecha Final</span>
                         <Input
-                          type="date"
-                          onChange={(e) => setEndDate(e.target.value)}
-                          defaultValue={endDate}
-                          variant="bordered"
-                          labelPlacement="outside"
+                          className="w-full dark:text-white  rounded-xl border border-white"
                           classNames={{
                             base: 'font-semibold dark:text-white text-sm',
                             label: 'font-semibold dark:text-white text-sm',
                           }}
-                          className="w-full dark:text-white  rounded-xl border border-white"
+                          defaultValue={endDate}
+                          labelPlacement="outside"
+                          type="date"
+                          variant="bordered"
+                          onChange={(e) => setEndDate(e.target.value)}
                         />
                       </div>
                     </>
                   )}
                   <ButtonUi
-                    theme={Colors.Primary}
                     className="hidden mt-6 font-semibold md:flex border border-white"
                     color="primary"
+                    theme={Colors.Primary}
                     onPress={() => changePage()}
                   >
                     Buscar
                   </ButtonUi>
 
                   <ButtonUi
-                    theme={Colors.Primary}
                     className="hidden mt-6 font-semibold md:flex border border-white"
+                    theme={Colors.Primary}
                     onPress={() => setDate(!isDate)}
                   >
                     Filtrar Fechas
@@ -893,12 +897,12 @@ function ListEmployee({ actions }: Props) {
                 <div className="flex justify-between order-2 lg:order-1">
                   <div className="xl:mt-10">
                     <Switch
-                      onValueChange={(active) => setActive(active)}
-                      isSelected={active}
                       classNames={{
                         thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
                         wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
                       }}
+                      isSelected={active}
+                      onValueChange={(active) => setActive(active)}
                     >
                       <span className="text-sm sm:text-base whitespace-nowrap">
                         Mostrar {active ? 'inactivos' : 'activos'}
@@ -907,9 +911,9 @@ function ListEmployee({ actions }: Props) {
                   </div>
                   {actions.includes('Cumpleaños') && (
                     <ButtonUi
-                      onPress={() => navigate('/birthday-calendar')}
-                      theme={Colors.Primary}
                       className="xl:hidden md:hidden border border-white"
+                      theme={Colors.Primary}
+                      onPress={() => navigate('/birthday-calendar')}
                     >
                       <p className="text-sm sm:text-base">Cumpleaños</p>
                     </ButtonUi>
@@ -918,25 +922,25 @@ function ListEmployee({ actions }: Props) {
                 <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
                   {actions.includes('Cumpleaños') && (
                     <ButtonUi
-                      onPress={() => navigate('/birthday-calendar')}
-                      theme={Colors.Primary}
                       className=" xl:flex md:flex hidden border mt-7 border-white"
+                      theme={Colors.Primary}
+                      onPress={() => navigate('/birthday-calendar')}
                     >
                       <p className="text-sm sm:text-base">Cumpleaños</p>
                     </ButtonUi>
                   )}
 
                   <div className="w-44">
-                    <label className="font-semibold dark:text-white text-sm">Mostrar</label>
+                    <span className="font-semibold dark:text-white text-sm">Mostrar</span>
                     <Select
                       className="w-44 dark:text-white border border-white rounded-xl"
-                      variant="bordered"
-                      defaultSelectedKeys={['5']}
-                      labelPlacement="outside"
                       classNames={{
                         label: 'font-semibold',
                       }}
+                      defaultSelectedKeys={['5']}
+                      labelPlacement="outside"
                       value={limit}
+                      variant="bordered"
                       onChange={(e) => {
                         setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
                       }}
@@ -950,15 +954,15 @@ function ListEmployee({ actions }: Props) {
                   </div>
                   <ButtonGroup className="mt-4">
                     <ButtonUi
-                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       isIconOnly
+                      theme={view === 'table' ? Colors.Primary : Colors.Default}
                       onPress={() => setView('table')}
                     >
                       <ITable />
                     </ButtonUi>
                     <ButtonUi
-                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       isIconOnly
+                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
                       onPress={() => setView('grid')}
                     >
                       <CreditCard />
@@ -970,12 +974,12 @@ function ListEmployee({ actions }: Props) {
               {(view === 'grid' || view === 'list') && (
                 <MobileView
                   DeletePopover={DeletePopover}
+                  WorkConstancy={(employee) => OpenPdf(employee)}
+                  actions={actions}
+                  handleActivate={handleActivate}
                   openEditModal={(employee) => {
                     setDataUpdate(employee);
                   }}
-                  actions={actions}
-                  handleActivate={handleActivate}
-                  WorkConstancy={(employee) => OpenPdf(employee)}
                 />
               )}
               {view === 'table' && (
@@ -996,9 +1000,9 @@ function ListEmployee({ actions }: Props) {
                       <tbody className="max-h-[600px] w-full overflow-y-auto">
                         {loading_employees ? (
                           <tr>
-                            <td colSpan={5} className="p-3 text-sm text-center text-slate-500">
+                            <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
                               <div className="flex flex-col items-center justify-center w-full h-64">
-                                <div className="loader"></div>
+                                <div className="loader" />
                                 <p className="mt-3 text-xl font-semibold">Cargando...</p>
                               </div>
                             </td>
@@ -1007,8 +1011,8 @@ function ListEmployee({ actions }: Props) {
                           <>
                             {employee_paginated.employees.length > 0 ? (
                               <>
-                                {employee_paginated.employees.map((employee) => (
-                                  <tr className="border-b border-slate-200">
+                                {employee_paginated.employees.map((employee, key) => (
+                                  <tr key={key} className="border-b border-slate-200">
                                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                       {employee.id}
                                     </td>
@@ -1032,12 +1036,12 @@ function ListEmployee({ actions }: Props) {
                                         {employee.isActive && actions.includes('Editar') && (
                                           <>
                                             <ButtonUi
+                                              isIconOnly
                                               className="border border-white"
+                                              theme={Colors.Success}
                                               onClick={() => {
                                                 setDataUpdate(employee);
                                               }}
-                                              isIconOnly
-                                              theme={Colors.Success}
                                             >
                                               <EditIcon size={20} />
                                             </ButtonUi>
@@ -1050,10 +1054,10 @@ function ListEmployee({ actions }: Props) {
                                         {actions.includes('Contrato de Trabajo') &&
                                           employee.isActive && (
                                             <ButtonUi
-                                              className="border border-white"
-                                              onPress={() => OpenPdf(employee)}
                                               isIconOnly
+                                              className="border border-white"
                                               theme={Colors.Info}
+                                              onPress={() => OpenPdf(employee)}
                                             >
                                               <FileText size={20} />
                                             </ButtonUi>
@@ -1063,10 +1067,10 @@ function ListEmployee({ actions }: Props) {
                                           <>
                                             {actions.includes('Activar') && (
                                               <Button
-                                                className="border border-white"
-                                                onPress={() => handleActivate(employee.id)}
                                                 isIconOnly
+                                                className="border border-white"
                                                 style={global_styles().thirdStyle}
+                                                onPress={() => handleActivate(employee.id)}
                                               >
                                                 <RefreshCcw />
                                               </Button>
@@ -1074,14 +1078,14 @@ function ListEmployee({ actions }: Props) {
                                           </>
                                         )}
                                         <ProofSalary
-                                          employee={employee}
                                           actions={actions}
-                                        ></ProofSalary>
+                                          employee={employee}
+                                         />
 
                                         <ProofeOfEmployment
-                                          employee={employee}
                                           actions={actions}
-                                        ></ProofeOfEmployment>
+                                          employee={employee}
+                                         />
                                       </div>
                                     </td>
                                   </tr>
@@ -1091,7 +1095,7 @@ function ListEmployee({ actions }: Props) {
                               <tr>
                                 <td colSpan={5}>
                                   <div className="flex flex-col items-center justify-center w-full">
-                                    <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                                    <img alt="X" className="w-32 h-32" src={NO_DATA} />
                                     <p className="mt-3 text-xl">No se encontraron resultados</p>
                                   </div>
                                 </td>
@@ -1108,9 +1112,9 @@ function ListEmployee({ actions }: Props) {
                 <>
                   <div className="hidden w-full mt-5 md:flex">
                     <Pagination
-                      previousPage={employee_paginated.prevPag}
-                      nextPage={employee_paginated.nextPag}
                       currentPage={employee_paginated.currentPag}
+                      nextPage={employee_paginated.nextPag}
+                      previousPage={employee_paginated.prevPag}
                       totalPages={employee_paginated.totalPag}
                       onPageChange={(page) => {
                         getEmployeesPaginated(
@@ -1135,6 +1139,7 @@ function ListEmployee({ actions }: Props) {
                   </div>
                   <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
                     <SmPagination
+                      currentPage={employee_paginated.currentPag}
                       handleNext={() => {
                         getEmployeesPaginated(
                           Number(
@@ -1173,7 +1178,6 @@ function ListEmployee({ actions }: Props) {
                           isDate ? endDate : ''
                         );
                       }}
-                      currentPage={employee_paginated.currentPag}
                       totalPages={employee_paginated.totalPag}
                     />
                   </div>
@@ -1183,9 +1187,9 @@ function ListEmployee({ actions }: Props) {
           </div>
           <HeadlessModal
             isOpen={modalAdd.isOpen}
-            onClose={modalAdd.onClose}
-            title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
             size="w-[350px] md:w-full"
+            title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
+            onClose={modalAdd.onClose}
           >
             <AddEmployee />
           </HeadlessModal>
@@ -1216,8 +1220,8 @@ export const DeletePopover = ({ employee }: PopProps) => {
       <Popover
         className="border border-white rounded-2xl"
         {...deleteDisclosure}
-        backdrop="blur"
         showArrow
+        backdrop="blur"
       >
         <PopoverTrigger>
           <Button isIconOnly style={style}>
@@ -1234,9 +1238,9 @@ export const DeletePopover = ({ employee }: PopProps) => {
             </p>
             <div className="flex justify-center mt-4 gap-5">
               <ButtonUi
+                className="border border-white"
                 theme={Colors.Default}
                 onPress={deleteDisclosure.onClose}
-                className="border border-white"
               >
                 No, cancelar
               </ButtonUi>

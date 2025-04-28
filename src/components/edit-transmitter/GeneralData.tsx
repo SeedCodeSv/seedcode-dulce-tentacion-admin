@@ -9,16 +9,19 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { Search } from 'lucide-react';
-import useGlobalStyles from '../global/global.styles';
 import { useFormik } from 'formik';
-import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { AccountCatalog } from '@/types/accountCatalogs.types';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
+
+import useGlobalStyles from '../global/global.styles';
 import Pagination from '../global/Pagination';
+
+import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { AccountCatalog } from '@/types/accountCatalogs.types';
 import { useAuthStore } from '@/store/auth.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
-import { useNavigate } from 'react-router';
+
 
 function GeneralData() {
   const styles = useGlobalStyles();
@@ -40,6 +43,7 @@ function GeneralData() {
         : user.pointOfSale
           ? user.pointOfSale.branch.transmitter.id
           : 0;
+
       getFiscalDataAndParameter(transId);
     }
   }, [user]);
@@ -49,6 +53,7 @@ function GeneralData() {
   useEffect(() => {
     const transmitterId =
       user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+
     getAccountCatalogs(transmitterId ?? 0, '', '');
   }, []);
 
@@ -76,6 +81,7 @@ function GeneralData() {
           : user.pointOfSale
             ? user.pointOfSale.branch.transmitter.id
             : 0;
+
         if (fiscalDataAndParameter) {
           onUpdateFiscalDataAndParameter(fiscalDataAndParameter.id, {
             ...values,
@@ -129,9 +135,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta para el IVA Credito Fiscal(Compras Locales)"
                 className="w-full"
+                placeholder="Cuenta para el IVA Credito Fiscal(Compras Locales)"
+                variant="bordered"
                 {...formik.getFieldProps('ivaLocalShopping')}
               />
               <SelectedItem
@@ -148,9 +154,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta para el IVA Crédito Fiscal (Importaciones)"
                 className="w-full"
+                placeholder="Cuenta para el IVA Crédito Fiscal (Importaciones)"
+                variant="bordered"
                 {...formik.getFieldProps('ivaImports')}
               />
               <SelectedItem
@@ -167,9 +173,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta para el IVA Débito Fiscal (Contribuyentes)"
                 className="w-full"
+                placeholder="Cuenta para el IVA Débito Fiscal (Contribuyentes)"
+                variant="bordered"
                 {...formik.getFieldProps('ivaTributte')}
               />
               <SelectedItem
@@ -186,9 +192,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta para el IVA Débito Fiscal (Consumidor final)"
                 className="w-full"
+                placeholder="Cuenta para el IVA Débito Fiscal (Consumidor final)"
+                variant="bordered"
                 {...formik.getFieldProps('ivaFinalConsumer')}
               />
               <SelectedItem
@@ -205,9 +211,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta contable para el IVA Retenido 1%"
                 className="w-full"
+                placeholder="Cuenta contable para el IVA Retenido 1%"
+                variant="bordered"
                 {...formik.getFieldProps('ivaRete1')}
               />
               <SelectedItem
@@ -224,9 +230,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta contable para IVA Percibido 1%"
                 className="w-full"
+                placeholder="Cuenta contable para IVA Percibido 1%"
+                variant="bordered"
                 {...formik.getFieldProps('ivaPerci1')}
               />
               <SelectedItem
@@ -243,9 +249,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para IVA 2% (Tarjetas)"
                 className="w-full"
+                placeholder="Código de Cuenta para IVA 2% (Tarjetas)"
+                variant="bordered"
                 {...formik.getFieldProps('ivaCard2')}
               />
               <SelectedItem
@@ -262,9 +268,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para la Caja GENERAL"
                 className="w-full"
+                placeholder="Código de Cuenta para la Caja GENERAL"
+                variant="bordered"
                 {...formik.getFieldProps('generalBox')}
               />
               <SelectedItem
@@ -281,9 +287,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para Tarjeta de Credito:"
                 className="w-full"
+                placeholder="Código de Cuenta para Tarjeta de Credito:"
+                variant="bordered"
                 {...formik.getFieldProps('cardCredit')}
               />
               <SelectedItem
@@ -300,9 +306,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para la Gastos Indirectos de F"
                 className="w-full"
+                placeholder="Código de Cuenta para la Gastos Indirectos de F"
+                variant="bordered"
                 {...formik.getFieldProps('indiferenceExpenseF')}
               />
               <SelectedItem
@@ -319,9 +325,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para CESC o Turismo Compras"
                 className="w-full"
+                placeholder="Código de Cuenta para CESC o Turismo Compras"
+                variant="bordered"
                 {...formik.getFieldProps('cescOrTurismShoppping')}
               />
               <SelectedItem
@@ -338,9 +344,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Código de Cuenta para CESC o Turismo Ventas"
                 className="w-full"
+                placeholder="Código de Cuenta para CESC o Turismo Ventas"
+                variant="bordered"
                 {...formik.getFieldProps('cescOrTurismSales')}
               />
               <SelectedItem
@@ -357,9 +363,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta Anticipos de CXC"
                 className="w-full"
+                placeholder="Cuenta Anticipos de CXC"
+                variant="bordered"
                 {...formik.getFieldProps('advancesCXC')}
               />
               <SelectedItem
@@ -376,9 +382,9 @@ function GeneralData() {
             <div className="w-full flex gap-2">
               <Input
                 readOnly
-                variant="bordered"
-                placeholder="Cuenta Transitoria de Anticipos de CXC"
                 className="w-full"
+                placeholder="Cuenta Transitoria de Anticipos de CXC"
+                variant="bordered"
                 {...formik.getFieldProps('transientAdvancesCXD')}
               />
               <SelectedItem
@@ -391,17 +397,17 @@ function GeneralData() {
         </div>
         <div className="w-full flex justify-end mt-3 gap-5">
           <Button
-            onClick={() => navigation('/configuration')}
-            isLoading={formik.isSubmitting}
             className="px-20 font-semibold"
+            isLoading={formik.isSubmitting}
             style={styles.dangerStyles}
             type="submit"
+            onClick={() => navigation('/configuration')}
           >
             Cacelar
           </Button>
           <Button
-            isLoading={formik.isSubmitting}
             className="px-20 font-semibold"
+            isLoading={formik.isSubmitting}
             style={styles.thirdStyle}
             type="submit"
           >
@@ -438,6 +444,7 @@ export const SelectedItem = (props: PropsItems) => {
 
   const paginatedData = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredData, currentPage]);
 
@@ -454,6 +461,7 @@ export const SelectedItem = (props: PropsItems) => {
   const handleSelectItem = (item: AccountCatalog) => {
     if (item.subAccount) {
       toast.error('No se puede agregar una cuenta con sub-cuentas');
+
       return;
     }
     props.setCode(item.code);
@@ -462,13 +470,13 @@ export const SelectedItem = (props: PropsItems) => {
 
   return (
     <>
-      <Button onClick={modalCatalog.onOpen} isIconOnly style={styles.secondaryStyle}>
+      <Button isIconOnly style={styles.secondaryStyle} onClick={modalCatalog.onOpen}>
         <Search />
       </Button>
       <Modal
+        isOpen={modalCatalog.isOpen}
         scrollBehavior="inside"
         size="3xl"
-        isOpen={modalCatalog.isOpen}
         onClose={modalCatalog.onClose}
       >
         <ModalContent>
@@ -478,11 +486,11 @@ export const SelectedItem = (props: PropsItems) => {
               <div>
                 <Input
                   classNames={{ base: 'font-semibold' }}
-                  labelPlacement="outside"
-                  variant="bordered"
                   label="Buscar por código"
+                  labelPlacement="outside"
                   placeholder="Escribe para buscar..."
                   value={search}
+                  variant="bordered"
                   onChange={(e) => {
                     setSearch(e.target.value);
                     setCurrentPage(1);
@@ -493,14 +501,14 @@ export const SelectedItem = (props: PropsItems) => {
                     <thead className="sticky top-0 z-20 bg-white">
                       <tr>
                         <th
-                          style={styles.darkStyle}
                           className="p-3 whitespace-nowrap text-xs font-semibold text-left"
+                          style={styles.darkStyle}
                         >
                           Code
                         </th>
                         <th
-                          style={styles.darkStyle}
                           className="p-3 whitespace-nowrap text-xs font-semibold text-left"
+                          style={styles.darkStyle}
                         >
                           Name
                         </th>
@@ -529,10 +537,10 @@ export const SelectedItem = (props: PropsItems) => {
             <ModalFooter className="w-full">
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
                 nextPage={currentPage + 1}
                 previousPage={currentPage - 1}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
               />
             </ModalFooter>
           </>
@@ -547,6 +555,7 @@ const CurrentInputValue = ({ code }: { code: string }) => {
   const labelValue = useMemo(() => {
     if (code !== '' && code !== 'N/A') {
       const item = account_catalog_pagination.accountCatalogs.find((item) => item.code === code);
+
       return item?.name || '';
     } else {
       return '';

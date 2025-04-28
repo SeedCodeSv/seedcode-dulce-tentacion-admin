@@ -1,9 +1,11 @@
 import { create } from 'zustand';
-import { IBoxStore } from './types/Boxes.store.types';
-import { messages } from '../utils/constants';
 import { toast } from 'sonner';
+
+import { messages } from '../utils/constants';
 import { get_boxes_List, save_box, close_box_by_id } from '../services/Boxes.service';
 import { post_box, get_box, delete_box } from '../storage/localStorage';
+
+import { IBoxStore } from './types/Boxes.store.types';
 export const useBoxStore = create<IBoxStore>((set) => ({
   box_list: [],
   current_box: Number(get_box() ?? 0),

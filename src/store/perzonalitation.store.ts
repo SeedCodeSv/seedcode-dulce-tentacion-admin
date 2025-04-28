@@ -1,13 +1,15 @@
 import { create } from 'zustand';
-import { IConfigurationStore } from './types/perzonalitation.types.store';
+import { toast } from 'sonner';
+
 import { IConfiguration, ICreacteConfiguaration } from '../types/configuration.types';
 import {
   create_configuration,
   get_by_transmitter,
   update_configuration_name,
 } from '../services/configuration.service';
-import { toast } from 'sonner';
 import { messages } from '../utils/constants';
+
+import { IConfigurationStore } from './types/perzonalitation.types.store';
 
 export const useConfigurationStore = create<IConfigurationStore>((set, get) => ({
   personalization: [],
@@ -27,10 +29,12 @@ export const useConfigurationStore = create<IConfigurationStore>((set, get) => (
   async GetConfigurationByTransmitter(id: number): Promise<void> {
     try {
       const { data } = await get_by_transmitter(id);
+
       if (data.personalization) {
         const personalizationArray = Array.isArray(data.personalization)
           ? data.personalization
           : [data.personalization];
+
         set({
           personalization: personalizationArray,
         });
@@ -45,10 +49,12 @@ export const useConfigurationStore = create<IConfigurationStore>((set, get) => (
     return update_configuration_name(payload, id)
       .then((res) => {
         toast.success(messages.success);
+
         return res.data.ok;
       })
       .catch(() => {
         toast.warning(messages.error);
+
         return false;
       });
   },

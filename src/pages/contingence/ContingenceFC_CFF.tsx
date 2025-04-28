@@ -1,19 +1,7 @@
-import useGlobalStyles from '@/components/global/global.styles';
-import { return_mh_token } from '@/storage/localStorage';
-import { useAuthStore } from '@/store/auth.store';
-import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
-import { useEmployeeStore } from '@/store/employee.store';
-import { useSalesStore } from '@/store/sales.store';
-import { useTransmitterStore } from '@/store/transmitter.store';
-import { IContingencia } from '@/types/DTE/contingencia.types';
-import { formatDate } from '@/utils/dates';
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { generate_contingencias } from './contingencia_facturacion.ts';
-import { firmarDocumentoContingencia, send_to_mh_contingencia } from '@/services/DTE.service.ts';
 import axios from 'axios';
-import { processSaleCCF, processSaleFCF } from '@/utils/sendDte.ts';
 import {
   Autocomplete,
   AutocompleteItem,
@@ -24,9 +12,23 @@ import {
   Spinner,
   Textarea,
 } from "@heroui/react";
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
+import { generate_contingencias } from './contingencia_facturacion.ts';
+
+import useGlobalStyles from '@/components/global/global.styles';
+import { return_mh_token } from '@/storage/localStorage';
+import { useAuthStore } from '@/store/auth.store';
+import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
+import { useEmployeeStore } from '@/store/employee.store';
+import { useSalesStore } from '@/store/sales.store';
+import { useTransmitterStore } from '@/store/transmitter.store';
+import { IContingencia } from '@/types/DTE/contingencia.types';
+import { formatDate } from '@/utils/dates';
+import { firmarDocumentoContingencia, send_to_mh_contingencia } from '@/services/DTE.service.ts';
+import { processSaleCCF, processSaleFCF } from '@/utils/sendDte.ts';
 import { contingence_steps } from '@/utils/constants.ts';
 import { formatCurrency } from '@/utils/dte.ts';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { Employee } from '@/types/employees.types.ts';
 import { useBranchesStore } from '@/store/branches.store.ts';
 
@@ -71,16 +73,20 @@ function ContingenceFC_CCF() {
   const timeStart = useMemo(() => {
     if (contingence_sales.length > 0) {
       setStartTime(contingence_sales[0]?.horEmi);
+
       return contingence_sales[0]?.horEmi;
     }
+
     return '';
   }, [contingence_sales]);
 
   const timeEnd = useMemo(() => {
     if (contingence_sales.length > 0) {
       setEndTime(contingence_sales[contingence_sales.length - 1]?.horEmi);
+
       return contingence_sales[contingence_sales.length - 1]?.horEmi;
     }
+
     return '';
   }, [contingence_sales]);
 
@@ -99,12 +105,15 @@ function ContingenceFC_CCF() {
   const handleError = () => {
     if (motivo === '') {
       setError((prev) => ({ ...prev, motivo: 'Selecciona el motivo' }));
+
       return;
     } else if (nombreRes === '') {
       setError((prev) => ({ ...prev, nombreRes: 'Selecciona el responsable' }));
+
       return;
     } else if (motivo === '5' && observaciones === '') {
       setError((prev) => ({ ...prev, observaciones: 'Debes rellenar la información adicional' }));
+
       return;
     }
   };
@@ -125,12 +134,15 @@ function ContingenceFC_CCF() {
       if (!correlativesDte) {
         toast.error('Error al obtener correlativos');
         setLoading(false);
+
         return;
       }
       const token_mh = return_mh_token();
+
       if (!token_mh) {
         toast.error('Error al obtener token de hacienda');
         setLoading(false);
+
         return;
       }
 
@@ -163,6 +175,7 @@ function ContingenceFC_CCF() {
         });
         setLoading(false);
         setCurrentStep(0);
+
         return;
       } else {
         toast.success('Contingencia enviada con éxito');
@@ -246,60 +259,60 @@ function ContingenceFC_CCF() {
         <p className="font-semibold text-xl dark:text-white">Resumen</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-3 mt-5">
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
             className="dark:text-white"
-            labelPlacement="outside"
-            variant="bordered"
-            type="date"
+            classNames={{ label: 'font-semibold text-sm' }}
             label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
             value={startDate}
+            variant="bordered"
             onChange={(e) => setStartDate(e.target.value)}
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
-            className="dark:text-white"
-            labelPlacement="outside"
             isReadOnly
-            variant="bordered"
+            className="dark:text-white"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora inicial"
+            labelPlacement="outside"
             type="time"
             value={timeStart}
-            label="Hora inicial"
+            variant="bordered"
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
             className="dark:text-white"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Fecha de fin"
             labelPlacement="outside"
-            variant="bordered"
             type="date"
             value={endDate}
+            variant="bordered"
             onChange={(e) => setEndDate(e.target.value)}
-            label="Fecha de fin"
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
-            className="dark:text-white"
-            labelPlacement="outside"
             isReadOnly
-            variant="bordered"
+            className="dark:text-white"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora de fin"
+            labelPlacement="outside"
             type="time"
             value={timeEnd}
-            label="Hora de fin"
+            variant="bordered"
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-10 gap-y-3">
           <div className="flex flex-col gap-3">
             <Select
-              classNames={{ label: 'font-semibold text-sm' }}
               className="dark:text-white"
+              classNames={{ label: 'font-semibold text-sm' }}
+              defaultSelectedKeys={[motivo.toString()]}
+              errorMessage={error.motivo}
+              isInvalid={!!error.motivo}
+              label="Motivo"
               labelPlacement="outside"
               placeholder="Selecciona el motivo"
-              variant="bordered"
-              label="Motivo"
-              onChange={(e) => setMotivo(e.target.value)}
-              defaultSelectedKeys={[motivo.toString()]}
               value={motivo}
-              isInvalid={!!error.motivo}
-              errorMessage={error.motivo}
+              variant="bordered"
+              onChange={(e) => setMotivo(e.target.value)}
             >
               {service.get005TipoDeContingencum().map((item) => (
                 <SelectItem key={item.codigo}  className="dark:text-white">
@@ -308,35 +321,35 @@ function ContingenceFC_CCF() {
               ))}
             </Select>
             <Textarea
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
-              classNames={{ label: 'font-semibold text-sm' }}
               className="dark:text-white"
-              labelPlacement="outside"
-              variant="bordered"
-              label="Información adicional"
-              placeholder="Ingresa tus observaciones e información adicional"
-              isInvalid={!!error.observaciones}
+              classNames={{ label: 'font-semibold text-sm' }}
               errorMessage={error.observaciones}
-            ></Textarea>
+              isInvalid={!!error.observaciones}
+              label="Información adicional"
+              labelPlacement="outside"
+              placeholder="Ingresa tus observaciones e información adicional"
+              value={observaciones}
+              variant="bordered"
+              onChange={(e) => setObservaciones(e.target.value)}
+             />
           </div>
           <div className="flex flex-col-2 gap-4">
             <Autocomplete
-              value={branchId}
-              label="Sucursal"
-              labelPlacement="outside"
-              variant="bordered"
               className="dark:text-white font-semibold"
-              placeholder='Selecciona la sucursal'
-              onSelectionChange={(value) => setBranchId((value as string) || '')}
               classNames={{
                 base: 'font-semibold text-gray-500 text-sm',
               }}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder='Selecciona la sucursal'
+              value={branchId}
+              variant="bordered"
+              onSelectionChange={(value) => setBranchId((value as string) || '')}
             >
               {branch_list.map((bra) => (
                 <AutocompleteItem
-                  className="dark:text-white"
                   key={bra.id.toString()}
+                  className="dark:text-white"
                 >
                   {bra.name}
                 </AutocompleteItem>
@@ -345,15 +358,16 @@ function ContingenceFC_CCF() {
 
             <Autocomplete
               className="dark:text-white font-semibold text-sm"
-              variant="bordered"
+              errorMessage={error.nombreRes}
+              isInvalid={!!error.nombreRes}
               label="Responsable"
               labelPlacement="outside"
               placeholder="Selecciona al responsable"
-              isInvalid={!!error.nombreRes}
-              errorMessage={error.nombreRes}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const employee = JSON.parse(key as string) as Employee;
+
                   setNombreRes(
                     `${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`
                   );
@@ -386,17 +400,17 @@ function ContingenceFC_CCF() {
               <>
                 {motivo === '' || nombreRes === '' || contingence_sales.length === 0 ? (
                   <Button
-                    onClick={handleError}
-                    style={styles.dangerStyles}
                     className="px-10 font-semibold"
+                    style={styles.dangerStyles}
+                    onClick={handleError}
                   >
                     Procesar contingencia
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleProcessContingence}
-                    style={styles.thirdStyle}
                     className="px-10 font-semibold"
+                    style={styles.thirdStyle}
+                    onClick={handleProcessContingence}
                   >
                     Procesar contingencia
                   </Button>
@@ -430,7 +444,7 @@ function ContingenceFC_CCF() {
               </thead>
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {contingence_sales.map((sale, index) => (
-                  <tr className="border-b border-slate-200" key={index}>
+                  <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       {sale.fecEmi + ' - ' + sale.horEmi}

@@ -11,22 +11,24 @@ import {
   Package,
   Code,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { Button, useDisclosure } from '@heroui/react';
+import { useNavigate } from 'react-router';
+
 import Layout from '@/layout/Layout';
 import CustomLoading from '@/components/global/CustomLoading';
 import { SVFE_DCL } from '@/types/svf_dte/dcl.types';
-import { toast } from 'sonner';
 import { formatCurrency } from '@/utils/dte';
 import { SPACES_BUCKET } from '@/utils/constants';
 import ERROR from '@/assets/error.png';
 import { useAuthStore } from '@/store/auth.store';
-import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { s3Client } from '@/plugins/s3';
 import { save_settlement_document } from '@/services/settlement-document.service';
-import { Button, useDisclosure } from '@heroui/react';
 import HeadlessModal from '@/components/global/HeadlessModal';
 import useGlobalStyles from '@/components/global/global.styles';
 import AddTributeSupplier from '@/components/shopping/add-supplier';
-import { useNavigate } from 'react-router';
+
 
 interface FileStatus {
   file: File;
@@ -63,12 +65,14 @@ function formatFileSize(bytes: number) {
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
 function formatJSON(jsonString: string) {
   try {
     const obj = JSON.parse(jsonString) as SVFE_DCL;
+
     return obj;
   } catch (e) {
     return undefined;
@@ -111,22 +115,27 @@ function AddSettlementDocument() {
 
     if (files.length > 1) {
       setError('Please upload only one file at a time');
+
       return;
     }
 
     const file = files[0];
+
     if (!file.name.toLowerCase().endsWith('.json')) {
       setError('Please upload a JSON file');
+
       return;
     }
 
     const reader = new FileReader();
+
     reader.onload = (e) => {
       const content = e.target?.result as string;
       const result = formatJSON(content);
 
       if (!result) {
         setError('Archivo no valido');
+
         return;
       }
 
@@ -134,6 +143,7 @@ function AddSettlementDocument() {
         toast.error('Este documento no es de tipo DTE 09(Comprobante contable de liquidación)');
         setError('Este documento no es de tipo DTE 09(Comprobante contable de liquidación)');
         setFile(null);
+
         return;
       }
 
@@ -153,14 +163,17 @@ function AddSettlementDocument() {
       setFile((prev) => {
         if (!prev) return null;
         const progress = prev.progress + 10;
+
         if (progress >= 100) {
           return { ...prev, progress: 100, status: 'success' };
         }
+
         return { ...prev, progress, status: 'uploading' };
       });
     };
 
     const interval = setInterval(simulateUpload, 500);
+
     setTimeout(() => clearInterval(interval), 5000);
   }, []);
 
@@ -199,6 +212,7 @@ function AddSettlementDocument() {
   const handleSave = async () => {
     if (!file) {
       toast.error('Por favor, cargue un archivo');
+
       return;
     }
 
@@ -250,29 +264,29 @@ function AddSettlementDocument() {
       <div className=" w-full h-full flex flex-col bg-gray-50 dark:bg-gray-900">
         <HeadlessModal
           isOpen={providerModal.isOpen}
-          onClose={() => providerModal.onOpenChange()}
-          title="Proveedor no encontrado"
           size="w-96"
+          title="Proveedor no encontrado"
+          onClose={() => providerModal.onOpenChange()}
         >
           <div className="w-full flex flex-col justify-center items-center">
-            <img className="w-32" src={ERROR} alt="" />
+            <img alt="" className="w-32" src={ERROR} />
             <p className="font-semibold pt-3">El proveedor no se encontró en los registros</p>
             <p className="font-semibold pb-3">¿Deseas registrarlo?</p>
             <div className="w-full grid grid-cols-2 gap-5">
-              <Button onClick={() => providerModal.onOpenChange()} style={styles.dangerStyles}>
+              <Button style={styles.dangerStyles} onClick={() => providerModal.onOpenChange()}>
                 Aceptar
               </Button>
-              <Button onClick={() => supplierModal.onOpenChange()} style={styles.thirdStyle}>
+              <Button style={styles.thirdStyle} onClick={() => supplierModal.onOpenChange()}>
                 Registrar
               </Button>
             </div>
           </div>
         </HeadlessModal>
         <HeadlessModal
-          title="Registrar proveedor"
           isOpen={supplierModal.isOpen}
-          onClose={() => supplierModal.onOpenChange()}
           size="w-full md:w-[600px] lg:w-[800px] xl:w-[1000px]"
+          title="Registrar proveedor"
+          onClose={() => supplierModal.onOpenChange()}
         >
           <AddTributeSupplier
             closeModal={() => {
@@ -308,9 +322,9 @@ function AddSettlementDocument() {
                   ? 'ring-4 ring-blue-500 ring-opacity-50 scale-[1.02] bg-blue-50/90'
                   : 'ring-1 ring-gray-200 hover:ring-blue-200'
               }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
               onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
               onDrop={handleDrop}
             >
               {isDragging && (
@@ -325,7 +339,7 @@ function AddSettlementDocument() {
               <div className="h-full flex flex-col items-center justify-center p-8">
                 {!isDragging && (
                   <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full animate-pulse opacity-20"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-gray-200 to-gray-300 rounded-full animate-pulse opacity-20" />
                     <Upload
                       className={`w-24 h-24 mx-auto relative ${isDragging ? 'text-blue-200' : 'text-blue-500'} transition-colors duration-300`}
                     />
@@ -337,13 +351,13 @@ function AddSettlementDocument() {
                 <p className="text-gray-500 mb-2 text-lg">o</p>
                 {!isDragging && (
                   <label className="group relative mb-4">
-                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity"></span>
+                    <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
                     <span className="relative px-8 py-4 bg-white rounded-lg inline-block font-semibold text-gray-700 hover:text-blue-600 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-[1.02] active:scale-95">
                       Selecciona un archivo
                       <input
-                        type="file"
-                        className="hidden"
                         accept=".json"
+                        className="hidden"
+                        type="file"
                         onChange={handleFileInput}
                       />
                     </span>
@@ -389,8 +403,8 @@ function AddSettlementDocument() {
                   </div>
                   <div className="flex items-center space-x-4">
                     <button
-                      onClick={removeFile}
                       className="text-gray-400 hover:text-red-500 transition-colors"
+                      onClick={removeFile}
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -510,18 +524,18 @@ function AddSettlementDocument() {
               </div>
               <div className="flex gap-5 w-full justify-end items-end mt-4">
                 <Button
-                  onClick={() => navigate('/settlement-document')}
-                  style={styles.dangerStyles}
-                  isLoading={loadingSave}
                   className="px-12"
+                  isLoading={loadingSave}
+                  style={styles.dangerStyles}
+                  onClick={() => navigate('/settlement-document')}
                 >
                   Cancelar
                 </Button>
                 <Button
-                  onClick={handleSave}
-                  style={styles.thirdStyle}
-                  isLoading={loadingSave}
                   className="px-12"
+                  isLoading={loadingSave}
+                  style={styles.thirdStyle}
+                  onClick={handleSave}
                 >
                   Guardar
                 </Button>

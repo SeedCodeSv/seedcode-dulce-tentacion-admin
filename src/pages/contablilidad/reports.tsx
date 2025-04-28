@@ -1,11 +1,12 @@
+import { Button, Card, CardFooter, CardHeader, useDisclosure } from '@heroui/react';
+import { ArrowRight, Book } from 'lucide-react';
+
 import AuxiliarBook from '@/components/accounting-items/auxiliar-book';
 import DailyBook from '@/components/accounting-items/daily-book';
 import DailyMajorBook from '@/components/accounting-items/daily-major-book';
 import MajorBook from '@/components/accounting-items/major-book';
 import TrialBalance from '@/components/accounting-items/trial-balance';
 import Layout from '@/layout/Layout';
-import { Button, Card, CardFooter, CardHeader, useDisclosure } from '@heroui/react';
-import { ArrowRight, Book } from 'lucide-react';
 
 function Reports() {
   const modalDailyBook = useDisclosure();
@@ -17,7 +18,7 @@ function Reports() {
   const reports = [
     {
       name: 'Libro Diario',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       route: '/contablilidad/reports',
       onPress: () => {
         modalDailyBook.onOpen();
@@ -25,7 +26,7 @@ function Reports() {
     },
     {
       name: 'Libro Mayor',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       route: '/contablilidad/reports',
       onPress: () => {
         modalMajorBook.onOpen();
@@ -33,28 +34,28 @@ function Reports() {
     },
     {
       name: 'Libro Diario Mayor',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       onPress: () => {
         modalDailyMajorBook.onOpen();
       },
     },
     {
       name: 'Libro Auxiliar de cuenta',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       onPress: () => {
         modalAuxiliarBook.onOpen();
       },
     },
     {
       name: 'Balance de comprobación',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       onPress: () => {
         modalTrialBalance.onOpen();
       },
     },
     {
       name: 'Estado de resultados',
-      icon: <Book size={20} className="text-blue-500" />,
+      icon: <Book className="text-blue-500" size={20} />,
       onPress: () => {},
     },
   ];
@@ -71,7 +72,7 @@ function Reports() {
                   {r.icon}
                 </CardHeader>
                 <CardFooter className="flex justify-end">
-                  <Button variant="light" color="primary" onPress={r.onPress}>
+                  <Button color="primary" variant="light" onPress={r.onPress}>
                     <ArrowRight size={15} />
                   </Button>
                 </CardFooter>

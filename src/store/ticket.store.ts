@@ -1,5 +1,7 @@
 import { create } from 'zustand';
+
 import { TicketsStore } from './types/tickets.store.types';
+
 import { get_ticket, get_tickets } from '@/services/ticket.service';
 
 export const useTicketStore = create<TicketsStore>((set) => ({

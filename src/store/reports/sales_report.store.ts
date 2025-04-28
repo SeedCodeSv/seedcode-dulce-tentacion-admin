@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { ISalesReportStore } from './types/sale_report.store.types';
+
 import {
   get_expense_by_dates_transmitter,
   get_expenses_by_day,
@@ -15,6 +15,9 @@ import {
   get_sales_count,
   get_sales_point_of_sale_by_branch,
 } from '../../services/reports/sales.reports.service';
+
+import { ISalesReportStore } from './types/sale_report.store.types';
+
 import {
   get_graphic_for_category_products_for_dates,
   get_graphic_sub_category_products_for_dates,

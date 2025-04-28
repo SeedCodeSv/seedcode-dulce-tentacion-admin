@@ -10,13 +10,16 @@ import {
   ModalFooter,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { toast } from 'sonner';
+
 import { useCategoriesStore } from '../../store/categories.store';
 import { Product, ProductPayload } from '../../types/products.types';
 import { useProductsStore } from '../../store/products.store';
 import { CategoryProduct } from '../../types/categories.types';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useSubCategoriesStore } from '../../store/sub-categories.store';
-import { toast } from 'sonner';
+
+
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 
@@ -58,6 +61,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     sertLoging(true);
     try {
       const response = await patchProducts(dataUpdateProduct, product?.id || 0);
+
       if (response.ok === true) {
         sertLoging(false);
         onCloseModal();
@@ -74,6 +78,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
   ) => {
     const value =
       field === 'price' || field === 'costoUnitario' ? Number(e.target.value) : e.target.value;
+
     setDataUpdateProduct((prev) => ({
       ...prev,
       [field]: value,
@@ -82,7 +87,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onCloseModal} size="2xl" isDismissable={false}>
+      <Modal isDismissable={false} isOpen={isOpen} size="2xl" onClose={onCloseModal}>
         <ModalContent>
           <ModalHeader>Editar Producto</ModalHeader>
           <ModalBody>
@@ -90,45 +95,46 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               <div>
                 <div className="pt-2">
                   <Input
-                    label="Nombre"
-                    labelPlacement="outside"
-                    defaultValue={product?.name}
-                    onChange={(e) => handleInputChange(e, 'name')}
-                    name="name"
-                    placeholder="Ingresa el nombre"
                     classNames={{
                       label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
                     }}
+                    defaultValue={product?.name}
+                    label="Nombre"
+                    labelPlacement="outside"
+                    name="name"
+                    placeholder="Ingresa el nombre"
                     variant="bordered"
+                    onChange={(e) => handleInputChange(e, 'name')}
                   />
                 </div>
                 <div className="mt-2">
                   <Textarea
-                    label="Descripción"
-                    onChange={(e) => handleInputChange(e, 'description')}
+                    classNames={{ label: 'font-semibold text-gray-500 text-sm text-left' }}
                     defaultValue={product?.description}
+                    label="Descripción"
                     labelPlacement="outside"
                     name="description"
                     placeholder="Ingresa la descripción"
-                    classNames={{ label: 'font-semibold text-gray-500 text-sm text-left' }}
                     variant="bordered"
+                    onChange={(e) => handleInputChange(e, 'description')}
                   />
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const categorySelected = JSON.parse(key as string) as CategoryProduct;
-                        getSubcategories(categorySelected.id);
-                      }
-                    }}
+                    classNames={{ base: 'font-semibold text-sm' }}
+                    defaultInputValue={product?.subCategory?.categoryProduct.name || ''}
                     label="Categoría producto"
                     labelPlacement="outside"
                     placeholder="Selecciona la categoría"
                     value={product?.subCategory?.categoryProduct.name || ''}
                     variant="bordered"
-                    defaultInputValue={product?.subCategory?.categoryProduct.name || ''}
-                    classNames={{ base: 'font-semibold text-sm' }}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const categorySelected = JSON.parse(key as string) as CategoryProduct;
+
+                        getSubcategories(categorySelected.id);
+                      }
+                    }}
                   >
                     {list_categories.map((category) => (
                       <AutocompleteItem key={JSON.stringify(category)} className="dark:text-white">
@@ -139,25 +145,25 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 </div>
                 <div className="mt-2">
                   <Autocomplete
-                    name="subCategoryId"
+                    className="dark:text-white"
+                    classNames={{ base: 'font-semibold text-sm' }}
+                    defaultInputValue={product?.subCategory.name || ''}
                     label="Subcategoría"
                     labelPlacement="outside"
+                    name="subCategoryId"
                     placeholder="Selecciona la subcategoria"
                     variant="bordered"
-                    classNames={{ base: 'font-semibold text-sm' }}
-                    className="dark:text-white"
-                    defaultInputValue={product?.subCategory.name || ''}
                   >
                     {subcategories?.map((sub) => (
                       <AutocompleteItem
                         key={JSON.stringify(sub)}
+                        className="dark:text-white"
                         onClick={() => {
                           setDataUpdateProduct((prev) => ({
                             ...prev,
                             subCategoryId: sub.id,
                           }));
                         }}
-                        className="dark:text-white"
                       >
                         {sub.name}
                       </AutocompleteItem>
@@ -168,17 +174,17 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               <div>
                 <div className="mt-2">
                   <Autocomplete
-                    variant="bordered"
+                    classNames={{ base: 'font-semibold' }}
+                    defaultInputValue={product?.tipoDeItem || ''}
                     label="Tipo de item"
                     labelPlacement="outside"
-                    classNames={{ base: 'font-semibold' }}
                     placeholder="Selecciona el item"
-                    defaultInputValue={product?.tipoDeItem || ''}
+                    variant="bordered"
                   >
                     {itemTypes.map((item) => (
                       <AutocompleteItem
-                        className="dark:text-white"
                         key={JSON.stringify(item)}
+                        className="dark:text-white"
                         onClick={() => {
                           setDataUpdateProduct((prev) => ({
                             ...prev,
@@ -198,18 +204,18 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 <div className="mt-2">
                   <Autocomplete
                     className="pt-5"
-                    variant="bordered"
-                    name="unidadDeMedida"
-                    label="Unidad de medida"
-                    labelPlacement="outside"
-                    placeholder="Selecciona unidad de medida"
                     classNames={{ base: 'font-semibold' }}
                     defaultInputValue={product?.unidaDeMedida || ''}
+                    label="Unidad de medida"
+                    labelPlacement="outside"
+                    name="unidadDeMedida"
+                    placeholder="Selecciona unidad de medida"
+                    variant="bordered"
                   >
                     {unidadDeMedidaList.map((item) => (
                       <AutocompleteItem
-                        className="dark:text-white"
                         key={item.id}
+                        className="dark:text-white"
                         onClick={() => {
                           setDataUpdateProduct((prev) => ({
                             ...prev,
@@ -230,14 +236,14 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 <div className="flex gap-2 mt-5">
                   <div className="w-full mt-2">
                     <Input
+                      classNames={{ label: 'font-semibold text-sm' }}
+                      defaultValue={product?.code}
                       label="Código"
                       labelPlacement="outside"
                       name="code"
-                      defaultValue={product?.code}
-                      onChange={(e) => handleInputChange(e, 'code')}
                       placeholder="Ingresa o genera el código"
-                      classNames={{ label: 'font-semibold text-sm' }}
                       variant="bordered"
+                      onChange={(e) => handleInputChange(e, 'code')}
                     />
                   </div>
                 </div>
@@ -251,7 +257,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               </ButtonUi>
             ) : (
               <div className="flex flex-col items-center justify-center w-full">
-                <div className="loaderBranch w-2 h-2 mt-2"></div>
+                <div className="loaderBranch w-2 h-2 mt-2" />
                 <p className="mt-3 text-sm font-semibold">Cargando...</p>
               </div>
             )}

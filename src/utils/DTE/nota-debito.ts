@@ -1,4 +1,3 @@
-import { Correlativo } from '@/types/correlatives_dte.types';
 import { ND_ApendiceItems, ND_CuerpoDocumentoItems, ND_DocumentoRelacionadoItems, ND_Emisor, ND_Extension, ND_Receptor, ND_Resumen, ND_VentaTercerosItems, SVFE_ND_SEND } from '../../types/svf_dte/nd.types';
 import { ITransmitter } from "../../types/transmitter.types";
 import { ambiente } from "../constants";
@@ -6,6 +5,8 @@ import { getElSalvadorDateTime } from "../dates";
 import { generate_control } from "../dte";
 import { formatearNumero } from "../make-dte";
 import { generate_uuid } from "../random/random";
+
+import { Correlativo } from '@/types/correlatives_dte.types';
 
 export const generateNotaDebito = (
     emisor: ITransmitter,
@@ -23,6 +24,7 @@ export const generateNotaDebito = (
     // tipoEstable: string
 ): SVFE_ND_SEND => {
     const dataEmisor = { ...emisor, tipoEstablecimiento: correlative.tipoEstablecimiento}
+
     return {
         nit: emisor.nit,
         activo: true,

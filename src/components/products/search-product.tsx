@@ -1,13 +1,15 @@
+import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
+import { Filter, SearchIcon } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+
+import { IPropsSearchProduct } from './types/mobile-view.types';
+
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useProductsStore } from '@/store/products.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useSubCategoryStore } from '@/store/sub-category';
 import { CategoryProduct } from '@/types/categories.types';
-import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
-import { Filter, SearchIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
-import { IPropsSearchProduct } from './types/mobile-view.types';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 
@@ -23,6 +25,7 @@ function SearchProduct(props: IPropsSearchProduct) {
   const [search, setSearch] = useState('');
   const [subCategory, setSubCategory] = useState('');
   const { list_categories, getListCategories } = useCategoriesStore();
+
   useEffect(() => {
     getListCategories();
     getSubCategoriesList();
@@ -33,88 +36,91 @@ function SearchProduct(props: IPropsSearchProduct) {
   const { getPaginatedProducts } = useProductsStore();
   const itemSubCategories = useMemo(() => {
     if (subcategories.length > 0) return subcategories;
+
     return sub_categories;
   }, [sub_categories, subcategories]);
   const handleSearch = () => {
     getPaginatedProducts(1, 5, category, subCategory, search, code, 1);
   };
+
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
-        <ButtonUi theme={Colors.Info} isIconOnly type="button" onClick={() => setOpenVaul(true)}>
+        <ButtonUi isIconOnly theme={Colors.Info} type="button" onClick={() => setOpenVaul(true)}>
           <Filter />
         </ButtonUi>
         <BottomDrawer
-          title="Filtros disponibles"
           open={openVaul}
+          title="Filtros disponibles"
           onClose={() => setOpenVaul(false)}
         >
           <div className="flex flex-col  gap-2">
             <Input
-              startContent={<SearchIcon />}
+              isClearable
               className="w-full border text-black dark:border-white rounded-xl  dark:text-white"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Nombre"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
             
               }}
+              label="Nombre"
+              labelPlacement="outside"
+              placeholder="Escribe para buscar..."
+              startContent={<SearchIcon />}
               value={search}
+              variant="bordered"
               onChange={(e) => {
                 setSearch(e.target.value), props.nameProduct(e.target.value);
               }}
-              placeholder="Escribe para buscar..."
-              isClearable
               onClear={() => {
                 setSearch('');
               }}
             />
             <Input
-              startContent={<SearchIcon />}
+              isClearable
               className="w-full border text-black dark:border-white rounded-xl dark:text-white"
-              variant="bordered"
-              labelPlacement="outside"
-              label="Código"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
+              label="Código"
+              labelPlacement="outside"
+              placeholder="Escribe para buscar..."
+              startContent={<SearchIcon />}
               value={code}
+              variant="bordered"
               onChange={(e) => {
                 setCode(e.target.value), props.codeProduct(e.target.value);
               }}
-              placeholder="Escribe para buscar..."
-              isClearable
               onClear={() => {
                 setCode('');
               }}
             />
-           <label className="font-semibold dark:text-white text-gray-700">Categoría</label>
+           <span className="font-semibold dark:text-white text-gray-700">Categoría</span>
             <Autocomplete
-              onSelectionChange={(key) => {
-                if (key) {
-                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                  setCategory(branchSelected.name);
-                  setCategoryId(branchSelected.id);
-                  props.categoryProduct(branchSelected.name);
-                }
-              }}
               className="dark:text-white border dark:border-white rounded-xl "
               classNames={{
                 base: 'font-semibold text-sm',
               }}
-              labelPlacement="outside"
-              placeholder="Selecciona la categoría"
-              variant="bordered"
-              value={category}
-              defaultSelectedKey={category}
               clearButtonProps={{
                 onClick: () => {
                   setCategory('');
                   setCategoryId(0);
                 },
+              }}
+              defaultSelectedKey={category}
+              labelPlacement="outside"
+              placeholder="Selecciona la categoría"
+              value={category}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
+
+                  setCategory(branchSelected.name);
+                  setCategoryId(branchSelected.id);
+                  props.categoryProduct(branchSelected.name);
+                }
               }}
             >
               {list_categories.map((bra) => (
@@ -126,27 +132,28 @@ function SearchProduct(props: IPropsSearchProduct) {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-            <label className="font-semibold dark:text-white text-gray-700">Sub categoría</label>
+            <span className="font-semibold dark:text-white text-gray-700">Sub categoría</span>
             <Autocomplete
-              onSelectionChange={(key) => {
-                if (key) {
-                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
-                  setSubCategory(branchSelected.name);
-                  props.subCategoryProduct(branchSelected.name);
-                }
-              }}
               className="w-full dark:text-white border dark:border-white rounded-xl "
-              labelPlacement="outside"
-              placeholder="Selecciona la sub categoría"
-              variant="bordered"
               classNames={{
                 base: 'font-semibold text-gray-500 text-sm',
               }}
-              defaultSelectedKey={subCategory}
               clearButtonProps={{
                 onClick: () => {
                   setSubCategory('');
                 },
+              }}
+              defaultSelectedKey={subCategory}
+              labelPlacement="outside"
+              placeholder="Selecciona la sub categoría"
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const branchSelected = JSON.parse(key as string) as CategoryProduct;
+
+                  setSubCategory(branchSelected.name);
+                  props.subCategoryProduct(branchSelected.name);
+                }
               }}
             >
               {itemSubCategories.map((item) => (

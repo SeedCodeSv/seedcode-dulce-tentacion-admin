@@ -1,9 +1,11 @@
 import { TrendingUp, Package, DollarSign } from 'lucide-react';
 import { memo, useMemo } from 'react';
 import { ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { salesReportStore } from '../../store/reports/sales_report.store.ts';
-import { formatCurrency } from '@/utils/dte.ts';
 import { Spinner } from '@heroui/react';
+
+import { salesReportStore } from '../../store/reports/sales_report.store.ts';
+
+import { formatCurrency } from '@/utils/dte.ts';
 import { useBranchProductReportStore } from '@/store/reports/branch_product.store.ts';
 
 function Charts() {
@@ -54,6 +56,7 @@ function Charts() {
       const sorted = [...most_product_selled].sort(
         (a, b) => Number(b.quantity) - Number(a.quantity)
       );
+
       return sorted[0].branchProduct.name.length > 35
         ? sorted[0].branchProduct.name.slice(0, 35) + '...'
         : sorted[0].branchProduct.name;
@@ -67,6 +70,7 @@ function Charts() {
       const sorted = [...most_product_selled].sort(
         (a, b) => Number(b.quantity) - Number(a.quantity)
       );
+
       return sorted[0].quantity;
     } else {
       return 0;
@@ -97,9 +101,9 @@ function Charts() {
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 opacity-30">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer height="100%" width="100%">
             <AreaChart data={monthlyData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <Area type="monotone" dataKey="value" stroke="#fff" fill="#fff" />
+              <Area dataKey="value" fill="#fff" stroke="#fff" type="monotone" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -115,9 +119,9 @@ function Charts() {
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 opacity-30">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer height="100%" width="100%">
             <AreaChart data={dailyData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <Area type="monotone" dataKey="value" stroke="#fff" fill="#fff" />
+              <Area dataKey="value" fill="#fff" stroke="#fff" type="monotone" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -134,9 +138,9 @@ function Charts() {
           <p className="text-sm opacity-75 mt-1">{mostProductSealedQuantity} unidades</p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 opacity-30">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer height="100%" width="100%">
             <AreaChart data={productData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <Area type="monotone" dataKey="value" stroke="#fff" fill="#fff" />
+              <Area dataKey="value" fill="#fff" stroke="#fff" type="monotone" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
@@ -152,9 +156,9 @@ function Charts() {
           </p>
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-16 sm:h-20 opacity-30">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer height="100%" width="100%">
             <AreaChart data={yearlyData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-              <Area type="monotone" dataKey="value" stroke="#fff" fill="#fff" />
+              <Area dataKey="value" fill="#fff" stroke="#fff" type="monotone" />
             </AreaChart>
           </ResponsiveContainer>
         </div>

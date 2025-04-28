@@ -1,16 +1,18 @@
 import { AxiosError } from 'axios';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { Button } from '@heroui/react';
+import { LoaderCircle } from 'lucide-react';
+
 import { get_json_sale } from '../../services/sales.service';
 import { IDTE } from '../../types/DTE/DTE.types';
 import { useTransmitterStore } from '../../store/transmitter.store';
-import { useEffect, useState } from 'react';
 import { return_mh_token } from '../../storage/localStorage';
-import { toast } from 'sonner';
 import { Sale } from '../../types/report_contigence';
 import { check_dte, get_json_from_space } from '../../services/DTE.service';
 import { ICheckResponse } from '../../types/DTE/check.types';
-import { Button } from '@heroui/react';
 import { global_styles } from '../../styles/global.styles';
-import { LoaderCircle } from 'lucide-react';
+
 
 interface Props {
   sale: Sale;
@@ -25,6 +27,7 @@ export const AddSealMH = (props: Props) => {
   const { gettransmitter, transmitter } = useTransmitterStore();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+
   interface Data {
     quantity: number;
     discount: string | number;
@@ -43,9 +46,11 @@ export const AddSealMH = (props: Props) => {
       codigoGeneracion: sale.codigoGeneracion,
     };
     const token_mh = return_mh_token();
+
     check_dte(payload, token_mh ?? '')
       .then((response) => {
         const selloRecibido = String(response.data.selloRecibido);
+
         toast.success(response.data.estado, {
           description: `Sello recibido: ${response.data.selloRecibido}`,
         });
@@ -57,6 +62,7 @@ export const AddSealMH = (props: Props) => {
             .then((response) => {
               const jsonData: IDTE = response.data;
               const data: Data[] = [];
+
               for (const item of jsonData.cuerpoDocumento) {
                 data.push({
                   quantity: item.cantidad,
@@ -83,6 +89,7 @@ export const AddSealMH = (props: Props) => {
           });
           setLoading(false);
           props.onClose();
+
           return;
         }
 
@@ -104,11 +111,11 @@ export const AddSealMH = (props: Props) => {
       </p>
       <div className="flex justify-center">
         <Button
-          style={global_styles().thirdStyle}
-          onClick={() => handleVerify(props.sale)}
+          className=" w-1/2"
           disabled={loading}
           isLoading={loading}
-          className=" w-1/2"
+          style={global_styles().thirdStyle}
+          onClick={() => handleVerify(props.sale)}
         >
           Verificar
         </Button>

@@ -9,15 +9,17 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@heroui/react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { X } from 'lucide-react';
+
+import FullPageLayout from '../global/FullOverflowLayout';
+
 import { useAuthStore } from '@/store/auth.store';
 import { useItemsStore } from '@/store/items.store';
 import { formatDate, formatDateForReports } from '@/utils/dates';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { formatMoney } from '@/utils/utils';
 import { formatDdMmYyyy } from '@/utils/date';
-import FullPageLayout from '../global/FullOverflowLayout';
-import { X } from 'lucide-react';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
@@ -144,6 +146,7 @@ function MajorBook({ disclosure }: Props) {
 
         const totalSee = item.items.reduce((acc, it) => acc + +it.totalDebe, 0);
         const totalShould = item.items.reduce((acc, it) => acc + +it.totalHaber, 0);
+
         allTotalSee += totalSee;
         allTotalShould += totalShould;
         doc.setFontSize(10);
@@ -306,11 +309,13 @@ function MajorBook({ disclosure }: Props) {
 
     if (type === 'download') {
       doc.save('libro-mayor.pdf');
+
       return;
     }
 
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
+
     setLoadingPdf(false);
     setPdf(url);
   };
@@ -320,29 +325,30 @@ function MajorBook({ disclosure }: Props) {
   };
 
   const previewModal = useDisclosure();
+
   return (
     <>
       <FullPageLayout show={previewModal.isOpen}>
         <div className="w-[100vw] h-[100vh] bg-white rounded-2xl">
           <Button
+            isIconOnly
+            className="absolute bottom-6 left-6"
             color="danger"
             onPress={() => previewModal.onClose()}
-            className="absolute bottom-6 left-6"
-            isIconOnly
           >
             <X />
           </Button>
           {loadingPdf ? (
             <div className="w-full h-full flex flex-col justify-center items-center">
-              <div className="loader"></div>
+              <div className="loader" />
               <p className="mt-5 text-xl">Cargando...</p>
             </div>
           ) : (
-            <iframe className="w-full h-full" src={pdf}></iframe>
+            <iframe className="w-full h-full" src={pdf} title='pdf' />
           )}
         </div>
       </FullPageLayout>
-      <Modal {...disclosure} size="xl" isDismissable={false}>
+      <Modal {...disclosure} isDismissable={false} size="xl">
         <ModalContent>
           <>
             <ModalHeader>
@@ -350,58 +356,58 @@ function MajorBook({ disclosure }: Props) {
             </ModalHeader>
             <ModalBody>
               <Input
-                labelPlacement="outside"
+                className="dark:text-white"
                 classNames={{ label: 'font-semibold' }}
                 label="Fecha inicial"
+                labelPlacement="outside"
                 type="date"
-                variant="bordered"
-                className="dark:text-white"
                 value={startDate}
+                variant="bordered"
                 onChange={(e) => setStartDate(e.target.value)}
               />
               <Input
-                labelPlacement="outside"
+                className="dark:text-white"
                 classNames={{ label: 'font-semibold' }}
                 label="Fecha final"
+                labelPlacement="outside"
                 type="date"
-                variant="bordered"
-                className="dark:text-white"
                 value={endDate}
+                variant="bordered"
                 onChange={(e) => setEndDate(e.target.value)}
               />
               <ButtonUi
-                onPress={handleGetItems}
+                className="w-full"
                 isLoading={loadingMajorAccount}
                 theme={Colors.Primary}
-                className="w-full"
+                onPress={handleGetItems}
               >
                 Buscar
               </ButtonUi>
             </ModalBody>
             <ModalFooter>
               <ButtonUi
-                onPress={disclosure.onClose}
+                className="px-10"
                 isLoading={loadingMajorAccount}
                 theme={Colors.Default}
-                className="px-10"
+                onPress={disclosure.onClose}
               >
                 Cancelar
               </ButtonUi>
               <ButtonUi
-                onPress={handleShowPreview}
+                className="px-10"
                 isDisabled={majorItems.length === 0}
                 isLoading={loadingMajorAccount || loadingPdf}
                 theme={Colors.Info}
-                className="px-10"
+                onPress={handleShowPreview}
               >
                 Visualizar
               </ButtonUi>
               <ButtonUi
-                onPress={() => generatePDF('download')}
+                className="px-10"
                 isDisabled={majorItems.length === 0}
                 isLoading={loadingMajorAccount}
                 theme={Colors.Success}
-                className="px-10"
+                onPress={() => generatePDF('download')}
               >
                 Descargar PDF
               </ButtonUi>

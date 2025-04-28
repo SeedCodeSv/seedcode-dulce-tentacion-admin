@@ -6,7 +6,7 @@ function SalesByTransmitterPage() {
   return (
     <div>
       <Layout title="Ventas Generales">
-        <SalesByTransmitter></SalesByTransmitter>
+        <SalesByTransmitter />
       </Layout>
     </div>
   );

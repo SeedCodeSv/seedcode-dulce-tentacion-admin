@@ -14,25 +14,27 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import { ThemeContext } from '../hooks/useTheme';
 import { Box, ChevronDown, Home } from 'lucide-react';
+
+import { ThemeContext } from '../hooks/useTheme';
 
 export default function NavBar() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   
   const { theme, context } = useContext(ThemeContext);
+
   return (
     <Navbar
-      classNames={{ base: 'w-screen', wrapper: 'w-screen max-w-[100vw]' }}
-      onMenuOpenChange={setIsMenuOpen}
-      shouldHideOnScroll
-      isBordered
       isBlurred
+      isBordered
+      shouldHideOnScroll
+      classNames={{ base: 'w-screen', wrapper: 'w-screen max-w-[100vw]' }}
       style={{
         backgroundColor: theme.colors[context].menu.background,
         color: theme.colors[context].menu.textColor,
       }}
+      onMenuOpenChange={setIsMenuOpen}
     >
       <NavbarContent>
         <NavbarMenuToggle aria-label={isMenuOpen ? 'Close menu' : 'Open menu'} className="" />

@@ -1,5 +1,11 @@
 import { create } from 'zustand';
-import { salesStore } from './types/sales.store.types';
+import { toast } from 'sonner';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import axios from 'axios';
+
+import { calcularPorcentajeDescuento } from '../utils/filters';
+import { messages, SPACES_BUCKET } from '../utils/constants';
 import {
   get_factura_by_month,
   get_notes_of_sale,
@@ -10,13 +16,10 @@ import {
   get_sales_status_and_dates,
   post_sales,
 } from '../services/sales.service';
-import { toast } from 'sonner';
-import { messages, SPACES_BUCKET } from '../utils/constants';
-import { calcularPorcentajeDescuento } from '../utils/filters';
+
+import { salesStore } from './types/sales.store.types';
+
 import { s3Client } from '@/plugins/s3';
-import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import axios from 'axios';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
 export const useSalesStore = create<salesStore>((set, get) => ({
   sale_details: undefined,
@@ -105,6 +108,7 @@ export const useSalesStore = create<salesStore>((set, get) => ({
           Key: path,
         })
       );
+
       axios
         .get<SVFC_CF_Firmado>(url, {
           responseType: 'json',

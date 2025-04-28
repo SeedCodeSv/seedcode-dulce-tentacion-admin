@@ -1,8 +1,11 @@
-import { ViewsStore } from './types/views.store.types';
 import { create } from 'zustand';
+import { AxiosError } from 'axios';
+
 import { create_view, delete_views, get_actions_by_rol, get_views, get_views_list } from '../services/views.service';
 import { views_enabled } from '../utils/constants';
-import { AxiosError } from 'axios';
+
+import { ViewsStore } from './types/views.store.types';
+
 import { IResponseDataViewasAction } from '@/types/view.types';
 
 export const useViewsStore = create<ViewsStore>((set, get) => ({
@@ -102,6 +105,7 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
         const enabled = views_enabled.filter((route) => {
           return !data.views.map((route) => route.name).includes(route);
         });
+
         set((state) => ({
           ...state,
           views_list: data.views,
@@ -130,6 +134,7 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
     return Promise.all(promises)
       .then(() => {
         get().getViews();
+
         return true;
       })
       .catch(() => {
@@ -144,8 +149,10 @@ export const useViewsStore = create<ViewsStore>((set, get) => ({
       })
       .catch((error: AxiosError<{ status: number }>) => {
         alert(Number(error.response?.data.status));
+
         return false;
       });
+
     return value;
   },
 }));

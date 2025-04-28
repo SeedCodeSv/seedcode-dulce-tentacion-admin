@@ -30,10 +30,7 @@ function SalesMonthBranches({ sales }: Props) {
           {sales.total}
         </p>
         <ApexChart
-          type="line"
-          series={sales.series}
           height={150}
-          width={'100%'}
           options={{
             labels: sales.labels,
             yaxis: {
@@ -106,6 +103,7 @@ function SalesMonthBranches({ sales }: Props) {
                 const producto = sales.labels[dataPointIndex];
                 const branch = sales.branch[dataPointIndex];
                 const total = sales.series[0].data[dataPointIndex];
+
                 return `
                   <div style="width: auto; text-align: left; background-color: white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 8px;">
                     <div style="padding: 8px 16px; background-color: #f7fafc; border-bottom: 1px solid #e2e8f0;">
@@ -124,6 +122,9 @@ function SalesMonthBranches({ sales }: Props) {
               enabled: false,
             },
           }}
+          series={sales.series}
+          type="line"
+          width={'100%'}
         />
       </div>
     </>

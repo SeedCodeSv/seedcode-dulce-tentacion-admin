@@ -1,18 +1,21 @@
 import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from '@heroui/react';
-import Layout from '../../layout/Layout';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useEffect, useState } from 'react';
+import { Filter, SearchIcon } from 'lucide-react';
+
+import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import Pagination from '../../components/global/Pagination';
+
 import SalesChartPeriod from './Period/SalesChartPeriod';
+
 import { formatCurrency } from '@/utils/dte';
 import { limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCorrelativesStore } from '@/store/correlatives.store';
 import { Branches } from '@/types/branches.types';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
-import { Filter, SearchIcon } from 'lucide-react';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { usePointOfSales } from '@/store/point-of-sales.store';
@@ -86,37 +89,38 @@ function VentasPorPeriodo() {
         <div className="w-full h-full border border-white p-5 overflow-y-auto  bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
+              className="w-full dark:text-white"
+              classNames={{ label: 'font-semibold' }}
               label="Fecha inicial"
               labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
-              variant="bordered"
-              className="w-full dark:text-white"
               type="date"
               value={startDate}
+              variant="bordered"
               onChange={(e) => setStartDate(e.target.value)}
             />
             <Input
+              className="w-full dark:text-white"
+              classNames={{ label: 'font-semibold' }}
               label="Fecha final"
               labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
-              variant="bordered"
-              className="w-full dark:text-white"
               type="date"
               value={endDate}
+              variant="bordered"
               onChange={(e) => setEndDate(e.target.value)}
             />
             <Select
-              variant="bordered"
-              label="Tipo de pago"
-              placeholder="Selecciona el tipo de pago"
-              labelPlacement="outside"
-              classNames={{ label: 'font-semibold' }}
               className="w-full dark:text-white"
-              value={typePayment}
+              classNames={{ label: 'font-semibold' }}
               defaultSelectedKeys={typePayment}
+              label="Tipo de pago"
+              labelPlacement="outside"
+              placeholder="Selecciona el tipo de pago"
+              value={typePayment}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const payment = new Set(key);
+
                   setTypePayment(payment.values().next().value as string);
                 }
               }}
@@ -129,10 +133,12 @@ function VentasPorPeriodo() {
             </Select>
 
             <Select
+              className="w-full dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Sucursal"
               labelPlacement="outside"
-              className="w-full dark:text-white"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const branch_id = new Set(key).values().next().value;
@@ -140,11 +146,10 @@ function VentasPorPeriodo() {
                   const filterBranch = branch_list.find(
                     (branch) => branch.id === Number(branch_id)
                   );
+
                   setSelectedBranch(filterBranch);
                 }
               }}
-              variant="bordered"
-              placeholder="Selecciona la sucursal"
             >
               {branch_list.map((branch) => (
                 <SelectItem key={branch.id} className="dark:text-white">
@@ -154,25 +159,26 @@ function VentasPorPeriodo() {
             </Select>
             <div className="w-full">
               <Autocomplete
-                onSelectionChange={(e) => {
-                  const selectCorrelativeType = correlativesTypes.find(
-                    (dep) => dep.value === new Set([e]).values().next().value
-                  );
-                  setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+                className="dark:text-white font-semibold text-sm"
+                classNames={{
+                  base: 'text-gray-500 text-sm',
                 }}
                 label="Tipo de Voucher"
                 labelPlacement="outside"
                 placeholder="Selecciona el Tipo de Factura"
                 variant="bordered"
-                className="dark:text-white font-semibold text-sm"
-                classNames={{
-                  base: 'text-gray-500 text-sm',
+                onSelectionChange={(e) => {
+                  const selectCorrelativeType = correlativesTypes.find(
+                    (dep) => dep.value === new Set([e]).values().next().value
+                  );
+
+                  setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
                 }}
               >
                 {correlativesTypes
                   .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                   .map((dep) => (
-                    <AutocompleteItem className="dark:text-white" key={dep.value}>
+                    <AutocompleteItem key={dep.value} className="dark:text-white">
                       {dep.value + ' - ' + dep.label}
                     </AutocompleteItem>
                   ))}
@@ -180,15 +186,16 @@ function VentasPorPeriodo() {
             </div>
 
             <Select
+              className="w-full dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Correlativo"
               labelPlacement="outside"
-              variant="bordered"
-              className="w-full dark:text-white"
               placeholder="Selecciona la correlativo"
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   const corr = new Set(key).values().next().value;
+
                   setCode(corr as string);
                 }
               }}
@@ -204,17 +211,18 @@ function VentasPorPeriodo() {
 
             <div className="col-span-2 grid grid-cols-3 w-full gap-4">
               <Select
+                className="w-full dark:text-white"
+                classNames={{ label: 'font-semibold' }}
+                defaultSelectedKeys={limit_options[0]}
                 label="Punto de venta"
-                variant="bordered"
                 labelPlacement="outside"
                 placeholder="Selecciona un punto de venta"
-                classNames={{ label: 'font-semibold' }}
-                className="w-full dark:text-white"
                 value={limit_options[0]}
-                defaultSelectedKeys={limit_options[0]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     const point_of_sale = new Set(key).values().next().value;
+
                     setPointOfSale(point_of_sale as string);
                   }
                 }}
@@ -232,16 +240,17 @@ function VentasPorPeriodo() {
                   ))}
               </Select>
               <Select
-                label="Límite"
-                variant="bordered"
-                labelPlacement="outside"
-                classNames={{ label: 'font-semibold' }}
                 className="w-full dark:text-white"
-                value={limit_options[0]}
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={limit_options[0]}
+                label="Límite"
+                labelPlacement="outside"
+                value={limit_options[0]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     const limit = new Set(key).values().next().value;
+
                     setLimit(limit as number);
                   }
                 }}
@@ -254,10 +263,10 @@ function VentasPorPeriodo() {
               </Select>
               <div className="flex flex-col mt-6 w-full">
                 <ButtonUi
-                  theme={Colors.Primary}
                   className="hidden font-semibold md:flex"
                   color="primary"
                   endContent={<SearchIcon size={15} />}
+                  theme={Colors.Primary}
                   onPress={() => {
                     handleSearch(undefined);
                     setOpenVaul(false);
@@ -272,10 +281,10 @@ function VentasPorPeriodo() {
           {/* Parte responsiva para movil */}
           <div className="flex items-center gap-5">
             <div className="flex-1 block md:hidden">
-              <TooltipGlobal text="Filtros disponibles" color="primary">
+              <TooltipGlobal color="primary" text="Filtros disponibles">
                 <ButtonUi
-                  theme={Colors.Info}
                   isIconOnly
+                  theme={Colors.Info}
                   type="button"
                   onPress={() => setOpenVaul(true)}
                 >
@@ -283,46 +292,47 @@ function VentasPorPeriodo() {
                 </ButtonUi>
               </TooltipGlobal>
               <BottomDrawer
-                title="Filtros disponibles"
                 open={openVaul}
+                title="Filtros disponibles"
                 onClose={() => setOpenVaul(false)}
               >
                 <Input
+                  className="w-full"
+                  classNames={{ label: 'font-semibold' }}
                   label="Fecha inicial"
                   labelPlacement="outside"
-                  classNames={{ label: 'font-semibold' }}
-                  variant="bordered"
-                  className="w-full"
                   type="date"
                   value={startDate}
+                  variant="bordered"
                   onChange={(e) => setStartDate(e.target.value)}
                   // onClear={() => setStartDate('')}
                 />
                 <div className="pt-4">
                   <Input
+                    className="w-full"
+                    classNames={{ label: 'font-semibold' }}
                     label="Fecha final"
                     labelPlacement="outside"
-                    classNames={{ label: 'font-semibold' }}
-                    variant="bordered"
-                    className="w-full"
                     type="date"
                     value={endDate}
+                    variant="bordered"
                     onChange={(e) => setEndDate(e.target.value)}
                   />
                 </div>
                 <div className="pt-4">
                   <Select
-                    variant="bordered"
-                    label="Tipo de pago"
-                    placeholder="Selecciona el tipo de pago"
-                    labelPlacement="outside"
-                    classNames={{ label: 'font-semibold' }}
                     className="w-full"
-                    value={typePayment}
+                    classNames={{ label: 'font-semibold' }}
                     defaultSelectedKeys={typePayment}
+                    label="Tipo de pago"
+                    labelPlacement="outside"
+                    placeholder="Selecciona el tipo de pago"
+                    value={typePayment}
+                    variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
                         const payment = new Set(key);
+
                         setTypePayment(payment.values().next().value as string);
                       }
                     }}
@@ -339,6 +349,8 @@ function VentasPorPeriodo() {
                     classNames={{ label: 'font-semibold' }}
                     label="Sucursal"
                     labelPlacement="outside"
+                    placeholder="Selecciona la sucursal"
+                    variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
                         const branch_id = new Set(key).values().next().value;
@@ -346,11 +358,10 @@ function VentasPorPeriodo() {
                         const filterBranch = branch_list.find(
                           (branch) => branch.id === Number(branch_id)
                         );
+
                         setSelectedBranch(filterBranch);
                       }
                     }}
-                    variant="bordered"
-                    placeholder="Selecciona la sucursal"
                   >
                     {branch_list.map((branch) => (
                       <SelectItem key={branch.id} className="dark:text-white">
@@ -362,25 +373,26 @@ function VentasPorPeriodo() {
 
                 <div className="pt-4">
                   <Autocomplete
-                    onSelectionChange={(e) => {
-                      const selectCorrelativeType = correlativesTypes.find(
-                        (dep) => dep.value === new Set([e]).values().next().value
-                      );
-                      setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+                    className="dark:text-white font-semibold text-sm"
+                    classNames={{
+                      base: 'text-gray-500 text-sm',
                     }}
                     label="Tipo de Voucher"
                     labelPlacement="outside"
                     placeholder="Selecciona el Tipo de Factura"
                     variant="bordered"
-                    className="dark:text-white font-semibold text-sm"
-                    classNames={{
-                      base: 'text-gray-500 text-sm',
+                    onSelectionChange={(e) => {
+                      const selectCorrelativeType = correlativesTypes.find(
+                        (dep) => dep.value === new Set([e]).values().next().value
+                      );
+
+                      setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
                     }}
                   >
                     {correlativesTypes
                       .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
                       .map((dep) => (
-                        <AutocompleteItem className="dark:text-white" key={dep.value}>
+                        <AutocompleteItem key={dep.value} className="dark:text-white">
                           {dep.value + ' - ' + dep.label}
                         </AutocompleteItem>
                       ))}
@@ -391,11 +403,12 @@ function VentasPorPeriodo() {
                     classNames={{ label: 'font-semibold' }}
                     label="Correlativo"
                     labelPlacement="outside"
-                    variant="bordered"
                     placeholder="Selecciona la correlativo"
+                    variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
                         const corr = new Set(key).values().next().value;
+
                         setCode(corr as string);
                       }
                     }}
@@ -410,12 +423,12 @@ function VentasPorPeriodo() {
                   </Select>
                 </div>
                 <ButtonUi
+                  className="w-full mt-5"
                   theme={Colors.Primary}
                   onPress={() => {
                     handleSearch(undefined);
                     setOpenVaul(false);
                   }}
-                  className="w-full mt-5"
                 >
                   Aplicar filtros
                 </ButtonUi>
@@ -423,16 +436,17 @@ function VentasPorPeriodo() {
             </div>
             <div className="md:hidden flex justify-end w-full md:w-auto md:ml-auto">
               <Select
-                label="Limite"
-                variant="bordered"
-                labelPlacement="outside"
-                classNames={{ label: 'font-semibold' }}
                 className="w-24 md:w-32"
-                value={limit_options[0]}
+                classNames={{ label: 'font-semibold' }}
                 defaultSelectedKeys={limit_options[0]}
+                label="Limite"
+                labelPlacement="outside"
+                value={limit_options[0]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     const limit = new Set(key).values().next().value;
+
                     setLimit(limit as number);
                   }
                 }}
@@ -454,7 +468,7 @@ function VentasPorPeriodo() {
 
               {loading_sales_period ? (
                 <div className="flex flex-col items-center justify-center w-full mt-2">
-                  <div className="loader2"></div>
+                  <div className="loader2" />
                   {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
                 </div>
               ) : (
@@ -470,7 +484,7 @@ function VentasPorPeriodo() {
               <div className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
                 {loading_sales_period ? (
                   <div className="flex flex-col items-center justify-center w-full mt-2">
-                    <div className="loader2"></div>
+                    <div className="loader2" />
                     {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
                   </div>
                 ) : (
@@ -511,10 +525,10 @@ function VentasPorPeriodo() {
             <>
               <div className="w-full mt-4">
                 <Pagination
+                  currentPage={sales_by_period.currentPag}
                   nextPage={sales_by_period.nextPag}
                   previousPage={sales_by_period.prevPag}
                   totalPages={sales_by_period.totalPag}
-                  currentPage={sales_by_period.currentPag}
                   onPageChange={(page) => getSalesByPeriod(page, limit, startDate, endDate)}
                 />
               </div>
@@ -523,11 +537,11 @@ function VentasPorPeriodo() {
                 <div className="w-full">
                   {sales_by_period_graph?.data && (
                     <SalesChartPeriod
-                      startDate={startDate}
                       endDate={endDate}
                       labels={sales_by_period_graph.data
                         .sort((a, b) => Number(b.total) - Number(a.total))
                         .map((sale) => sale.branch)}
+                      startDate={startDate}
                     />
                   )}
                 </div>

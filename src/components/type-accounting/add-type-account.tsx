@@ -11,8 +11,9 @@ import {
 import { Plus } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { toast } from 'sonner';
+
+import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 
@@ -71,41 +72,41 @@ export default function AddTypeAccounting() {
                 <ModalHeader className="flex flex-col gap-1">Agregar tipo de partida</ModalHeader>
                 <ModalBody>
                   <Input
-                    labelPlacement="outside"
-                    variant="bordered"
+                    className="w-full"
                     classNames={{ base: 'font-semibold' }}
                     label="Nombre"
+                    labelPlacement="outside"
                     placeholder="Ingresa el nombre"
-                    className="w-full"
+                    variant="bordered"
                     {...formik.getFieldProps('name')}
-                    isInvalid={!!formik.touched.name && !!formik.errors.name}
                     errorMessage={formik.errors.name}
+                    isInvalid={!!formik.touched.name && !!formik.errors.name}
                   />
                   <Input
-                    labelPlacement="outside"
-                    variant="bordered"
+                    className="w-full"
                     classNames={{ base: 'font-semibold' }}
                     label="Descripción"
+                    labelPlacement="outside"
                     placeholder="Ingresa la descripción"
-                    className="w-full"
+                    variant="bordered"
                     {...formik.getFieldProps('description')}
-                    isInvalid={!!formik.touched.description && !!formik.errors.description}
                     errorMessage={formik.errors.description}
+                    isInvalid={!!formik.touched.description && !!formik.errors.description}
                   />
                 </ModalBody>
                 <ModalFooter>
                   <Button
-                    isLoading={formik.isSubmitting}
                     className="px-10"
                     color="danger"
+                    isLoading={formik.isSubmitting}
                     variant="light"
                     onPress={onClose}
                   >
                     Cancelar
                   </Button>
                   <ButtonUi
-                    isLoading={formik.isSubmitting}
                     className="px-10"
+                    isLoading={formik.isSubmitting}
                     theme={Colors.Primary}
                     type="submit"
                   >

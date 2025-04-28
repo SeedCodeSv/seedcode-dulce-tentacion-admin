@@ -1,3 +1,7 @@
+import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
+import { Filter, Search } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
 import BottomDrawer from '@/components/global/BottomDrawer';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { useAuthStore } from '@/store/auth.store';
@@ -6,11 +10,9 @@ import { useUsersStore } from '@/store/users.store';
 import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
-import { Filter, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
 function SearchBranchProduct() {
   const { categories_list, getListCategoriesList } = useCategoriesStore();
+
   useEffect(() => {
     getListCategoriesList();
   }, []);
@@ -22,70 +24,71 @@ function SearchBranchProduct() {
     categoryProduct: 0,
   });
   const { user } = useAuthStore();
+
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
-        <TooltipGlobal text="Buscar por filtros" color="primary">
+        <TooltipGlobal color="primary" text="Buscar por filtros">
           <Button
+            isIconOnly
             className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
-            isIconOnly
-            onClick={() => setOpenVaul(true)}
             type="button"
+            onClick={() => setOpenVaul(true)}
           >
             <Filter />
           </Button>
         </TooltipGlobal>
         <BottomDrawer
-          title="Filtros disponibles"
           open={openVaul}
+          title="Filtros disponibles"
           onClose={() => setOpenVaul(false)}
         >
           <div className="flex flex-col gap-2">
             <Input
+              isClearable
+              autoComplete="search"
+              className="w-full order-1"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
-              className="w-full order-1"
-              placeholder="Buscar por nombre..."
-              startContent={<Search />}
-              variant="bordered"
+              id="searchName"
               label="Nombre"
               labelPlacement="outside"
               name="searchName"
-              id="searchName"
-              autoComplete="search"
-              isClearable
+              placeholder="Buscar por nombre..."
+              startContent={<Search />}
+              variant="bordered"
             />
             <Input
+              isClearable
+              autoComplete="search"
+              className="w-full order-2"
               classNames={{
                 label: 'font-semibold text-gray-700',
                 inputWrapper: 'pr-0',
               }}
-              className="w-full order-2"
+              id="searchCode"
+              label="Código"
+              labelPlacement="outside"
+              name="searchCode"
               placeholder="Buscar por código..."
               startContent={<Search />}
               variant="bordered"
-              name="searchCode"
-              label="Código"
-              labelPlacement="outside"
-              id="searchCode"
-              autoComplete="search"
-              isClearable
             />
 
             <Autocomplete
               className="w-full order-3 dark:text-white"
-              labelPlacement="outside"
               label="Categoría"
+              labelPlacement="outside"
               placeholder="Selecciona la categoría"
               variant="bordered"
             >
               {categories_list.map((category) => (
                 <AutocompleteItem
-                  className="dark:text-white"
                   key={category.id}
+                  className="dark:text-white"
                   textValue={category.name}
                 >
                   {category.name}
@@ -94,8 +97,8 @@ function SearchBranchProduct() {
             </Autocomplete>
 
             <ButtonUi
-              theme={Colors.Primary}
               className="font-semibold order-last mt-4"
+              theme={Colors.Primary}
               onPress={() => {
                 getUsersPaginated(
                   user?.correlative?.branch.transmitterId ??

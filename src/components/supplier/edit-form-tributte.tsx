@@ -1,9 +1,11 @@
 import { useFormikContext } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { EditSupplierPayload } from './types/edit-supplier';
 import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
+import { EditSupplierPayload } from './types/edit-supplier';
 import { SelectedItem } from './select-account';
+
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -22,6 +24,7 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
   useEffect(() => {
     const transId =
       user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+
     getAccountCatalogs(transId, '', '');
   }, []);
 
@@ -41,79 +44,82 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
 
   const economicActivities = useMemo(() => {
     const activities = services.get019CodigoDeActividaEcono(searchActivitie);
+
     return activities.slice(0, ITEMS_TO_SHOW);
   }, [searchActivitie]);
+
   return (
     <>
       <div className="grid xl:grid-cols-2 gap-5">
         <div>
           <Input
-            labelPlacement="outside"
-            label="Nombre"
             className="dark:text-white"
-            placeholder="Ingresa el nombre"
             classNames={{
               label: 'font-semibold text-gray-500 text-sm',
             }}
+            label="Nombre"
+            labelPlacement="outside"
+            placeholder="Ingresa el nombre"
             variant="bordered"
             {...formik.getFieldProps('nombre')}
-            isInvalid={formik.touched.nombre && !!formik.errors.nombre}
             errorMessage={formik.errors.nombre}
+            isInvalid={formik.touched.nombre && !!formik.errors.nombre}
           />
         </div>
         <div>
           <Input
-            label="Correo electrónico"
             className="dark:text-white"
-            labelPlacement="outside"
-            placeholder="Ingresa el correo"
             classNames={{
               label: 'font-semibold text-gray-500 text-sm',
             }}
+            label="Correo electrónico"
+            labelPlacement="outside"
+            placeholder="Ingresa el correo"
             variant="bordered"
             {...formik.getFieldProps('correo')}
-            isInvalid={formik.touched.correo && !!formik.errors.correo}
             errorMessage={formik.errors.correo}
+            isInvalid={formik.touched.correo && !!formik.errors.correo}
           />
         </div>
         <div>
           <Input
             className="dark:text-white"
-            type="number"
+            classNames={{
+              label: 'font-semibold text-gray-500 text-sm',
+            }}
             label="Teléfono"
             labelPlacement="outside"
             placeholder="Ingresa el telefono"
-            classNames={{
-              label: 'font-semibold text-gray-500 text-sm',
-            }}
+            type="number"
             variant="bordered"
             {...formik.getFieldProps('telefono')}
-            isInvalid={formik.touched.telefono && !!formik.errors.telefono}
             errorMessage={formik.errors.telefono}
+            isInvalid={formik.touched.telefono && !!formik.errors.telefono}
           />
         </div>
 
         <div>
           <Autocomplete
+            className="dark:text-white"
+            classNames={{
+              base: 'font-semibold text-gray-500 text-sm',
+            }}
+            errorMessage={formik.errors.tipoDocumento}
+            isInvalid={formik.touched.tipoDocumento && !!formik.errors.tipoDocumento}
             label="Tipo de documento"
             labelPlacement="outside"
+            placeholder="Selecciona el tipo de documento"
+            selectedKey={formik.values.tipoDocumento}
+            variant="bordered"
             onSelectionChange={(value) => {
               const selected = services
                 .get022TipoDeDocumentoDeIde()
                 .find((dep) => dep.codigo === value);
+
               if (selected) {
                 formik.setFieldValue('tipoDocumento', selected.codigo);
               }
             }}
-            selectedKey={formik.values.tipoDocumento}
-            placeholder="Selecciona el tipo de documento"
-            variant="bordered"
-            classNames={{
-              base: 'font-semibold text-gray-500 text-sm',
-            }}
-            className="dark:text-white"
-            isInvalid={formik.touched.tipoDocumento && !!formik.errors.tipoDocumento}
-            errorMessage={formik.errors.tipoDocumento}
           >
             {services.get022TipoDeDocumentoDeIde().map((dep) => (
               <AutocompleteItem key={dep.codigo} className="dark:text-white">
@@ -125,88 +131,89 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
 
         <div>
           <Input
-            label="Nombre comercial"
-            labelPlacement="outside"
             className="dark:text-white"
-            placeholder="Ingresa el nombre comercial"
             classNames={{
               label: 'font-semibold text-gray-500 text-sm',
             }}
+            label="Nombre comercial"
+            labelPlacement="outside"
+            placeholder="Ingresa el nombre comercial"
             variant="bordered"
             {...formik.getFieldProps('nombreComercial')}
-            isInvalid={formik.touched.nombreComercial && !!formik.errors.nombreComercial}
             errorMessage={formik.errors.nombreComercial}
+            isInvalid={formik.touched.nombreComercial && !!formik.errors.nombreComercial}
           />
         </div>
         <div>
           <Input
             className="dark:text-white"
-            type="number"
+            classNames={{
+              label: 'font-semibold text-gray-500 text-sm',
+            }}
             label="Nit"
             labelPlacement="outside"
             placeholder="Ingresa su número de nit"
-            classNames={{
-              label: 'font-semibold text-gray-500 text-sm',
-            }}
+            type="number"
             variant="bordered"
             {...formik.getFieldProps('nit')}
-            isInvalid={formik.touched.nit && !!formik.errors.nit}
             errorMessage={formik.errors.nit}
+            isInvalid={formik.touched.nit && !!formik.errors.nit}
           />
         </div>
         <div>
           <Input
             className="dark:text-white"
-            type="number"
+            classNames={{
+              label: 'font-semibold text-gray-500 text-sm',
+            }}
             label="NRC"
             labelPlacement="outside"
             placeholder="Ingresa el número de NRC"
-            classNames={{
-              label: 'font-semibold text-gray-500 text-sm',
-            }}
+            type="number"
             variant="bordered"
             {...formik.getFieldProps('nrc')}
-            isInvalid={formik.touched.nrc && !!formik.errors.nrc}
             errorMessage={formik.errors.nrc}
+            isInvalid={formik.touched.nrc && !!formik.errors.nrc}
           />
         </div>
         <div>
           <Input
-            type="number"
             className="dark:text-white"
-            label="Número documento"
-            labelPlacement="outside"
-            placeholder="Ingresa el número de documento"
             classNames={{
               label: 'font-semibold text-gray-500 text-sm',
             }}
+            label="Número documento"
+            labelPlacement="outside"
+            placeholder="Ingresa el número de documento"
+            type="number"
             variant="bordered"
             {...formik.getFieldProps('numDocumento')}
-            isInvalid={formik.touched.numDocumento && !!formik.errors.numDocumento}
             errorMessage={formik.errors.numDocumento}
+            isInvalid={formik.touched.numDocumento && !!formik.errors.numDocumento}
           />
         </div>
         <div>
           <Autocomplete
+            className="dark:text-white"
+            classNames={{
+              base: 'font-semibold text-gray-500 text-sm',
+            }}
+            errorMessage={formik.errors.codActividad}
+            isInvalid={formik.touched.codActividad && !!formik.errors.codActividad}
             label="Actividad"
             labelPlacement="outside"
             placeholder="Ingresa la actividad"
+            selectedKey={formik.values.codActividad}
             variant="bordered"
+            onInputChange={(e) => setSearchActivitie(e)}
             onSelectionChange={(e) => {
               const selectActividad = economicActivities.find((dep) => dep.codigo.trim() === e);
+
               if (selectActividad) {
                 formik.setFieldValue('codActividad', selectActividad.codigo);
                 formik.setFieldValue('descActividad', selectActividad.valores);
               }
             }}
-            classNames={{
-              base: 'font-semibold text-gray-500 text-sm',
-            }}
-            selectedKey={formik.values.codActividad}
-            className="dark:text-white"
-            onInputChange={(e) => setSearchActivitie(e)}
-            isInvalid={formik.touched.codActividad && !!formik.errors.codActividad}
-            errorMessage={formik.errors.codActividad}
           >
             {economicActivities.map((dep) => (
               <AutocompleteItem key={dep.codigo} className="dark:text-white">
@@ -217,8 +224,17 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
         </div>
         <div>
           <Autocomplete
+            className="dark:text-white"
+            classNames={{
+              base: 'font-semibold text-gray-500 text-sm',
+            }}
+            errorMessage={formik.touched.departamento && formik.errors.departamento}
+            isInvalid={formik.touched.departamento && !!formik.errors.departamento}
             label="Departamento"
             labelPlacement="outside"
+            placeholder="Selecciona el departamento"
+            selectedKey={formik.values.departamento}
+            variant="bordered"
             onSelectionChange={(key) => {
               if (key) {
                 const depSelected = services
@@ -230,15 +246,6 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
                 formik.handleChange('nombreDepartamento')(depSelected?.valores || '');
               }
             }}
-            placeholder="Selecciona el departamento"
-            variant="bordered"
-            classNames={{
-              base: 'font-semibold text-gray-500 text-sm',
-            }}
-            className="dark:text-white"
-            selectedKey={formik.values.departamento}
-            isInvalid={formik.touched.departamento && !!formik.errors.departamento}
-            errorMessage={formik.touched.departamento && formik.errors.departamento}
           >
             {services.get012Departamento().map((dep) => (
               <AutocompleteItem key={dep.codigo} className="dark:text-white">
@@ -249,27 +256,28 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
         </div>
         <div>
           <Autocomplete
+            className="dark:text-white font-semibold"
+            classNames={{
+              base: 'font-semibold text-gray-500 text-sm',
+            }}
+            errorMessage={formik.errors.municipio}
+            isInvalid={formik.touched.municipio && !!formik.errors.municipio}
             label="Municipio"
             labelPlacement="outside"
             name="municipio"
             placeholder="Selecciona el municipio"
-            className="dark:text-white font-semibold"
-            variant="bordered"
-            classNames={{
-              base: 'font-semibold text-gray-500 text-sm',
-            }}
             selectedKey={formik.values.municipio}
+            variant="bordered"
             onSelectionChange={(key) => {
               if (key) {
                 const selected = municipios.find((mun) => mun.codigo === key);
+
                 if (selected) {
                   formik.setFieldValue('municipio', selected.codigo);
                   formik.setFieldValue('nombreMunicipio', selected.valores);
                 }
               }
             }}
-            isInvalid={formik.touched.municipio && !!formik.errors.municipio}
-            errorMessage={formik.errors.municipio}
           >
             {municipios.map((mun) => (
               <AutocompleteItem key={mun.codigo} className="dark:text-white">
@@ -285,10 +293,10 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
             }}
             placeholder="Ingresa el código de la cuenta"
             {...formik.getFieldProps('codCuenta')}
-            variant="bordered"
+            className="w-full"
             label="Cuenta"
             labelPlacement="outside"
-            className="w-full"
+            variant="bordered"
           />
           <SelectedItem
             code={formik.values.codCuenta}
@@ -298,17 +306,17 @@ function EditFormTributte({ selectedDepartment, setSelectedDepartment }: Props) 
       </div>
       <div className="mt-4">
         <Textarea
-          label="Complemento de dirección"
           className="dark:text-white"
-          labelPlacement="outside"
-          variant="bordered"
-          placeholder="Ingresa el complemento de dirección"
           classNames={{
             label: 'font-semibold text-gray-500 text-sm',
           }}
+          label="Complemento de dirección"
+          labelPlacement="outside"
+          placeholder="Ingresa el complemento de dirección"
+          variant="bordered"
           {...formik.getFieldProps('complemento')}
-          isInvalid={formik.touched.complemento && !!formik.errors.complemento}
           errorMessage={formik.errors.complemento}
+          isInvalid={formik.touched.complemento && !!formik.errors.complemento}
         />
       </div>
     </>

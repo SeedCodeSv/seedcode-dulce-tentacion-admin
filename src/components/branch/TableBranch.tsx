@@ -1,6 +1,7 @@
-import ThGlobal from "@/themes/ui/th-global";
 import { useBranchesStore } from "../../store/branches.store";
 import { Branches } from "../../types/branches.types";
+
+import ThGlobal from "@/themes/ui/th-global";
 import NO_DATA from "@/assets/svg/no_data.svg";
 
 /* eslint-disable no-unused-vars */
@@ -39,11 +40,11 @@ function TableBranch(props: Props) {
             {loading ? (
               <tr>
                 <td
-                  colSpan={5}
                   className="p-3 text-sm text-center text-slate-500"
+                  colSpan={5}
                 >
                   <div className="flex flex-col items-center justify-center w-full h-64">
-                    <div className="loader"></div>
+                    <div className="loader" />
                     <p className="mt-3 text-xl font-semibold">Cargando...</p>
                   </div>
                 </td>
@@ -52,8 +53,8 @@ function TableBranch(props: Props) {
               <>
                 {branches_paginated.branches.length > 0 ? (
                   <>
-                    {branches_paginated.branches.map((branch) => (
-                      <tr className="border-b border-slate-200">
+                    {branches_paginated.branches.map((branch, key) => (
+                      <tr key={key} className="border-b border-slate-200">
                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {branch.id}
                         </td>
@@ -76,7 +77,7 @@ function TableBranch(props: Props) {
                   <tr>
                     <td colSpan={5}>
                       <div className="flex flex-col items-center justify-center w-full">
-                        <img src={NO_DATA} alt="X" className="w-32 h-32" />
+                        <img alt="X" className="w-32 h-32" src={NO_DATA} />
                         <p className="mt-3 text-xl">
                           No se encontraron resultados
                         </p>

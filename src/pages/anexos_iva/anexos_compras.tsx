@@ -1,20 +1,21 @@
-import Layout from '@/layout/Layout';
-import { formatCurrency } from '@/utils/dte';
 import { Button, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from 'react';
-import { csvmaker } from './utils';
-// import { useAuthStore } from '@/store/auth.store';
 import { PiFileCsv, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+
+import NO_DATA from "../../assets/no.png"
+
+import { csvmaker } from './utils';
+
+import Layout from '@/layout/Layout';
+import { formatCurrency } from '@/utils/dte';
 import { generate_anexe_shopping } from '@/utils/utils';
 import { months } from '@/utils/constants';
 import { useShoppingStore } from '@/store/shopping.store';
-import NO_DATA from "../../assets/no.png"
 import { get_user } from '@/storage/localStorage';
 
 function AnexosCompras() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
-  // const { user } = useAuthStore()
 
   const transmiter = get_user();
 
@@ -37,6 +38,7 @@ function AnexosCompras() {
     const blob = await generate_anexe_shopping(shopping_by_months)
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement("a")
+
     link.href = url
     link.download = `anexos-iva-compras_${month}_${yearSelected}.xlsx`
     link.click()
@@ -48,6 +50,7 @@ function AnexosCompras() {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
+
     link.href = url
     link.download = `iva-compras_${month}_${yearSelected}.csv`
     link.click()
@@ -60,17 +63,17 @@ function AnexosCompras() {
         <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="w-full flex justify-between gap-5">
             <Select
+              className="w-44"
+              classNames={{ label: "font-semibold" }}
+              label="Meses"
+              labelPlacement="outside"
               selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
                   setMonthSelected(Number(new Set(key).values().next().value))
                 }
               }}
-              className="w-44"
-              classNames={{ label: "font-semibold" }}
-              label="Meses"
-              labelPlacement="outside"
-              variant="bordered"
             >
               {months.map((month) => (
                 <SelectItem key={month.value}>
@@ -79,17 +82,17 @@ function AnexosCompras() {
               ))}
             </Select>
             <Select
+                className="w-44"
+                classNames={{ label: "font-semibold" }}
+                label="Año"
+                labelPlacement="outside"
                 selectedKeys={[`${yearSelected}`]}
+                variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
                     setYearSelected(Number(new Set(key).values().next().value))
                   }
                 }}
-                className="w-44"
-                classNames={{ label: "font-semibold" }}
-                label="Año"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {years.map((years) => (
                   <SelectItem key={years.value}>
@@ -101,9 +104,9 @@ function AnexosCompras() {
             <div className="w-full flex justify-end gap-5 mt-4">
               <Button
                 className="px-10 "
+                color="secondary"
                 endContent={<PiMicrosoftExcelLogoBold size={20} />}
                 onClick={() => exportAnnexes()}
-                color="secondary"
               >
                 Exportar anexo
               </Button>
@@ -112,9 +115,9 @@ function AnexosCompras() {
             </Button> */}
               <Button
                 className="px-10"
+                color="primary"
                 endContent={<PiFileCsv size={20} />}
                 onClick={() => exportAnnexesCSV()}
-                color="primary"
               >
                 Exportar CSV
               </Button>
@@ -130,7 +133,7 @@ function AnexosCompras() {
             {loading_shopping ? (
               <>
                 <div className="w-full flex justify-center p-20 items-center flex-col">
-                  <div className="loader"></div>
+                  <div className="loader" />
                   <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
                 </div>
               </>) : (
@@ -141,50 +144,50 @@ function AnexosCompras() {
                       <thead className="sticky top-0 z-20 bg-white">
                         <tr>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Fecha de emisión del documento
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Clase de documento
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Tipo de comprobante
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Número de documento
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             NIT o NRC del proveedor
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Nombre del proveedor
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Iva
                           </th>
                           <th
-                            style={{ width: '200px' }}
                             className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                            style={{ width: '200px' }}
                           >
                             Total
                           </th>
@@ -227,7 +230,7 @@ function AnexosCompras() {
                 ) : (
                   <>
                     <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                      <img className="w-44 mt-10" src={NO_DATA} alt="" />
+                      <img alt="" className="w-44 mt-10" src={NO_DATA} />
                       <p className="mt-5 dark:text-white text-gray-600 text-xl">
                         No se encontraron resultados
                       </p>

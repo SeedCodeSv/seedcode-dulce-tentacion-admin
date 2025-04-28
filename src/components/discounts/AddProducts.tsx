@@ -8,15 +8,17 @@ import {
 } from '@heroui/react';
 import { DollarSign, Plus, ScrollText, Search, Trash, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { Branches } from '../../types/branches.types';
 import { useBranchesStore } from '../../store/branches.store';
 import { useSupplierStore } from '../../store/supplier.store';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
 import HeadlessModal from '../global/HeadlessModal';
 import { IBranchProductOrder, PurchaseOrderPayload } from '../../types/purchase_orders.types';
 import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -87,7 +89,7 @@ function AddPurchaseOrders(props: Props) {
       <div className="flex flex-col justify-between w-full">
         <div className="flex justify-between w-full">
           <p className="text-xl font-semibold dark:text-white">Lista de productos</p>
-          <ButtonUi onClick={vaul.onOpen} theme={Colors.Success}>
+          <ButtonUi theme={Colors.Success} onClick={vaul.onOpen}>
             <Plus />
           </ButtonUi>
         </div>
@@ -95,10 +97,10 @@ function AddPurchaseOrders(props: Props) {
         {orders_by_supplier.length === 0 && (
           <div className="flex flex-col items-center w-full h-full">
             <div className="lds-ellipsis">
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
-              <div className="bg-gray-600 dark:bg-gray-200"></div>
+              <div className="bg-gray-600 dark:bg-gray-200" />
+              <div className="bg-gray-600 dark:bg-gray-200" />
+              <div className="bg-gray-600 dark:bg-gray-200" />
+              <div className="bg-gray-600 dark:bg-gray-200" />
             </div>
             <p className="pb-10 text-xl dark:text-white">Aun no agregas productos</p>
           </div>
@@ -110,106 +112,107 @@ function AddPurchaseOrders(props: Props) {
             <DataTable
               className="mt-5 shadow"
               emptyMessage="No se encontraron resultados"
-              value={supplier.products}
               tableStyle={{ minWidth: '50rem' }}
+              value={supplier.products}
             >
-              <Column headerClassName="text-sm font-semibold" field="id" header="No." />
+              <Column field="id" header="No." headerClassName="text-sm font-semibold" />
               <Column
-                headerClassName="text-sm font-semibold"
                 field="product.name"
                 header="Nombre"
+                headerClassName="text-sm font-semibold"
               />
               <Column
-                headerClassName="text-sm font-semibold"
-                field="quantity"
-                header="Cantidad"
                 body={(item) => (
                   <Input
                     className="w-32"
-                    variant="bordered"
                     defaultValue={item.quantity.toString()}
-                    type="number"
                     lang="es"
+                    type="number"
+                    variant="bordered"
                     onChange={(e) => {
                       updateQuantityOrders(item.id, Number(e.target.value));
                     }}
                   />
                 )}
+                field="quantity"
+                header="Cantidad"
+                headerClassName="text-sm font-semibold"
               />
               <Column
-                headerClassName="text-sm font-semibold"
                 field="product.code"
                 header="Código"
+                headerClassName="text-sm font-semibold"
               />
               <Column
-                headerClassName="text-sm font-semibold"
-                field="price"
-                header="Precio"
                 body={(item) => (
                   <Input
                     className="w-32"
-                    variant="bordered"
                     defaultValue={item.price.toString()}
-                    type="number"
-                    startContent="$"
                     lang="es"
+                    startContent="$"
+                    type="number"
+                    variant="bordered"
                     onChange={(e) => {
                       updatePriceOrders(item.id, Number(e.target.value));
                     }}
                   />
                 )}
+                field="price"
+                header="Precio"
+                headerClassName="text-sm font-semibold"
               />
               <Column
-                headerStyle={{ borderTopRightRadius: '10px' }}
-                header="Acciones"
                 body={(item) => (
                   <div className="flex w-full gap-5">
                     <ButtonUi
-                      theme={Colors.Warning}
                       isIconOnly
+                      theme={Colors.Warning}
                       onPress={() => deleteProductOrder(item.id)}
                     >
                       <Trash size={18} />
                     </ButtonUi>
                   </div>
                 )}
+                header="Acciones"
+                headerStyle={{ borderTopRightRadius: '10px' }}
               />
             </DataTable>
           </div>
         ))}
 
         <div className="flex justify-end w-full mt-4">
-          <ButtonUi onPress={handleSaveOrder} theme={Colors.Primary} className="px-16">
+          <ButtonUi className="px-16" theme={Colors.Primary} onPress={handleSaveOrder}>
             Guardar
           </ButtonUi>
         </div>
       </div>
       <HeadlessModal
         isOpen={vaul.isOpen}
-        onClose={vaul.onClose}
-        title="Nueva orden de compra"
         size="w-screen h-screen bg-white pb-20 md:pb-0 p-5 overflow-y-auto xl:w-[80vw]"
+        title="Nueva orden de compra"
+        onClose={vaul.onClose}
       >
         <div className="w-full  dark:bg-gray-900">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
               <Select
+                className="w-full dark:text-white"
                 label="Sucursal"
+                labelPlacement="outside"
+                placeholder="Selecciona una sucursal"
                 value={branch}
+                variant="bordered"
                 onSelectionChange={(e) => {
                   const setkeys = new Set(e as unknown as string[]);
                   const keysArray = Array.from(setkeys);
+
                   if (keysArray.length > 0) {
                     setBranch(keysArray[0]);
                   }
                 }}
-                placeholder="Selecciona una sucursal"
-                labelPlacement="outside"
-                variant="bordered"
-                className="w-full dark:text-white"
               >
                 {branch_list.map((branch: Branches) => (
-                  <SelectItem className="dark:text-white" key={branch.name}>
+                  <SelectItem key={branch.name} className="dark:text-white">
                     {branch.name}
                   </SelectItem>
                 ))}
@@ -218,16 +221,16 @@ function AddPurchaseOrders(props: Props) {
             <div>
               <Autocomplete
                 label="Proveedor"
+                labelPlacement="outside"
+                placeholder="Selecciona un proveedor"
                 value={branch}
+                variant="bordered"
                 onSelect={(e) => {
                   setSupplier(e.currentTarget.value);
                 }}
-                placeholder="Selecciona un proveedor"
-                labelPlacement="outside"
-                variant="bordered"
               >
                 {supplier_list.map((branch) => (
-                  <AutocompleteItem className="dark:text-white" key={branch.id ?? 0}>
+                  <AutocompleteItem key={branch.id ?? 0} className="dark:text-white">
                     {branch.nombre}
                   </AutocompleteItem>
                 ))}
@@ -235,17 +238,17 @@ function AddPurchaseOrders(props: Props) {
             </div>
             <div>
               <Input
-                label="Nombre"
-                placeholder="Escribe el nombre del producto"
-                labelPlacement="outside"
-                variant="bordered"
-                startContent={<Search />}
                 className="w-full dark:text-white"
+                label="Nombre"
+                labelPlacement="outside"
+                placeholder="Escribe el nombre del producto"
+                startContent={<Search />}
+                variant="bordered"
               />
             </div>
           </div>
           <div className="flex justify-end w-full py-5">
-            <ButtonUi onPress={vaul.onClose} theme={Colors.Primary} className="px-10">
+            <ButtonUi className="px-10" theme={Colors.Primary} onPress={vaul.onClose}>
               Aceptar
             </ButtonUi>
           </div>

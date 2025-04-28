@@ -1,12 +1,14 @@
 import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
-import { global_styles } from '../../styles/global.styles';
 import * as yup from 'yup';
 import { Formik } from 'formik';
+import { useState } from 'react';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
+import { global_styles } from '../../styles/global.styles';
 import { Branches, IBranchForm } from '../../types/branches.types';
 import { useBranchesStore } from '../../store/branches.store';
 import { useAuthStore } from '../../store/auth.store';
-import { useState } from 'react';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
 
 interface Props {
   closeModal: () => void;
@@ -46,6 +48,7 @@ function AddBranch(props: Props) {
           },
           props.branch.id
         );
+
         if (res) props.closeModal();
       } else {
         const res = await postBranch({
@@ -53,6 +56,7 @@ function AddBranch(props: Props) {
           transmitterId:
             user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         });
+
         if (res) props.closeModal();
       }
     } finally {
@@ -79,17 +83,17 @@ function AddBranch(props: Props) {
             <div className="w-full">
               <div className="w-full pt-3">
                 <Input
-                  label="Nombre"
                   className="dark:text-white font-semibold"
-                  placeholder="Nombre de la sucursal"
-                  variant="bordered"
-                  onChange={handleChange('name')}
-                  onBlur={handleBlur('name')}
-                  value={values.name}
                   classNames={{ base: 'font-semibold text-gray-500 text-sm' }}
-                  labelPlacement="outside"
-                  isInvalid={touched.name && !!errors.name}
                   errorMessage={touched.name && errors.name}
+                  isInvalid={touched.name && !!errors.name}
+                  label="Nombre"
+                  labelPlacement="outside"
+                  placeholder="Nombre de la sucursal"
+                  value={values.name}
+                  variant="bordered"
+                  onBlur={handleBlur('name')}
+                  onChange={handleChange('name')}
                 />
                 {/* {errors.name && touched.name && (
                 <span className="text-sm font-semibold text-red-500">{errors.name}</span>
@@ -97,18 +101,18 @@ function AddBranch(props: Props) {
               </div>
               <div className="w-full pt-3">
                 <Input
-                  type="number"
-                  label="Teléfono"
                   className="dark:text-white font-semibold"
-                  placeholder="Teléfono de la sucursal"
-                  variant="bordered"
                   classNames={{ base: 'font-semibold text-gray-500 text-sm' }}
-                  labelPlacement="outside"
-                  onChange={handleChange('phone')}
-                  onBlur={handleBlur('phone')}
-                  value={values.phone}
-                  isInvalid={touched.phone && !!errors.phone}
                   errorMessage={touched.phone && errors.phone}
+                  isInvalid={touched.phone && !!errors.phone}
+                  label="Teléfono"
+                  labelPlacement="outside"
+                  placeholder="Teléfono de la sucursal"
+                  type="number"
+                  value={values.phone}
+                  variant="bordered"
+                  onBlur={handleBlur('phone')}
+                  onChange={handleChange('phone')}
                 />
                 {/* {errors.phone && touched.phone && (
                   <span className="text-sm font-semibold text-red-500">{errors.phone}</span>
@@ -117,16 +121,16 @@ function AddBranch(props: Props) {
 
               <div className="w-full pt-3">
                 <Select
-                  label="Tipo de establecimiento"
-                  placeholder={type?.valores ? type.valores : 'Tipo de establecimiento'}
-                  variant="bordered"
                   classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
-                  labelPlacement="outside"
-                  onChange={handleChange('tipoEstablecimiento')}
-                  onBlur={handleBlur('tipoEstablecimiento')}
-                  value={values.tipoEstablecimiento}
-                  isInvalid={touched.tipoEstablecimiento && !!errors.tipoEstablecimiento}
                   errorMessage={errors.tipoEstablecimiento}
+                  isInvalid={touched.tipoEstablecimiento && !!errors.tipoEstablecimiento}
+                  label="Tipo de establecimiento"
+                  labelPlacement="outside"
+                  placeholder={type?.valores ? type.valores : 'Tipo de establecimiento'}
+                  value={values.tipoEstablecimiento}
+                  variant="bordered"
+                  onBlur={handleBlur('tipoEstablecimiento')}
+                  onChange={handleChange('tipoEstablecimiento')}
                 >
                   {type_estable.map((item) => (
                     <SelectItem key={item.codigo}>
@@ -139,48 +143,48 @@ function AddBranch(props: Props) {
               <div className="w-full pt-3">
                 <Input
                   // type="number"
-                  label="Codigo de establecimiento"
-                  placeholder="Codigo de establecimiento"
-                  variant="bordered"
                   classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
+                  errorMessage={errors.codEstable}
+                  isInvalid={touched.codEstable && !!errors.codEstable}
+                  label="Codigo de establecimiento"
                   labelPlacement="outside"
+                  placeholder="Codigo de establecimiento"
+                  value={values.codEstable}
+                  variant="bordered"
+                  onBlur={handleBlur('codEstable')}
                   onChange={(e) => {
                     handleChange('codEstable')(e);
                     setFieldValue('codEstableMH', e.target.value);
                   }}
-                  onBlur={handleBlur('codEstable')}
-                  value={values.codEstable}
-                  isInvalid={touched.codEstable && !!errors.codEstable}
-                  errorMessage={errors.codEstable}
                 />
               </div>
               <div className="w-full pt-3">
                 <Input
                   // type="number"
-                  label="Codigo de establecimiento MH"
-                  placeholder="Codigo establecimiento MH"
-                  variant="bordered"
-                  classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
-                  labelPlacement="outside"
-                  value={values.codEstableMH}
-                  isInvalid={touched.codEstableMH && !!errors.codEstableMH}
-                  errorMessage={errors.codEstableMH}
                   readOnly
+                  classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}
+                  errorMessage={errors.codEstableMH}
+                  isInvalid={touched.codEstableMH && !!errors.codEstableMH}
+                  label="Codigo de establecimiento MH"
+                  labelPlacement="outside"
+                  placeholder="Codigo establecimiento MH"
+                  value={values.codEstableMH}
+                  variant="bordered"
                 />
               </div>
               <div className="w-full pt-3">
                 <Textarea
                   className="dark:text-white font-semibold"
-                  label="Dirección"
-                  placeholder="Dirección de la sucursal"
-                  variant="bordered"
                   classNames={{ base: 'font-semibold text-gray-500 text-sm' }}
-                  labelPlacement="outside"
-                  onChange={handleChange('address')}
-                  onBlur={handleBlur('address')}
-                  value={values.address}
-                  isInvalid={touched.address && !!errors.address}
                   errorMessage={touched.address && errors.address}
+                  isInvalid={touched.address && !!errors.address}
+                  label="Dirección"
+                  labelPlacement="outside"
+                  placeholder="Dirección de la sucursal"
+                  value={values.address}
+                  variant="bordered"
+                  onBlur={handleBlur('address')}
+                  onChange={handleChange('address')}
                 />
                 {/* {errors.address && touched.address && (
                   <span className="text-sm font-semibold text-red-500">{errors.address}</span>
@@ -189,16 +193,16 @@ function AddBranch(props: Props) {
               <div className="mt-4">
                 {!isSubmitting ? (
                   <Button
+                    className="w-full font-semibold"
+                    style={global_styles().thirdStyle}
                     type="submit"
                     onClick={() => handleSubmit()}
-                    style={global_styles().thirdStyle}
-                    className="w-full font-semibold"
                   >
                     {props.branch ? 'Guardar cambios' : 'Crear sucursal'}
                   </Button>
                 ) : (
                   <div className="flex flex-col items-center justify-center w-full">
-                    <div className="loaderBranch w-2 h-2 mt-2"></div>
+                    <div className="loaderBranch w-2 h-2 mt-2" />
                     <p className="mt-3 text-sm font-semibold">Cargando...</p>
                   </div>
                 )}

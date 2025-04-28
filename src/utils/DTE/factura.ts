@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import { Customer } from '../../types/customers.types';
 import { ITransmitter } from '../../types/transmitter.types';
@@ -13,7 +15,6 @@ import { convertCurrencyFormat } from '../money';
 import { generate_uuid } from '../random/random';
 import { ambiente } from '../../utils/constants.ts';
 import { ICartProduct } from '../../types/branch_products.types.ts';
-import moment from 'moment';
 import { FC_PagosItems, SVFE_FC_SEND } from '../../types/svf_dte/fc.types.ts';
 
 export const generate_factura = (
@@ -180,6 +181,7 @@ const total_without_discount = (productsCarts: ICartProduct[]) => {
   const total = productsCarts
     .map((prd) => {
       const price = Number(prd.price) < prd.base_price ? prd.base_price : Number(prd.price);
+
       return price * prd.quantity;
     })
     .reduce((a, b) => a + b, 0);
@@ -215,6 +217,7 @@ export function verifyApplyAnulation(tipoDte: string, date: string) {
 
     if (!fechaDTEParseada.isValid()) {
       reject(new Error('Formato de fecha DTE inválido'));
+
       return;
     }
 
@@ -226,6 +229,7 @@ export function verifyApplyAnulation(tipoDte: string, date: string) {
 
       if (daysDiference > daysLimit) {
         reject(new Error('DTE fuera del plazo de disponibilidad (3 meses)'));
+
         return;
       }
     } else if (tipoDte === '03') {
@@ -233,10 +237,12 @@ export function verifyApplyAnulation(tipoDte: string, date: string) {
 
       if (daysDiference > daysLimit) {
         reject(new Error('DTE fuera del plazo de disponibilidad (1 día)'));
+
         return;
       }
     } else {
       reject(new Error('Tipo de DTE inválido'));
+
       return;
     }
 

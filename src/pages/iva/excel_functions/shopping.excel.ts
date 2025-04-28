@@ -1,6 +1,7 @@
 
-import { ITransmitter } from "@/types/transmitter.types";
 import ExcelJS from "exceljs"
+
+import { ITransmitter } from "@/types/transmitter.types";
 
 export const generate_shopping_excel = async (
   shopping_data: Array<Array<string | number>>,
@@ -30,6 +31,7 @@ export const generate_shopping_excel = async (
     "D4:N4",
     "D5:F5"
   ]
+
   merges.forEach((range) => worksheet.mergeCells(range))
 
   worksheet.getCell("A6").value = "No. Corr."
@@ -62,6 +64,7 @@ export const generate_shopping_excel = async (
     { cell: "B5", text: `${month}` },
     { cell: "D5", text: `AÑO: ${year}` }
   ]
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text
     worksheet.getCell(cell).alignment = { horizontal: "center" }
@@ -125,6 +128,7 @@ export const generate_shopping_excel = async (
     "O6",
     "P6"
   ]
+
   headersCells.forEach((cell) => applyAlignmentAndFont(cell, alignmentCenter as ExcelJS.Alignment, fontSize8 as ExcelJS.Font))
 
   worksheet.getRow(6).height = 20
@@ -144,8 +148,10 @@ export const generate_shopping_excel = async (
 
   shopping_data.forEach((item, rowIndex) => {
     const row = rowIndex + 8
+
     item.forEach((value, colIndex) => {
       const cell = String.fromCharCode(65 + colIndex) + row
+
       worksheet.getCell(cell).value = value
       worksheet.getCell(cell).alignment = { horizontal: "left", wrapText: true }
       worksheet.getCell(cell).font = { name: "Calibri", size: 8 }
@@ -156,6 +162,7 @@ export const generate_shopping_excel = async (
   })
 
   const nextLine = shopping_data.length + 8
+
   worksheet.getCell(`F${nextLine}`).value = "Total"
     ;["G", "H", "I", "J", "K", "L", "M", "N","O","P"].forEach((col) => {
       worksheet.getCell(`${col}${nextLine}`).value = {
@@ -244,6 +251,7 @@ export const export_excel_factura = async (
     "K6:K8",
     "L6:L8"
   ]
+
   merges.forEach((range) => worksheet.mergeCells(range))
 
   const borders = {
@@ -273,6 +281,7 @@ export const export_excel_factura = async (
     { cell: "A5", text: `MES:${month.toUpperCase()}` },
     { cell: "B5", text: `AÑO: ${new Date().getFullYear()}` }
   ]
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text
     worksheet.getCell(cell).alignment = { horizontal: "center" }
@@ -315,8 +324,10 @@ export const export_excel_factura = async (
 
   factura_data.forEach((item, rowIndex) => {
     const row = rowIndex + 9
+
     item.forEach((value, colIndex) => {
       const cell = String.fromCharCode(65 + colIndex) + row
+
       worksheet.getCell(cell).value = value
       worksheet.getCell(cell).border = borders
       worksheet.getCell(cell).alignment = { horizontal: "left", wrapText: true }
@@ -494,6 +505,7 @@ export const export_excel_credito = async (
     { cell: "B5", text: `${month}` },
     { cell: "D5", text: `AÑO: ${new Date().getFullYear()}` }
   ]
+
   titles.forEach(({ cell, text }) => {
     worksheet.getCell(cell).value = text
     worksheet.getCell(cell).alignment = { horizontal: "center", wrapText: true }
@@ -577,6 +589,7 @@ export const export_excel_credito = async (
       if (colIndex === 6) {
         worksheet.mergeCells(`${String.fromCharCode(71)}${row}:${String.fromCharCode(73)}${row}`)
         const cell = `${String.fromCharCode(71)}${row}`
+
         worksheet.getCell(cell).value = value
         worksheet.getCell(cell).border = borders
         worksheet.getCell(cell).alignment = { horizontal: "left", wrapText: true }
@@ -584,6 +597,7 @@ export const export_excel_credito = async (
       } else if (colIndex > 6) {
         actualColIndex = colIndex + 2
         const cell = String.fromCharCode(65 + actualColIndex) + row
+
         worksheet.getCell(cell).value = value
         worksheet.getCell(cell).border = borders
         worksheet.getCell(cell).alignment = { horizontal: "left", wrapText: true }
@@ -593,6 +607,7 @@ export const export_excel_credito = async (
           worksheet.getCell(cell).numFmt = '_-"$"* #,##0.00_-;-"$"* #,##0.00_-;_-"$"* "-"??_-;_-@_-'
       } else {
         const cell = String.fromCharCode(65 + colIndex) + row
+
         if (colIndex === 1) worksheet.getCell(cell).numFmt = "mm/dd/yyyy"
         worksheet.getCell(cell).value = value
         worksheet.getCell(cell).border = borders
@@ -606,6 +621,7 @@ export const export_excel_credito = async (
   })
 
   const nextLine = data.length + 8
+
   worksheet.getCell(`E${nextLine}`).value = "TOTAL"
   worksheet.getCell(`E${nextLine}`).font = {
     name: "Calibri",

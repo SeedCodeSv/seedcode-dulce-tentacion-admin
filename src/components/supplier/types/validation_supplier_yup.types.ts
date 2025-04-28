@@ -10,16 +10,19 @@ export const supplierSchemaNormal = yup.object().shape({
     .required('**Número de documento es requerido, no debe tener guiones**')
     .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
       const { tipoDocumento } = this.parent;
+
       return tipoDocumento !== '' ? true : false;
     })
     .test('validar-documento', '**Número de documento no válido, no debe tener guiones**', function (value) {
       const { tipoDocumento } = this.parent;
+
       if (tipoDocumento === '13') {
         return /^([0-9]{9})$/.test(value);
       }
       if (tipoDocumento === '36') {
         return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
       }
+
       return true; 
     }),
   telefono: yup
@@ -40,16 +43,19 @@ export const supplierSchemaContribuyente = yup.object().shape({
     .required('**Número de documento es requerido**')
     .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
       const { tipoDocumento } = this.parent;
+
       return tipoDocumento !== '' ? true : false;
     })
     .test('validar-documento', '**Número de documento no válido**', function (value) {
       const { tipoDocumento } = this.parent;
+
       if (tipoDocumento === '13') {
         return /^([0-9]{9})$/.test(value);
       }
       if (tipoDocumento === '36') {
         return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
       }
+
       return true; 
     }),
   telefono: yup

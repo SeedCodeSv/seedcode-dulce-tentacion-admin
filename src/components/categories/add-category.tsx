@@ -1,8 +1,10 @@
 import { Input, ModalContent, Modal, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { useCategoriesStore } from '../../store/categories.store';
 import { useState } from 'react';
+
+import { useCategoriesStore } from '../../store/categories.store';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -27,12 +29,14 @@ const AddCategory = (props: Props) => {
     setLoading(true);
     if (props.category) {
       const data = await patchCategory(name, props.category.id);
+
       if (data.ok === true) {
         props.closeModal();
         setLoading(false);
       }
     } else {
       const data = await postCategories(name);
+
       if (data.ok === true) {
         props.closeModal();
         setLoading(false);
@@ -41,12 +45,12 @@ const AddCategory = (props: Props) => {
   };
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.closeModal} size="lg">
+    <Modal isOpen={props.isOpen} size="lg" onClose={props.closeModal}>
       <ModalContent>
         <ModalHeader>{props.category ? 'Editar' : 'Agregar'} categoría</ModalHeader>
         <Formik
-          validationSchema={validationSchema}
           initialValues={{ name: props.category?.name ?? '' }}
+          validationSchema={validationSchema}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
@@ -54,31 +58,31 @@ const AddCategory = (props: Props) => {
               <ModalBody>
                 <div className="flex flex-col w-full dark:text-white">
                   <Input
-                    name="name"
-                    labelPlacement="outside"
                     className="dark:text-white"
-                    value={values.name}
-                    onChange={handleChange('name')}
-                    onBlur={handleBlur('name')}
-                    placeholder="Ingresa el nombre de la categoría"
                     classNames={{
                       base: 'text-sm font-semibold text-gray-600',
                     }}
-                    variant="bordered"
-                    label="Nombre"
-                    isInvalid={!!errors.name && touched.name}
                     errorMessage={touched.name && errors.name}
+                    isInvalid={!!errors.name && touched.name}
+                    label="Nombre"
+                    labelPlacement="outside"
+                    name="name"
+                    placeholder="Ingresa el nombre de la categoría"
+                    value={values.name}
+                    variant="bordered"
+                    onBlur={handleBlur('name')}
+                    onChange={handleChange('name')}
                   />
                 </div>
               </ModalBody>
               <ModalFooter>
                 {loading ? (
                   <div className="flex flex-col items-center justify-center w-full">
-                    <div className="loaderBranch w-2 h-2 mt-2"></div>
+                    <div className="loaderBranch w-2 h-2 mt-2" />
                     <p className="mt-3 text-sm font-semibold">Cargando...</p>
                   </div>
                 ) : (
-                  <ButtonUi onPress={() => handleSubmit()} theme={Colors.Primary}>
+                  <ButtonUi theme={Colors.Primary} onPress={() => handleSubmit()}>
                     Guardar
                   </ButtonUi>
                 )}

@@ -1,8 +1,11 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
 import { EditIcon, RefreshCcw, Repeat } from 'lucide-react';
-import { MobileViewProps } from './types/movile-view.types';
-import { useSupplierStore } from '../../store/supplier.store';
 import { useNavigate } from 'react-router';
+
+import { useSupplierStore } from '../../store/supplier.store';
+
+import { MobileViewProps } from './types/movile-view.types';
+
 import { Supplier } from '@/types/supplier.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -16,12 +19,14 @@ function MobileViewSupplier({ handleActive, actions, DeletePopover }: MobileView
     const path = supplier.esContribuyente
       ? `/update-supplier-tribute/${supplier.id}`
       : `/update-supplier-normal/${supplier.id}`;
+
     navigate(path);
     OnGetBySupplier(supplier.id ?? 0);
   };
 
   const changeTypeSupplier = (supplier: Supplier) => {
     const path = `/update-supplier-tribute/${supplier.id}`;
+
     navigate(path);
     OnGetBySupplier(supplier.id ?? 0);
   };
@@ -52,20 +57,20 @@ function MobileViewSupplier({ handleActive, actions, DeletePopover }: MobileView
           </CardBody>
           <CardHeader className="flex gap-5">
             {actions.includes('Editar') && item.isActive && (
-              <ButtonUi onPress={() => handleNavigate(item)} isIconOnly theme={Colors.Success}>
+              <ButtonUi isIconOnly theme={Colors.Success} onPress={() => handleNavigate(item)}>
                 <EditIcon className="dark:text-white" size={20} />
               </ButtonUi>
             )}
             {actions.includes('Cambiar Tipo de Proveedor') &&
               item.isActive &&
               item.esContribuyente === false && (
-                <ButtonUi onPress={() => changeTypeSupplier(item)} isIconOnly theme={Colors.Warning}>
+                <ButtonUi isIconOnly theme={Colors.Warning} onPress={() => changeTypeSupplier(item)}>
                   <Repeat className="dark:text-white" size={20} />
                 </ButtonUi>
               )}
             {actions.includes('Eliminar') && item.isActive && <DeletePopover supplier={item} />}
             {actions.includes('Activar') && !item.isActive && (
-              <ButtonUi theme={Colors.Info} onPress={() => handleActive(item.id)} isIconOnly>
+              <ButtonUi isIconOnly theme={Colors.Info} onPress={() => handleActive(item.id)}>
                 <RefreshCcw />
               </ButtonUi>
             )}

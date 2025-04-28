@@ -1,5 +1,6 @@
-import { ThemeContext } from '@/hooks/useTheme';
 import { useContext } from 'react';
+
+import { ThemeContext } from '@/hooks/useTheme';
 
 function useColors() {
   const { theme, context } = useContext(ThemeContext);

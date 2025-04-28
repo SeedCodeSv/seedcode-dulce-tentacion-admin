@@ -1,6 +1,5 @@
 import { Button } from "@heroui/react";
 import { DataView } from 'primereact/dataview';
-import { useCustomerStore } from '../../store/customers.store';
 import { classNames } from 'primereact/utils';
 import {
   User as IUser,
@@ -12,9 +11,12 @@ import {
   MapPin,
   BadgeCheck,
 } from 'lucide-react';
+
+import { useCustomerStore } from '../../store/customers.store';
 import { global_styles } from '../../styles/global.styles';
-import { GridProps, MobileViewProps } from './types/mobile-view.types';
 import TooltipGlobal from '../global/TooltipGlobal';
+
+import { GridProps, MobileViewProps } from './types/mobile-view.types';
 import { DeletePopover } from './view-modes/DeleteClients';
 
 function MobileView({ actions, layout, handleChangeCustomer, handleActive }: MobileViewProps) {
@@ -23,8 +25,19 @@ function MobileView({ actions, layout, handleChangeCustomer, handleActive }: Mob
   return (
     <div className="w-full pb-10">
       <DataView
-        value={customer_pagination.customers}
         gutter
+        className="dark:text-white"
+        color="surface"
+        emptyMessage="No customers found"
+        itemTemplate={(customer) => (
+          <GridItem
+            actions={actions}
+            customers={customer}
+            handleActive={handleActive}
+            handleChangeCustomer={handleChangeCustomer}
+            layout={layout}
+          />
+        )}
         layout={layout}
         pt={{
           grid: () => ({
@@ -32,18 +45,7 @@ function MobileView({ actions, layout, handleChangeCustomer, handleActive }: Mob
               'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5',
           }),
         }}
-        color="surface"
-        className="dark:text-white"
-        itemTemplate={(customer) => (
-          <GridItem
-            actions={actions}
-            layout={layout}
-            customers={customer}
-            handleChangeCustomer={handleChangeCustomer}
-            handleActive={handleActive}
-          />
-        )}
-        emptyMessage="No customers found"
+        value={customer_pagination.customers}
       />
     </div>
   );
@@ -51,14 +53,15 @@ function MobileView({ actions, layout, handleChangeCustomer, handleActive }: Mob
 
 const GridItem = (props: GridProps) => {
   const { layout, customers, handleChangeCustomer, handleActive, actions } = props;
+
   return (
     <>
       {layout === 'grid' ? (
         <div
+          key={customers.id}
           className={classNames(
             'w-full shadow border dark:border-white dark:border border-gray-600 hover:shadow-lg p-8 rounded-2xl'
           )}
-          key={customers.id}
         >
           <div className="flex w-full gap-2">
             <IUser className="text-blue-300 dark:text-blue-300" size={20} />
@@ -90,9 +93,9 @@ const GridItem = (props: GridProps) => {
                 {actions.includes('Editar') && (
                   <TooltipGlobal text="Editar">
                     <Button
-                      onClick={() => handleChangeCustomer(customers, 'edit')}
                       isIconOnly
                       style={global_styles().secondaryStyle}
+                      onClick={() => handleChangeCustomer(customers, 'edit')}
                     >
                       <EditIcon size={20} />
                     </Button>
@@ -104,9 +107,9 @@ const GridItem = (props: GridProps) => {
                       {customers.esContribuyente === false && (
                         <TooltipGlobal text="Cambiar tipo de cliente">
                           <Button
-                            onClick={() => handleChangeCustomer(customers, 'change')}
                             isIconOnly
                             style={global_styles().thirdStyle}
+                            onClick={() => handleChangeCustomer(customers, 'change')}
                           >
                             <Repeat size={20} />
                           </Button>
@@ -124,11 +127,11 @@ const GridItem = (props: GridProps) => {
                 {actions.includes('Eliminar') && (
                   <TooltipGlobal text="Activar">
                     <Button
+                      isIconOnly
+                      style={global_styles().secondaryStyle}
                       onClick={() => {
                         handleActive(customers.id);
                       }}
-                      isIconOnly
-                      style={global_styles().secondaryStyle}
                     >
                       <BadgeCheck size={20} />
                     </Button>
@@ -141,8 +144,8 @@ const GridItem = (props: GridProps) => {
       ) : (
         <ListItem
           actions={actions}
-          handleActive={handleActive}
           customers={customers}
+          handleActive={handleActive}
           handleChangeCustomer={handleChangeCustomer}
           layout="list"
         />
@@ -153,6 +156,7 @@ const GridItem = (props: GridProps) => {
 
 const ListItem = (props: GridProps) => {
   const { customers, handleChangeCustomer, handleActive, actions } = props;
+
   return (
     <>
       <div className="flex w-full dark:border-white col-span-1 p-5 border shadow rounded-2xl ">
@@ -182,9 +186,9 @@ const ListItem = (props: GridProps) => {
               {actions.includes('Editar') && (
                 <TooltipGlobal text="Editar">
                   <Button
-                    onClick={() => handleChangeCustomer(customers, 'edit')}
                     isIconOnly
                     style={global_styles().secondaryStyle}
+                    onClick={() => handleChangeCustomer(customers, 'edit')}
                   >
                     <EditIcon size={20} />
                   </Button>
@@ -197,9 +201,9 @@ const ListItem = (props: GridProps) => {
                     {customers.esContribuyente === false && (
                       <TooltipGlobal text="Cambiar tipo de cliente">
                         <Button
-                          onClick={() => handleChangeCustomer(customers, 'change')}
                           isIconOnly
                           style={global_styles().thirdStyle}
+                          onClick={() => handleChangeCustomer(customers, 'change')}
                         >
                           <Repeat size={20} />
                         </Button>
@@ -215,11 +219,11 @@ const ListItem = (props: GridProps) => {
               {actions.includes('Eliminar') && (
                 <TooltipGlobal text="Activar">
                   <Button
+                    isIconOnly
+                    style={global_styles().secondaryStyle}
                     onClick={() => {
                       handleActive(customers.id);
                     }}
-                    isIconOnly
-                    style={global_styles().secondaryStyle}
                   >
                     <BadgeCheck size={20} />
                   </Button>

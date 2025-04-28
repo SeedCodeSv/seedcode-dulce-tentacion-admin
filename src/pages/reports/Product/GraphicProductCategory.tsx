@@ -1,13 +1,16 @@
+import { Button } from "@heroui/react";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import ApexCharts from 'react-apexcharts';
+
+import { GraphicSubCategory } from '../../../types/reports/sales.reports.types';
+
 import { ThemeContext } from '@/hooks/useTheme';
 import useWindowSize from '@/hooks/useWindowSize';
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import { formatCurrency } from '@/utils/dte';
 import { getRandomColorsArray } from '@/utils/filters';
-import { Button } from "@heroui/react";
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import ApexCharts from 'react-apexcharts';
-import { GraphicSubCategory } from '../../../types/reports/sales.reports.types';
+
 
 interface Props {
   startDate: string;
@@ -136,9 +139,7 @@ function GraphicProductCategory(props: Props) {
         )}
       </div>
       <ApexCharts
-        type="bar"
         height={400}
-        series={series}
         options={{
           chart: {
             events: {
@@ -148,6 +149,7 @@ function GraphicProductCategory(props: Props) {
                 const subcategory_selected = graphic_for_category_products_for_dates.find(
                   (d) => d.categoryName === label_selected
                 );
+
                 setSubcategorySelected(subcategory_selected?.categoryId || 0);
               },
               xAxisLabelClick(_, __, options) {
@@ -156,6 +158,7 @@ function GraphicProductCategory(props: Props) {
                 const subcategory_selected = graphic_for_category_products_for_dates.find(
                   (d) => d.categoryName === label_selected
                 );
+
                 setSubcategorySelected(subcategory_selected?.categoryId || 0);
               },
               legendClick(_, index: number, options) {
@@ -163,6 +166,7 @@ function GraphicProductCategory(props: Props) {
                 const subcategory_selected = graphic_for_category_products_for_dates.find(
                   (d) => d.categoryName === label_selected
                 );
+
                 setSubcategorySelected(subcategory_selected?.categoryId || 0);
               },
             },
@@ -237,12 +241,14 @@ function GraphicProductCategory(props: Props) {
             },
           },
         }}
+        series={series}
+        type="bar"
       />
 
       {loading_sales_by_subcategory ? (
         <>
           <div className="flex flex-col items-center justify-center w-full mt-2">
-            <div className="loader"></div>
+            <div className="loader" />
             {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
           </div>
         </>
@@ -261,9 +267,7 @@ function GraphicProductCategory(props: Props) {
                 </div>
               )}
               <ApexCharts
-                type="donut"
                 height={windowSize.width < 900 ? 450 : 500}
-                series={series_sub[0].data}
                 options={{
                   chart: {
                     events: {
@@ -324,6 +328,8 @@ function GraphicProductCategory(props: Props) {
                     },
                   },
                 }}
+                series={series_sub[0].data}
+                type="donut"
               />
             </div>
           )}

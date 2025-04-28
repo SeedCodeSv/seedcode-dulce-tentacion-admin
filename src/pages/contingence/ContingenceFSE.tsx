@@ -1,3 +1,15 @@
+import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@heroui/react";
+import { useEffect, useMemo, useState } from "react";
+import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
+import { toast } from "sonner";
+import axios, { AxiosError } from "axios";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
+import { ShieldAlert } from "lucide-react";
+
+import { generate_contingencias } from "./contingencia_facturacion.ts";
+import { generateFSEURL } from "./utils.ts";
+
 import useGlobalStyles from "@/components/global/global.styles";
 import { useAuthStore } from "@/store/auth.store";
 import { useCorrelativesDteStore } from "@/store/correlatives_dte.store";
@@ -5,26 +17,16 @@ import { useEmployeeStore } from "@/store/employee.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import { IContingencia } from "@/types/DTE/contingencia.types";
 import { formatDate } from "@/utils/dates";
-import { Autocomplete, AutocompleteItem, Button, Input, Select, SelectItem, Spinner, Textarea, useDisclosure } from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
-import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
-import { toast } from "sonner";
-import { generate_contingencias } from "./contingencia_facturacion.ts";
 import { firmarDocumentoContingencia, firmarDocumentoSujetoExcluido, send_to_mh, send_to_mh_contingencia } from "@/services/DTE.service.ts";
-import axios, { AxiosError } from "axios";
 import { return_mh_token } from "@/storage/localStorage.ts";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client } from "@/plugins/s3.ts";
-import { GetObjectCommand, PutObjectCommand, PutObjectCommandInput } from "@aws-sdk/client-s3";
 import { ambiente, API_URL, contingence_steps, SPACES_BUCKET } from "@/utils/constants.ts";
 import { PayloadMH } from "@/types/DTE/DTE.types.ts";
 import { SendMHFailed } from "@/types/transmitter.types.ts";
 import HeadlessModal from "@/components/global/HeadlessModal.tsx";
-import { ShieldAlert } from "lucide-react";
 import { Employee } from "@/types/employees.types.ts";
 import { useExcludedSubjectStore } from "@/store/excluded_subjects.store.ts";
 import { SVFE_FSE_Firmado, SVFE_FSE_SEND } from "@/types/svf_dte/fse.types.ts";
-import { generateFSEURL } from "./utils.ts";
 import { useBranchesStore } from "@/store/branches.store.ts";
 
 function ContingenceFSE() {
@@ -97,15 +99,18 @@ function ContingenceFSE() {
         if (motivo === '' )
         {
         setError(prev => ({ ...prev, motivo: 'Selecciona el motivo' }));
+
         return
         }
         else if ( nombreRes === ''){
         setError(prev => ({ ...prev, nombreRes: 'Selecciona el responsable' }));
+
         return
         }
         else if(motivo === '5' && observaciones === '')
         {
             setError(prev => ({ ...prev, observaciones: 'Debes rellenar la información adicional' }));
+
         return
         }
     }
@@ -127,6 +132,7 @@ function ContingenceFSE() {
         })
         .catch(() => {
           toast.error('No se encontraron correlativos');
+
           return undefined;
         });
     
@@ -154,6 +160,7 @@ function ContingenceFSE() {
               nit: transmitter.nit,
               documento: firma.data.body,
             };
+
             setCurrentStep(1);
             const source = axios.CancelToken.source();
     
@@ -168,6 +175,7 @@ function ContingenceFSE() {
               toast.error('Fallo al obtener las credenciales del Ministerio de Hacienda', {
                 position: 'top-right',
               });
+
               return;
             }
             // $ ENVIAR A CONTINGENCIA
@@ -180,6 +188,7 @@ function ContingenceFSE() {
                   setLoading(false);
                   setCurrentStep(0);
                   clearTimeout(timeout);
+
                   return;
                 } else {
                   toast.success('Contingencia enviada con éxito');
@@ -212,6 +221,7 @@ function ContingenceFSE() {
                         apendice: json.data.apendice,
                       },
                     };
+
                     // * FIRMAR NOTA DE DÉBITO
                     firmarDocumentoSujetoExcluido(send)
                       .then((firma_doc) => {
@@ -282,19 +292,23 @@ function ContingenceFSE() {
                                     )
                                     .then(() => {
                                     toast.success('Se guardo correctamente el sujeto excluido');
+
                                     return true;
                                     })
                                     .catch(() => {
                                     toast.error('Error al guardar en la base de datos');
+
                                     return false;
                                     });
                                 } else {
                                 toast.error('Error al subir el archivo JSON');
+
                                 return false;
                                 }
                             })
                             .catch(() => {
                                 toast.error('Error al subir el archivo JSON');
+
                                 return false;
                             });
                           })
@@ -320,13 +334,16 @@ function ContingenceFSE() {
                                 description: 'Al enviar la venta, no se obtuvo respuesta de hacienda',
                               });
                             }
+
                             return false;
                           });
+
                         return result;
                       })
                       // ! ERROR AL FIRMAR SUJETO EXCLUIDO
                       .catch(() => {
                         toast.error('Error al firmar el sujeto excluido');
+
                         return false;
                       });
                   });
@@ -338,6 +355,7 @@ function ContingenceFSE() {
                     })
                     .catch(() => {
                       toast.error('Error al guardar en la base de datos');
+
                       return false;
                     });
                 }
@@ -417,19 +435,19 @@ function ContingenceFSE() {
                 </div>
             )}
             <HeadlessModal
-                title={title}
                 isOpen={modalError.isOpen}
-                onClose={modalError.onClose}
                 size={'w-96 p-5'}
+                title={title}
+                onClose={modalError.onClose}
             >
                 <div className="w-full flex flex-col justify-center items-center">
-                <ShieldAlert size={75} color="red" />
+                <ShieldAlert color="red" size={75} />
                 <p className="text-lg font-semibold">{errorMessage}</p>
                 <div className="grid grid-cols-2 gap-8 mt-2">
-                    <Button onClick={handleProccessContingence} style={styles.thirdStyle} className="px-6">
+                    <Button className="px-6" style={styles.thirdStyle} onClick={handleProccessContingence}>
                     Re-intentar
                     </Button>
-                    <Button onClick={modalError.onClose} style={styles.dangerStyles} className="px-6">
+                    <Button className="px-6" style={styles.dangerStyles} onClick={modalError.onClose}>
                     Aceptar
                     </Button>
                 </div>
@@ -439,60 +457,60 @@ function ContingenceFSE() {
         <p className="font-semibold text-xl dark:text-white">Resumen</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-3 mt-5">
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
             className="dark:text-white"
-            labelPlacement="outside"
-            variant="bordered"
-            type="date"
+            classNames={{ label: 'font-semibold text-sm' }}
             label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
             value={startDate}
+            variant="bordered"
             onChange={(e) => setStartDate(e.target.value)}
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
-            labelPlacement="outside"
             className="dark:text-white"
-            variant="bordered"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora inicial"
+            labelPlacement="outside"
             type="time"
             value={startTime}
+            variant="bordered"
             onChange={(e) => setStartTime(e.target.value)}
-            label="Hora inicial"
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
-            labelPlacement="outside"
             className="dark:text-white"
-            variant="bordered"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Fecha de fin"
+            labelPlacement="outside"
             type="date"
             value={endDate}
+            variant="bordered"
             onChange={(e) => setEndDate(e.target.value)}
-            label="Fecha de fin"
           />
           <Input
-            classNames={{ label: 'font-semibold text-sm' }}
-            labelPlacement="outside"
-            variant="bordered"
             className="dark:text-white"
+            classNames={{ label: 'font-semibold text-sm' }}
+            label="Hora de fin"
+            labelPlacement="outside"
             type="time"
             value={endTime}
+            variant="bordered"
             onChange={(e) => setEndTime(e.target.value)}
-            label="Hora de fin"
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 mt-2 gap-10 gap-y-3">
           <div className="flex flex-col gap-3">
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold text-sm' }}
+              defaultSelectedKeys={[motivo.toString()]}
+              errorMessage={error.motivo}
+              isInvalid={!!error.motivo}
+              label="Motivo"
               labelPlacement="outside"
               placeholder="Selecciona el motivo"
-              variant="bordered"
-              label="Motivo"
-              onChange={(e) => setMotivo(e.target.value)}
-              defaultSelectedKeys={[motivo.toString()]}
               value={motivo}
-              className="dark:text-white"
-              isInvalid={!!error.motivo}
-              errorMessage={error.motivo}
+              variant="bordered"
+              onChange={(e) => setMotivo(e.target.value)}
             >
               {service.get005TipoDeContingencum().map((item) => (
                 <SelectItem key={item.codigo}  className="dark:text-white">
@@ -502,35 +520,35 @@ function ContingenceFSE() {
             </Select>
 
             <Textarea
-              value={observaciones}
-              onChange={(e) => setObservaciones(e.target.value)}
-              classNames={{ label: 'font-semibold text-sm' }}
-              labelPlacement="outside"
-              variant="bordered"
-              label="Información adicional"
               className="dark:text-white"
-              placeholder="Ingresa tus observaciones e información adicional"
-              isInvalid={!!error.observaciones}
+              classNames={{ label: 'font-semibold text-sm' }}
               errorMessage={error.observaciones}
-            ></Textarea>
+              isInvalid={!!error.observaciones}
+              label="Información adicional"
+              labelPlacement="outside"
+              placeholder="Ingresa tus observaciones e información adicional"
+              value={observaciones}
+              variant="bordered"
+              onChange={(e) => setObservaciones(e.target.value)}
+             />
           </div>
           <div className="flex flex-col-2 gap-4">
           <Autocomplete
-              value={branchId}
-              label="Sucursal"
-              labelPlacement="outside"
-              variant="bordered"
               className="dark:text-white font-semibold"
-              placeholder='Selecciona la sucursal'
-              onSelectionChange={(value) => setBranchId((value as string) || '')}
               classNames={{
                 base: 'font-semibold text-gray-500 text-sm',
               }}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder='Selecciona la sucursal'
+              value={branchId}
+              variant="bordered"
+              onSelectionChange={(value) => setBranchId((value as string) || '')}
             >
               {branch_list.map((bra) => (
                 <AutocompleteItem
-                  className="dark:text-white"
                   key={bra.id.toString()}
+                  className="dark:text-white"
                 >
                   {bra.name}
                 </AutocompleteItem>
@@ -539,15 +557,16 @@ function ContingenceFSE() {
 
             <Autocomplete
                 className="dark:text-white font-semibold text-sm"
-                variant="bordered"
+                errorMessage={error.nombreRes}
+                isInvalid={!!error.nombreRes}
                 label="Responsable"
                 labelPlacement="outside"
                 placeholder="Selecciona al responsable"
-                isInvalid={!!error.nombreRes}
-                errorMessage={error.nombreRes}
+                variant="bordered"
                 onSelectionChange={(key) => {
                     if (key) {
                         const employee = JSON.parse(key as string) as Employee;
+
                         setNombreRes(`${employee.firstName} ${employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`);
                         setNumeroDocumento(employee.dui);
                         setTipoDocumento("13")
@@ -578,17 +597,17 @@ function ContingenceFSE() {
               <>
                 {motivo === '' || nombreRes === '' || contingence_excluded_subject.length === 0 ? (
                   <Button
+                    className="px-10 font-semibold text-white	 bg-gray-700"
                     style={styles.dangerStyles}
                     onClick={handleError}
-                    className="px-10 font-semibold text-white	 bg-gray-700"
                   >
                     Procesar contingencia
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleProccessContingence}
-                    style={styles.thirdStyle}
                     className="px-10 font-semibold"
+                    style={styles.thirdStyle}
+                    onClick={handleProccessContingence}
                   >
                     Procesar contingencia
                   </Button>
@@ -619,7 +638,7 @@ function ContingenceFSE() {
               </thead>
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {contingence_excluded_subject.map((sale, index) => (
-                  <tr className="border-b border-slate-200" key={index}>
+                  <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">{index + 1}</td>
                     <td className="p-3 text-sm text-slate-700 dark:text-slate-100">
                       {sale.fecEmi + ' - ' + sale.horEmi}

@@ -1,11 +1,12 @@
+import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { Correlatives, IPropsCorrelativeUpdate } from '@/types/correlatives/correlatives_types';
 import { Colors } from '@/types/themes.types';
-import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
 function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUpdate) {
   const [datUpdateCorrelative, setDatUpdateCorrelative] = useState<Correlatives>({
@@ -36,51 +37,54 @@ function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUp
       return;
     }
   };
+
   useEffect(() => {
     setDatUpdateCorrelative(correlative as Correlatives);
   }, [correlative]);
+
   return (
     <div className="dark:text-white ">
       <div className="mt-5 grid grid-cols-2 gap-5 ">
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             defaultValue={correlative?.code}
-            value={datUpdateCorrelative.code?.trim() !== '' ? datUpdateCorrelative.code : 'N/A'}
             label="Código"
             labelPlacement="outside"
             name="code"
             placeholder="Código"
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
+            value={datUpdateCorrelative.code?.trim() !== '' ? datUpdateCorrelative.code : 'N/A'}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Autocomplete
+            className="dark:text-white"
+            classNames={{
+              base: 'text-gray-500 text-sm',
+            }}
+            defaultSelectedKey={datUpdateCorrelative.typeVoucher}
+            label="Tipo de Factura"
+            labelPlacement="outside"
+            placeholder="Selecciona el Tipo de Factura"
+            value={datUpdateCorrelative.typeVoucher}
+            variant="bordered"
             onSelectionChange={(e) => {
               const selectCorrelativeType = correlativesTypes.find(
                 (dep) => dep.value === new Set([e]).values().next().value
               );
+
               setDatUpdateCorrelative({
                 ...datUpdateCorrelative,
                 typeVoucher: selectCorrelativeType?.value || '',
               });
             }}
-            label="Tipo de Factura"
-            value={datUpdateCorrelative.typeVoucher}
-            defaultSelectedKey={datUpdateCorrelative.typeVoucher}
-            labelPlacement="outside"
-            placeholder="Selecciona el Tipo de Factura"
-            variant="bordered"
-            className="dark:text-white"
-            classNames={{
-              base: 'text-gray-500 text-sm',
-            }}
           >
             {correlativesTypes.map((dep) => (
-              <AutocompleteItem className="dark:text-white" key={dep.value}>
+              <AutocompleteItem key={dep.value} className="dark:text-white">
                 {dep.value + ' - ' + dep.label}
               </AutocompleteItem>
             ))}
@@ -88,96 +92,96 @@ function UpdateCorrelative({ correlative, onClose, reload }: IPropsCorrelativeUp
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             label="Resolución"
-            value={datUpdateCorrelative.resolution}
             labelPlacement="outside"
             name="resolution"
             placeholder="Ingresa la resolución"
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
+            value={datUpdateCorrelative.resolution}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             label="Serie"
             labelPlacement="outside"
             name="serie"
-            value={datUpdateCorrelative.serie?.toString()}
             placeholder="Ingresa la serie"
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
+            value={datUpdateCorrelative.serie?.toString()}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             label="Inicio"
-            value={datUpdateCorrelative.from}
             labelPlacement="outside"
             name="from"
             placeholder="Ingresa el inicio"
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
+            value={datUpdateCorrelative.from}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             label="Fin"
             labelPlacement="outside"
             name="to"
-            value={datUpdateCorrelative.to}
             placeholder="Ingresa el nombre de usuario"
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
+            value={datUpdateCorrelative.to}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
+            classNames={{
+              label: 'text-gray-500 text-sm',
+            }}
             label="Anterior"
             labelPlacement="outside"
             name="prev"
             placeholder="Ingresa el anterior"
             type="number"
             value={datUpdateCorrelative.prev?.toString()}
-            classNames={{
-              label: 'text-gray-500 text-sm',
-            }}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
         <div className="pt-2">
           <Input
-            onChange={handleChange}
-            label="Siguiente"
-            labelPlacement="outside"
-            name="next"
-            value={datUpdateCorrelative.next?.toString()}
-            placeholder="Ingresa el siguiente"
             classNames={{
               label: 'text-gray-500 text-sm',
             }}
+            label="Siguiente"
+            labelPlacement="outside"
+            name="next"
+            placeholder="Ingresa el siguiente"
+            value={datUpdateCorrelative.next?.toString()}
             variant="bordered"
+            onChange={handleChange}
           />
         </div>
       </div>
 
       <div className="w-full">
         <ButtonUi
-          onPress={handleUpdateCorrelative}
           className="w-full mt-4 text-sm font-semibold"
           theme={Colors.Success}
+          onPress={handleUpdateCorrelative}
         >
           Guardar
         </ButtonUi>

@@ -1,13 +1,15 @@
 import { create } from 'zustand';
-import { IBranchProductStore } from './types/branch_product.types';
+import { toast } from 'sonner';
+
 import {
   get_branch_product,
   get_branch_product_orders,
   get_branches,
   get_product_by_code,
 } from '../services/branch_product.service';
-import { toast } from 'sonner';
 import { groupBySupplier } from '../utils/filters';
+
+import { IBranchProductStore } from './types/branch_product.types';
 // import { totalAPagar } from '../components/new_sales/MainView';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
@@ -42,6 +44,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);
+
     if (existProduct) {
       toast.warning('El producto ya existe en la orden');
     } else {
@@ -61,8 +64,10 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   },
   deleteProductOrder(id) {
     const find = get().order_branch_products.find((cp) => cp.id === id);
+
     if (find) {
       const products = get().order_branch_products.filter((cp) => cp.id !== id);
+
       set({ order_branch_products: products });
     }
     set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
@@ -181,6 +186,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     get_product_by_code(transmitter_id, code).then(({ data }) => {
       const { cart_products } = get();
       const existProduct = cart_products.find((cp) => cp.id === data.product.id);
+
       if (existProduct) {
         get().onPlusQuantity(existProduct.id);
       } else {
@@ -203,6 +209,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   addProductCart(product) {
     const { cart_products } = get();
     const existProduct = cart_products.find((cp) => cp.id === product.id);
+
     if (existProduct) {
       get().onPlusQuantity(existProduct.id);
     } else {
@@ -224,8 +231,10 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   deleteProductCart(id) {
     const { cart_products } = get();
     const index = cart_products.findIndex((cp) => cp.id === id);
+
     if (index > -1) {
       const newCartProducts = [...cart_products];
+
       newCartProducts.splice(index, 1);
       set({ cart_products: newCartProducts });
     }
@@ -236,21 +245,25 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   onPlusQuantity(id) {
     const { cart_products } = get();
     const product = cart_products.find((cp) => cp.id === id);
+
     if (product) {
       const newCartProducts = cart_products.map((cp) =>
         cp.id === id ? { ...cp, total: cp.total + cp.base_price, quantity: cp.quantity + 1 } : cp
       );
+
       set({ cart_products: newCartProducts });
     }
   },
   onMinusQuantity(id) {
     const { cart_products } = get();
     const product = cart_products.find((cp) => cp.id === id);
+
     if (product) {
       if (product.quantity > 1) {
         const newCartProducts = cart_products.map((cp) =>
           cp.id === id ? { ...cp, total: cp.total - cp.base_price, quantity: cp.quantity - 1 } : cp
         );
+
         set({ cart_products: newCartProducts });
       } else {
         get().onRemoveProduct(id);

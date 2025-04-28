@@ -1,18 +1,18 @@
 import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
-import { Customer, Sale, ValidateContigence } from '../../types/report_contigence';
 import { useEffect, useState } from 'react';
-import { useLogsStore } from '../../store/logs.store';
-import { Municipio } from '../../types/billing/cat-013-municipio.types';
-// import { useBillingStore } from "../../store/facturation/billing.store";
-import { Departamento } from '../../types/billing/cat-012-departamento.types';
-import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
-// import { useProductsStore } from "../../store/products.store";
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+
+import { Customer, Sale, ValidateContigence } from '../../types/report_contigence';
+import { useLogsStore } from '../../store/logs.store';
+import { Municipio } from '../../types/billing/cat-013-municipio.types';
+import { Departamento } from '../../types/billing/cat-012-departamento.types';
+import { CodigoActividadEconomica } from '../../types/billing/cat-019-codigo-de-actividad-economica.types';
 import { IUnitOfMeasurement } from '../../types/billing/cat-014-tipos-de-medida.types';
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
 import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
+
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -63,6 +63,7 @@ const UpdateCustomerSales = (props: Props) => {
     tipoItem: 1,
     uniMedida: 26,
   };
+
   useEffect(() => {
     if (props.codigoGeneracion) {
       getLogs(props.codigoGeneracion);
@@ -130,10 +131,12 @@ const UpdateCustomerSales = (props: Props) => {
       //faltan algunos cambios
       //---------------------------------------
     };
+
     // console.log("sales", sale)
     props.handleSendToContingencia(sale, sale);
     props.onClose();
   };
+
   return (
     <>
       <div>
@@ -142,8 +145,8 @@ const UpdateCustomerSales = (props: Props) => {
         ))}
       </div>
       <Formik
-        validationSchema={validationSchema}
         initialValues={initialValues}
+        validationSchema={validationSchema}
         onSubmit={handleSave}
       >
         {({ values, errors, touched, handleBlur, handleSubmit, handleChange }) => (
@@ -151,17 +154,17 @@ const UpdateCustomerSales = (props: Props) => {
             <div className="grid grid-cols-2 gap-3 p-3  ">
               <div className="mt-5">
                 <Input
-                  label="Nombre de cliente"
-                  labelPlacement="outside"
-                  onChange={handleChange('nombre')}
-                  onBlur={handleBlur('nombre')}
-                  defaultValue={props.selectedSale?.customer.nombre}
-                  value={values.nombre}
-                  placeholder="Ingresa el nombre de cliente"
                   classNames={{
                     label: 'text-gray-500 text-base',
                   }}
+                  defaultValue={props.selectedSale?.customer.nombre}
+                  label="Nombre de cliente"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el nombre de cliente"
+                  value={values.nombre}
                   variant="bordered"
+                  onBlur={handleBlur('nombre')}
+                  onChange={handleChange('nombre')}
                 />
                 {errors.nombre && touched.nombre && (
                   <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
@@ -169,18 +172,18 @@ const UpdateCustomerSales = (props: Props) => {
               </div>
               <div className="mt-5">
                 <Input
-                  label="Nombre Comercial"
-                  labelPlacement="outside"
-                  onChange={handleChange('nombreComercial')}
-                  onBlur={handleBlur('nombreComercial')}
-                  defaultValue={props.customer?.nombreComercial}
-                  placeholder="Ingresa el nombre comercial"
-                  type="text"
-                  value={values.nombreComercial}
                   classNames={{
                     label: 'text-gray-500 text-base',
                   }}
+                  defaultValue={props.customer?.nombreComercial}
+                  label="Nombre Comercial"
+                  labelPlacement="outside"
+                  placeholder="Ingresa el nombre comercial"
+                  type="text"
+                  value={values.nombreComercial}
                   variant="bordered"
+                  onBlur={handleBlur('nombreComercial')}
+                  onChange={handleChange('nombreComercial')}
                 />
                 {errors.nombreComercial && touched.nombreComercial && (
                   <span className="text-sm font-semibold text-red-500">
@@ -192,17 +195,17 @@ const UpdateCustomerSales = (props: Props) => {
                 <>
                   <div className="pt-2">
                     <Input
-                      label="Nit"
-                      defaultValue={props.selectedSale.customer.nit}
-                      labelPlacement="outside"
-                      placeholder="Ingresa el numero de nit"
-                      type="text"
                       classNames={{
                         label: 'text-gray-500 text-base',
                       }}
-                      onChange={handleChange('nit')}
-                      onBlur={handleBlur('nit')}
+                      defaultValue={props.selectedSale.customer.nit}
+                      label="Nit"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el numero de nit"
+                      type="text"
                       variant="bordered"
+                      onBlur={handleBlur('nit')}
+                      onChange={handleChange('nit')}
                     />
                     {errors.nit && touched.nit && (
                       <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
@@ -210,17 +213,17 @@ const UpdateCustomerSales = (props: Props) => {
                   </div>
                   <div className="pt-2">
                     <Input
-                      label="Nrc"
-                      defaultValue={props.selectedSale.customer.nrc}
-                      labelPlacement="outside"
-                      placeholder="Ingresa el numero de nrc"
-                      type="text"
                       classNames={{
                         label: 'text-gray-500 text-base',
                       }}
-                      onChange={handleChange('nrc')}
-                      onBlur={handleBlur('nrc')}
+                      defaultValue={props.selectedSale.customer.nrc}
+                      label="Nrc"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el numero de nrc"
+                      type="text"
                       variant="bordered"
+                      onBlur={handleBlur('nrc')}
+                      onChange={handleChange('nrc')}
                     />
                     {errors.nrc && touched.nrc && (
                       <span className="text-sm font-semibold text-red-500">{errors.nrc}</span>
@@ -230,13 +233,9 @@ const UpdateCustomerSales = (props: Props) => {
               )}
               <div className="pt-2">
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
-                      setCodActividad(depSelected);
-                    }
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
                   }}
-                  onBlur={handleBlur('Actividad')}
                   label="Actividad"
                   labelPlacement="outside"
                   placeholder={
@@ -246,8 +245,13 @@ const UpdateCustomerSales = (props: Props) => {
                   }
                   value={values.descActividad}
                   variant="bordered"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
+                  onBlur={handleBlur('Actividad')}
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as CodigoActividadEconomica;
+
+                      setCodActividad(depSelected);
+                    }
                   }}
                 >
                   {cat_019_codigo_de_actividad_economica.map((dep) => (
@@ -262,13 +266,9 @@ const UpdateCustomerSales = (props: Props) => {
                 <>
                   <div className="pt-2">
                     <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as ITipoDocumento;
-                          setTipoDocument(depSelected);
-                        }
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
                       }}
-                      onBlur={handleBlur('tipoDocument')}
                       label="Tipo documento"
                       labelPlacement="outside"
                       placeholder={
@@ -276,8 +276,13 @@ const UpdateCustomerSales = (props: Props) => {
                       }
                       value={values.tipoDocument}
                       variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
+                      onBlur={handleBlur('tipoDocument')}
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(key as string) as ITipoDocumento;
+
+                          setTipoDocument(depSelected);
+                        }
                       }}
                     >
                       {cay_002_tipo_de_documento.map((dep) => (
@@ -293,18 +298,18 @@ const UpdateCustomerSales = (props: Props) => {
 
                   <div className="pt-2">
                     <Input
-                      label="Numero de documento"
-                      defaultValue={props.customer?.numDocumento}
-                      onChange={handleChange('numDocumento')}
-                      onBlur={handleBlur('numDocumento')}
-                      value={values.numDocumento}
-                      labelPlacement="outside"
-                      placeholder="Ingresa el numero de documento"
-                      type="text"
                       classNames={{
                         label: 'text-gray-500 text-base',
                       }}
+                      defaultValue={props.customer?.numDocumento}
+                      label="Numero de documento"
+                      labelPlacement="outside"
+                      placeholder="Ingresa el numero de documento"
+                      type="text"
+                      value={values.numDocumento}
                       variant="bordered"
+                      onBlur={handleBlur('numDocumento')}
+                      onChange={handleChange('numDocumento')}
                     />
                     {errors.numDocumento && touched.numDocumento && (
                       <span className="text-sm font-semibold text-red-500">
@@ -317,15 +322,9 @@ const UpdateCustomerSales = (props: Props) => {
               <div className="pt-2">
                 <div>
                   <Autocomplete
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const depSelected = JSON.parse(key as string) as Departamento;
-                        setSelectedCodeDep(depSelected.codigo);
-                        setSeletedDep(depSelected);
-                      }
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
                     }}
-                    onChange={handleChange('nombreDepartamento')}
-                    onBlur={handleBlur('nombreDepartamento')}
                     label="Departamento"
                     labelPlacement="outside"
                     placeholder={
@@ -333,11 +332,18 @@ const UpdateCustomerSales = (props: Props) => {
                         ? props.customer?.direccion.nombreDepartamento
                         : 'Selecciona el departamento'
                     }
-                    variant="bordered"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
                     value={values.nombreDepartamento}
+                    variant="bordered"
+                    onBlur={handleBlur('nombreDepartamento')}
+                    onChange={handleChange('nombreDepartamento')}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const depSelected = JSON.parse(key as string) as Departamento;
+
+                        setSelectedCodeDep(depSelected.codigo);
+                        setSeletedDep(depSelected);
+                      }
+                    }}
                   >
                     {cat_012_departamento.map((dep) => (
                       <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
@@ -354,11 +360,8 @@ const UpdateCustomerSales = (props: Props) => {
                 {selectedCodeDep ? (
                   <div>
                     <Autocomplete
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as Municipio;
-                          setSeletedMunicipio(depSelected);
-                        }
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
                       }}
                       label="Municipio"
                       labelPlacement="outside"
@@ -367,13 +370,17 @@ const UpdateCustomerSales = (props: Props) => {
                           ? props.customer?.direccion.nombreMunicipio
                           : 'Selecciona el municipio'
                       }
-                      onChange={handleChange('nombreMunicipio')}
-                      onBlur={handleBlur('nombreMunicipio')}
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
                       value={values.nombreMunicipio}
+                      variant="bordered"
+                      onBlur={handleBlur('nombreMunicipio')}
+                      onChange={handleChange('nombreMunicipio')}
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(key as string) as Municipio;
+
+                          setSeletedMunicipio(depSelected);
+                        }
+                      }}
                     >
                       {cat_013_municipios!.map((dep) => (
                         <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
@@ -389,11 +396,8 @@ const UpdateCustomerSales = (props: Props) => {
                   <div className="pt-2">
                     <Autocomplete
                       isDisabled
-                      onSelectionChange={(key) => {
-                        if (key) {
-                          const depSelected = JSON.parse(key as string) as Municipio;
-                          setSeletedMunicipio(depSelected);
-                        }
+                      classNames={{
+                        base: 'font-semibold text-gray-500 text-sm',
                       }}
                       label="Municipio"
                       labelPlacement="outside"
@@ -402,11 +406,15 @@ const UpdateCustomerSales = (props: Props) => {
                           ? props.customer?.direccion.nombreMunicipio
                           : 'Selecciona el municipio'
                       }
-                      variant="bordered"
-                      classNames={{
-                        base: 'font-semibold text-gray-500 text-sm',
-                      }}
                       value={values.nombreMunicipio}
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const depSelected = JSON.parse(key as string) as Municipio;
+
+                          setSeletedMunicipio(depSelected);
+                        }
+                      }}
                     >
                       {cat_013_municipios!.map((dep) => (
                         <AutocompleteItem key={JSON.stringify(dep)}>{dep.valores}</AutocompleteItem>
@@ -420,19 +428,20 @@ const UpdateCustomerSales = (props: Props) => {
             <div className="grid grid-cols-2 gap-3 p-3  border  ">
               <div className="mt-2">
                 <Autocomplete
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const depSelected = JSON.parse(key as string) as TipoDeItem;
-                      setSelectedTipeItem(depSelected);
-                    }
-                  }}
-                  onChange={handleChange('tipoItem')}
-                  onBlur={handleBlur('tipoItem')}
-                  variant="bordered"
                   label="Tipo de item"
                   labelPlacement="outside"
                   placeholder={'Bienes'}
                   value={values.tipoItem}
+                  variant="bordered"
+                  onBlur={handleBlur('tipoItem')}
+                  onChange={handleChange('tipoItem')}
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const depSelected = JSON.parse(key as string) as TipoDeItem;
+
+                      setSelectedTipeItem(depSelected);
+                    }
+                  }}
                 >
                   {cat_011_tipo_de_item.map((item) => (
                     <AutocompleteItem key={JSON.stringify(item)}>{item.valores}</AutocompleteItem>
@@ -444,20 +453,21 @@ const UpdateCustomerSales = (props: Props) => {
               </div>
               <div className="mt-2">
                 <Autocomplete
+                  label="Unidad de medida"
+                  labelPlacement="outside"
+                  name="unidaDeMedida"
+                  placeholder={'Mililitro'}
+                  value={values.uniMedida}
+                  variant="bordered"
+                  onBlur={handleBlur('uniMedida')}
+                  onChange={handleChange('uniMedida')}
                   onSelectionChange={(key) => {
                     if (key) {
                       const depSelected = JSON.parse(key as string) as IUnitOfMeasurement;
+
                       setSelectedUnidadMedi(depSelected);
                     }
                   }}
-                  onChange={handleChange('uniMedida')}
-                  onBlur={handleBlur('uniMedida')}
-                  variant="bordered"
-                  name="unidaDeMedida"
-                  label="Unidad de medida"
-                  labelPlacement="outside"
-                  placeholder={'Mililitro'}
-                  value={values.uniMedida}
                 >
                   {unidadDeMedidaList.map((item) => (
                     <AutocompleteItem key={JSON.stringify(item)}>{item.valores}</AutocompleteItem>
@@ -469,9 +479,9 @@ const UpdateCustomerSales = (props: Props) => {
               </div>
             </div>
             <ButtonUi
-              onPress={() => handleSubmit()}
               className="w-full mt-4 text-sm font-semibold"
               theme={Colors.Primary}
+              onPress={() => handleSubmit()}
             >
               Guardar
             </ButtonUi>
@@ -481,4 +491,5 @@ const UpdateCustomerSales = (props: Props) => {
     </>
   );
 };
+
 export default UpdateCustomerSales;

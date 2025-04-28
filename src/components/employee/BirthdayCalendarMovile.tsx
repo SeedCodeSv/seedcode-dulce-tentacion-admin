@@ -1,6 +1,7 @@
 import { Button } from "@heroui/react";
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+
 import { useEmployeeStore } from '@/store/employee.store';
 function BirthdayCalendarMobile() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -20,6 +21,7 @@ function BirthdayCalendarMobile() {
     'Noviembre',
     'Diciembre',
   ];
+
   useEffect(() => {
     OnGetBirthDays();
   }, [OnGetBirthDays]);
@@ -44,6 +46,7 @@ function BirthdayCalendarMobile() {
   const isBirthday = (day: number) => {
     return birthdays.some((employee) => {
       const employeeBirthday = new Date(employee.dateOfBirth);
+
       return (
         employeeBirthday.getDate() === day &&
         employeeBirthday.getMonth() === currentMonth &&
@@ -51,6 +54,7 @@ function BirthdayCalendarMobile() {
       );
     });
   };
+
   return (
     <div className="w-full h-full p-5 bg-white dark:bg-gray-900 transition-all duration-300 ease-in-out">
       <div className="w-full border border-gray-200 dark:border-gray-700 p-5 bg-white shadow-lg rounded-xl dark:bg-gray-900">
@@ -64,14 +68,14 @@ function BirthdayCalendarMobile() {
           </h2>
           <div className="flex gap-4">
             <button
-              onClick={handlePrevMonth}
               className="w-10 h-10 flex items-center justify-center bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-700 rounded-full"
+              onClick={handlePrevMonth}
             >
               <ArrowLeft className="text-gray-800 dark:text-white" />
             </button>
             <button
-              onClick={handleNextMonth}
               className="w-10 h-10 flex items-center justify-center bg-gray-300 dark:bg-gray-800 hover:bg-gray-400 dark:hover:bg-gray-700 rounded-full"
+              onClick={handleNextMonth}
             >
               <ArrowRight className="text-gray-800 dark:text-white" />
             </button>
@@ -99,7 +103,7 @@ function BirthdayCalendarMobile() {
             >
               {day}
               {isBirthday(day) && (
-                <span className="absolute bottom-2 right-2 w-2 h-2 bg-white rounded-full"></span>
+                <span className="absolute bottom-2 right-2 w-2 h-2 bg-white rounded-full" />
               )}
             </div>
           ))}

@@ -1,6 +1,7 @@
+import axios from "axios";
+
 import { IGetAllCreditNotes, IGetCreditNote, IRecentCreditNotes } from "@/types/credit_notes.types";
 import { API_URL } from "@/utils/constants";
-import axios from "axios";
 
 export const get_credit_notes_by_id = (id: number) => {
     return axios.get<IGetCreditNote>(`${API_URL}/nota-de-credito/${id}`);

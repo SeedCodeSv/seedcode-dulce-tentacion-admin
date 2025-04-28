@@ -40,12 +40,12 @@ function HeadlessModal(props: Props) {
               leaveTo="opacity-0 transform-[scale(95%)]"
             >
               <Dialog.Overlay
+                className="fixed inset-0 bg-gray-950/50"
                 onClick={(event) => {
                   if (event.target === event.currentTarget) {
                     event.stopPropagation();
                   }
                 }}
-                className="fixed inset-0 bg-gray-950/50"
               />
               <Dialog.Panel
                 className={classNames(
@@ -67,7 +67,7 @@ function HeadlessModal(props: Props) {
                         </Dialog.Title>
 
                         <button onClick={() => onClose()}>
-                          <X size={20} className="dark:text-white" />
+                          <X className="dark:text-white" size={20} />
                         </button>
                       </div>
                       {children}

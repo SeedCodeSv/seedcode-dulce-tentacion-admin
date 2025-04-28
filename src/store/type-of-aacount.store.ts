@@ -1,5 +1,8 @@
 import { create } from 'zustand';
+import { toast } from 'sonner';
+
 import { TypeOfAccountStore } from './types/type-of-account.store.types';
+
 import {
   create_type_of_account,
   delete_type_of_account,
@@ -7,7 +10,6 @@ import {
   get_type_of_accounts,
   update_type_of_account,
 } from '@/services/type-of-account.service';
-import { toast } from 'sonner';
 
 export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
   type_of_account: [],
@@ -103,10 +105,12 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
       .then(() => {
         toast.success('Tipo de Partida creado exitosamente');
         get().getTypeOfAccounts(1, get().searchParams.limit, '');
+
         return true;
       })
       .catch(() => {
         toast.error('Error al crear el tipo de partida');
+
         return false;
       });
   },
@@ -119,10 +123,12 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
           get().searchParams.limit,
           get().searchParams.name
         );
+
         return true;
       })
       .catch(() => {
         toast.error('Error al actualizar el tipo de partida');
+
         return false;
       });
   },
@@ -131,10 +137,12 @@ export const useTypeOfAccountStore = create<TypeOfAccountStore>((set, get) => ({
       .then(() => {
         toast.success('Tipo de Partida eliminado exitosamente');
         get().getTypeOfAccounts(1, get().searchParams.limit, '');
+
         return true;
       })
       .catch(() => {
         toast.error('Error al eliminar el tipo de partida');
+
         return false;
       });
   },

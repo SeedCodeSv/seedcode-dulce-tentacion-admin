@@ -10,7 +10,7 @@ function CorrelativePage() {
 
   return (
     <Layout title="Correlativos">
-      <Correlatives actions={actionView}></Correlatives>
+      <Correlatives actions={actionView} />
     </Layout>
   );
 }

@@ -1,11 +1,12 @@
 import { DteJson } from '../types/DTE/credito_fiscal.types';
 import { ITransmitter } from '../types/transmitter.types';
-import { convertCurrencyFormat } from './money';
 import { Customer } from '../types/customers.types';
 import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
 import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
 import { ICartProduct } from '../types/branch_products.types';
 import { FC_CuerpoDocumentoItems } from '../types/svf_dte/fc.types';
+
+import { convertCurrencyFormat } from './money';
 
 export const generate_emisor = (transmitter: ITransmitter) => {
   return {
@@ -65,6 +66,7 @@ export const get_iva = (price: number, quantity: number) => {
 
 export function formatearNumero(numero: number): string {
   const numeroFormateado: string = numero.toString().padStart(15, '0');
+
   return numeroFormateado;
 }
 

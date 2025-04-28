@@ -3,14 +3,16 @@ import { Input, Autocomplete, AutocompleteItem, Textarea } from "@heroui/react";
 import { Formik } from 'formik';
 import {  useEffect, useMemo, useState } from 'react';
 import * as yup from 'yup';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
 import { useBillingStore } from '../../store/facturation/billing.store';
 import { useCustomerStore } from '../../store/customers.store';
 import { CustomerDirection, PayloadCustomer } from '../../types/customers.types';
+
 import Layout from '@/layout/Layout';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
 import { useBranchesStore } from '@/store/branches.store';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
@@ -117,9 +119,11 @@ function AddClientContributor(props: Props) {
             .matches(/^[0-9]{14}$/, 'El NIT debe tener 14 dígitos sin guiones')
             .test('isValidNIT', 'El NIT no es válido', (value) => {
               if (!value) return false;
+
               return value.length === 14;
             });
         }
+
         return schema.required('El número de documento es requerido');
       }),
     nit: yup
@@ -166,8 +170,10 @@ function AddClientContributor(props: Props) {
       const department = cat_012_departamento.find(
         (department) => department.codigo === user_by_id?.customer?.direccion?.departamento
       );
+
       return department?.codigo;
     }
+
     return;
   }, [user_by_id, cat_012_departamento.length]);
 
@@ -208,6 +214,7 @@ function AddClientContributor(props: Props) {
       const typeOfDocument = cat_022_tipo_de_documentoDeIde.find(
         (typeOfDocument) => typeOfDocument.codigo === user_by_id.customer.tipoDocumento
       );
+
       return typeOfDocument?.codigo;
     }
   }, [user_by_id, cat_022_tipo_de_documentoDeIde.length]);
@@ -217,6 +224,7 @@ function AddClientContributor(props: Props) {
       const codActivity = cat_19.find(
         (codActivity) => codActivity.codigo === user_by_id.customer.codActividad
       );
+
       return codActivity?.codigo;
     }
   }, [user_by_id, cat_19.length]);
@@ -228,17 +236,17 @@ function AddClientContributor(props: Props) {
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border-white border  p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
-            onClick={() => navigate('/clients')}
             className="flex items-center gap-2 bg-transparent"
+            onClick={() => navigate('/clients')}
           >
             <ArrowLeft />
             <span>Volver</span>
           </button>
           <Formik
+            enableReinitialize={true}
             initialValues={initialValues}
             validationSchema={validationSchema}
             onSubmit={(values) => onSubmit(values)}
-            enableReinitialize={true}
           >
             {({
               values,
@@ -254,17 +262,17 @@ function AddClientContributor(props: Props) {
                   <div>
                     <div className="mt-10">
                       <Input
-                        label="Nombre"
-                        labelPlacement="outside"
-                        name="name"
-                        value={values.nombre}
-                        onChange={handleChange('nombre')}
-                        onBlur={handleBlur('nombre')}
-                        placeholder="Ingresa el nombre"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Nombre"
+                        labelPlacement="outside"
+                        name="name"
+                        placeholder="Ingresa el nombre"
+                        value={values.nombre}
                         variant="bordered"
+                        onBlur={handleBlur('nombre')}
+                        onChange={handleChange('nombre')}
                       />
                       {errors.nombre && touched.nombre && (
                         <span className="text-sm font-semibold text-red-500">{errors.nombre}</span>
@@ -272,17 +280,17 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        label="Nombre comercial"
-                        labelPlacement="outside"
-                        name="name"
-                        value={values.nombreComercial}
-                        onChange={handleChange('nombreComercial')}
-                        onBlur={handleBlur('nombreComercial')}
-                        placeholder="Ingresa el nombre comercial"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Nombre comercial"
+                        labelPlacement="outside"
+                        name="name"
+                        placeholder="Ingresa el nombre comercial"
+                        value={values.nombreComercial}
                         variant="bordered"
+                        onBlur={handleBlur('nombreComercial')}
+                        onChange={handleChange('nombreComercial')}
                       />
                       {errors.nombreComercial && touched.nombreComercial && (
                         <span className="text-sm font-semibold text-red-500">
@@ -292,17 +300,17 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        label="Correo electrónico"
-                        labelPlacement="outside"
-                        name="correo"
-                        value={values.correo}
-                        onChange={handleChange('correo')}
-                        onBlur={handleBlur('correo')}
-                        placeholder="Ingresa el correo"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Correo electrónico"
+                        labelPlacement="outside"
+                        name="correo"
+                        placeholder="Ingresa el correo"
+                        value={values.correo}
                         variant="bordered"
+                        onBlur={handleBlur('correo')}
+                        onChange={handleChange('correo')}
                       />
                       {errors.correo && touched.correo && (
                         <span className="text-sm font-semibold text-red-500">{errors.correo}</span>
@@ -310,18 +318,18 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        type="number"
-                        label="Teléfono"
-                        labelPlacement="outside"
-                        name="telefono"
-                        value={values.telefono}
-                        onChange={handleChange('telefono')}
-                        onBlur={handleBlur('telefono')}
-                        placeholder="Ingresa el telefono"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Teléfono"
+                        labelPlacement="outside"
+                        name="telefono"
+                        placeholder="Ingresa el telefono"
+                        type="number"
+                        value={values.telefono}
                         variant="bordered"
+                        onBlur={handleBlur('telefono')}
+                        onChange={handleChange('telefono')}
                       />
                       {errors.telefono && touched.telefono && (
                         <span className="text-xs font-semibold text-red-500">
@@ -334,26 +342,27 @@ function AddClientContributor(props: Props) {
                     <div className="pt-2">
                       <div className="flex flex-col">
                         <Autocomplete
+                          className="dark:text-white"
+                          classNames={{
+                            base: 'font-semibold text-gray-500 text-sm',
+                          }}
+                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
+                          label="Tipo de documento"
+                          labelPlacement="outside"
+                          placeholder="Selecciona el tipo de documento"
+                          variant="bordered"
+                          onBlur={handleBlur('tipoDocumento')}
                           onSelectionChange={(key) => {
                             if (key) {
                               const depSelected = cat_022_tipo_de_documentoDeIde.find(
                                 (dep) => dep.codigo === key
                               );
+
                               if (depSelected) {
                                 setFieldValue('tipoDocumento', depSelected.codigo);
                               }
                             }
                           }}
-                          onBlur={handleBlur('tipoDocumento')}
-                          label="Tipo de documento"
-                          placeholder="Selecciona el tipo de documento"
-                          variant="bordered"
-                          labelPlacement="outside"
-                          classNames={{
-                            base: 'font-semibold text-gray-500 text-sm',
-                          }}
-                          className="dark:text-white"
-                          defaultSelectedKey={`${selectedKeyTypeOfDocument}`}
                         >
                           {cat_022_tipo_de_documentoDeIde.map((dep) => (
                             <AutocompleteItem
@@ -374,18 +383,18 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        type="text"
-                        label="Numero documento"
-                        labelPlacement="outside"
-                        name="numDocumento"
-                        value={values.numDocumento}
-                        onChange={handleChange('numDocumento')}
-                        onBlur={handleBlur('numDocumento')}
-                        placeholder="Ingresa el numero documento"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="Numero documento"
+                        labelPlacement="outside"
+                        name="numDocumento"
+                        placeholder="Ingresa el numero documento"
+                        type="text"
+                        value={values.numDocumento}
                         variant="bordered"
+                        onBlur={handleBlur('numDocumento')}
+                        onChange={handleChange('numDocumento')}
                       />
                       {errors.numDocumento && touched.numDocumento && (
                         <span className="text-sm font-semibold text-red-500">
@@ -395,28 +404,29 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Autocomplete
+                        className="dark:text-white"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        defaultSelectedKey={`${selectedKeyCodActivity}`}
+                        label="Actividad"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la actividad"
+                        variant="bordered"
+                        onBlur={handleBlur('codActividad')}
+                        onInputChange={(e) => setActivityName(e)}
                         onSelectionChange={(key) => {
                           if (key) {
                             const depSelected = cat_019_codigo_de_actividad_economica.find(
                               (dep) => dep.codigo === key
                             );
+
                             if (depSelected) {
                               setFieldValue('codActividad', depSelected.codigo); // Actualiza el valor del código
                               setFieldValue('descActividad', depSelected.valores); // Actualiza el valor de la descripción
                             }
                           }
                         }}
-                        onBlur={handleBlur('codActividad')}
-                        label="Actividad"
-                        labelPlacement="outside"
-                        placeholder="Selecciona la actividad"
-                        defaultSelectedKey={`${selectedKeyCodActivity}`}
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        onInputChange={(e) => setActivityName(e)}
-                        className="dark:text-white"
                       >
                         {cat_19.map((dep) => (
                           <AutocompleteItem
@@ -438,27 +448,28 @@ function AddClientContributor(props: Props) {
                   <div>
                     <div className="mt-4">
                       <Autocomplete
+                        className="dark:text-white"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        defaultSelectedKey={`${selectedKeyDepartment}`}
+                        label="Departamento"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el departamento"
+                        variant="bordered"
+                        onBlur={handleBlur('departamento')}
                         onSelectionChange={(key) => {
                           if (key) {
                             const depSelected = cat_012_departamento.find(
                               (dep) => dep.codigo === key
                             );
+
                             setSelectedCodeDep(depSelected?.codigo as string);
                             handleChange('departamento')(depSelected?.codigo as string);
                             handleChange('nombreDepartamento')(depSelected?.valores || '');
                             setFieldValue('municipio', '01');
                           }
                         }}
-                        onBlur={handleBlur('departamento')}
-                        label="Departamento"
-                        labelPlacement="outside"
-                        placeholder="Selecciona el departamento"
-                        variant="bordered"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        className="dark:text-white"
-                        defaultSelectedKey={`${selectedKeyDepartment}`}
                       >
                         {cat_012_departamento.map((dep) => (
                           <AutocompleteItem
@@ -477,25 +488,26 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Autocomplete
+                        className="dark:text-white"
+                        classNames={{
+                          base: 'font-semibold text-gray-500 text-sm',
+                        }}
+                        label="Municipio"
+                        labelPlacement="outside"
+                        placeholder="Selecciona el municipio"
+                        selectedKey={`${values.municipio}`}
+                        variant="bordered"
+                        onBlur={handleBlur('municipio')}
                         onSelectionChange={(key) => {
                           if (key) {
                             const munSelected = cat_013_municipios.find(
                               (mun) => mun.codigo === key
                             );
+
                             setFieldValue('municipio', munSelected?.codigo);
                             setFieldValue('nombreMunicipio', munSelected?.valores);
                           }
                         }}
-                        label="Municipio"
-                        labelPlacement="outside"
-                        className="dark:text-white"
-                        variant="bordered"
-                        placeholder="Selecciona el municipio"
-                        classNames={{
-                          base: 'font-semibold text-gray-500 text-sm',
-                        }}
-                        onBlur={handleBlur('municipio')}
-                        selectedKey={`${values.municipio}`}
                       >
                         {cat_013_municipios.map((dep) => (
                           <AutocompleteItem
@@ -514,18 +526,18 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Textarea
-                        label="Complemento de dirección"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                           input: 'min-h-[90px]',
                         }}
+                        label="Complemento de dirección"
                         labelPlacement="outside"
-                        variant="bordered"
-                        placeholder="Ingresa el complemento de dirección"
                         name="complemento"
+                        placeholder="Ingresa el complemento de dirección"
                         value={values.complemento}
-                        onChange={handleChange('complemento')}
+                        variant="bordered"
                         onBlur={handleBlur('complemento')}
+                        onChange={handleChange('complemento')}
                       />
                       {errors.complemento && touched.complemento && (
                         <span className="text-sm font-semibold text-red-500">
@@ -535,19 +547,19 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        label="NIT"
-                        labelPlacement="outside"
-                        name="nit"
-                        value={values.nit}
-                        onChange={(e) =>
-                          setFieldValue('nit', e.currentTarget.value.replace(/[^0-9]/g, ''))
-                        }
-                        onBlur={handleBlur('nit')}
-                        placeholder="Ingresa el nit"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="NIT"
+                        labelPlacement="outside"
+                        name="nit"
+                        placeholder="Ingresa el nit"
+                        value={values.nit}
                         variant="bordered"
+                        onBlur={handleBlur('nit')}
+                        onChange={(e) =>
+                          setFieldValue('nit', e.currentTarget.value.replace(/[^0-9]/g, ''))
+                        }
                       />
                       {errors.nit && touched.nit && (
                         <span className="text-xs font-semibold text-red-500">{errors.nit}</span>
@@ -555,18 +567,18 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Input
-                        type="number"
-                        label="NRC"
-                        labelPlacement="outside"
-                        name="nrc"
-                        value={values.nrc}
-                        onChange={handleChange('nrc')}
-                        onBlur={handleBlur('nrc')}
-                        placeholder="Ingresa el nrc"
                         classNames={{
                           label: 'font-semibold text-gray-500 text-sm',
                         }}
+                        label="NRC"
+                        labelPlacement="outside"
+                        name="nrc"
+                        placeholder="Ingresa el nrc"
+                        type="number"
+                        value={values.nrc}
                         variant="bordered"
+                        onBlur={handleBlur('nrc')}
+                        onChange={handleChange('nrc')}
                       />
                       {errors.nrc && touched.nrc && (
                         <span className="text-xs font-semibold text-red-500">{errors.nrc}</span>
@@ -574,29 +586,30 @@ function AddClientContributor(props: Props) {
                     </div>
                     <div className="pt-2">
                       <Autocomplete
-                        onSelectionChange={(key) => {
-                          const selectedBranch = branch_list.find(
-                            (branch) => branch.id.toString() === key
-                          );
-                          if (selectedBranch) {
-                            setFieldValue('branchId', selectedBranch.id);
-                          }
-                        }}
-                        onBlur={handleBlur('branchId')}
-                        label="Sucursal"
-                        labelPlacement="outside"
-                        placeholder="Selecciona la sucursal"
-                        variant="bordered"
                         className="dark:text-white"
                         classNames={{
                           base: 'font-semibold text-sm',
                         }}
                         defaultSelectedKey={user_by_id?.customer.branch?.id.toString()}
+                        label="Sucursal"
+                        labelPlacement="outside"
+                        placeholder="Selecciona la sucursal"
+                        variant="bordered"
+                        onBlur={handleBlur('branchId')}
+                        onSelectionChange={(key) => {
+                          const selectedBranch = branch_list.find(
+                            (branch) => branch.id.toString() === key
+                          );
+
+                          if (selectedBranch) {
+                            setFieldValue('branchId', selectedBranch.id);
+                          }
+                        }}
                       >
                         {branch_list.map((bra) => (
                           <AutocompleteItem
-                            className="dark:text-white"
                             key={bra.id}
+                            className="dark:text-white"
                           >
                             {bra.name}
                           </AutocompleteItem>
@@ -613,9 +626,9 @@ function AddClientContributor(props: Props) {
                 </div>
                 <div className="pt-4 p-4">
                   <ButtonUi
-                    onPress={() => handleSubmit()}
                     className="w-full font-semibold"
                     theme={Colors.Primary}
+                    onPress={() => handleSubmit()}
                   >
                     Guardar
                   </ButtonUi>

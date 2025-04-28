@@ -26,10 +26,7 @@ function SalesMonthBranches({ sales }: Props) {
         {sales.total}
         </p>
         <ApexChart
-          type="line"
-          series={sales.series}
           height={150}
-          width={'100%'}
           options={{
             labels: sales.labels,
             yaxis: {
@@ -66,6 +63,9 @@ function SalesMonthBranches({ sales }: Props) {
               enabled: false,
             },
           }}
+          series={sales.series}
+          type="line"
+          width={'100%'}
         />
       </div>
     </>
