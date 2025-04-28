@@ -4,9 +4,9 @@ import { Eye, EyeOff } from 'lucide-react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 
-import LOGO from '../assets/fac3.png';
+import LOGO from '../assets/dulce-logo.png';
 import { IAuthPayload } from '../types/auth.types';
-import BUSINESS from '../assets/bussines.jpg';
+import BUSINESS from '../assets/dulce.jpeg';
 import { useAuthStore } from '../store/auth.store';
 import { SessionContext } from '../hooks/useSession';
 import { delete_seller_mode } from '../storage/localStorage';
@@ -53,7 +53,9 @@ function Auth() {
           style={{ backgroundImage: `url(${BUSINESS})` }}
          />
         <div className="w-[100%] md:w-[50%] xl:w-[40%] px-5 mb:px-10 sm:px-10 xl:px-10 h-full flex flex-col justify-center bg-white dark:bg-gray-800">
-          <img alt="" className="w-80" src={LOGO} />
+          <div className='flex justify-center w-full'>
+          <img alt="" className="w-32" src={LOGO} />
+          </div>
           <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white ">Bienvenido</p>
           <p className="text-lg lg:text-lg xl:text-xl 2xl:text-2xl dark:text-white">
             Inicia sesión con tus credenciales

@@ -5,7 +5,7 @@ import compressImage from 'browser-image-compression';
 
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { ICreacteConfiguaration } from '../../types/configuration.types';
-import DefaultImage from '../../assets/react.svg';
+import DefaultImage from '../../assets/dulce-logo.png';
 import { useAuthStore } from '../../store/auth.store';
 
 import ButtonUi from '@/themes/ui/button-ui';

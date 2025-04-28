@@ -16,7 +16,6 @@ import { ITipoDocumento } from '../../types/DTE/tipo_documento.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
-/* eslint-disable no-unused-vars */
 interface Props {
   onClose: () => void;
   codigoGeneracion: string;
@@ -24,7 +23,6 @@ interface Props {
   handleSendToContingencia: (sale: Sale, salesCustomer: Sale) => void;
   selectedSale?: Sale;
 }
-/* eslint-enable no-unused-vars */
 const UpdateCustomerSales = (props: Props) => {
   const { logs, getLogs } = useLogsStore();
   const [selectedCodeDep, setSelectedCodeDep] = useState('0');

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 
 import { get_token, is_authenticate, return_seller_mode, get_rolId } from '../storage/localStorage';

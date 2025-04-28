@@ -4,11 +4,9 @@ import { Branches } from "../../types/branches.types";
 import ThGlobal from "@/themes/ui/th-global";
 import NO_DATA from "@/assets/svg/no_data.svg";
 
-/* eslint-disable no-unused-vars */
 interface Props {
   actionsElement: (item: Branches) => JSX.Element;
 }
-/* eslint-enable no-unused-vars */
 
 function TableBranch(props: Props) {
   const { branches_paginated, loading } = useBranchesStore();

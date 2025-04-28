@@ -15,7 +15,6 @@ const daysOfWeek = [
 export interface WeekSelectorProps {
   startDate: string;
   endDate: string;
-  //  eslint-disable-next-line no-unused-vars
   onDaysSelected: (selectedDays: string[]) => void;
 }
 

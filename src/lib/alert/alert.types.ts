@@ -13,7 +13,6 @@ export interface AlertOptions {
   isAutoClose?: boolean;
 }
 
-/* eslint-disable no-unused-vars */
 export interface AlertContextType {
   show: (options: AlertOptions) => void;
   close: () => void;

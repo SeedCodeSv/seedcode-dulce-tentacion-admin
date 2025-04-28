@@ -5,7 +5,6 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-r
 
 import { ThemeContext } from '../../hooks/useTheme';
 
-/* eslint-disable no-unused-vars */
 interface PaginationProps {
   totalPages: number;
   onPageChange: (pageNumber: number) => void;
@@ -14,7 +13,6 @@ interface PaginationProps {
   currentPage: number;
   totalItems?: number;
 }
-/* eslint-enable no-unused-vars */
 
 const Pagination: React.FC<PaginationProps> = (props) => {
   const { totalPages, onPageChange, totalItems = 5 } = props;

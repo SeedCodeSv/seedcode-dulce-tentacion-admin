@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import compressImage from 'browser-image-compression';
 
 import { API_URL } from '../../utils/constants';
-import DefaultImage from '../../assets/react.svg';
+import DefaultImage from '../../assets/dulce-logo.png';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';
 
