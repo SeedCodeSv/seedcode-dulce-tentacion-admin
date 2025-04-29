@@ -1,3 +1,5 @@
+import { KeyboardEvent } from 'react';
+
 import { GroupedAction, RoleAction } from '../types/actions.types';
 
 export const formatActionsRole = (actions_roles: RoleAction[]) => {
@@ -24,4 +26,23 @@ export const formatActionsRole = (actions_roles: RoleAction[]) => {
   const resultArray: GroupedAction[] = Object.values(groupedActions);
 
   return resultArray;
+};
+
+export const preventLetters = (e: KeyboardEvent<HTMLInputElement> | KeyboardEvent) => {
+  const value = (e.target as HTMLInputElement).value;
+  const key = e.key;
+
+  if (
+    !/[\d.]/.test(key) &&
+    key !== 'Backspace' &&
+    key !== 'Delete' &&
+    key !== 'ArrowLeft' &&
+    key !== 'ArrowRight'
+  ) {
+    e.preventDefault();
+  }
+
+  if (key === '.' && value.includes('.')) {
+    e.preventDefault();
+  }
 };

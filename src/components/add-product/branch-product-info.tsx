@@ -11,7 +11,7 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { useFormikContext } from 'formik';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import classNames from 'classnames';
 
@@ -21,6 +21,7 @@ import { useSupplierStore } from '@/store/supplier.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { Supplier } from '@/types/supplier.types';
+import { preventLetters } from '@/utils';
 
 function BranchProductInfo() {
   const formik = useFormikContext<ProductPayloadForm>();
@@ -41,25 +42,6 @@ function BranchProductInfo() {
   }, []);
 
   const { branch_list } = useBranchesStore();
-
-  const preventLetters = (e: React.KeyboardEvent<HTMLInputElement> | KeyboardEvent) => {
-    const value = (e.target as HTMLInputElement).value;
-    const key = e.key;
-
-    if (
-      !/[\d.]/.test(key) &&
-      key !== 'Backspace' &&
-      key !== 'Delete' &&
-      key !== 'ArrowLeft' &&
-      key !== 'ArrowRight'
-    ) {
-      e.preventDefault();
-    }
-
-    if (key === '.' && value.includes('.')) {
-      e.preventDefault();
-    }
-  };
 
   const handleSearch = (page = 1) => {
     getSupplierPagination(

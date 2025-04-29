@@ -1,20 +1,24 @@
 import { ArrowLeft } from 'lucide-react';
 import { FormikProvider, useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCategoriesStore } from '@/store/categories.store';
-import { ProductPayloadForm } from '@/types/products.types';
+import { Product, ProductPayloadForm } from '@/types/products.types';
 import GeneralProductInfo from '@/components/add-product/general-product-info';
 import BranchProductInfo from '@/components/add-product/branch-product-info';
 import MenuProductInfo from '@/components/add-product/menu-product-info';
 import { initialValues, validationSchema } from '@/components/add-product/validation-add-product';
 
+type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
+
 function AddProduct() {
   const { getBranchesList } = useBranchesStore();
   const { getListCategories } = useCategoriesStore();
+
+  const [selectedProducts, setSelectedProducts] = useState<ProductOrder[]>([]);
 
   useEffect(() => {
     getBranchesList();
@@ -44,7 +48,10 @@ function AddProduct() {
         <FormikProvider value={formik}>
           <GeneralProductInfo />
           <BranchProductInfo />
-          <MenuProductInfo />
+          <MenuProductInfo
+            selectedProducts={selectedProducts}
+            setSelectedProducts={setSelectedProducts}
+          />
         </FormikProvider>
       </div>
     </Layout>

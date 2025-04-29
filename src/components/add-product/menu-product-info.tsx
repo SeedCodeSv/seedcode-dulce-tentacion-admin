@@ -4,9 +4,16 @@ import { useState } from 'react';
 
 import MenuDetailsProductInfo from './menu-details-product.info';
 
-import { ProductPayloadForm } from '@/types/products.types';
+import { Product, ProductPayloadForm } from '@/types/products.types';
 
-function MenuProductInfo() {
+type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
+
+interface Props {
+  selectedProducts: ProductOrder[];
+  setSelectedProducts: (products: ProductOrder[]) => void;
+}
+
+function MenuProductInfo({ selectedProducts, setSelectedProducts }: Props) {
   const [hasInMenu, setHasInMenu] = useState(false);
   const formik = useFormikContext<ProductPayloadForm>();
 
@@ -138,7 +145,7 @@ function MenuProductInfo() {
           </div>
         )}
       </div>
-      {hasInMenu && <MenuDetailsProductInfo />}
+      {hasInMenu && <MenuDetailsProductInfo selectedProducts={selectedProducts} setSelectedProducts={setSelectedProducts} />}
     </>
   );
 }
