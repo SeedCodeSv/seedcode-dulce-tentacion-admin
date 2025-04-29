@@ -32,9 +32,9 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   supplier_type: '',
   supplier: {} as Supplier,
   saveSupplierPagination: (supplier_pagination) => set({ supplier_pagination }),
-  getSupplierPagination: (page, limit, name, email, isTransmitter, active) => {
+  getSupplierPagination: (page, limit, name, email, nit, nrc, isTransmitter, active) => {
     set({ loading: true });
-    get_supplier_pagination(page, limit, name, email, isTransmitter, active)
+    get_supplier_pagination(page, limit, name, email, nit, nrc, isTransmitter, active)
       .then((supplier) => set({ supplier_pagination: supplier.data, loading: false }))
       .catch(() => {
         set({
@@ -57,7 +57,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
     return await add_supplier(payload)
       .then(({ data }) => {
         if (data) {
-          get().getSupplierPagination(1, 5, '', '', '', 1);
+          get().getSupplierPagination(1, 5, '', '', '', '', '', 1);
           toast.success(messages.success);
 
           return true;
@@ -80,7 +80,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
         if (data) {
           const supplier = get().supplier_type;
 
-          get().getSupplierPagination(1, 5, '', '', supplier, 1);
+          get().getSupplierPagination(1, 5, '', '', '', '', supplier, 1);
           toast.success(messages.success);
         } else {
           toast.warning(messages.error);
@@ -106,7 +106,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       .then(({ data }) => {
         const supplier = get().supplier_type;
 
-        get().getSupplierPagination(1, 5, '', '', supplier, 1);
+        get().getSupplierPagination(1, 5, '', '', '', '', supplier, 1);
 
         toast.success(messages.success);
 

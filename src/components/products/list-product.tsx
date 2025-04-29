@@ -39,7 +39,6 @@ import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import ThGlobal from '@/themes/ui/th-global';
 
-
 interface Props {
   actions: string[];
 }
@@ -101,14 +100,14 @@ function ListProducts({ actions }: Props) {
   return (
     <>
       <div className=" w-full h-full bg-white dark:bg-gray-900">
-        <div className="w-full h-full border  p-5 border-white overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="w-full h-full  p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-between items-end ">
             <SearchProduct
               categoryProduct={(category: string) => setCategory(category)}
               codeProduct={(code: string) => setCode(code)}
               nameProduct={(name: string) => setSearch(name)}
               subCategoryProduct={(subCategory: string) => setSubCategory(subCategory)}
-             />
+            />
             {actions.includes('Agregar') && (
               <AddButton
                 onClick={() => {
@@ -160,19 +159,18 @@ function ListProducts({ actions }: Props) {
               />
 
               <div className="w-full">
-                <span className="font-semibold dark:text:white text-sm">Categoría</span>
                 <Autocomplete
-                  className="w-full dark:text-white border border-white rounded-xl "
+                  className="w-full dark:text-white rounded-xl "
                   classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
+                    base: 'font-semibold text-gray-500 dark:text-gray-50 text-sm',
                   }}
                   clearButtonProps={{
                     onClick: () => {
                       setCategory('');
                       handleSearch('');
-                      // setCategoryId(0);
                     },
                   }}
+                  label="Categoría"
                   placeholder="Selecciona la categoría"
                   value={category}
                   variant="bordered"
@@ -316,11 +314,11 @@ function ListProducts({ actions }: Props) {
                 <table className="w-full">
                   <thead className="sticky top-0 z-20 bg-white">
                     <tr>
-                      <ThGlobal className='text-left p-3'>No.</ThGlobal>
-                      <ThGlobal className='text-left p-3'>Nombre</ThGlobal>
-                      <ThGlobal className='text-left p-3'>Código</ThGlobal>
-                      <ThGlobal className='text-left p-3'>Sub categoría</ThGlobal>
-                      <ThGlobal className='text-left p-3'>Acciones</ThGlobal>
+                      <ThGlobal className="text-left p-3">No.</ThGlobal>
+                      <ThGlobal className="text-left p-3">Nombre</ThGlobal>
+                      <ThGlobal className="text-left p-3">Código</ThGlobal>
+                      <ThGlobal className="text-left p-3">Sub categoría</ThGlobal>
+                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                     </tr>
                   </thead>
                   <tbody className="max-h-[600px] w-full overflow-y-auto">
@@ -507,10 +505,7 @@ export const DeletePopover = ({ product }: PopProps) => {
               >
                 No, cancelar
               </ButtonUi>
-              <ButtonUi
-                theme={Colors.Error}
-                onPress={() => handleDelete()}
-              >
+              <ButtonUi theme={Colors.Error} onPress={() => handleDelete()}>
                 Si, eliminar
               </ButtonUi>
             </div>

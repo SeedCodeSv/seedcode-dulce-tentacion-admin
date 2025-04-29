@@ -307,7 +307,7 @@ export const LayoutItems = (props: Props) => {
 
   return (
     <>
-      <div className="flex justify-between items-center h-[70px]">
+      <div className="flex justify-between items-center h-[70px] dark:bg-gray-900">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
             <img alt='LOGO' className="max-h-12" src={LOGO} />
@@ -365,7 +365,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group cursor-pointer relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium duration-300 ease-in-out'
+                        'group w-full relative flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium duration-300 ease-in-out'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
@@ -427,7 +427,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
+                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
@@ -481,7 +481,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, ['gestion-reports'])
@@ -534,7 +534,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
@@ -590,7 +590,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [

@@ -25,6 +25,8 @@ export const get_supplier_pagination = (
   limit = 5,
   name = '',
   email = '',
+  nit = '',
+  nrc = '',
   isTransmitter: number | string,
   active = 1
 ) => {
@@ -34,6 +36,8 @@ export const get_supplier_pagination = (
     page: page.toString(),
     nombre: name,
     correo: email,
+    nit,
+    nrc,
     limit: limit.toString(),
     isTransmitter: isTransmitter.toString(),
     active: active.toString(),
@@ -43,7 +47,7 @@ export const get_supplier_pagination = (
 
   return axios.get<IGetSupplierPagination>(
     API_URL +
-    `/suppliers/list/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
+    `/suppliers/list/${user?.pointOfSale?.branch.transmitterId ?? 0}` +
     '?' + queryString,
     {
       headers: {
@@ -83,7 +87,7 @@ export const get_supplier = () => {
 
   return axios.get<IGetSuppliers>(
     API_URL +
-    `/suppliers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
+    `/suppliers/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

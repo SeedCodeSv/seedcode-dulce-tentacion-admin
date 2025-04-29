@@ -58,7 +58,7 @@ function Layout(props: Props) {
         <title>{props.title.toUpperCase()}</title>
       </Helmet>
 
-      <div className={classNames('w-full h-full satoshi', context === 'dark' ? 'dark' : '')}>
+      <div className={classNames('w-full h-full satoshi dark:bg-gray-900', context === 'dark' ? 'dark' : '')}>
         {navbar === 'topbar' && (
           <>
             <div className="flex flex-col w-screen h-screen">

@@ -38,17 +38,16 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
           set_token(data.token);
           save_user(data.user);
           set({ user: data.user });
-          if (is_admin(data.user.role.name) && data.user.correlative?.branch) {
-            save_branch_id(String(data.user.correlative.branch.id));
+          if (is_admin(data.user.role.name) && data.user.pointOfSale?.branch) {
+            save_branch_id(String(data.user.pointOfSale.branch.id));
           }
           try {
-            // const transmitterId = data.user.pointOfSale?.branch.transmitterId ?? 0;
-            await get().OnLoginMH(data.user.pointOfSale ? data.user.pointOfSale.branch.transmitterId : data.user.correlative?.branch.transmitterId ?? 0, data.token);
+            await get().OnLoginMH(data.user.pointOfSale.branch.transmitterId ?? 0, data.token);
           } catch (error) {
             toast.error('Error al conectarse con el servidor');
           }
           const { GetConfigurationByTransmitter } = useConfigurationStore.getState();
-          const transmitterId = data.user.correlative?.branch?.transmitterId ?? 0;
+          const transmitterId = data.user.pointOfSale?.branch?.transmitterId ?? 0;
 
           await GetConfigurationByTransmitter(transmitterId);
           toast.success('Bienvenido');
@@ -70,18 +69,18 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
   async OnLoginMH(id, token) {
     await get_transmitter(id, token)
       .then(({ data }) => {
-        set({ transmitter: data.transmitter })
-        save_transmitter(data.transmitter)
+        set({ transmitter: data.transmitter });
+        save_transmitter(data.transmitter);
         login_mh(data.transmitter.nit, data.transmitter.claveApi)
           .then(async (login_mh) => {
             if (login_mh.data.status === 'OK') {
               await save_mh_token(login_mh.data.body.token);
             } else {
-              const data = login_mh as unknown as ILoginMHFailed
+              const data = login_mh as unknown as ILoginMHFailed;
 
-              toast.error(`Error ${data}`)
+              toast.error(`Error ${data}`);
 
-              return
+              return;
             }
           })
           .catch((error: AxiosError<ILoginMHFailed>) => {

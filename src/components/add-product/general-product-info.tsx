@@ -1,0 +1,242 @@
+import { AutocompleteItem, Input, Select, SelectItem, Autocomplete } from '@heroui/react';
+import { useFormikContext } from 'formik';
+import { useMemo, useState } from 'react';
+import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { toast } from 'sonner';
+
+import { ProductPayloadForm } from '@/types/products.types';
+import { verify_code_product } from '@/services/products.service';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import { useCategoriesStore } from '@/store/categories.store';
+import { useSubCategoriesStore } from '@/store/sub-categories.store';
+
+function GeneralProductInfo() {
+  const formik = useFormikContext<ProductPayloadForm>();
+
+  const { list_categories } = useCategoriesStore();
+  const { getSubcategories, subcategories } = useSubCategoriesStore();
+
+  const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
+
+  const [codigo, setCodigoGenerado] = useState('');
+
+  const generarCodigo = async (name: string) => {
+    if (!name) {
+      toast.error('Necesitas ingresar el nombre del producto para generar el código.');
+
+      return '';
+    }
+
+    const productNameInitials = name.slice(0, 4).toUpperCase();
+    const makeid = (length: number) => {
+      let result = '';
+      const characters = '0123456789';
+      const charactersLength = characters.length;
+      let counter = 0;
+
+      while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+      }
+
+      return result;
+    };
+
+    const randomNumber = makeid(4);
+    const codigoGenerado = `${productNameInitials}${randomNumber}`;
+    const verify = await verifyCode(codigoGenerado);
+
+    if (verify) {
+    } else {
+      formik.setErrors({ ...formik.errors, code: '**El código ya existe' });
+    }
+
+    return codigoGenerado;
+  };
+
+  const verifyCode = async (codigo: string) => {
+    try {
+      if (codigo !== 'N/A') {
+        const data = await verify_code_product(codigo);
+
+        if (data.data.ok === true) {
+          toast.success('Este código esta disponible');
+
+          return true;
+        }
+        toast.error('Este código esta en uso');
+
+        return data.data.ok;
+      }
+
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  return (
+    <div className="w-full border shadow rounded-[12px] p-5 mt-3">
+      <p className="text-sm font-semibold">Información general del producto</p>
+      <div className="grid grid-cols-3 gap-5 mt-3">
+        <Input
+          isRequired
+          classNames={{ label: 'font-semibold' }}
+          label="Nombre"
+          labelPlacement="outside"
+          placeholder="Ingresa el nombre del producto"
+          variant="bordered"
+          {...formik.getFieldProps('name')}
+          errorMessage={formik.errors.name}
+          isInvalid={!!formik.errors.name && !!formik.touched.name}
+        />
+        <Select
+          isRequired
+          classNames={{ label: 'font-semibold' }}
+          label="Tipo de item"
+          labelPlacement="outside"
+          placeholder="Selecciona el tipo de producto"
+          selectedKeys={[formik.values.tipoItem]}
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              const type = services.get011TipoDeItem().find((ttp) => ttp.codigo === key.currentKey);
+
+              formik.setFieldValue('tipoDeItem', type?.valores ?? '');
+              formik.setFieldValue('tipoItem', type?.codigo ?? '');
+
+              return;
+            }
+            formik.setFieldValue('tipoDeItem', '');
+            formik.setFieldValue('tipoItem', '');
+          }}
+        >
+          {services.get011TipoDeItem().map((type) => (
+            <SelectItem key={type.codigo}>{type.valores}</SelectItem>
+          ))}
+        </Select>
+        <Autocomplete
+          isRequired
+          classNames={{ base: 'font-semibold' }}
+          label="Unidad de medida"
+          labelPlacement="outside"
+          placeholder="Selecciona la unidad de medida del producto"
+          selectedKey={formik.values.uniMedida}
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              const type = services
+                .get014UnidadDeMedida()
+                .find((ttp) => ttp.codigo === key.toString());
+
+              formik.setFieldValue('unidaDeMedida', type?.valores ?? '');
+              formik.setFieldValue('uniMedida', type?.codigo ?? '');
+
+              return;
+            }
+            formik.setFieldValue('unidaDeMedida', '');
+            formik.setFieldValue('uniMedida', '');
+          }}
+        >
+          {services.get014UnidadDeMedida().map((uni) => (
+            <AutocompleteItem key={uni.codigo}>{uni.valores}</AutocompleteItem>
+          ))}
+        </Autocomplete>
+        <Input
+          className="dark:text-white font-semibold"
+          classNames={{
+            label: 'font-semibold text-sm text-gray-600',
+          }}
+          errorMessage={formik.errors.code}
+          isInvalid={!!formik.errors.code && !!formik.touched.code}
+          label="Código de producto"
+          labelPlacement="outside"
+          name="code"
+          placeholder="Ingresa el código"
+          value={codigo || formik.values.code}
+          variant="bordered"
+          onBlur={formik.handleBlur('code')}
+          onChange={(e) => {
+            formik.handleChange('code')(e);
+            setCodigoGenerado(e.target.value);
+          }}
+        />
+        <div className="flex gap-5 items-end">
+          <ButtonUi
+            className="px-20"
+            theme={Colors.Info}
+            onPress={async () => {
+              const code = await generarCodigo(formik.values.name);
+
+              if (code) {
+                formik.handleChange('code')(code);
+              }
+            }}
+          >
+            Generar
+          </ButtonUi>
+          <ButtonUi
+            className="px-20"
+            theme={Colors.Error}
+            onPress={() => verifyCode(formik.values.code)}
+          >
+            Validar
+          </ButtonUi>
+        </div>
+        <Select
+          isRequired
+          classNames={{ label: 'font-semibold' }}
+          label="Categoría del producto"
+          labelPlacement="outside"
+          placeholder="Selecciona la categoría del producto"
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              const type = list_categories.find((ttp) => ttp.id === Number(key.currentKey));
+
+              getSubcategories(type?.id ?? 0);
+            }
+          }}
+        >
+          {list_categories.map((type) => (
+            <SelectItem key={type.id}>{type.name}</SelectItem>
+          ))}
+        </Select>
+        <Select
+          isRequired
+          classNames={{ label: 'font-semibold' }}
+          label="Categoría del producto"
+          labelPlacement="outside"
+          placeholder="Selecciona la categoría del producto"
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              const type = subcategories.find((ttp) => ttp.id === Number(key.currentKey));
+
+              formik.setFieldValue('subCategoryId', type?.id ?? 0);
+
+              return;
+            }
+            formik.setFieldValue('subCategoryId', '');
+          }}
+        >
+          {subcategories.map((type) => (
+            <SelectItem key={type.id}>{type.name}</SelectItem>
+          ))}
+        </Select>
+        <Input
+          isRequired
+          className="col-span-2"
+          classNames={{ label: 'font-semibold' }}
+          label="Descripción"
+          labelPlacement="outside"
+          placeholder="Ingresa la descripción del producto"
+          variant="bordered"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default GeneralProductInfo;

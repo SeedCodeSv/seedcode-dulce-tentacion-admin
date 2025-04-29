@@ -157,7 +157,7 @@ export const SideBar = (props: Props) => {
             </Dropdown>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto bg-gray-50 mt-14">{props.children}</div>
+        <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900 mt-14">{props.children}</div>
       </div>
     </div>
   );

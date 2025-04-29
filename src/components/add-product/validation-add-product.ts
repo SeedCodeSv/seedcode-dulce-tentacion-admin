@@ -1,0 +1,73 @@
+import * as yup from 'yup';
+
+import { ProductPayloadForm } from '@/types/products.types';
+
+export const initialValues: ProductPayloadForm = {
+  name: '',
+  description: '',
+  price: '3.75',
+  priceA: 2,
+  priceB: 2,
+  priceC: 2,
+  costoUnitario: '1',
+  code: '',
+  subCategoryProductId: 0,
+  tipoDeItem: '',
+  tipoItem: '',
+  uniMedida: '',
+  unidaDeMedida: '',
+  branch: [],
+  stock: 1,
+  suppliers: [],
+  printerId: 0,
+  minimumStock: 1,
+  menu: {
+    noDeadline: false,
+    addToMenu: false,
+    mon: true,
+    tue: true,
+    wed: true,
+    thu: true,
+    fri: true,
+    sat: true,
+    sun: true,
+    deDate: '',
+    alDate: '',
+    deTime: '',
+    alTime: '',
+  },
+  menuDetails: [],
+};
+
+export const validationSchema = yup.object().shape({
+  name: yup.string().required('**El nombre es requerido**'),
+  description: yup.string().notRequired(),
+  price: yup.number().required('**El precio es requerido**'),
+  priceA: yup.number().typeError('**Precio invalido**'),
+  priceB: yup.number().typeError('**Precio invalido**'),
+  priceC: yup.number().typeError('**Precio invalido**'),
+  costoUnitario: yup.number().required('**El costo unitario es requerido**'),
+  minimumStock: yup.number(),
+  subCategoryProductId: yup
+    .number()
+    .required('**Debes seleccionar una sub-categoría**')
+    .min(1, '**La sub-categoría es requerida**')
+    .typeError('**La sub-categoría es requerida**'),
+  tipoItem: yup
+    .string()
+    .required('**Debes seleccionar el tipo de item**')
+    .min(1, '**Debes seleccionar el tipo de item**'),
+  uniMedida: yup
+    .string()
+    .required('**Debes seleccionar la unidad de medida**')
+    .min(1, '**Debes seleccionar la unidad de medida**'),
+  suppliers: yup
+    .array()
+    .min(1, '**Seleccione al menos un proveedor**')
+    .required('**Seleccione al menos un proveedor**'),
+  stock: yup.number().required('**Debes ingresar el stock**').min(0, '**stock invalido**'),
+  branch: yup
+    .array()
+    .min(1, '**Seleccione al menos una sucursal**')
+    .required('**Seleccione al menos una sucursal**'),
+});

@@ -11,6 +11,8 @@ export interface ISupplierStore {
     limit: number,
     searchNRC: string,
     email: string,
+    nit: string,
+    nrc: string,
     isTransmitter: number | string,
     active?: number
   ) => void;

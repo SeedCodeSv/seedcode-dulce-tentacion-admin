@@ -1,5 +1,4 @@
-import { SubCategory } from "./sub-category.types";
-
+import { SubCategory } from './sub-category.types';
 
 export interface Product {
   id: number;
@@ -19,13 +18,11 @@ export interface Product {
   subCategory: SubCategory;
 }
 
-
 export interface Verify_Code {
-  ok: boolean
-  message: string
-  status: number
+  ok: boolean;
+  message: string;
+  status: number;
 }
-
 
 export interface IGetProductsPaginated {
   ok: boolean;
@@ -62,9 +59,9 @@ export interface ProductPayloadFormik {
   name: string;
   description: string;
   price: string;
-  priceA: string,
-  priceB: string,
-  priceC: string,
+  priceA: string;
+  priceB: string;
+  priceC: string;
   costoUnitario: string;
   code: string;
   subCategoryId: number;
@@ -147,4 +144,41 @@ export interface IGetProductByCodeVehicle {
   ok: boolean;
   unidadProducto: IUnidadProducto;
   status: number;
+}
+
+export interface ProductPayloadForm {
+  name: string;
+  description: string;
+  price?: string;
+  priceA: number;
+  priceB: number;
+  stock: number;
+  priceC: number;
+  costoUnitario?: string;
+  minimumStock: number;
+  code: string;
+  subCategoryProductId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  branch: number[];
+  printerId: number;
+  menu: {
+    addToMenu: boolean;
+    noDeadline: boolean;
+    deDate: string;
+    alDate: string;
+    deTime: string;
+    alTime: string;
+    mon: boolean;
+    tue: boolean;
+    wed: boolean;
+    thu: boolean;
+    fri: boolean;
+    sat: boolean;
+    sun: boolean;
+  };
+  menuDetails: { id: number }[];
+  suppliers: [];
 }

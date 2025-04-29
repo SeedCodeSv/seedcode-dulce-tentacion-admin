@@ -54,8 +54,7 @@ export interface User {
   userName: string;
   active: boolean;
   role: Role;
-  correlative?: Correlative;
-  pointOfSale?: PointOfSale;
+  pointOfSale: PointOfSale;
   roleId: number;
   correlativeId: number;
 }
