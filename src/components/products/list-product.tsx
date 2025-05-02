@@ -71,6 +71,9 @@ function ListProducts({ actions }: Props) {
   const [page, serPage] = useState(1);
   const [active, setActive] = useState(true);
 
+  // const typeSearch = ['NOMBRE', 'CODIGO'];
+  //   const [selectedTypeSearch, setSelectedTypeSearch] = useState<'NOMBRE' | 'CODIGO'>('NOMBRE');
+
   useEffect(() => {
     getPaginatedProducts(1, limit, category, subCategory, search, code, active ? 1 : 0);
   }, [limit, active]);

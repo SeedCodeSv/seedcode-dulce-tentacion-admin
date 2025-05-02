@@ -14,6 +14,8 @@ import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { ChevronLeft, ChevronRight, Plus, Search, Trash } from 'lucide-react';
 import classNames from 'classnames';
 import { IoReload } from 'react-icons/io5';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 import { useProductsStore } from '@/store/products.store';
 import { Product } from '@/types/products.types';
@@ -22,6 +24,7 @@ import { filtrarPorCategoria } from '@/components/add-product/validation-add-pro
 import { preventLetters } from '@/utils';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { API_URL } from '@/utils/constants';
 
 type ProductOrder = Product & {
   quantity: number;
@@ -41,6 +44,8 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
   }, [productId]);
 
   const navigate = useNavigate();
+
+  const [loadingSave, setLoadingSave] = useState(false);
 
   useEffect(() => {
     if (recipeBook) {
@@ -149,6 +154,30 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
     setProductsRecipe(list_suppliers);
   };
 
+  const handleSaveRecipe = () => {
+    const recipe = {
+      productId: productId,
+      recipe: productsRecipe.map((pr) => ({
+        productId: pr.id,
+        quantity: pr.quantity,
+        extraUniMedida: pr.extraUniMedida,
+        id: pr.recipeId,
+        deleted: pr.delete,
+      })),
+    };
+
+    setLoadingSave(true); 
+
+    axios.patch(API_URL + `/product-recipe-book/${recipeBook?.id ?? 0}`, recipe).then(() => {
+      toast.success('Receta guardada con exito');
+      setLoadingSave(false);
+      navigate('/products');
+    }).catch(() => {
+      toast.error('Error al guardar la receta');
+      setLoadingSave(false);
+    })
+  };
+
   return (
     <div className=" w-full h-full bg-white dark:bg-gray-900">
       <div className="w-full h-full  p-5 overflow-y-auto flex flex-col bg-white shadow rounded-xl dark:bg-gray-900">
@@ -253,10 +282,10 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
         </div>
 
         <div className="w-full flex justify-end gap-5">
-          <ButtonUi theme={Colors.Error} onPress={() => navigate('/products')}>
+          <ButtonUi isLoading={loadingSave} theme={Colors.Error} onPress={() => navigate('/products')}>
             Cancelar
           </ButtonUi>
-          <ButtonUi theme={Colors.Primary}>Guardar receta</ButtonUi>
+          <ButtonUi isLoading={loadingSave} theme={Colors.Primary} onPress={handleSaveRecipe}>Guardar receta</ButtonUi>
         </div>
       </div>
       <Modal

@@ -32,7 +32,6 @@ import Pagination from '../global/Pagination';
 import { limit_options, messages } from '../../utils/constants';
 import { Branches } from '../../types/branches.types';
 import HeadlessModal from '../global/HeadlessModal';
-import TooltipGlobal from '../global/TooltipGlobal';
 import SmPagination from '../global/SmPagination';
 
 import AddBranch from './AddBranch';
@@ -278,8 +277,6 @@ function ListBranch({ actions }: ArrayAction) {
                       {actions.includes('Eliminar') && (
                         <>{item.isActive && <DeletePopUp branch={item} />}</>
                       )}
-
-                      <TooltipGlobal text="Asignar punto de venta">
                         <ButtonUi
                           isIconOnly
                           theme={Colors.Primary}
@@ -289,9 +286,7 @@ function ListBranch({ actions }: ArrayAction) {
                         >
                           <Store />
                         </ButtonUi>
-                      </TooltipGlobal>
                       {actions.includes('Activar Sucursal') && !item.isActive && (
-                        <TooltipGlobal text="Activar la sucursal">
                           <ButtonUi
                             isIconOnly
                             theme={Colors.Info}
@@ -301,7 +296,6 @@ function ListBranch({ actions }: ArrayAction) {
                           >
                             <RefreshCcw />
                           </ButtonUi>
-                        </TooltipGlobal>
                       )}
                     </div>
                   </>

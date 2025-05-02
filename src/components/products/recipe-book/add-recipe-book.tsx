@@ -13,6 +13,8 @@ import {
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import classNames from 'classnames';
 import axios from 'axios';
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router';
 
 import { useProductsStore } from '@/store/products.store';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -27,6 +29,7 @@ type ProductOrder = Product & { quantity: number; extraUniMedida: string };
 
 function AddRecipeBook({ id }: { id: number }) {
   const { productsDetails, loadingProductsDetails, getProductsDetails } = useProductsStore();
+  const [loadingSave, setLoadingSave] = useState(false);
 
   useEffect(() => {
     getProductsDetails(id);
@@ -38,6 +41,8 @@ function AddRecipeBook({ id }: { id: number }) {
   const modalAddProducts = useDisclosure();
 
   const { paginated_products, getPaginatedProducts } = useProductsStore();
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     getPaginatedProducts(1, 20, '', '', '', '', 1);
@@ -108,7 +113,16 @@ function AddRecipeBook({ id }: { id: number }) {
       })),
     };
 
-    axios.post(API_URL + '/product-recipe-book', recipe).then(() => {});
+    setLoadingSave(true);
+
+    axios.post(API_URL + '/product-recipe-book', recipe).then(() => {
+      toast.success('Receta guardada con exito');
+      setLoadingSave(false);
+      navigate("/products")
+    }).catch(() => {
+      toast.error('Error al guardar la receta');
+      setLoadingSave(false);
+    })
   };
 
   return (
@@ -214,7 +228,7 @@ function AddRecipeBook({ id }: { id: number }) {
           </div>
         </div>
         <div className="w-full flex justify-end">
-          <ButtonUi theme={Colors.Primary} onPress={handle_save_recipe}>Guardar receta</ButtonUi>
+          <ButtonUi isLoading={loadingSave} theme={Colors.Primary} onPress={handle_save_recipe}>Guardar receta</ButtonUi>
         </div>
       </div>
       <Modal isOpen={modalAddProducts.isOpen} scrollBehavior="inside" size="2xl" onOpenChange={modalAddProducts.onOpenChange}>

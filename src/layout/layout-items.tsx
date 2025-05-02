@@ -26,6 +26,7 @@ import {
   HandCoins,
   Book,
   X,
+  ListOrdered,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -93,6 +94,12 @@ export const LayoutItems = (props: Props) => {
       to: '/sub-categories',
       icon: List,
       label: 'Sub Categorías',
+    },
+    {
+      viewName: 'Ordenes de producción',
+      to: '/production-orders',	
+      icon: ListOrdered,
+      label: 'Ordenes de producción',
     },
     {
       viewName: 'Compras',
