@@ -11,7 +11,7 @@ export const initialValues: ProductPayloadForm = {
   priceC: 2,
   costoUnitario: '1',
   code: '',
-  subCategoryProductId: 0,
+  subCategoryId: 0,
   tipoDeItem: '',
   tipoItem: '',
   uniMedida: '',
@@ -19,7 +19,6 @@ export const initialValues: ProductPayloadForm = {
   branch: [],
   stock: 1,
   suppliers: [],
-  printerId: 0,
   minimumStock: 1,
   menu: {
     noDeadline: false,
@@ -35,8 +34,7 @@ export const initialValues: ProductPayloadForm = {
     alDate: '',
     deTime: '',
     alTime: '',
-  },
-  menuDetails: [],
+  }
 };
 
 export const validationSchema = yup.object().shape({
@@ -48,7 +46,7 @@ export const validationSchema = yup.object().shape({
   priceC: yup.number().typeError('**Precio invalido**'),
   costoUnitario: yup.number().required('**El costo unitario es requerido**'),
   minimumStock: yup.number(),
-  subCategoryProductId: yup
+  subCategoryId: yup
     .number()
     .required('**Debes seleccionar una sub-categoría**')
     .min(1, '**La sub-categoría es requerida**')
@@ -71,3 +69,52 @@ export const validationSchema = yup.object().shape({
     .min(1, '**Seleccione al menos una sucursal**')
     .required('**Seleccione al menos una sucursal**'),
 });
+
+type UnidadDeMedida = {
+  id: number;
+  codigo: string;
+  valores: string;
+  isActivated: number;
+};
+
+type Categoria =
+  | 'longitud'
+  | 'area'
+  | 'volumen'
+  | 'peso'
+  | 'energia'
+  | 'electrica'
+  | 'cantidad'
+  | 'otros';
+
+export function filtrarPorCategoria(
+  unidadBuscada: string,
+  arrayUnidades: UnidadDeMedida[]
+): UnidadDeMedida[] {
+  const categorias: Record<Categoria, readonly string[]> = {
+    longitud: ['metro', 'Yarda', 'milímetro'],
+    area: ['kilómetro cuadrado', 'Hectárea', 'metro cuadrado', 'Vara cuadrada'],
+    volumen: ['metro cúbico', 'Barril', 'Galón', 'Litro', 'Botella', 'Mililitro'],
+    peso: ['Tonelada', 'Quintal', 'Arroba', 'Kilogramo', 'Libra', 'Onza troy', 'Onza', 'Gramo'],
+    energia: ['Kilowatt', 'Watt', 'Gigawatt-hora', 'Megawatt-hora', 'Kilowatt-hora', 'Watt-hora'],
+    electrica: [
+      'Megavoltio-amperio',
+      'Kilovoltio-amperio',
+      'Voltio-amperio',
+      'Kilovoltio',
+      'Voltio',
+    ],
+    cantidad: ['Millar', 'Medio millar', 'Ciento', 'Docena', 'Unidad'],
+    otros: ['Otra'],
+  } as const;
+
+  const categoriaEncontrada = (Object.keys(categorias) as Categoria[]).find((key) =>
+    categorias[key].includes(unidadBuscada)
+  );
+
+  if (!categoriaEncontrada) return [];
+
+  return arrayUnidades.filter((unidad) =>
+    (categorias[categoriaEncontrada] as readonly string[]).includes(unidad.valores)
+  );
+}

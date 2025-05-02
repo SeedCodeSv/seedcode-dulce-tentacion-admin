@@ -9,6 +9,8 @@ import {
   delete_products,
   activate_product,
   get_promotions_products_list,
+  get_product_recipe_book,
+  get_product_by_id,
 } from '../services/products.service';
 import { messages } from '../utils/constants';
 import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-item.service';
@@ -29,6 +31,27 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     ok: false,
   },
   loading_products: false,
+  recipeBook: null,
+  productsDetails: null,
+  loadingProductsDetails: false,
+  loadingRecipeBook: false,
+  getProductsDetails(id) {
+    get_product_by_id(id)
+      .then(({ data }) => {
+        set((state) => ({
+          ...state,
+          productsDetails: data.product,
+          loadingProductsDetails: false,
+        }));
+      })
+      .catch(() => {
+        set((state) => ({
+          ...state,
+          productsDetails: null,
+          loadingProductsDetails: false,
+        }));
+      });
+  },
   savePaginatedProducts: (products: IGetProductsPaginated) => set({ paginated_products: products }),
   getPaginatedProducts: (page, limit, category, subCategory, name, code, active = 1) => {
     set({ loading_products: true });
@@ -113,6 +136,16 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       })
       .catch(() => {
         toast.error('Error al actualizar');
+      });
+  },
+  getRecipeBook(id) {
+    set({ loadingRecipeBook: true });
+    get_product_recipe_book(id)
+      .then((result) => {
+        set({ recipeBook: result.data.recipeBook, loadingRecipeBook: false });
+      })
+      .catch(() => {
+        set({ recipeBook: null, loadingRecipeBook: false });
       });
   },
 }));

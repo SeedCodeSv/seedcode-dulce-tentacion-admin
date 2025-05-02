@@ -12,7 +12,15 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { EditIcon, SearchIcon, CreditCard, Table as ITable, RefreshCcw, Trash } from 'lucide-react';
+import {
+  EditIcon,
+  SearchIcon,
+  CreditCard,
+  Table as ITable,
+  RefreshCcw,
+  Trash,
+  Book,
+} from 'lucide-react';
 import { ButtonGroup } from '@heroui/react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
@@ -30,6 +38,7 @@ import useWindowSize from '../../hooks/useWindowSize';
 import UpdateProduct from './update-product';
 import SearchProduct from './search-product';
 import CardProduct from './card-product';
+import RecipeBook from './recipe-book';
 
 import { useSubCategoryStore } from '@/store/sub-category';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
@@ -96,6 +105,14 @@ function ListProducts({ actions }: Props) {
     });
   };
   const navigate = useNavigate();
+
+  const modalRecipe = useDisclosure();
+  const [selectedId, setSelectedId] = useState(0);
+
+  const handleOpenModalRecipe = (id: number) => {
+    setSelectedId(id);
+    modalRecipe.onOpen();
+  };
 
   return (
     <>
@@ -302,6 +319,7 @@ function ListProducts({ actions }: Props) {
               DeletePopover={DeletePopover}
               actions={actions}
               handleActivate={(id) => handleActivate(id)}
+              handleShowRecipe={(id) => handleOpenModalRecipe(id)}
               openEditModal={(prd) => {
                 setSelectedProduct(prd);
                 setIsOpenModalUpdate(true);
@@ -362,6 +380,18 @@ function ListProducts({ actions }: Props) {
                                         }}
                                       >
                                         <EditIcon size={20} />
+                                      </ButtonUi>
+                                    )}
+                                    {actions.includes('Ver Receta') && (
+                                      <ButtonUi
+                                        isIconOnly
+                                        showTooltip
+                                        className="border border-white"
+                                        theme={Colors.Info}
+                                        tooltipText="Ver Receta"
+                                        onPress={() => handleOpenModalRecipe(product.id)}
+                                      >
+                                        <Book size={20} />
                                       </ButtonUi>
                                     )}
                                     <>
@@ -456,6 +486,11 @@ function ListProducts({ actions }: Props) {
           isOpen={isOpenModalUpdate}
           product={selectedProduct}
           onCloseModal={() => setIsOpenModalUpdate(false)}
+        />
+        <RecipeBook
+          isOpen={modalRecipe.isOpen}
+          productId={selectedId}
+          onOpenChange={modalRecipe.onOpenChange}
         />
       </div>
     </>

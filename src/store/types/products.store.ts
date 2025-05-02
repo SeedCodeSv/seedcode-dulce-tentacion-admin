@@ -1,11 +1,16 @@
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
-import { IGetProductsPaginated, Product, ProductPayload } from '../../types/products.types';
+import { IGetProductsPaginated, Product, ProductPayload, Recipe } from '../../types/products.types';
 
 export interface IProductsStore {
   products_list: Product[];
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
+  recipeBook:Recipe | null,
+  loadingRecipeBook: boolean
+  loadingProductsDetails: boolean
+  productsDetails: Product | null
+  getRecipeBook: (id:number) => void
   savePaginatedProducts: (products: IGetProductsPaginated) => void;
   getPaginatedProducts: (
     page: number,
@@ -22,4 +27,5 @@ export interface IProductsStore {
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
+  getProductsDetails: (id: number) => void
 }

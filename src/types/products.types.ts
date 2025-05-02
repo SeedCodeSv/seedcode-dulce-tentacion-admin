@@ -157,13 +157,12 @@ export interface ProductPayloadForm {
   costoUnitario?: string;
   minimumStock: number;
   code: string;
-  subCategoryProductId: number;
+  subCategoryId: number;
   tipoDeItem: string;
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
   branch: number[];
-  printerId: number;
   menu: {
     addToMenu: boolean;
     noDeadline: boolean;
@@ -179,6 +178,47 @@ export interface ProductPayloadForm {
     sat: boolean;
     sun: boolean;
   };
-  menuDetails: { id: number }[];
   suppliers: [];
+}
+
+export interface GetProductRecipeBook {
+  recipeBook: Recipe;
+  ok: boolean;
+  status: number;
+}
+
+export interface Recipe {
+  id: number;
+  isActive: boolean;
+  productRecipeBookDetails: ProductRecipeBookDetail[];
+  product: Product;
+  productId: number;
+}
+
+export interface ProductRecipeBookDetail {
+  id: number;
+  quantity: string;
+  extraUniMedida: string;
+  productIdReference: number;
+  productRecipeBookId: number;
+  product: Product;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  tipoItem: string;
+  tipoDeItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  code: string;
+  isActive: boolean;
+  subCategoryId: number;
+}
+
+export interface GetProductDetail{
+  product: Product,
+  ok: boolean,
+  status: number
 }

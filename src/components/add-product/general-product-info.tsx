@@ -1,18 +1,55 @@
-import { AutocompleteItem, Input, Select, SelectItem, Autocomplete } from '@heroui/react';
+import {
+  AutocompleteItem,
+  Input,
+  Select,
+  SelectItem,
+  Autocomplete,
+  Switch,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  Checkbox,
+  ModalFooter,
+  useDisclosure,
+} from '@heroui/react';
 import { useFormikContext } from 'formik';
-import { useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
+import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react';
+import classNames from 'classnames';
 
-import { ProductPayloadForm } from '@/types/products.types';
+import RecipeBookProduct from './recipe-book-product';
+
+import { Product, ProductPayloadForm } from '@/types/products.types';
 import { verify_code_product } from '@/services/products.service';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
+import { useProductsStore } from '@/store/products.store';
 
-function GeneralProductInfo() {
+type ProductOrder = Product & { quantity: number; extraUniMedida: string };
+
+interface Props {
+  selectedProducts: ProductOrder[];
+  setSelectedProducts: Dispatch<SetStateAction<ProductOrder[]>>;
+}
+
+function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
   const formik = useFormikContext<ProductPayloadForm>();
+
+  const typeSearch = ['NOMBRE', 'CODIGO'];
+  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'NOMBRE' | 'CODIGO'>('NOMBRE');
+
+  const [name, setName] = useState('');
+
+  const modalAddProducts = useDisclosure();
+
+  const { paginated_products, getPaginatedProducts } = useProductsStore();
+
+  const [includeReceipt, setIncludeReceipt] = useState(false);
 
   const { list_categories } = useCategoriesStore();
   const { getSubcategories, subcategories } = useSubCategoriesStore();
@@ -74,6 +111,36 @@ function GeneralProductInfo() {
     } catch (error) {
       return false;
     }
+  };
+
+  const handleSearch = (page = 1) => {
+    getPaginatedProducts(
+      page,
+      20,
+      '',
+      '',
+      selectedTypeSearch === 'NOMBRE' ? name : '',
+      selectedTypeSearch === 'CODIGO' ? name : '',
+      1
+    );
+  };
+
+  const handleAddSupplier = (prd: Product) => {
+    const list_suppliers = [...selectedProducts];
+
+    const checkIfExist = list_suppliers.findIndex((lsP) => lsP.id === prd.id);
+
+    if (checkIfExist === -1) {
+      list_suppliers.push({ ...prd, quantity: 1, extraUniMedida: prd.uniMedida });
+    } else {
+      list_suppliers.splice(checkIfExist, 1);
+    }
+
+    setSelectedProducts(list_suppliers);
+  };
+
+  const checkIsSelectedSupplier = (id: number) => {
+    return selectedProducts.some((ssp) => ssp.id === id);
   };
 
   return (
@@ -233,8 +300,135 @@ function GeneralProductInfo() {
           labelPlacement="outside"
           placeholder="Ingresa la descripción del producto"
           variant="bordered"
+          {...formik.getFieldProps('description')}
+          errorMessage={formik.errors.description}
+          isInvalid={!!formik.errors.description && !!formik.touched.description}
         />
       </div>
+
+      <div className="mt-5">
+        <div className=" flex justify-between">
+          <Switch
+            checked={includeReceipt}
+            isSelected={includeReceipt}
+            onValueChange={(value) => {
+              setIncludeReceipt(value);
+              if (value === false) setSelectedProducts([]);
+            }}
+          >
+            <span className="font-semibold">Incluir receta de preparación</span>
+          </Switch>
+          {includeReceipt && (
+            <ButtonUi isIconOnly theme={Colors.Success} onPress={modalAddProducts.onOpen}>
+              <Plus />
+            </ButtonUi>
+          )}
+        </div>
+        <RecipeBookProduct
+          selectedProducts={selectedProducts}
+          setSelectedProducts={setSelectedProducts}
+        />
+      </div>
+
+      <Modal {...modalAddProducts} scrollBehavior="inside" size="2xl">
+        <ModalContent>
+          <ModalHeader>Selecciona los productos de la receta</ModalHeader>
+          <ModalBody>
+            <div className="flex gap-5 items-end">
+              <Input
+                className="dark:text-white"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                endContent={
+                  <div className="flex items-center">
+                    <label className="sr-only" htmlFor="currency">
+                      Currency
+                    </label>
+                    <select
+                      className="outline-none border-0 bg-transparent text-default-400 text-small"
+                      id="currency"
+                      name="currency"
+                      onChange={(e) => {
+                        setSelectedTypeSearch(e.currentTarget.value as 'NOMBRE');
+                      }}
+                    >
+                      {typeSearch.map((tpS) => (
+                        <option key={tpS} value={tpS}>
+                          {tpS}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                }
+                label="Buscar proveedor"
+                labelPlacement="outside"
+                placeholder="Escribe para buscar"
+                startContent={<Search />}
+                type="text"
+                value={name}
+                variant="bordered"
+                onValueChange={setName}
+              />
+              <ButtonUi theme={Colors.Primary} onPress={() => handleSearch(1)}>
+                Buscar
+              </ButtonUi>
+            </div>
+            <div className="flex flex-col overflow-y-auto h-full w-full gap-3">
+              {paginated_products.products.map((bpr) => (
+                <button
+                  key={bpr.id}
+                  className={classNames(
+                    checkIsSelectedSupplier(bpr.id)
+                      ? 'shadow-green-100 dark:shadow-gray-500 border-green-400 dark:border-gray-800 bg-green-50 dark:bg-gray-950'
+                      : '',
+                    'shadow border dark:border-gray-600 w-full flex flex-col justify-start rounded-[12px] p-4'
+                  )}
+                  onClick={() => handleAddSupplier(bpr)}
+                >
+                  <div className="flex justify-between gap-5 w-full">
+                    <p className="text-sm font-semibold dark:text-white">{bpr.name}</p>
+                    <Checkbox
+                      checked={checkIsSelectedSupplier(bpr.id)}
+                      isSelected={checkIsSelectedSupplier(bpr.id)}
+                      onValueChange={() => {
+                        handleAddSupplier(bpr);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full dark:text-white flex flex-col justify-start text-left mt-2">
+                    <p className="w-full dark:text-white">Correo: {bpr.code}</p>
+                    <p className="w-full dark:text-white">NRC: {bpr.subCategory.name}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </ModalBody>
+          <ModalFooter className="w-full flex justify-between">
+            <ButtonUi
+              isIconOnly
+              theme={Colors.Primary}
+              onPress={() => {
+                handleSearch(paginated_products.prevPag);
+              }}
+            >
+              <ChevronLeft />
+            </ButtonUi>
+            <span className="text-sm font-semibold dark:text-white">
+              {paginated_products.currentPag} / {paginated_products.totalPag}
+            </span>
+            <ButtonUi
+              isIconOnly
+              theme={Colors.Primary}
+              onPress={() => {
+                handleSearch(paginated_products.nextPag);
+              }}
+            >
+              <ChevronRight />
+            </ButtonUi>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

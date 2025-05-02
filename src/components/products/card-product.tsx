@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
-import { EditIcon, RefreshCcw } from 'lucide-react';
+import { Book, EditIcon, RefreshCcw } from 'lucide-react';
 
 import { IMobileView } from './types/mobile-view.types';
 
@@ -7,7 +7,13 @@ import { useProductsStore } from '@/store/products.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
-function CardProduct({ actions, openEditModal, DeletePopover, handleActivate }: IMobileView) {
+function CardProduct({
+  actions,
+  openEditModal,
+  DeletePopover,
+  handleActivate,
+  handleShowRecipe,
+}: IMobileView) {
   const { paginated_products } = useProductsStore();
 
   return (
@@ -29,6 +35,18 @@ function CardProduct({ actions, openEditModal, DeletePopover, handleActivate }: 
             {actions.includes('Editar') && prd.isActive && (
               <ButtonUi isIconOnly theme={Colors.Success} onPress={() => openEditModal(prd)}>
                 <EditIcon className="dark:text-white" size={20} />
+              </ButtonUi>
+            )}
+            {actions.includes('Ver Receta') && (
+              <ButtonUi
+                isIconOnly
+                showTooltip
+                className="border border-white"
+                theme={Colors.Info}
+                tooltipText="Ver Receta"
+                onPress={() => handleShowRecipe(prd.id)}
+              >
+                <Book size={20} />
               </ButtonUi>
             )}
             {actions.includes('Editar') && prd.isActive && <DeletePopover product={prd} />}

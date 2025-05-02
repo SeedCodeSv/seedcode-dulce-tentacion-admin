@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 import {
+  GetProductDetail,
+  GetProductRecipeBook,
   IGetProductsPaginated,
   ProductList,
   ProductPayload,
@@ -86,4 +88,18 @@ export const activate_product = (id: number) => {
 
 export const verify_code_product = (code: string) => {
   return axios.get<Verify_Code>(API_URL + `/branch-products/verify-code?code=${code}`);
+};
+
+export const get_product_recipe_book = (id: number) => {
+  return axios.get<GetProductRecipeBook>(API_URL + `/product-recipe-book/product/${id}`);
+};
+
+export const get_product_by_id = (id: number) => {
+  const token = get_token() ?? '';
+
+  return axios.get<GetProductDetail>(API_URL + `/products/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };

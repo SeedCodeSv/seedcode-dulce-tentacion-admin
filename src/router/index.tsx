@@ -72,6 +72,7 @@ const ActionRol = lazy(() => import('../pages/ActionRol'));
 const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
+const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
@@ -449,6 +450,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/add-theme"
+      />
+       <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Productos') ? <AddProductRecipe /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/add-product-recipe/:id/:recipe"
       />
       <Route
         element={
