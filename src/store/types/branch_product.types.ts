@@ -9,6 +9,8 @@ import {
 
 import { Branches } from '@/types/branches.types';
 import { IGetBranchProductOrderPaginated } from '@/types/branch_product_order.types';
+import { BranchProductRecipe } from '@/types/products.types';
+import { IPagination } from '@/types/global.types';
 
 export interface IBranchProductStore {
   branch_products: BranchProduct[];
@@ -16,10 +18,28 @@ export interface IBranchProductStore {
   cart_products: ICartProduct[];
   branch_product_order: IBranchProductOrder[];
   order_branch_products: IBranchProductOrderQuantity[];
-  orders_by_supplier: SupplierProducts[],
-  branches_list: Branches[]
-  branch_product_order_paginated_loading: boolean
-  getBranchProductOrders: (branch: string, supplier?: string, product?: string, code?: string, page?: number, limit?: number) => void;
+  orders_by_supplier: SupplierProducts[];
+  branches_list: Branches[];
+  branch_product_order_paginated_loading: boolean;
+  branchProductRecipe: BranchProductRecipe[];
+  loadingBranchProductRecipe: boolean;
+  branchProductRecipePaginated: IPagination;
+  getBranchProductsRecipe: (
+    id: number,
+    page: number,
+    limit: number,
+    category: string,
+    name?: string,
+    code?: string,
+  ) => void;
+  getBranchProductOrders: (
+    branch: string,
+    supplier?: string,
+    product?: string,
+    code?: string,
+    page?: number,
+    limit?: number
+  ) => void;
   getPaginatedBranchProducts: (
     branchId: number,
     page?: number,
@@ -35,7 +55,12 @@ export interface IBranchProductStore {
   updateQuantityOrders: (id: number, quantity: number) => void;
   updatePriceOrders: (id: number, price: number) => void;
   clearProductOrders: () => void;
-  getProductByCodeOrders: (branch: string, supplier?: string, product?: string, code?: string) => void
+  getProductByCodeOrders: (
+    branch: string,
+    supplier?: string,
+    product?: string,
+    code?: string
+  ) => void;
   // ! Cart
   addProductCart: (product: BranchProduct) => void;
   deleteProductCart: (id: number) => void;

@@ -55,7 +55,7 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
           quantity: +detail.quantity,
           extraUniMedida: detail.extraUniMedida,
           delete: false,
-          recipeId: detail.productRecipeBookId,
+          recipeId: detail.id,
         }))
       );
     }

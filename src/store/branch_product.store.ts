@@ -10,6 +10,8 @@ import {
 import { groupBySupplier } from '../utils/filters';
 
 import { IBranchProductStore } from './types/branch_product.types';
+
+import { get_branch_product_recipe } from '@/services/products.service';
 // import { totalAPagar } from '../components/new_sales/MainView';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
@@ -41,6 +43,50 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     ok: true,
   },
   branch_product_order_paginated_loading: false,
+  branchProductRecipe: [],
+  branchProductRecipePaginated: {
+    total: 0,
+    totalPag: 0,
+    currentPag: 0,
+    nextPag: 0,
+    prevPag: 0,
+    status: 200,
+    ok: true,
+  },
+  loadingBranchProductRecipe: false,
+  getBranchProductsRecipe(id, page, limit, category, product, code) {
+    get_branch_product_recipe(id, page, limit, category, product, code)
+      .then(({ data }) => {
+        set({
+          branchProductRecipe: data.data,
+          branchProductRecipePaginated: {
+            total: data.total,
+            totalPag: data.totalPag,
+            currentPag: data.currentPag,
+            nextPag: data.nextPag,
+            prevPag: data.prevPag,
+            status: data.status,
+            ok: data.ok,
+          },
+          loadingBranchProductRecipe: false,
+        });
+      })
+      .catch(() => {
+        set({
+          branchProductRecipe: [],
+          branchProductRecipePaginated: {
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+          loadingBranchProductRecipe: false,
+        });
+      });
+  },
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);

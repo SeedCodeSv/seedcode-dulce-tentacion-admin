@@ -12,6 +12,7 @@ function ThGlobal(props: Props) {
       style={{
         color: theme.colors[context].table.textColor,
         backgroundColor: theme.colors[context].table.background,
+        fontSize: "12px",
       }}
       {...props}
     >

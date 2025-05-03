@@ -202,8 +202,6 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
 
               return;
             }
-            formik.setFieldValue('unidaDeMedida', '');
-            formik.setFieldValue('uniMedida', '');
           }}
         >
           {services.get014UnidadDeMedida().map((uni) => (

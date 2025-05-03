@@ -1,3 +1,5 @@
+import { BranchProduct } from './branch_products.types';
+import { IPagination } from './global.types';
 import { SubCategory } from './sub-category.types';
 
 export interface Product {
@@ -221,4 +223,54 @@ export interface GetProductDetail{
   product: Product,
   ok: boolean,
   status: number
+}
+
+export interface GetBranchProductRecipe extends IPagination {
+  data: BranchProductRecipe[]
+}
+
+export interface BranchProductRecipe {
+  id: number
+  stock: number
+  price: string
+  priceA: string
+  priceB: string
+  priceC: string
+  minimumStock: number
+  costoUnitario: string
+  isActive: boolean
+  product: Product
+  branchId: number
+  productId: number
+  recipeBook?: RecipeBook
+}
+
+export interface Product {
+  id: number
+  name: string
+  description: string
+  tipoItem: string
+  tipoDeItem: string
+  uniMedida: string
+  unidaDeMedida: string
+  code: string
+  isActive: boolean
+  subCategoryId: number
+}
+
+export interface RecipeBook {
+  id: number
+  isActive: boolean
+  productRecipeBookDetails: ProductRecipeBookDetail[]
+  productId: number
+  maxProduction: number
+}
+
+export interface ProductRecipeBookDetail {
+  id: number
+  quantity: string
+  extraUniMedida: string
+  productIdReference: number
+  productRecipeBookId: number
+  branchProduct: BranchProduct
 }

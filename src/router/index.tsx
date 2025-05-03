@@ -6,6 +6,7 @@ import AnimatedRoute from './animated-route';
 import { IRoleAction } from '@/types/role-actions.types';
 import VerificadorCorrelativos from '@/pages/verificar-faltantes';
 import ProductionOrders from '@/pages/production-orders';
+import AddProductionOrder from '@/pages/add-production-order';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -109,6 +110,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/production-orders"
+      />
+       <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de producción') ? <AddProductionOrder /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/add-production-order"
       />
       <Route
         element={
