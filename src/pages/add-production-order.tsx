@@ -3,7 +3,6 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerFooter,
-  DrawerHeader,
   Input,
   Select,
   type Selection,
@@ -31,6 +30,9 @@ function AddProductionOrder() {
     getBranchesList();
   }, []);
 
+  const typesProduct = ["PRODUCTO DE VENTA", "INSUMO/INGREDIENTE"];
+  const [selectedTypeProduct, setSelectedTypeProduct] = useState<Selection>(new Set([typesProduct[0]]));
+
   const {
     branchProductRecipe,
     branchProductRecipePaginated,
@@ -40,11 +42,12 @@ function AddProductionOrder() {
 
   useEffect(() => {
     const selectedBranchS = new Set(selectedBranch);
+    const selectedTypeProductS = new Set(selectedTypeProduct);
 
-    if (selectedBranchS.size > 0) {
-      getBranchProductsRecipe(Number(selectedBranchS.values().next().value), 1, 10, '', '', '');
+    if (selectedBranchS.size > 0 || selectedTypeProductS.size > 0) {
+      getBranchProductsRecipe(Number(selectedBranchS.values().next().value), 1, 10, '', '', '', String(selectedTypeProductS.values().next().value) ?? "");
     }
-  }, [selectedBranch]);
+  }, [selectedBranch, selectedTypeProduct]);
 
   const modalProducts = useDisclosure();
 
@@ -133,7 +136,6 @@ function AddProductionOrder() {
               </table>
             </div>
           </div>
-          {selectedBranch}
           <div className="flex justify-end gap-5">
             <ButtonUi className="px-6" theme={Colors.Error}>
               Cancelar
@@ -147,15 +149,17 @@ function AddProductionOrder() {
           isOpen={modalProducts.isOpen}
           placement="right"
           scrollBehavior="inside"
-          size="2xl"
+          size="full"
           onOpenChange={modalProducts.onOpenChange}
         >
           <DrawerContent>
-            <DrawerHeader>Productos</DrawerHeader>
+            {/* <DrawerHeader>Productos</DrawerHeader> */}
             <DrawerBody>
               <div className="flex flex-col gap-4 h-full overflow-y-auto">
-                <div className="grid grid-cols-2 gap-3 place-content-end">
-                  <Input
+                <p className='text-lg font-semibold'>Lista de productos</p>
+                <div className="grid grid-cols-4 gap-3 place-content-end">
+                 <div className='flex gap-3 items-end'>
+                 <Input
                     className="text-xs"
                     classNames={{ label: 'font-semibold' }}
                     label="Buscar producto..."
@@ -163,21 +167,42 @@ function AddProductionOrder() {
                     placeholder="Escriba para buscar"
                     variant="bordered"
                   />
-                  <div className="flex items-end gap-5">
+                  <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi>
+                 </div>
+                  <Select
+                    classNames={{ label: 'font-semibold' }}
+                      label="Tipo de producto"
+                      labelPlacement="outside"
+                      placeholder="Seleccione la sucursal"
+                      selectedKeys={selectedTypeProduct}
+                      selectionMode="single"
+                      variant="bordered"
+                      onSelectionChange={setSelectedTypeProduct}
+                    >
+                      {typesProduct.map((typ) => <SelectItem key={typ}>{typ}</SelectItem>)}
+                    </Select>
                     <Select
                     classNames={{ label: 'font-semibold' }}
-                      label="Sucursal"
+                      label="Categoría"
                       labelPlacement="outside"
                       placeholder="Seleccione la sucursal"
                       variant="bordered"
                     >
                       <SelectItem key={'1'}>Sucursal 1</SelectItem>
                     </Select>
-                    <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi>
-                  </div>
+                    <Select
+                    classNames={{ label: 'font-semibold' }}
+                      label="Sub-categoría"
+                      labelPlacement="outside"
+                      placeholder="Seleccione la sucursal"
+                      variant="bordered"
+                    >
+                      <SelectItem key={'1'}>Sucursal 1</SelectItem>
+                    </Select>
                 </div>
 
-                <div className="h-full overflow-y-auto flex flex-col gap-2">
+                <div className='h-full overflow-y-auto flex flex-col'>
+                <div className="grid grid-cols-4 gap-2">
                   {branchProductRecipe.map((recipe) => (
                     <div
                       key={recipe.id}
@@ -212,6 +237,7 @@ function AddProductionOrder() {
                     </div>
                   ))}
                 </div>
+                </div>
               </div>
             </DrawerBody>
             <DrawerFooter>
@@ -228,7 +254,8 @@ function AddProductionOrder() {
                     10,
                     '',
                     '',
-                    ''
+                    '',
+                    String(new Set(selectedTypeProduct).values().next().value ?? "")
                   );
                 }}
               />

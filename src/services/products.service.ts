@@ -111,7 +111,8 @@ export const get_branch_product_recipe = (
   limit = 5,
   category = '',
   name = '',
-  code = ''
+  code = '',
+  typeProduct = ''
 ) => {
   const token = get_token() ?? '';
 
@@ -122,6 +123,7 @@ export const get_branch_product_recipe = (
   params.append('category', category);
   params.append('name', name);
   params.append('code', code);
+  params.append('typeProduct', typeProduct);
 
   return axios.get<GetBranchProductRecipe>(
     API_URL + `/branch-products/get-products-and-recipe/${id}?${params.toString()}`,

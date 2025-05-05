@@ -31,6 +31,7 @@ export interface IBranchProductStore {
     category: string,
     name?: string,
     code?: string,
+    typeProduct?: string
   ) => void;
   getBranchProductOrders: (
     branch: string,

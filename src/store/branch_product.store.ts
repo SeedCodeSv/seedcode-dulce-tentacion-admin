@@ -54,8 +54,8 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     ok: true,
   },
   loadingBranchProductRecipe: false,
-  getBranchProductsRecipe(id, page, limit, category, product, code) {
-    get_branch_product_recipe(id, page, limit, category, product, code)
+  getBranchProductsRecipe(id, page, limit, category, product, code, typeProduct) {
+    get_branch_product_recipe(id, page, limit, category, product, code, typeProduct)
       .then(({ data }) => {
         set({
           branchProductRecipe: data.data,
