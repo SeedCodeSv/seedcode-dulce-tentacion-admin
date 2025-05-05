@@ -86,7 +86,7 @@ function ListEmployee({ actions }: Props) {
   const changePage = () => {
     getEmployeesPaginated(
       Number(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+        user?.pointOfSale?.branch.transmitterId ?? 0
       ),
       1,
       limit,
@@ -105,7 +105,7 @@ function ListEmployee({ actions }: Props) {
     getBranchesList();
     getEmployeesPaginated(
       Number(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+       user?.pointOfSale?.branch.transmitterId ?? 0
       ),
       1,
       limit,
@@ -124,7 +124,7 @@ function ListEmployee({ actions }: Props) {
     activateEmployee(id).then(() => {
       getEmployeesPaginated(
         Number(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+        user?.pointOfSale?.branch.transmitterId ?? 0
         ),
         1,
         limit,
@@ -1119,7 +1119,6 @@ function ListEmployee({ actions }: Props) {
                       onPageChange={(page) => {
                         getEmployeesPaginated(
                           Number(
-                            user?.correlative?.branch.transmitterId ??
                               user?.pointOfSale?.branch.transmitterId ??
                               0
                           ),
@@ -1143,7 +1142,6 @@ function ListEmployee({ actions }: Props) {
                       handleNext={() => {
                         getEmployeesPaginated(
                           Number(
-                            user?.correlative?.branch.transmitterId ??
                               user?.pointOfSale?.branch.transmitterId ??
                               0
                           ),
@@ -1162,8 +1160,7 @@ function ListEmployee({ actions }: Props) {
                       handlePrev={() => {
                         getEmployeesPaginated(
                           Number(
-                            user?.correlative?.branch.transmitterId ??
-                              user?.pointOfSale?.branch.transmitterId ??
+                          user?.pointOfSale?.branch.transmitterId ??
                               0
                           ),
                           employee_paginated.prevPag,

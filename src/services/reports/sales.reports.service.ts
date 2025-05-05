@@ -6,6 +6,7 @@ import {
   IGetSalesByBranchOfCurrentMonth,
   IGetSalesByDay,
   IGetSalesByDayTable,
+  IGetSalesByDayTableDetails,
   IGetSalesByMonthAndYear,
   IGetSalesCount,
   IResponseDataProductGrafic,
@@ -62,6 +63,10 @@ export const get_sales_by_day_table = (id: number) => {
   return axios.get<IGetSalesByDayTable>(API_URL + `/reports/sales-by-day-table/${id}`);
 };
 
+export const get_sales_by_day_table_details = (id: number) => {
+  return axios.get<IGetSalesByDayTableDetails>(API_URL + `/reports/sales-by-day-table-details/${id}`);
+};
+
 export const get_sales_by_branch_and_current_month_table = (
   id: number,
   startDate: string,
@@ -105,7 +110,7 @@ export const get_sales_by_period = (
 
   return axios.get<IGetSalesByPeriod>(
     API_URL +
-      `/sales/get-sales-for-dates/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}&pointOfSale=${point_of_sale}`
+      `/sales/get-sales-for-dates/${user?.pointOfSale?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}&pointOfSale=${point_of_sale}`
   );
 };
 
@@ -114,7 +119,7 @@ export const get_sales_by_period_chart = (startDate: string, endDate: string) =>
 
   return axios.get<SalesChartGraphPeriod>(
     API_URL +
-      `/sales/graphic/by-branches/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?startDate=${startDate}&endDate=${endDate}`
+      `/sales/graphic/by-branches/${user?.pointOfSale?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?startDate=${startDate}&endDate=${endDate}`
   );
 };
 
@@ -134,6 +139,6 @@ export const get_sales_count = () => {
 
   return axios.get<IGetSalesCount>(
     API_URL +
-      `/reports/count-sales/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`
+      `/reports/count-sales/${user?.pointOfSale?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`
   );
 };

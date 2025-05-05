@@ -1,4 +1,5 @@
 import { Product } from '../products.types';
+import { Sale } from '../sales.types';
 
 export interface SaleBranchMonth {
   branch: string;
@@ -58,6 +59,9 @@ export interface Branch {
   phone: string;
   isActive: boolean;
   transmitterId: number;
+  codEstable: string;
+  codEstableMH: string;
+  tipoEstablecimiento: string;
 }
 
 export interface Box {
@@ -172,3 +176,23 @@ export interface IGetSaleByProduct {
   sales: SaleProduct[];
   totalSales: number;
 }
+
+export interface Box {
+  id: number;
+  start: string;
+  end: string;
+  totalSales: string;
+  totalExpense: string;
+  totalIva: string;
+  date: string;
+  time: string;
+  isActive: boolean;
+  pointOfSaleId: number;
+}
+
+export interface IGetSalesByDayTableDetails {
+  ok: boolean;
+  sales: Sale[];
+}
+
+

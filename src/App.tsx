@@ -14,10 +14,12 @@ import { useViewsStore } from './store/views.store';
 import { useAuthStore } from './store/auth.store';
 import { AlertProvider } from './lib/alert';
 import PermissionProvider from './hooks/usePermission';
+import SocketContext from './pages/SocketContext';
 
 function App() {
   const { OnGetActionsByRol, OnGetViewasAction } = useViewsStore();
   const { user } = useAuthStore();
+
 
   useEffect(() => {
     OnGetActionsByRol(user?.roleId ?? 0);
@@ -34,6 +36,7 @@ function App() {
               <HeroUIProvider labelPlacement="outside">
                 <ActionsProvider>
                   <PermissionProvider>
+                    <SocketContext/>
                     <Main />
                   </PermissionProvider>
                 </ActionsProvider>

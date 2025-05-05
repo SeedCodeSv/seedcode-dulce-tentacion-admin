@@ -23,6 +23,7 @@ function SocketContext() {
     getSalesTableDay,
     getSalesByDay,
     getSalesByBranchAndMonth,
+    getSalesTableDayDetails,
   } = salesReportStore();
   const { getMostProductMostSelled } = useBranchProductReportStore();
 
@@ -32,20 +33,23 @@ function SocketContext() {
     socket.on('new-sale-admin', () => {
       getSalesCount();
       getSalesTableDay(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+         user?.pointOfSale?.branch.transmitterId ?? 0
       );
       getSalesByBranchAndMonth(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+         user?.pointOfSale?.branch.transmitterId ?? 0
       );
       getSalesByDay(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+         user?.pointOfSale?.branch.transmitterId ?? 0
       );
       getMostProductMostSelled(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+         user?.pointOfSale?.branch.transmitterId ?? 0
       );
       getSalesByYearAndMonth(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+         user?.pointOfSale?.branch.transmitterId ?? 0
       );
+      getSalesTableDayDetails(
+        user?.pointOfSale?.branch.transmitterId ?? 0
+     );
       // new Audio(MP3).play();
       toast.success('Nueva venta registrada', {
         duration: 3000,

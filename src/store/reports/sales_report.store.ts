@@ -9,6 +9,7 @@ import {
   // get_sales_by_branch_and_current_month_table,
   get_sales_by_day,
   get_sales_by_day_table,
+  get_sales_by_day_table_details,
   get_sales_by_month_and_year,
   get_sales_by_period,
   get_sales_by_period_chart,
@@ -30,6 +31,8 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
   sales_by_day: 0,
   expenses: [],
   sales_table_day: [],
+  sales_table_day_details: [],
+  loading_sales_by_table_details: false,
   loading_sales_by_branch_and_month: false,
   loading_sales_by_table_date: false,
   loading_sales_month_year: false,
@@ -139,6 +142,16 @@ export const salesReportStore = create<ISalesReportStore>((set) => ({
       })
       .catch(() => {
         set({ sales_table_day: [], loading_sales_by_table_date: false });
+      });
+  },
+  getSalesTableDayDetails: (id) => {
+    set({ loading_sales_by_table_date: true });
+    get_sales_by_day_table_details(id)
+      .then(({ data }) => {
+        set({ sales_table_day_details: data.sales, loading_sales_by_table_details: false });
+      })
+      .catch(() => {
+        set({ sales_table_day_details: [], loading_sales_by_table_details: false });
       });
   },
   getSalesByDay(id) {

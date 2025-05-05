@@ -13,6 +13,8 @@ import {
   SalesChartGraphPeriod,
 } from '../../../types/reports/sales_by_period.report';
 
+import { Sale } from '@/types/sales.types';
+
 export interface ISalesReportStore {
   products_most_selled: ProductoMostSelledTable[];
   sales_branch_month: SaleBranchMonth[];
@@ -20,8 +22,10 @@ export interface ISalesReportStore {
   sales_by_day: number;
   expenses: IDataExpense[];
   sales_table_day: SaleTable[];
+  sales_table_day_details: Sale[];
   data: IDataSalesGrafic[];
   sales_by_period: IGetSalesByPeriod | undefined;
+  loading_sales_by_table_details: boolean;
   loading_sales_period: boolean;
   loading_sales_month_year: boolean;
   loading_sales_by_table_date: boolean;
@@ -52,6 +56,7 @@ export interface ISalesReportStore {
   getSalesCount: () => void;
   getSalePointOfSaleByBranch: (id: number, startDate: string, endDate: string) => void;
   getSalesTableDay: (id: number) => void;
+  getSalesTableDayDetails: (id: number) => void;
   getSalesByPeriod: (
     page: number,
     limit: number,
