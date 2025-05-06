@@ -9,6 +9,7 @@ import {
   SelectItem,
   Textarea,
   useDisclosure,
+  Selection,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Eye, Play } from 'lucide-react';
@@ -29,6 +30,13 @@ import { API_URL } from '@/utils/constants';
 import DetailsProductionOrder from '@/components/production-order/details-production-order';
 import { RenderStatus, Status } from '@/components/production-order/render-order-status';
 
+type Key = string;
+
+interface ExtendedSelection extends Set<Key> {
+  anchorKey?: Key;
+  currentKey?: Key;
+}
+
 function ProductionOrders() {
   const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
 
@@ -39,11 +47,25 @@ function ProductionOrders() {
   const [endDate, setEndDate] = useState(formatDate());
 
   const { productionOrders, getProductionsOrders } = useProductionOrderStore();
+  const [selectedStatus, setSelectedStatus] = useState<Selection>(new Set([]));
+  const [selectedType, setSelectedType] = useState<Selection>(new Set([]));
 
   useEffect(() => {
     onGetProductionOrderTypes();
-    getProductionsOrders(1, 10, startDate, endDate, 0, '', 0, 0);
-  }, [startDate, endDate]);
+  }, []);
+
+  useEffect(() => {
+    const status =
+      (selectedStatus as ExtendedSelection).size > 0
+        ? (selectedStatus as ExtendedSelection).currentKey || ''
+        : '';
+    const type =
+      (selectedType as ExtendedSelection).size > 0
+        ? (selectedType as ExtendedSelection).currentKey || 0
+        : 0;
+
+    getProductionsOrders(1, 10, startDate, endDate, 0, status, 0, +type);
+  }, [startDate, endDate, selectedStatus, selectedType]);
 
   const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
 
@@ -135,7 +157,9 @@ function ProductionOrders() {
             label="Estado de la orden"
             labelPlacement="outside"
             placeholder="Seleccione un estado"
+            selectedKeys={selectedStatus}
             variant="bordered"
+            onSelectionChange={setSelectedStatus}
           >
             {productionOrderStatus.map((status) => (
               <SelectItem key={status}>{status}</SelectItem>
@@ -143,10 +167,12 @@ function ProductionOrders() {
           </Select>
           <Select
             classNames={{ label: 'font-semibold' }}
-            label="Estado de la orden"
+            label="Tipo de orden"
             labelPlacement="outside"
             placeholder="Seleccione un tipo de orden"
+            selectedKeys={selectedType}
             variant="bordered"
+            onSelectionChange={setSelectedType}
           >
             {productionOrderTypes.map((type) => (
               <SelectItem key={type.id}>{type.name}</SelectItem>
