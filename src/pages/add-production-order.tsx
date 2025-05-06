@@ -134,7 +134,7 @@ function AddProductionOrder() {
         max: p.recipeBook?.maxProduction ?? 0,
       })),
       observation,
-      moreInformation : "-"
+      moreInformation : "[]"
     };
 
     axios

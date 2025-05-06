@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { GetProductionOrders } from '@/types/production-order.types';
+import { GetProductionOrder, GetProductionOrders } from '@/types/production-order.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_production_orders = (
@@ -24,7 +24,9 @@ export const get_production_orders = (
   params.append('employeeId', employeeId.toString());
   params.append('productionOrderTypeId', productionOrderTypeId.toString());
 
-  return axios.get<GetProductionOrders>(
-    API_URL + `/production-orders?${params.toString()}`
-  );
+  return axios.get<GetProductionOrders>(API_URL + `/production-orders?${params.toString()}`);
+};
+
+export const get_production_order_by_id = (id: number) => {
+  return axios.get<GetProductionOrder>(API_URL + `/production-orders/${id}`);
 };

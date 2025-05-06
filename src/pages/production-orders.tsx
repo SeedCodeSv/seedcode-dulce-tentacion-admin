@@ -1,5 +1,4 @@
 import {
-  Chip,
   Input,
   Modal,
   ModalBody,
@@ -9,12 +8,14 @@ import {
   Select,
   SelectItem,
   Textarea,
+  useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { Check, Clock, Eye, Play, Settings, X } from 'lucide-react';
+import { Eye, Play } from 'lucide-react';
 import { TbCancel } from 'react-icons/tb';
+import { toast } from 'sonner';
+import axios from 'axios';
 
-// import { usePermission } from '@/hooks/usePermission';
 import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
 import ThGlobal from '@/themes/ui/th-global';
@@ -23,10 +24,16 @@ import { formatDate } from '@/utils/dates';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { get_employee_by_code } from '@/services/employess.service';
+import { API_URL } from '@/utils/constants';
+import DetailsProductionOrder from '@/components/production-order/details-production-order';
+import { RenderStatus, Status } from '@/components/production-order/render-order-status';
 
 function ProductionOrders() {
-  // const { roleActions, returnActionsByView } = usePermission();
   const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
+
+  const modalCancelOrder = useDisclosure();
+  const modalMoreInformation = useDisclosure();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -36,14 +43,70 @@ function ProductionOrders() {
   useEffect(() => {
     onGetProductionOrderTypes();
     getProductionsOrders(1, 10, startDate, endDate, 0, '', 0, 0);
-  }, []);
+  }, [startDate, endDate]);
 
   const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
 
-  // const actions = useMemo(() => returnActionsByView('Ordenes de producción'), [roleActions]);
-
   const [moreInformation, setMoreInformation] = useState('');
   const [employeeCode, setEmployeeCode] = useState('');
+  const [selectedOrderId, setSelectedOrderId] = useState(0);
+
+  const [loadingCancel, setLoadingCancel] = useState(false);
+
+  const handleCancelOrder = (orderId: number) => {
+    if (orderId === 0) return;
+
+    if (employeeCode === '') {
+      toast.error('Debe ingresar tu código de empleado');
+
+      return;
+    }
+
+    setLoadingCancel(true);
+    get_employee_by_code(employeeCode)
+      .then((res) => {
+        const employee = res.data.employee;
+
+        if (!employee) {
+          toast.error('Empleado no encontrado');
+
+          return;
+        }
+
+        const name =
+          employee.id +
+          ' - ' +
+          employee.firstName +
+          ' ' +
+          employee.secondName +
+          ' ' +
+          employee.firstLastName +
+          ' ' +
+          employee.secondLastName;
+
+        axios
+          .post(API_URL + `/production-orders/cancel/${orderId}`, {
+            reason: moreInformation !== '' ? moreInformation : 'No especificado',
+            responsibleName: name,
+          })
+          .then(() => {
+            toast.success('Orden cancelada exitosamente');
+            modalCancelOrder.onClose();
+            getProductionsOrders(1, 10, startDate, endDate, 0, '', 0, 0);
+            setLoadingCancel(false);
+          })
+          .catch(() => {
+            toast.error('Error al cancelar la orden');
+            setLoadingCancel(false);
+          });
+      })
+      .catch(() => {
+        toast.error('Código invalido', {
+          description: 'El empleado no se encuentra registrado en el sistema',
+        });
+        setLoadingCancel(false);
+      });
+  };
 
   return (
     <Layout title="Ordenes de producción">
@@ -143,7 +206,10 @@ function ProductionOrders() {
                           showTooltip
                           theme={Colors.Error}
                           tooltipText="Cancelar orden de producción"
-                          onPress={() => {}}
+                          onPress={() => {
+                            setSelectedOrderId(porD.id);
+                            modalCancelOrder.onOpen();
+                          }}
                         >
                           <TbCancel size={20} />
                         </ButtonUi>
@@ -154,7 +220,10 @@ function ProductionOrders() {
                       showTooltip
                       theme={Colors.Warning}
                       tooltipText="Ver orden de producción"
-                      onPress={() => {}}
+                      onPress={() => {
+                        setSelectedOrderId(porD.id);
+                        modalMoreInformation.onOpen();
+                      }}
                     >
                       <Eye size={20} />
                     </ButtonUi>
@@ -164,7 +233,7 @@ function ProductionOrders() {
             </tbody>
           </table>
         </div>
-        <Modal isOpen isDismissable={false}>
+        <Modal {...modalCancelOrder} isDismissable={false}>
           <ModalContent>
             <ModalHeader>Autorizar cancelación de orden</ModalHeader>
             <ModalBody>
@@ -186,45 +255,24 @@ function ProductionOrders() {
               />
             </ModalBody>
             <ModalFooter>
-              <ButtonUi className='px-6' theme={Colors.Error}>Aceptar</ButtonUi>
-              <ButtonUi className='px-6' theme={Colors.Primary}>Validar</ButtonUi>
+              <ButtonUi
+                className="px-8"
+                isLoading={loadingCancel}
+                theme={Colors.Primary}
+                onPress={() => handleCancelOrder(selectedOrderId ?? 0)}
+              >
+                Cancelar orden
+              </ButtonUi>
             </ModalFooter>
           </ModalContent>
         </Modal>
+        <DetailsProductionOrder
+          id={selectedOrderId ?? 0}
+          modalMoreInformation={modalMoreInformation}
+        />
       </div>
     </Layout>
   );
 }
 
 export default ProductionOrders;
-
-type Status = 'Abierta' | 'En Proceso' | 'Completada' | 'Cancelada';
-type StatusColors = 'warning' | 'primary' | 'success' | 'danger';
-
-export const RenderStatus = ({ status }: { status: Status }) => {
-  const statusColor: Record<Status, StatusColors> = {
-    Abierta: 'warning',
-    'En Proceso': 'primary',
-    Completada: 'success',
-    Cancelada: 'danger',
-  };
-
-  return (
-    <div className="flex gap-3">
-      <Chip
-        className="px-4"
-        color={statusColor[status] || 'default'}
-        endContent={
-          <>
-            {status === 'En Proceso' && <Settings className=" animate-spin" size={20} />}
-            {status === 'Abierta' && <Clock className="text-white" size={20} />}
-            {status === 'Cancelada' && <X className="text-white" size={20} />}
-            {status === 'Completada' && <Check className="text-white" size={20} />}
-          </>
-        }
-      >
-        <span className="text-xs text-white">{status}</span>
-      </Chip>
-    </div>
-  );
-};

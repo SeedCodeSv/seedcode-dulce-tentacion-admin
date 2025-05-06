@@ -2,7 +2,10 @@ import { create } from 'zustand';
 
 import { ProductionOrderStore } from './types/production-order.store.types';
 
-import { get_production_orders } from '@/services/production-order.service';
+import {
+  get_production_order_by_id,
+  get_production_orders,
+} from '@/services/production-order.service';
 
 export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
   productionOrders: [],
@@ -16,6 +19,18 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
     status: 200,
   },
   loadingProductionOrders: false,
+  loadingProductionOrder: false,
+  productionOrder: null,
+  getProductionsOrder(id) {
+    set({ loadingProductionOrder: true });
+    get_production_order_by_id(id)
+      .then((res) => {
+        set({ productionOrder: res.data.productionOrder, loadingProductionOrder: false });
+      })
+      .catch(() => {
+        set({ productionOrder: null, loadingProductionOrder: false });
+      });
+  },
   getProductionsOrders(
     page,
     limit,
