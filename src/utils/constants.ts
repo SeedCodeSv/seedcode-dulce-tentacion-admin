@@ -132,3 +132,6 @@ export const contingence_steps = [
     description: 'Estamos enviando el lote de DTEs',
   },
 ];
+
+
+export const typesProduct = ['PRODUCTO DE VENTA', 'INSUMO/INGREDIENTE'];

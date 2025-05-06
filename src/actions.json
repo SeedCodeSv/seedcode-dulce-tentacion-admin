@@ -179,6 +179,10 @@
     {
       "view": "Ordenes de producción",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Completar", "Cancelar"]
+    },
+    {
+      "view": "Tipos de ordenes de producción",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
     }
   ]
 }

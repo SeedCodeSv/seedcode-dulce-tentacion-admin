@@ -22,6 +22,7 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
   onClose,
   timer,
   isAutoClose = true,
+  buttonOptions,
 }) => {
   useEffect(() => {
     if (isAutoClose && timer) {
@@ -56,9 +57,7 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
           <div className="flex flex-col items-center text-center">
             <div className="mb-4">{icons[type]}</div>
 
-            {title && (
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-            )}
+            {title && <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>}
 
             {message && <p className="text-gray-600 mb-6">{message}</p>}
 
@@ -75,15 +74,19 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
                 </button>
               )}
 
-              <button
-                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-                onClick={() => {
-                  onConfirm?.();
-                  onClose();
-                }}
-              >
-                {confirmText}
-              </button>
+              {buttonOptions ? (
+                buttonOptions
+              ) : (
+                <button
+                  className="px-4 py-2 text-white bg-teal-600 rounded-lg hover:bg-teal-700 transition-colors"
+                  onClick={() => {
+                    onConfirm?.();
+                    onClose();
+                  }}
+                >
+                  {confirmText}
+                </button>
+              )}
             </div>
           </div>
         </div>

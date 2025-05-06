@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import {
   EmployeePayload,
+  GetEmployeeByCode,
   // GetEmployeeContingence,
   GetEmployeeList,
   IGetEmployeesPaginated,
@@ -138,3 +139,13 @@ export const get_birthday_employees = () => {
 //     }
 //   })
 // }
+
+export const get_employee_by_code = (code: string) => {
+  const token = get_token() ?? '';
+
+  return axios.get<GetEmployeeByCode>(API_URL + `/employees/get-by-code/${code}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

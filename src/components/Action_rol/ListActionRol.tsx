@@ -7,7 +7,7 @@ import { BsDatabaseAdd } from 'react-icons/bs';
 import { FaArrowsRotate } from 'react-icons/fa6';
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 import { IoBagCheck } from 'react-icons/io5';
-import { FileJson, Send } from 'lucide-react';
+import { Check, FileJson, Send, X } from 'lucide-react';
 import { GrDocumentCsv } from 'react-icons/gr';
 import { TiExportOutline } from 'react-icons/ti';
 import { MdOutlineCake, MdOutlineCancelScheduleSend } from 'react-icons/md';
@@ -202,6 +202,12 @@ function ListActionRol() {
     }
     if (name.toLocaleLowerCase().includes('constancia')) {
       return <LiaFileContractSolid size={20} style={colors.textColor} />;
+    }
+    if (name.toLocaleLowerCase().includes('cancelar')) {
+      return <X size={20} style={colors.textColor} />;
+    }
+    if (name.toLocaleLowerCase().includes('completar')) {
+      return <Check size={20} style={colors.textColor} />;
     }
 
     return <></>;

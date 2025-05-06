@@ -11,6 +11,7 @@ export interface AlertOptions {
   timer?: number;
   key?: string
   isAutoClose?: boolean;
+  buttonOptions?: JSX.Element
 }
 
 export interface AlertContextType {

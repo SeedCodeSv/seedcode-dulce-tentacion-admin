@@ -2,6 +2,7 @@ import { Branches } from './branches.types';
 import { ICharge } from './charges.types';
 import { ContractType } from './contract_type.types';
 import { EmployeeStatus } from './employee_status.types';
+import { IPagination } from './global.types';
 import { StudyLevel } from './study_level.types';
 
 export interface Employee {
@@ -44,15 +45,8 @@ export interface Employee {
   isActive: boolean;
 }
 
-export interface IGetEmployeesPaginated {
-  ok: boolean;
+export interface IGetEmployeesPaginated extends IPagination {
   employees: Employee[];
-  total: number;
-  totalPag: number;
-  currentPag: number;
-  nextPag: number;
-  prevPag: number;
-  status: number;
 }
 
 export interface EmployeePayload {
@@ -86,38 +80,6 @@ export interface EmployeePayload {
   dateOfExit: string;
 }
 
-// export interface EmployeePayload {
-//   id?: number;
-//   firstName: string;
-//   secondName: string;
-//   firstLastName: string;
-//   secondLastName: string;
-//   bankAccount: string;
-//   chargeId: number;
-//   nit: string;
-//   dui: string;
-//   isss: string;
-//   afp: string;
-//   code: string;
-//   phone: string;
-//   age: string;
-//   salary: string;
-//   dateOfBirth: string;
-//   dateOfEntry: string;
-//   dateOfExit: string;
-//   responsibleContact: string;
-//   statusId: number;
-//   studyLevelId: number;
-//   contractTypeId: number;
-//   // addressId: number;
-//   department: string;
-//   departmentName: string;
-//   municipality: string;
-//   municipalityName: string;
-//   complement: string;
-//   branchId: number;
-// }
-
 interface Address {
   departamento: string;
   nombreDepartamento: string;
@@ -143,4 +105,11 @@ export interface MonthsAttendance {
   secondLastName: string;
   dateOfBirth: string;
   branchName: string;
+}
+
+
+export interface GetEmployeeByCode {
+  ok: boolean;
+  message: string;
+  employee: Employee;
 }
