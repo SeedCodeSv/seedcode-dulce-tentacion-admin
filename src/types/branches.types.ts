@@ -8,8 +8,6 @@ export interface Branches {
   codEstable: string;
   codEstableMH: string;
   tipoEstablecimiento: string;
-  next: number;
-  prev: number;
   isActive: boolean;
   transmitter? :Transmitter
 }

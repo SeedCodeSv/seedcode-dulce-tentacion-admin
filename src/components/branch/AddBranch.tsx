@@ -42,7 +42,7 @@ function AddBranch(props: Props) {
           {
             ...values,
             transmitterId:
-              user?.correlative?.branch.transmitterId ??
+              user?.pointOfSale?.branch.transmitterId ??
               user?.pointOfSale?.branch.transmitterId ??
               0,
           },
@@ -54,7 +54,7 @@ function AddBranch(props: Props) {
         const res = await postBranch({
           ...values,
           transmitterId:
-            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+            user?.pointOfSale?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
         });
 
         if (res) props.closeModal();

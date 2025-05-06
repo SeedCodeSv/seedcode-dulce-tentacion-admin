@@ -14,14 +14,16 @@ export interface IGetSales {
   prevPag: number;
 }
 
-interface Sale {
+export interface Sale {
   id: number;
   numeroControl: string;
   codigoGeneracion: string;
   tipoDte: string;
+  typeVoucher: string;
   fecEmi: string;
   horEmi: string;
   selloRecibido: string;
+  selloInvalidation: string;
   sello: boolean;
   codeEmployee: string;
   totalNoSuj: string;
@@ -47,7 +49,6 @@ interface Sale {
   employee: Employee;
   direccion: Direccion;
   employeeId: number;
-  selloInvalidation: string;
   salesStatusId: number;
   salesStatus: SaleStatus;
 }

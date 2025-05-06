@@ -57,6 +57,8 @@ export interface User {
   pointOfSale: PointOfSale;
   roleId: number;
   correlativeId: number;
+  transmitterId: number;
+  branchId:number
 }
 export interface Root {
   pointOfSale: PointOfSale;
