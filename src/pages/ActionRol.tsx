@@ -1,5 +1,5 @@
 import Layout from '../layout/Layout';
-import ListActionRol from '../components/Action_rol/ListActionRol';
+import ListActionRol from '../components/action-rol/list-rol-actions';
 function ActionRol() {
   return (
     <Layout title="Acción por rol">

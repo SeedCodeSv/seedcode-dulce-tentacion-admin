@@ -57,7 +57,7 @@ function AddProduct() {
 
   return (
     <Layout title="Nuevo producto">
-      <div className=" w-full h-full p-5 lg:p-8 bg-gray-50 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <button
           className="flex items-center gap-2 bg-transparent"
           onClick={() => navigate('/products')}

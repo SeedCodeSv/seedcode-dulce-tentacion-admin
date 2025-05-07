@@ -27,7 +27,6 @@ const ContratType = lazy(() => import('../pages/ContratType'));
 const AddEmployee = lazy(() => import('../components/employee/AddEmployee'));
 const VentasPorPeriodo = lazy(() => import('../pages/reports/VentasPorPeriodo'));
 const StudyLevel = lazy(() => import('../pages/StudyLevel'));
-const AddActionRol = lazy(() => import('../components/Action_rol/AddActionRol'));
 const AddProduct = lazy(() => import('../pages/add-product'));
 const VentasPorProducto = lazy(() => import('../pages/reports/VentasPorProducto'));
 const CushCatsBigZ = lazy(() => import('../pages/CashCutsBigZ'));
@@ -397,14 +396,6 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/add-promotions"
-      />
-      <Route
-        element={
-          <AnimatedRoute>
-            <AddActionRol />
-          </AnimatedRoute>
-        }
-        path="/add-action-rol"
       />
       <Route
         element={

@@ -98,7 +98,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   postProducts(payload) {
     return create_products(payload)
       .then(() => {
-        get().getPaginatedProducts(1, 5, '', '', '', '');
+        get().getPaginatedProducts(1, 5, 0, 0, '', '');
         toast.success(messages.success);
       })
       .catch(() => {
@@ -108,7 +108,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   patchProducts(payload, id): Promise<{ ok: boolean }> {
     return update_products(payload, id)
       .then(() => {
-        get().getPaginatedProducts(1, 5, '', '', '', '');
+        get().getPaginatedProducts(1, 5, 0, 0, '', '');
         toast.success(messages.success);
 
         return { ok: true };
@@ -123,7 +123,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     await delete_products(id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 5, '', '', '', '');
+        get().getPaginatedProducts(1, 5, 0, 0, '', '');
       })
       .catch(() => {
         toast.error(messages.error);

@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import { Wallet } from 'lucide-react';
 
-import logo from '../../../assets/MADNESS.png';
+import logo from '../../../assets/dulce-logo.png';
 
 import { Employee } from '@/types/employees.types';
 import TooltipGlobal from '@/components/global/TooltipGlobal';

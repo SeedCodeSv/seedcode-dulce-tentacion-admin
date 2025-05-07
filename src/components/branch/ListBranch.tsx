@@ -38,7 +38,6 @@ import AddBranch from './AddBranch';
 import TableBranch from './TableBranch';
 import MobileView from './MobileView';
 import ListBranchProduct from './branch_product/ListBranchProduct';
-import BoxBranch from './BoxBranch';
 import SearchBranch from './search_branch/SearchBranch';
 import AddPointOfSales from './AddPointOfSales';
 
@@ -80,13 +79,12 @@ function ListBranch({ actions }: ArrayAction) {
     getBranchesPaginated(1, limit, name, phone, address);
   };
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
-  const [Branch, setBranch] = useState<Branches>();
   const handleEdit = (item: Branches) => {
     setSelectedBranch(item);
     modalAdd.onOpen();
   };
   const handleBox = (item: Branches) => {
-    setBranch(item);
+    setSelectedBranch(item);
     modalBoxBranch.onOpen();
   };
   const handleBranchProduct = (id: number) => {
@@ -95,9 +93,6 @@ function ListBranch({ actions }: ArrayAction) {
   };
   const handleInactive = (item: Branches) => {
     disableBranch(item.id, !item.isActive);
-  };
-  const clearClose = () => {
-    setBranch(undefined);
   };
 
   return (
@@ -369,18 +364,6 @@ function ListBranch({ actions }: ArrayAction) {
             }}
           >
             <AddBranch branch={selectedBranch} closeModal={modalAdd.onClose} />
-          </HeadlessModal>
-
-          <HeadlessModal
-            isOpen={modalBoxBranch.isOpen}
-            size="w-[350px] md:w-[500px]"
-            title=""
-            onClose={() => {
-              clearClose();
-              modalBoxBranch.onClose();
-            }}
-          >
-            <BoxBranch branch={Branch} closeModal={modalBoxBranch.onClose} setBranch={setBranch} />
           </HeadlessModal>
           <HeadlessModal
             isOpen={modalAddPointOfSales.isOpen}

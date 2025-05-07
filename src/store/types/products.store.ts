@@ -6,17 +6,17 @@ export interface IProductsStore {
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
-  recipeBook:Recipe | null,
-  loadingRecipeBook: boolean
-  loadingProductsDetails: boolean
-  productsDetails: Product | null
-  getRecipeBook: (id:number) => void
+  recipeBook: Recipe | null;
+  loadingRecipeBook: boolean;
+  loadingProductsDetails: boolean;
+  productsDetails: Product | null;
+  getRecipeBook: (id: number) => void;
   savePaginatedProducts: (products: IGetProductsPaginated) => void;
   getPaginatedProducts: (
     page: number,
     limit: number,
-    category: string,
-    subCategary: string,
+    category: number,
+    subCategary: number,
     name: string,
     code: string,
     active?: number
@@ -27,5 +27,5 @@ export interface IProductsStore {
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
-  getProductsDetails: (id: number) => void
+  getProductsDetails: (id: number) => void;
 }

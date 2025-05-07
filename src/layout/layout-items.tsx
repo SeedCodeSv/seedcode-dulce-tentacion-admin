@@ -33,7 +33,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 
-import LOGO from '../assets/MADNESS.png';
+import LOGO from '../assets/dulce-logo.png';
 import { ThemeContext } from '../hooks/useTheme';
 import { useConfigurationStore } from '../store/perzonalitation.store';
 import useWindowSize from '../hooks/useWindowSize';

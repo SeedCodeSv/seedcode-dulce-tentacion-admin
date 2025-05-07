@@ -1,17 +1,26 @@
+import { useMemo } from 'react';
+
 import Layout from '../layout/Layout';
 import ListProducts from '../components/products/list-product';
 
-import { useViewsStore } from '@/store/views.store';
+import { usePermission } from '@/hooks/usePermission';
 
 function Employees() {
-  const { actions} = useViewsStore();
-  const productsView = actions.find((view) => view.view.name === 'Productos');
-  const actionView = productsView?.actions?.name || [];
- 
+  const { returnActionsByView, roleActions } = usePermission();
+
+  const actions = useMemo(() => {
+    if (roleActions) {
+      const actions = returnActionsByView('Productos');
+
+      return actions;
+    }
+
+    return [];
+  }, [roleActions]);
 
   return (
     <Layout title="PRODUCTOS">
-      <ListProducts actions={actionView} />
+      <ListProducts actions={actions} />
     </Layout>
   );
 }

@@ -15,8 +15,8 @@ import { get_token } from '../storage/localStorage';
 export const get_products = (
   page = 1,
   limit = 5,
-  category = '',
-  subCategory = '',
+  category = 0,
+  subCategory = 0,
   name = '',
   code = '',
   active = 1

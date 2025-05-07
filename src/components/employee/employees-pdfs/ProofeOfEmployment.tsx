@@ -3,7 +3,7 @@ import { Notebook } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Employee } from '@/types/employees.types';
-import logo from '@/assets/MADNESS.png';
+import logo from '@/assets/dulce-logo.png';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
