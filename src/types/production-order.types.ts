@@ -1,3 +1,4 @@
+import { BranchProduct } from './branch_products.types';
 import { IPagination } from './global.types';
 
 export interface GetProductionOrders extends IPagination {
@@ -11,8 +12,8 @@ export interface ProductionOrder {
   moreInformation: string;
   date: string;
   time: string;
-  endDate: string;
-  endTime: string;
+  endDate: string | null;
+  endTime: string | null;
   destinationBranch: DestinationBranch;
   receptionBranch: ReceptionBranch;
   employee: Employee;
@@ -112,4 +113,92 @@ export interface Products {
   isActive: boolean;
   productType: string;
   subCategoryId: number;
+}
+
+export interface GetVerifyProductionOrder {
+  ok: boolean
+  productionOrder: ProductionOrderDetailsVerify
+  message: string
+  status: number
+}
+
+export interface ProductionOrderDetailsVerify {
+  id: number
+  statusOrder: string
+  observations: string
+  moreInformation: string
+  date: string
+  time: string
+  endDate: string | null
+  endTime: string | null
+  destinationBranch: DestinationBranch
+  receptionBranch: ReceptionBranch
+  employee: Employee
+  productionOrderType: ProductionOrderType
+  productionOrderTypeId: number
+  employeeOrderId: number
+  receptionBranchId: number
+  destinationBranchId: number
+  details: Detail[]
+}
+
+export interface Detail {
+  id: number
+  quantity: number
+  observations: string
+  products: Products
+  productionOrderId: number
+  productId: number
+  productRecipe: ProductRecipe
+}
+
+export interface ProductRecipe {
+  id: number
+  name: string
+  description: string
+  tipoItem: string
+  tipoDeItem: string
+  uniMedida: string
+  unidaDeMedida: string
+  code: string
+  isActive: boolean
+  productType: string
+  subCategoryId: number
+  recipe: Recipe
+}
+
+export interface Recipe {
+  id: number
+  isActive: boolean
+  product: Products
+  productId: number
+  recipeDetails: RecipeDetail[]
+}
+
+export interface RecipeDetail {
+  id: number
+  quantity: string
+  extraUniMedida: string
+  productIdReference: number
+  productRecipeBook: ProductRecipeBook
+  productRecipeBookId: number
+  branchProduct: BranchProduct
+}
+
+export interface ProductRecipeBook {
+  id: number
+  isActive: boolean
+  productId: number
+}
+
+export interface IngredientStatus {
+  sufficient: boolean;
+  requiredStock: number;
+  availableStock: number;
+  usedByOthers: boolean
+}
+
+export interface ProductStatus {
+  canFulfill: boolean;
+  ingredients: Record<number, IngredientStatus>;
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { GetProductionOrder, GetProductionOrders } from '@/types/production-order.types';
+import { GetProductionOrder, GetProductionOrders, GetVerifyProductionOrder } from '@/types/production-order.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_production_orders = (
@@ -29,4 +29,8 @@ export const get_production_orders = (
 
 export const get_production_order_by_id = (id: number) => {
   return axios.get<GetProductionOrder>(API_URL + `/production-orders/${id}`);
+};
+
+export const get_verify_production_order = (id: number) => {
+  return axios.get<GetVerifyProductionOrder>(API_URL + `/production-orders/verify-order/${id}`);
 };

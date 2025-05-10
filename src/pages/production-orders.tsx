@@ -12,10 +12,11 @@ import {
   Selection,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { Eye, Play } from 'lucide-react';
+import { Eye, Play, Plus } from 'lucide-react';
 import { TbCancel } from 'react-icons/tb';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
@@ -29,6 +30,7 @@ import { get_employee_by_code } from '@/services/employess.service';
 import { API_URL } from '@/utils/constants';
 import DetailsProductionOrder from '@/components/production-order/details-production-order';
 import { RenderStatus, Status } from '@/components/production-order/render-order-status';
+import VerifyProductionOrder from '@/components/production-order/verify-production-order';
 
 type Key = string;
 
@@ -40,8 +42,11 @@ interface ExtendedSelection extends Set<Key> {
 function ProductionOrders() {
   const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
 
+  const navigation = useNavigate();
+
   const modalCancelOrder = useDisclosure();
   const modalMoreInformation = useDisclosure();
+  const modalVerifyOrder = useDisclosure();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -179,6 +184,17 @@ function ProductionOrders() {
             ))}
           </Select>
         </div>
+        <div className="flex justify-end mt-2">
+          <ButtonUi
+            isIconOnly
+            theme={Colors.Success}
+            onPress={() => {
+              navigation('/add-production-order');
+            }}
+          >
+            <Plus />
+          </ButtonUi>
+        </div>
         <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
           <table className="w-full">
             <thead className="sticky top-0 z-20 bg-white">
@@ -223,7 +239,10 @@ function ProductionOrders() {
                           showTooltip
                           theme={Colors.Success}
                           tooltipText="Iniciar orden de producción"
-                          onPress={() => {}}
+                          onPress={() => {
+                            setSelectedOrderId(porD.id);
+                            modalVerifyOrder.onOpen();
+                          }}
                         >
                           <Play />
                         </ButtonUi>
@@ -296,6 +315,7 @@ function ProductionOrders() {
           id={selectedOrderId ?? 0}
           modalMoreInformation={modalMoreInformation}
         />
+        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
       </div>
     </Layout>
   );
