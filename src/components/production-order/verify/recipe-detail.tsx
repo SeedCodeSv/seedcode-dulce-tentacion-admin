@@ -75,7 +75,7 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {ingredientStatus ? ingredientStatus.availableStock : 'Desconocido'}{' '}
-                    {getUnitLabel(ingredient.extraUniMedida)}
+                    {getUnitLabel(ingredient.branchProduct.product.uniMedida)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {ingredientStatus ? (
