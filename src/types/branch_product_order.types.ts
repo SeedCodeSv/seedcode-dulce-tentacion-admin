@@ -175,7 +175,7 @@ export interface CategoryProduct {
     isActive: boolean
     product: Product
     branch: Branch
-    supplier: Supplier
+    suppliers: Supplier[]
     branchId: number
     productId: number
     supplierId: number

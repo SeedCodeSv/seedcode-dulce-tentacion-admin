@@ -28,5 +28,9 @@ export const global_styles = () => {
       backgroundColor: theme.colors[context].buttons.colors.warning,
       color: theme.colors[context].textColor,
     },
+    primaryStyles: {
+      backgroundColor: theme.colors[context].buttons.colors.primary,
+      color: theme.colors[context].buttons.textColor,
+    },
   };
 };

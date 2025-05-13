@@ -141,7 +141,7 @@ export const SideBar = (props: Props) => {
                   key="logout"
                   className="dark:text-white"
                   color="primary"
-                  onClick={() => navigate('/configuration')}
+                  onPress={() => navigate('/configuration')}
                 >
                   Configuración
                 </DropdownItem>
@@ -149,7 +149,7 @@ export const SideBar = (props: Props) => {
                   key="logout"
                   className="dark:text-white"
                   color="danger"
-                  onClick={() => close_login()}
+                  onPress={() => close_login()}
                 >
                   Cerrar sesión
                 </DropdownItem>

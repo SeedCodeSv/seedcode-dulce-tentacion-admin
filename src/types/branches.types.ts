@@ -45,6 +45,7 @@ export interface IGetBranchesList {
 export interface IGetBranchProduct {
   id: number;
   stock: number;
+  reserved: number;
   price: number;
   branch: Branches;
   branchId: number;

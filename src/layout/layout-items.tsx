@@ -27,6 +27,7 @@ import {
   Book,
   X,
   ListOrdered,
+  MonitorDown,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -113,6 +114,24 @@ export const LayoutItems = (props: Props) => {
       icon: ShoppingBag,
       label: 'Compras',
     },
+    {
+      viewName: 'Ajuste de Inventario',
+      to: '/inventary-adjustment',
+      icon: Barcode,
+      label: 'Ajuste de Inventario',
+    },
+    {
+      viewName: 'Ordenes de Compra',
+      to: '/purchase-orders',
+      icon: MonitorDown,
+      label: 'Ordenes de Compra',
+    },
+    {
+      viewName: 'Movimientos',
+      to: '/movement',
+      icon: MonitorDown,
+      label: 'Movimientos',
+    },
   ];
 
   const linkAdministration = [
@@ -196,6 +215,13 @@ export const LayoutItems = (props: Props) => {
       icon: DatabaseBackup,
       label: 'Contingencias',
     },
+     {
+      viewName: 'Kardex',
+      to: '/kardex-inventory',
+      icon: List,
+      label: 'Kardex',
+    },
+
   ];
 
   const linkPlanification = [

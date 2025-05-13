@@ -10,6 +10,7 @@ import {
 export interface PurchaseOrderStore {
   purchase_orders: PurchaseOrder[];
   pagination_purchase_orders: IPagination;
+  pagination_purchase_orders_loading: boolean;
   details_order_purchase: DetailOrderItems[];
   getPurchaseOrderDetail: (id: number) => Promise<void>;
   getPurchaseOrders: (

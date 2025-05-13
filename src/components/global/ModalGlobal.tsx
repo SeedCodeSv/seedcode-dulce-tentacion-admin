@@ -11,16 +11,17 @@ interface Props {
   isFull?: boolean;
   isDismissable?: boolean;
   isMaximizable?: boolean;
+  isBlurred?: boolean;
 }
 
-function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximizable = false }: Props) {
+function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximizable = false, isBlurred = false }: Props) {
 
   return (
     <Dialog
       className={classNames(
         isFull && 'w-full overflow-y-auto',
         size,
-        'dark:bg-gray-800 overflow-y-auto'
+        'dark:bg-gray-800 overflow-y-auto',
       )}
       header={
         title && (
@@ -29,6 +30,10 @@ function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximiz
           </div>
         )
       }
+      maskClassName={classNames(
+        'transition-all duration-300',
+        isBlurred && 'backdrop-blur-md bg-black/40'
+      )}
       maximizable={isMaximizable}
       visible={isOpen}
       onHide={() => onClose()}

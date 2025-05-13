@@ -44,6 +44,10 @@
       "view": "Ventas Ticket",
       "actions": ["Mostrar", "Ver Detalle"]
     },
+     {
+      "view": "Kardex",
+      "actions": ["Mostrar"]
+    },
     {
       "view": "Empleados",
       "actions": [
@@ -183,6 +187,18 @@
     {
       "view": "Tipos de ordenes de producción",
       "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+    },
+    {
+      "view": "Ajuste de Inventario",
+      "actions": ["Mostrar"]
+    },
+    {
+      "view": "Ordenes de Compra",
+      "actions": ["Mostrar","Agregar"]
+    },
+    {
+      "view": "Movimientos",
+      "actions": ["Mostrar"]
     }
   ]
 }

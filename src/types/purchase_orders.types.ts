@@ -8,7 +8,7 @@ export interface PurchaseOrderPayload {
 }
 
 export interface IBranchProductOrder {
-    productId: number;
+    branchProductId: number;
     quantity: number;
     unitPrice: number;
 }

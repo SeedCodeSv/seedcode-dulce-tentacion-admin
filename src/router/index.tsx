@@ -8,6 +8,10 @@ import VerificadorCorrelativos from '@/pages/verificar-faltantes';
 import ProductionOrders from '@/pages/production-orders';
 import AddProductionOrder from '@/pages/add-production-order';
 import ProductionOrderTypes from '@/pages/production-order-types';
+import KardexPage from '@/pages/KardexPage';
+import PurchaseOrders from '@/pages/PurchaseOrders';
+import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
+import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -135,6 +139,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
+      <Route path="/kardex-inventory" element={<KardexPage />} />
       <Route
         element={
           <AnimatedRoute>
@@ -631,6 +636,59 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/verificar-faltantes"
       />
+       {/* <Route
+          path="/inventary-adjustment"
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />}
+            </AnimatedRoute>
+          }
+         /> */}
+        {/* <Route
+          path="/add-inventary-adjustment"
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Ajuste de Inventario') ? (
+                <AddInventaryAdjustment />
+              ) : (
+                <Home />
+              )}
+            </AnimatedRoute>
+          }
+         />
+      <Route
+          path="/movement"
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Movimientos') ? <Movements /> : <Home />}
+            </AnimatedRoute>
+          }
+        /> */}
+      <Route
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrders /> : <Home />}
+            </AnimatedRoute>
+          }
+          path="/purchase-orders"
+        />
+        <Route
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Ordenes de Compras') ? <AddPurchaseOrders /> : <Home />}
+            </AnimatedRoute>
+          }
+          path="/add-purchase-order"
+        />
+          
+        <Route
+          element={
+            <AnimatedRoute>
+              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrderForm /> : <Home />}
+            </AnimatedRoute>
+          }
+          path="/add-product-purchase-order"
+        />
     </>
   );
 

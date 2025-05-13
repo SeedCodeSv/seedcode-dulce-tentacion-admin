@@ -31,7 +31,7 @@ function Layout(props: Props) {
 
   useEffect(() => {
     GetConfigurationByTransmitter(
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+      user?.pointOfSale?.branch.transmitterId ?? 0
     );
     if (!roleActions) {
       OnGetActionsByRole(user?.roleId ?? 0).then((data) => {

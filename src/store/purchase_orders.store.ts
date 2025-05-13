@@ -21,6 +21,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
     status: 0,
     ok: false,
   },
+  pagination_purchase_orders_loading: false,
   details_order_purchase: [],
   async getPurchaseOrderDetail(id) {
     await get_details_purchase_order(id)
