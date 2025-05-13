@@ -31,6 +31,7 @@ import { API_URL } from '@/utils/constants';
 import DetailsProductionOrder from '@/components/production-order/details-production-order';
 import { RenderStatus, Status } from '@/components/production-order/render-order-status';
 import VerifyProductionOrder from '@/components/production-order/verify-production-order';
+import CompleteOrder from '@/components/production-order/complete';
 
 type Key = string;
 
@@ -316,6 +317,7 @@ function ProductionOrders() {
           modalMoreInformation={modalMoreInformation}
         />
         <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
+        <CompleteOrder />
       </div>
     </Layout>
   );
