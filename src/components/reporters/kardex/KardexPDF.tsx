@@ -1,4 +1,3 @@
-import { global_styles } from '@/styles/global.styles';
 import { Button } from '@heroui/react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
@@ -6,9 +5,11 @@ import autoTable, { ThemeType, HAlignType } from 'jspdf-autotable';
 import { FileDown } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
+
+import { global_styles } from '@/styles/global.styles';
 import { Kardex } from '@/types/reports/reportKardex.types';
-import { Transmitter } from '../configuration/transmitter/types/transmitter.types';
 import { Branches } from '@/types/branches.types';
+import { ITransmitter } from '@/types/transmitter.types';
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable: {
@@ -16,13 +17,14 @@ interface jsPDFWithAutoTable extends jsPDF {
   };
 }
 
-const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: Transmitter, branch: Branches }) => {
+const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
 
   const handleDownloadPDF = () => {
     try {
       if (!tableData || tableData.length === 0) {
         toast.warning('No hay datos disponibles para generar el PDF.');
+        
         return;
       }
 
@@ -51,7 +53,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
           showHead: false,
           body: [
             [{ content: transmitter.nombre, styles: { halign: 'center', fontStyle: 'bold' } }],
-            [{ content: branch.nombreComercial, styles: { halign: 'center' } }],
+            // [{ content: transmitter.nombreComercial, styles: { halign: 'center' } }],
             [
               {
                 content: 'Sucursal: ' + branch.name,
@@ -128,9 +130,9 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
 
   return (
     <Button
-      onPress={handleDownloadPDF}
-      style={global_styles().dangerStyles}
       isDisabled={tableData.length === 0}
+      style={global_styles().dangerStyles}
+      onPress={handleDownloadPDF}
     >
       <FileDown />
       Descargar PDF

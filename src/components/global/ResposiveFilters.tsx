@@ -14,6 +14,7 @@ interface Props {
   children: ReactNode
   applyLabel?: string
   buttonLabel?: string
+  withButton?: boolean
 }
 
 export const ResponsiveFilterWrapper = ({
@@ -21,6 +22,7 @@ export const ResponsiveFilterWrapper = ({
   children,
   applyLabel = 'Aplicar',
   buttonLabel = 'Buscar',
+  withButton = true
 }: Props) => {
 
   const isMobile = useIsMobileOrTablet();
@@ -29,30 +31,32 @@ export const ResponsiveFilterWrapper = ({
 
   if (isMobile) {
     return (
-      <div className="flex items-center gap-5 md:hidden">
-          <ButtonUi
-            isIconOnly showTooltip className="lg:hidden"
-            theme={Colors.Info}
-            tooltipText='Buscar por filtros'
-            onPress={() => setOpen(true)}
-          >
-            <Filter />
-          </ButtonUi>
+      <div className="flex items-end gap-5 md:hidden">
+        <ButtonUi
+          isIconOnly showTooltip className="lg:hidden"
+          theme={Colors.Info}
+          tooltipText='Buscar por filtros'
+          onPress={() => setOpen(true)}
+        >
+          <Filter />
+        </ButtonUi>
 
         <BottomDrawer open={open} title="Filtros disponibles" onClose={() => setOpen(false)}>
           <div className="flex flex-col gap-3">
             {children}
-            <Button
-              className="font-semibold"
-              color="primary"
-              style={global_styles().darkStyle}
-              onPress={() => {
-                onApply();
-                setOpen(false);
-              }}
-            >
-              {applyLabel}
-            </Button>
+            {withButton &&
+              <Button
+                className="font-semibold"
+                color="primary"
+                style={global_styles().darkStyle}
+                onPress={() => {
+                  onApply();
+                  setOpen(false);
+                }}
+              >
+                {applyLabel}
+              </Button>
+            }
           </div>
         </BottomDrawer>
       </div>
@@ -63,13 +67,15 @@ export const ResponsiveFilterWrapper = ({
     <div className="w-full hidden gap-5 md:flex">
       <div className="flex justify-between gap-5 w-full items-end">
         {children}
-        <ButtonUi
-          className="px-5 font-semibold"
-          theme={Colors.Info}
-          onPress={onApply}
-        >
-          {buttonLabel}
-        </ButtonUi>
+        {withButton &&
+          <ButtonUi
+            className="px-5 font-semibold"
+            theme={Colors.Info}
+            onPress={onApply}
+          >
+            {buttonLabel}
+          </ButtonUi>
+        }
       </div>
     </div>
   );

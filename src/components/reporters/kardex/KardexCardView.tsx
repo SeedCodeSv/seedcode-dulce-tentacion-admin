@@ -1,14 +1,16 @@
-import { global_styles } from '@/styles/global.styles';
 import { Button } from '@heroui/react';
 import { ArrowDown, ArrowDownUp, ArrowUp, Box, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
+
 import DownloadPDFButton from './KardexPDF';
+
+import { global_styles } from '@/styles/global.styles';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
-import { Transmitter } from '../configuration/transmitter/types/transmitter.types';
 import { Branches } from '@/types/branches.types';
+import { ITransmitter } from '@/types/transmitter.types';
 
 
-export default function ViewKardexList({ view, branch, transmitter }: { view: string; transmitter: Transmitter, branch: Branches }) {
+export default function ViewKardexList({ view, branch, transmitter }: { view: string; transmitter: ITransmitter, branch: Branches }) {
   const { kardex } = useReportKardex();
 
   const [sortBy, setSortBy] = useState<keyof typeof kardex[0] | null>(null);
@@ -18,6 +20,7 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
   const sortedProducts = [...kardex].sort((a, b) => {
     if (!sortBy) return 0;
     const order = sortDirection === 'asc' ? 1 : -1;
+    
     return a[sortBy] > b[sortBy] ? order : -order;
   });
 
@@ -33,13 +36,13 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
   return (
     <div>
       <div className="flex gap-2 md:justify-between mt-2">
-        <DownloadPDFButton tableData={sortedProducts} branch={branch} transmitter={transmitter} />
+        <DownloadPDFButton branch={branch} tableData={sortedProducts} transmitter={transmitter} />
         <div className="flex justify-start md:justify-end gap-2">
-          <Button style={global_styles().thirdStyle} onClick={() => handleSort('price')} >
+          <Button style={global_styles().thirdStyle} onPress={() => handleSort('price')} >
             <ArrowDownUp size={15} />
             Precio {sortBy === 'price' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
           </Button>
-          <Button style={global_styles().thirdStyle} onClick={() => handleSort('quantity')} >
+          <Button style={global_styles().thirdStyle} onPress={() => handleSort('quantity')} >
             <ArrowDownUp size={15} />
             Stock  {sortBy === 'quantity' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
           </Button>
@@ -80,7 +83,7 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
       {view === 'list' && (
         <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 gap-5 mt-5 dark:text-white">
           {sortedProducts.map((item, index) => (
-            <div className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5" key={index}>
+            <div key={index} className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5">
               <div className="flex-grow">
                 <span className="flex gap-2">
                   <Box className="text-blue-500" size={24} />

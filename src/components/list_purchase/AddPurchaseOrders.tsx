@@ -32,7 +32,6 @@ function AddPurchaseOrders() {
   const handlePrint = (index: number) => {
     try {
       const order = orders_by_supplier[index];
-      toast.error(order.supplier.nombre)
 
       generatePDF(order.products, order.supplier.nombre);
 
@@ -63,7 +62,7 @@ function AddPurchaseOrders() {
         Cantidad: item.quantity,
         Codigo: item.product.code,
         Stock: item.stock,
-        Precio: Number(item.price),
+        Precio: Number(item.costoUnitario),
       })),
     ];
 
@@ -98,6 +97,7 @@ function AddPurchaseOrders() {
   }
   catch{
     toast.error('Error...al generar el pdf');
+    
     return
   }
   };
@@ -232,7 +232,7 @@ function AddPurchaseOrders() {
                       />
                     )}
                     field="price"
-                    header="Precio"
+                    header="Costo Unitario"
                     headerClassName="text-sm font-semibold"
                     headerStyle={global_styles().thirdStyle}
                   />

@@ -11,6 +11,7 @@ import {
 } from '@heroui/react';
 import { Building2, Search, DollarSign, User, ScrollText, Truck } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import classNames from 'classnames';
 
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { useSupplierStore } from '../../store/supplier.store';
@@ -19,13 +20,14 @@ import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
 import Pagination from '../global/Pagination';
 import useGlobalStyles from '../global/global.styles';
-
 import ModalGlobal from '../global/ModalGlobal';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
+
 import { limit_options } from '@/utils/constants';
 import { Branches } from '@/types/branches.types';
 import Layout from '@/layout/Layout';
 import { IBranchProductOrder, Supplier } from '@/types/branch_product_order.types';
-import classNames from 'classnames';
+import { useDebounce } from '@/hooks/useDebounce';
 
 
 const PurchaseOrderForm = () => {
@@ -35,6 +37,8 @@ const PurchaseOrderForm = () => {
   const [code, setCode] = useState('');
   const [limit, setLimit] = useState(5);
   const styles = useGlobalStyles();
+  const [searchSupplier, setSearchSupplier] = useState('')
+  const debName = useDebounce(searchSupplier, 300)
 
   const {
     getBranchProductOrders,
@@ -48,8 +52,11 @@ const PurchaseOrderForm = () => {
 
   useEffect(() => {
     getBranchesList();
-    getSupplierList('');
   }, []);
+
+  useEffect(() => {
+    getSupplierList(String(debName ?? ''));
+  }, [debName]);
 
   useEffect(() => {
     getBranchProductOrders(branch, supplier, productName, code, 1, limit);
@@ -64,100 +71,124 @@ const PurchaseOrderForm = () => {
   const [branchProduct, setBranchProduct] = useState<IBranchProductOrder>()
   const [supplierSelected, setSupplierSelected] = useState<Supplier>()
 
+  const handleSearch = (searchParam: string | undefined) => {
+    getBranchProductOrders(
+      searchParam ?? branch,
+      searchParam ?? supplier,
+      productName,
+      code,
+      1,
+      limit,
+    );
+  };
+
   return (
     <Layout title="Ordenes de Compra">
       <>
-        <div className="w-full h-full p-4 md:p-6  md:px-4 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-5 mt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-              <div>
-                <Autocomplete
-                  className="w-full dark:text-white hidden md:flex"
-                  classNames={{
-                    base: 'font-semibold text-gray-500 text-sm',
-                  }}
-                  clearButtonProps={{
-                    onClick: () => setBranch(''),
-                  }}
-                  label="Sucursal"
-                  labelPlacement="outside"
-                  placeholder="Selecciona una sucursal"
-                  startContent={<Building2 size={20} />}
-                  variant="bordered"
-                  onSelectionChange={(key) => {
-                    if (key) {
-                      const branchSelected = JSON.parse(key as string) as Branches;
-
-                      setBranch(branchSelected.name);
-                    }
+        <div className="w-full h-full p-2 pt-6 md:pl-0 bg-gray-50 dark:bg-gray-800">
+          <div className="w-full h-full flex flex-col p-5 pt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+           <div className='w-full flex md:flex-col justify-between'>
+            <div className="md:w-full flex justify-end md:pb-4 gap-4">
+                <Button
+                  className="px-7 font-semibold"
+                  style={styles.darkStyle}
+                  onPress={() => {
+                    navigate('/add-purchase-order');
                   }}
                 >
-                  {branch_list.map((bra) => (
-                    <AutocompleteItem
-
-                      className="dark:text-white"
-                      key={JSON.stringify(bra)}
-                    >
-                      {bra.name}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-              <div>
-                <Autocomplete
-                  className="font-semibold dark:text-white"
-                  label="Proveedor"
-                  onSelect={(e) => {
-                    setSupplier(e.currentTarget.value);
-                  }}
-                  placeholder="Selecciona un proveedor"
-                  startContent={<User size={20} />}
-                  labelPlacement="outside"
-                  variant="bordered"
-                  clearButtonProps={{
-                    onClick: () => setSupplier(''),
-                  }}
-                >
-                  {supplier_list.map((branch) => (
-                    <AutocompleteItem
-                      className="dark:text-white"
-                      onClick={() => setSupplier(branch.nombre)}
-                      key={branch.id}
-                    >
-                      {branch.nombre}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-              <div>
-                <Input
-                  label="Nombre"
-                  placeholder="Escribe el nombre del producto"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  startContent={<Search />}
-                  className="w-full dark:text-white font-semibold"
-                  onChange={(e) => setProductName(e.target.value)}
-                  onClear={() => setProductName('')}
-                />
-              </div>
-              <div>
-                <Input
-                  label="Código"
-                  placeholder="Escribe el código del producto"
-                  labelPlacement="outside"
-                  variant="bordered"
-                  startContent={<Search />}
-                  className="w-full dark:text-white font-semibold"
-                  onChange={(e) => setCode(e.target.value)}
-                  onClear={() => setCode('')}
-                />
-              </div>
+                  Aceptar
+                </Button>
             </div>
-            <div className="w-full flex justify-end py-5 gap-4">
-              <div>
+              <ResponsiveFilterWrapper
+                withButton={false}
+                onApply={() => handleSearch(undefined)}
+              >
+                <div>
+                  <Autocomplete
+                    className="w-full dark:text-white"
+                    classNames={{
+                      base: 'font-semibold text-gray-500 text-sm',
+                    }}
+                    clearButtonProps={{
+                      onClick: () => setBranch(''),
+                    }}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una sucursal"
+                    startContent={<Building2 size={20} />}
+                    variant="bordered"
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const branchSelected = JSON.parse(key as string) as Branches;
+
+                        setBranch(branchSelected.name);
+                      }
+                    }}
+                  >
+                    {branch_list.map((bra) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(bra)}
+                        className="dark:text-white"
+                      >
+                        {bra.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div>
+                  <Autocomplete
+                    className="font-semibold dark:text-white"
+                    clearButtonProps={{
+                      onClick: () => setSupplier(''),
+                    }}
+                    label="Proveedor"
+                    labelPlacement="outside"
+                    placeholder="Selecciona un proveedor"
+                    startContent={<User size={20} />}
+                    variant="bordered"
+                    onInputChange={(e) => setSearchSupplier(e)}
+                    onSelect={(e) => {
+                      setSupplier(e.currentTarget.value);
+                    }}
+                  >
+                    {supplier_list.map((sup) => (
+                      <AutocompleteItem
+                        key={sup.id}
+                        className="dark:text-white"
+                        onPress={() => setSupplier(sup.nombre)}
+                      >
+                        {sup.nombre}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
+                <div>
+                  <Input
+                    className="w-full dark:text-white font-semibold"
+                    label="Nombre"
+                    labelPlacement="outside"
+                    placeholder="Escribe el nombre del producto"
+                    startContent={<Search />}
+                    variant="bordered"
+                    onChange={(e) => setProductName(e.target.value)}
+                    onClear={() => setProductName('')}
+                  />
+                </div>
+                <div>
+                  <Input
+                    className="w-full dark:text-white font-semibold"
+                    label="Código"
+                    labelPlacement="outside"
+                    placeholder="Escribe el código del producto"
+                    startContent={<Search />}
+                    variant="bordered"
+                    onChange={(e) => setCode(e.target.value)}
+                    onClear={() => setCode('')}
+                  />
+                </div>
+                  <div>
                 <Select
-                  className="w-44 dark:text-white"
+                  className="w-28 dark:text-white"
                   classNames={{
                     label: 'font-semibold',
                   }}
@@ -177,17 +208,7 @@ const PurchaseOrderForm = () => {
                   ))}
                 </Select>
               </div>
-              <div className="mt-6">
-                <Button
-                  onPress={() => {
-                    navigate('/add-purchase-order');
-                  }}
-                  style={styles.darkStyle}
-                  className="px-10 font-semibold"
-                >
-                  Aceptar
-                </Button>
-              </div>
+              </ResponsiveFilterWrapper>
             </div>
             <div>
               {branch_product_order_paginated_loading ? (
@@ -227,6 +248,9 @@ const PurchaseOrderForm = () => {
                                 {branch_product.product?.name ?? ''}
                               </p>
                               <p className="dark:text-white">Stock: {branch_product.stock}</p>
+                              <p className="mt-2 flex gap-3 dark:text-white">
+                                <Truck />{branch_product?.suppliers?.length}
+                              </p>
                               <p className="mt-2 flex gap-3 dark:text-white">
                                 <ScrollText />
                                 {branch_product.product?.subCategory?.categoryProduct.name ??
@@ -300,7 +324,12 @@ const PurchaseOrderForm = () => {
             isOpen={modalSelect.isOpen}
             size='w-[40vw]'
             title='Selecccionar proveedor'
-            onClose={() => modalSelect.onClose()}
+            onClose={() => {
+              if (supplierSelected && branchProduct) {
+                addProductOrder({ ...branchProduct, supplier: supplierSelected });
+              }
+              modalSelect.onClose()
+            }}
           >
             <div className="flex flex-col overflow-y-auto h-full w-full gap-3 pb-4">
               {branchProduct && branchProduct.suppliers?.map((sup) =>
@@ -319,21 +348,19 @@ const PurchaseOrderForm = () => {
                       isSelected={supplierSelected?.id === sup.id}
                       onValueChange={() => {
                         setSupplierSelected(sup);
-                        if (supplierSelected) {
-                          addProductOrder({ ...branchProduct, supplier: supplierSelected });
-                          modalSelect.onClose()
-                        }
                       }}
                     />
                   </div>
                 </div>
               )}
-              <Button onPress={() => {
-                if (supplierSelected && branchProduct) {
-                  addProductOrder({ ...branchProduct, supplier: supplierSelected });
-                  modalSelect.onClose()
-                }
-              }}>Listo</Button>
+              <Button style={styles.dangerStyles}
+                onPress={() => {
+                  if (supplierSelected && branchProduct) {
+                    addProductOrder({ ...branchProduct, supplier: supplierSelected });
+                    modalSelect.onClose()
+                  }
+                }}
+              >Continuar</Button>
             </div>
           </ModalGlobal>
         </div>

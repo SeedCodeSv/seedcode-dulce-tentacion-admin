@@ -139,7 +139,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route path="/kardex-inventory" element={<KardexPage />} />
+      <Route element={<KardexPage />} path="/kardex-inventory" />
       <Route
         element={
           <AnimatedRoute>

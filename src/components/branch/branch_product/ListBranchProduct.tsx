@@ -6,10 +6,9 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
-  ButtonGroup,
-  useDisclosure,
+  ButtonGroup
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable, Lock, NotepadText} from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable} from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
 import { CategoryProduct } from '../../../types/categories.types';
@@ -20,14 +19,12 @@ import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
 
 import MobileView from './MobileView';
 
-import DetailsBranchProduct from './DetailsBranchProduct';
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { limit_options } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-import ModalGlobal from '@/components/global/ModalGlobal';
 interface Props {
   id: number;
   onclick: () => void;
@@ -46,7 +43,6 @@ export default function ListBranchProduct({ id, onclick }: Props) {
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(10);
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-  const modalDetails = useDisclosure();
 
   const [openVaul, setOpenVaul] = useState(false);
   //   const modalAdd = useDisclosure();
@@ -421,14 +417,6 @@ export default function ListBranchProduct({ id, onclick }: Props) {
               </div>
             </>
           )}
-            <ModalGlobal
-        isOpen={modalDetails.isOpen}
-        size='w-[40vw]'
-        onClose={() => modalDetails.onClose()}
-        title='Reservado'
-        >
-          <DetailsBranchProduct onClose={() => modalDetails.onClose()}/>
-        </ModalGlobal>
         </div>
 
       </div>

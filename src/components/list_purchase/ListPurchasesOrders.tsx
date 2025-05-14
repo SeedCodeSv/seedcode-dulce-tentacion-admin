@@ -5,7 +5,6 @@ import {
   Input,
   Select,
   SelectItem,
-  useDisclosure,
 } from '@heroui/react';
 import { AlignJustify, ClipboardCheck, Shield, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -27,16 +26,19 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import { limit_options } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface Props {
   actions: string[];
 }
 function ListPurchasesOrders({ actions }: Props) {
-  const modalAdd = useDisclosure();
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [limit, setLimit] = useState(5);
   const [supplier, setSupplier] = useState('');
+  const [searchSupplier, setSearchSupplier] = useState('')
+  const debName = useDebounce(searchSupplier, 300)
+
   const [showState, setShowState] = useState('');
   const {
     getPurchaseOrders,
@@ -64,8 +66,8 @@ function ListPurchasesOrders({ actions }: Props) {
   };
 
   useEffect(() => {
-    getSupplierList('');
-  }, []);
+    getSupplierList(String(debName ?? ''));
+  }, [debName]);
 
   const [isOpen, setIsOpen] = useState({
     isOpen: false,
@@ -79,12 +81,6 @@ function ListPurchasesOrders({ actions }: Props) {
     });
   };
 
-  // const closeModal = () => {
-  //   setIsOpen({
-  //     isOpen: false,
-  //     purchaseId: 0,
-  //   });
-  // };
   const navigate = useNavigate();
 
   return (
@@ -133,6 +129,7 @@ function ListPurchasesOrders({ actions }: Props) {
                   labelPlacement="outside"
                   placeholder="Selecciona un proveedor"
                   variant="bordered"
+                  onInputChange={(e) => setSearchSupplier(e)}
                   onSelect={(e) => {
                     setSupplier(e.currentTarget.value);
                   }}

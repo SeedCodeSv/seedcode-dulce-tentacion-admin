@@ -91,8 +91,8 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
       });
   },
 
-  getSupplierList() {
-    get_supplier()
+  getSupplierList(name) {
+    get_supplier(name)
       .then(({ data }) => {
         set((state) => ({ ...state, supplier_list: data.suppliers }));
       })

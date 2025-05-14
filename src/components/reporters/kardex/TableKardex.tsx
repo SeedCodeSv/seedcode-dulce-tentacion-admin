@@ -27,6 +27,7 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
         let bValue = b[sortConfig.key];
 
         const numericKeys: (keyof Kardex)[] = ['price'];
+
         if (numericKeys.includes(sortConfig.key)) {
           aValue = Number(String(aValue).replace(/[^0-9.-]+/g, ''));
           bValue = Number(String(bValue).replace(/[^0-9.-]+/g, ''));
@@ -39,12 +40,14 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
       }
+      
       return 0;
     });
   }, [kardex, sortConfig]);
 
   const handleSort = (key: keyof Kardex) => {
     let direction: 'asc' | 'desc' = 'asc';
+
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
       direction = 'desc';
     }
@@ -108,7 +111,7 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
               <tbody className="max-h-[600px] w-full overflow-y-auto">
                 {loading ? (
                   <tr>
-                    <td colSpan={9} className="p-3 text-sm text-center text-slate-500">
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={9}>
                       <LoadingTable />
                     </td>
                   </tr>

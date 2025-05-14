@@ -80,13 +80,13 @@ export const SideBar = (props: Props) => {
   }, [isOpen]);
 
   return (
-    <div className="flex w-screen h-screen overflow-x-hidden">
+    <div className="flex w-screen h-screen overflow-x-hidden bg-gray-50">
       {windowSize.width < 1280 ? (
         <SmLayout isOpen={openInMobile} items={() => <LayoutItems isOpen={openInMobile} setIsOpen={setOpenInMobile} />} setIsOpen={setOpenInMobile} />
       ) : (
         <LgLayout isOpen={isOpen} items={() => <LayoutItems isOpen={isOpen} setIsOpen={setIsOpen} />} setIsOpen={setIsOpen} />
       )}
-      <div className={classNames('flex flex-col w-full', isOpen ? 'xl:ml-72' : 'xl:ml-0')}>
+      <div className={classNames('flex flex-col w-full ', isOpen ? 'xl:ml-72' : 'xl:ml-0')}>
         <div
           className={classNames(
             'fixed top-0 z-[30] w-screen left-0 shadow h-[70px] flex justify-between items-center lg:flex lg:justify-between sm:grid-cols-1 md:grid-cols-1 sm:px-1 mb:px-1 px-6',
