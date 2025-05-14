@@ -1,3 +1,4 @@
+import { Textarea } from '@heroui/react';
 import React, { useState } from 'react';
 
 interface CompletionNotesProps {
@@ -7,20 +8,20 @@ interface CompletionNotesProps {
 const CompletionNotes: React.FC<CompletionNotesProps> = ({ onNotesChange }) => {
   const [notes, setNotes] = useState<string>('');
 
-  const handleNotesChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setNotes(e.target.value);
-    onNotesChange(e.target.value);
+  const handleNotesChange = (text: string) => {
+    setNotes(text);
+    onNotesChange(text);
   };
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
       <h2 className="text-lg font-semibold text-gray-800 mb-4">Notas de Finalización</h2>
-      <textarea
-        className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      <Textarea
         placeholder="Ingrese notas sobre la finalización de la orden (opcional)"
         rows={4}
         value={notes}
-        onChange={handleNotesChange}
+        variant="bordered"
+        onValueChange={handleNotesChange}
       />
 
       <div className="mt-4 bg-blue-50 p-3 rounded-md">
