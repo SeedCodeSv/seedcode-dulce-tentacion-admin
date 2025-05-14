@@ -13,7 +13,7 @@ import {
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Eye, Play, Plus } from 'lucide-react';
-import { TbCancel } from 'react-icons/tb';
+import { TbCancel, TbCheck } from 'react-icons/tb';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
@@ -48,6 +48,7 @@ function ProductionOrders() {
   const modalCancelOrder = useDisclosure();
   const modalMoreInformation = useDisclosure();
   const modalVerifyOrder = useDisclosure();
+  const modalCompleteOrder = useDisclosure();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -261,6 +262,20 @@ function ProductionOrders() {
                         </ButtonUi>
                       </div>
                     )}
+                    {porD.statusOrder === 'En Proceso' && (
+                      <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        theme={Colors.Success}
+                        tooltipText="Completar orden de producción"
+                        onPress={() => {
+                          setSelectedOrderId(porD.id);
+                          modalCompleteOrder.onOpen();
+                        }}
+                      >
+                        <TbCheck size={20} />
+                      </ButtonUi>
+                    )}
                     <ButtonUi
                       isIconOnly
                       showTooltip
@@ -317,7 +332,7 @@ function ProductionOrders() {
           modalMoreInformation={modalMoreInformation}
         />
         <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
-        <CompleteOrder />
+        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} />
       </div>
     </Layout>
   );

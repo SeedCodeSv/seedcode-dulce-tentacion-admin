@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import ProductItem from './product-item';
 
 import { Detail } from '@/types/production-order.types';
 
+type DevolutionProduct = {
+  id: number;
+  name: string;
+  quantity: number;
+  uniMedida: string;
+  unidadDeMedida: string;
+};
+
 type Product = Detail & {
   producedQuantity: number;
   damagedQuantity: number;
   expectedQuantity: number;
+  hasDevolution: boolean;
+  damagedReason: string;
+  devolutionProducts: DevolutionProduct[];
 };
 
 interface ProductsListProps {
@@ -15,28 +26,78 @@ interface ProductsListProps {
   onProductUpdate: (updatedProducts: Product[]) => void;
 }
 
-const ProductsList: React.FC<ProductsListProps> = ({ products }) => {
-  const [productsList] = useState<Product[]>(products);
+const ProductsList: React.FC<ProductsListProps> = ({ products, onProductUpdate }) => {
+  const [productsList, setProductsList] = useState<Product[]>(products);
+
+  useEffect(() => {
+    setProductsList(products);
+  }, [products]);
 
   const totalExpected = productsList.reduce((sum, product) => sum + product.expectedQuantity, 0);
-  const totalProduced = productsList.reduce((sum, product) => sum + (product.producedQuantity || 0), 0);
-  const totalDamaged = productsList.reduce((sum, product) => sum + (product.damagedQuantity || 0), 0);
-  const totalEfficiency = totalExpected > 0 ? Math.round((totalProduced / totalExpected) * 100) : 0;
+  const totalProduced = productsList.reduce(
+    (sum, product) => sum + (product.producedQuantity || 0),
+    0
+  );
+  const totalDamaged = useMemo(
+    () => productsList.reduce((sum, product) => sum + (product.damagedQuantity || 0), 0),
+    [productsList]
+  );
+
+  const handleQuantityChange = (id: number, produced: number, damaged: number) => {
+    const updatedProducts = productsList.map((product) =>
+      product.id === id
+        ? { ...product, producedQuantity: produced, damagedQuantity: damaged }
+        : product
+    );
+
+    setProductsList(updatedProducts);
+    onProductUpdate(updatedProducts);
+  };
+
+  const handleUpdateDevolution = (id: number, hasDevolution: boolean) => {
+    const updatedProducts = productsList.map((product) =>
+      product.id === id ? { ...product, hasDevolution } : product
+    );
+
+    setProductsList(updatedProducts);
+    onProductUpdate(updatedProducts);
+  };
+
+  const handleAddProductDevolution = (id: number, devolutionProduct: DevolutionProduct[]) => {
+    const updatedProducts = productsList.map((product) =>
+      product.id === id
+        ? { ...product, devolutionProducts: devolutionProduct }
+        : product
+    );
+
+    setProductsList(updatedProducts);
+    onProductUpdate(updatedProducts);
+  };
+
+
+  const updateDamageReason = (id: number, damageReason: string) => {
+    const updatedProducts = productsList.map((product) =>
+      product.id === id ? { ...product, damagedReason: damageReason } : product
+    );
+
+    setProductsList(updatedProducts);
+    onProductUpdate(updatedProducts);
+  };
 
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800">Productos ({productsList.length})</h2>
-        <div className="bg-green-100 px-4 py-2 rounded-lg">
-          <span className="text-green-800 font-medium">Eficiencia Total: {totalEfficiency}%</span>
-        </div>
       </div>
 
-      {productsList.map(product => (
+      {productsList.map((product) => (
         <ProductItem
           key={product.id}
           product={product}
-          onQuantityChange={()=>{}}
+          onAddProductDevolution={handleAddProductDevolution}
+          onDamageReasonChange={updateDamageReason}
+          onDevolutionChange={handleUpdateDevolution}
+          onQuantityChange={handleQuantityChange}
         />
       ))}
 

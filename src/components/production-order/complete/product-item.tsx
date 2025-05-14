@@ -1,7 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { CheckIcon, AlertCircleIcon } from 'lucide-react';
 import { Checkbox, Input } from '@heroui/react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+
+import { formatNameByCode } from './utils';
 
 import { Detail } from '@/types/production-order.types';
 import { filtrarPorCategoria } from '@/components/add-product/validation-add-product';
@@ -10,21 +12,41 @@ type Product = Detail & {
   producedQuantity: number;
   damagedQuantity: number;
   expectedQuantity: number;
+  hasDevolution: boolean;
+  damagedReason: string;
+  devolutionProducts: DevolutionProduct[];
+};
+
+type DevolutionProduct = {
+  id: number;
+  name: string;
+  quantity: number;
+  uniMedida: string;
+  unidadDeMedida: string;
 };
 
 interface ProductItemProps {
   product: Product;
-  onQuantityChange: (id: string, produced: number, damaged: number) => void;
+  onQuantityChange: (id: number, produced: number, damaged: number) => void;
+  onDevolutionChange: (id: number, hasDevolution: boolean) => void;
+  onAddProductDevolution: (id: number, devolutionProduct: DevolutionProduct[]) => void;
+  onDamageReasonChange: (id: number, damageReason: string) => void;
 }
 
-const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) => {
+const ProductItem: React.FC<ProductItemProps> = ({
+  product,
+  onQuantityChange,
+  onDevolutionChange,
+  onAddProductDevolution,
+  onDamageReasonChange,
+}) => {
   const { id, expectedQuantity, products, productRecipe } = product;
 
   const { name, code, uniMedida: unit } = products;
 
   const [canReturnProduct, setCanReturnProduct] = useState<boolean>(false);
 
-  const [producedQuantity] = useState<number>(expectedQuantity);
+  const [producedQuantity, setProducedQuantity] = useState<number>(expectedQuantity);
   const [damagedQuantity, setDamagedQuantity] = useState<number>(0);
   const [expanded, setExpanded] = useState<boolean>(false);
   const [damageReason, setDamageReason] = useState<string>('');
@@ -35,7 +57,14 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
     const value = text;
 
     setDamagedQuantity(+value);
-    onQuantityChange(id.toString(), +producedQuantity, +value);
+    onQuantityChange(id, +producedQuantity, +value);
+  };
+
+  const handleProducedChange = (text: number) => {
+    const value = text;
+
+    setProducedQuantity(+value);
+    onQuantityChange(id, +value, +damagedQuantity);
   };
 
   const getStatusIcon = () => {
@@ -48,6 +77,43 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
     }
   };
 
+  const [devolution, setDevolution] = useState<DevolutionProduct[]>([]);
+
+  useEffect(() => {
+    if (productRecipe) {
+      setDevolution(
+        productRecipe.recipe.recipeDetails.map((item) => ({
+          name: item.branchProduct.product.name,
+          id: item.branchProduct.id,
+          quantity: 0,
+          uniMedida: item.branchProduct.product.uniMedida,
+          unidadDeMedida: item.branchProduct.product.unidaDeMedida,
+        }))
+      );
+    }
+  }, [productRecipe]);
+
+  const handleEditUniMedida = (uniMedida: string, index: number) => {
+    const list_suppliers = [...devolution];
+
+    list_suppliers[index].uniMedida = uniMedida;
+    setDevolution(list_suppliers);
+  };
+
+  const handleEditQuantity = (quantity: number, index: number) => {
+    const list_suppliers = [...devolution];
+
+    list_suppliers[index].quantity = quantity;
+    setDevolution(list_suppliers);
+  };
+
+  useEffect(() => {
+    if (canReturnProduct) {
+      const validDevolution = devolution.filter((item) => item.quantity > 0);
+
+      onAddProductDevolution(id, validDevolution);
+    }
+  }, [canReturnProduct, devolution]);
 
   return (
     <div className="border rounded-lg mb-4 bg-white overflow-hidden transition-all duration-200">
@@ -63,7 +129,7 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
           <div className="text-right">
             <p className="text-sm text-gray-500">Esperado</p>
             <p className="font-medium">
-              {expectedQuantity} {unit}
+              {expectedQuantity} {formatNameByCode(unit)}
             </p>
           </div>
           <button
@@ -93,15 +159,25 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <Input
-                readOnly
+                classNames={{
+                  label: 'font-semibold text-xs',
+                }}
                 label="Cantidad Producida (Buena)"
-                value={(Number(producedQuantity) - Number(damagedQuantity)).toString()}
+                labelPlacement="outside"
+                placeholder="0.00"
+                value={producedQuantity.toString()}
                 variant="bordered"
+                onValueChange={(text) => handleProducedChange(text as unknown as number)}
               />
             </div>
             <div>
               <Input
+                classNames={{
+                  label: 'font-semibold text-xs',
+                }}
                 label="Cantidad Dañada/Perdida"
+                labelPlacement="outside"
+                placeholder="0.00"
                 value={damagedQuantity.toString()}
                 variant="bordered"
                 onValueChange={(text) => handleDamagedChange(text as unknown as number)}
@@ -109,24 +185,29 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
             </div>
             {damagedQuantity > 0 && (
               <div className="mb-4">
-                <select
-                  className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                <Input
+                  classNames={{
+                    label: 'font-semibold text-xs',
+                  }}
+                  label="Motivo de daño o perdida"
+                  labelPlacement="outside"
+                  placeholder="Ingrese el motivo del daño o perdida"
                   value={damageReason}
-                  onChange={(e) => setDamageReason(e.target.value)}
-                >
-                  <option value="">Seleccionar razón</option>
-                  <option value="error_produccion">Error de producción</option>
-                  <option value="materia_prima_defectuosa">Materia prima defectuosa</option>
-                  <option value="falla_maquinaria">Falla de maquinaria</option>
-                  <option value="error_humano">Error humano</option>
-                  <option value="otro">Otro</option>
-                </select>
+                  variant="bordered"
+                  onValueChange={(text) => {
+                    setDamageReason(text);
+                    onDamageReasonChange(id, text);
+                  }}
+                />
               </div>
             )}
             <Checkbox
               defaultChecked={canReturnProduct}
               isSelected={canReturnProduct}
-              onValueChange={setCanReturnProduct}
+              onValueChange={(val) => {
+                setCanReturnProduct(val);
+                onDevolutionChange(id, val);
+              }}
             >
               Devolución de materia prima a inventario
             </Checkbox>
@@ -135,10 +216,10 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
             <div>
               <p className="font-semibold text-lg py-3">Receta / Materia prima</p>
               <div className="grid grid-cols-2 gap-5">
-                {productRecipe.recipe.recipeDetails.map((ingredient) => (
+                {devolution.map((ingredient) => (
                   <>
                     <div className="border p-4 bg-white rounded-[12px]">
-                      <p className="pb-3 font-semibold">{ingredient.branchProduct.product.name}</p>
+                      <p className="pb-3 font-semibold">{ingredient.name}</p>
                       <Input
                         className="w-full"
                         classNames={{
@@ -150,13 +231,13 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
                               className="outline-none border-0 bg-transparent text-default-400 text-small"
                               id="currency"
                               name="currency"
-                              value={ingredient.branchProduct.product.uniMedida}
-                              // onChange={(e) =>
-                              //   handleEditUniMedida(e.target.value, productsRecipe.indexOf(sp))
-                              // }
+                              value={ingredient.uniMedida}
+                              onChange={(e) =>
+                                handleEditUniMedida(e.target.value, devolution.indexOf(ingredient))
+                              }
                             >
                               {filtrarPorCategoria(
-                                ingredient.branchProduct.product.unidaDeMedida,
+                                ingredient.unidadDeMedida,
                                 services.get014UnidadDeMedida()
                               ).map((tpS) => (
                                 <option key={tpS.codigo} value={tpS.codigo}>
@@ -169,6 +250,12 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
                         label="Cantidad a devolver"
                         placeholder="0"
                         variant="bordered"
+                        onValueChange={(text) =>
+                          handleEditQuantity(
+                            text as unknown as number,
+                            devolution.indexOf(ingredient)
+                          )
+                        }
                       />
                     </div>
                   </>
@@ -176,41 +263,6 @@ const ProductItem: React.FC<ProductItemProps> = ({ product, onQuantityChange }) 
               </div>
             </div>
           )}
-          {/* <div className="grid grid-cols-3 gap-4 mt-4 text-sm">
-            <div className="bg-blue-50 p-3 rounded-md">
-              <p className="text-blue-800 font-medium">Total Producido</p>
-              <p className="text-xl font-bold text-blue-900">
-                {(Number(totalProduced) - Number(damagedQuantity)).toString()} {unit}
-              </p>
-            </div>
-            <div
-              className={`${difference < 0 ? 'bg-red-50' : difference > 0 ? 'bg-green-50' : 'bg-gray-50'} p-3 rounded-md`}
-            >
-              <p
-                className={`${difference < 0 ? 'text-red-800' : difference > 0 ? 'text-green-800' : 'text-gray-800'} font-medium`}
-              >
-                Diferencia
-              </p>
-              <p
-                className={`text-xl font-bold ${difference < 0 ? 'text-red-900' : difference > 0 ? 'text-green-900' : 'text-gray-900'}`}
-              >
-                {difference > 0 ? '+' : ''}
-                {difference} {unit}
-              </p>
-            </div>
-            <div className={`${efficiency < 90 ? 'bg-yellow-50' : 'bg-green-50'} p-3 rounded-md`}>
-              <p
-                className={`${efficiency < 90 ? 'text-yellow-800' : 'text-green-800'} font-medium`}
-              >
-                Eficiencia
-              </p>
-              <p
-                className={`text-xl font-bold ${efficiency < 90 ? 'text-yellow-900' : 'text-green-900'}`}
-              >
-                {efficiency}%
-              </p>
-            </div>
-          </div> */}
         </div>
       )}
     </div>
