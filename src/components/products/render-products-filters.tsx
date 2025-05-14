@@ -119,7 +119,7 @@ function RenderProductsFilters(props: Props) {
           ))}
         </Autocomplete>
         <Autocomplete
-          className="w-full dark:text-white border border-white rounded-xl "
+          className="w-full dark:text-white"
           classNames={{
             base: 'font-semibold text-gray-500 text-sm',
           }}

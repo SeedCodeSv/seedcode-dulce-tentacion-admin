@@ -27,7 +27,9 @@ import {
   Book,
   X,
   ListOrdered,
-  MonitorDown,
+  ArrowDownUp,
+  ShoppingBasket,
+  FileCog,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -117,20 +119,14 @@ export const LayoutItems = (props: Props) => {
     {
       viewName: 'Ajuste de Inventario',
       to: '/inventary-adjustment',
-      icon: Barcode,
+      icon: FileCog ,
       label: 'Ajuste de Inventario',
     },
     {
       viewName: 'Ordenes de Compra',
       to: '/purchase-orders',
-      icon: MonitorDown,
+      icon: ShoppingBasket ,
       label: 'Ordenes de Compra',
-    },
-    {
-      viewName: 'Movimientos',
-      to: '/movement',
-      icon: MonitorDown,
-      label: 'Movimientos',
     },
   ];
 
@@ -214,6 +210,12 @@ export const LayoutItems = (props: Props) => {
       to: '/contingence-section',
       icon: DatabaseBackup,
       label: 'Contingencias',
+    },
+    {
+      viewName: 'Movimientos',
+      to: '/movement',
+      icon: ArrowDownUp ,
+      label: 'Movimientos',
     },
      {
       viewName: 'Kardex',
@@ -573,7 +575,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
@@ -685,7 +687,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [
@@ -746,7 +748,7 @@ export const LayoutItems = (props: Props) => {
                   <>
                     <button
                       className={classNames(
-                        'group relative cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
+                        'group relative w-full cursor-pointer flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-700'
                       )}
                       style={{
                         backgroundColor: validate_pathname(pathname, [

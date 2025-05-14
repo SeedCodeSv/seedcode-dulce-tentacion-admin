@@ -80,7 +80,7 @@ export const SideBar = (props: Props) => {
   }, [isOpen]);
 
   return (
-    <div className="flex w-screen h-screen overflow-x-hidden bg-gray-50">
+    <div className="flex w-screen h-screen overflow-x-hidden bg-gray-50 dark:bg-gray-800">
       {windowSize.width < 1280 ? (
         <SmLayout isOpen={openInMobile} items={() => <LayoutItems isOpen={openInMobile} setIsOpen={setOpenInMobile} />} setIsOpen={setOpenInMobile} />
       ) : (

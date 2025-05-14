@@ -293,14 +293,14 @@ function ListActionRol() {
         title="Nuevas acciones"
         onClose={modalNewView.onClose}
       >
-        <div className="w-full flex flex-col">
+        <div className="w-full flex flex-col dark:text-white">
           <p className="text-lg text-center mt-4">
             Se encontraron nuevas vistas y acciones disponibles
           </p>
           <Button
             className="w-full mt-6 font-semibold"
             style={styles.thirdStyle}
-            onClick={handleSave}
+            onPress={handleSave}
           >
             Actualizar vistas
           </Button>

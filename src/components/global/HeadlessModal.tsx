@@ -52,10 +52,10 @@ function HeadlessModal(props: Props) {
                   isFull
                     ? 'h-screen w-screen rounded-0'
                     : size + ' rounded-lg max-h-[90vh] overflow-y-auto',
-                  'relative transform bg-white z-[100] text-left shadow-xl transition-all'
+                  'relative transform bg-white z-[100] text-left shadow-xl transition-all dark:bg-gray-900'
                 )}
               >
-                <div className="w-full border border-white h-full p-3  rounded-lg overflow-y-auto bg-white dark:bg-gray-900">
+                <div className="w-full border dark:border-white border-gray-100 h-full p-3 rounded-lg overflow-y-auto bg-white dark:bg-gray-900">
                   <div>
                     <div className="mt-3 text-center sm:mx-4 sm:mt-0 sm:text-left">
                       <div className="flex justify-between w-full">

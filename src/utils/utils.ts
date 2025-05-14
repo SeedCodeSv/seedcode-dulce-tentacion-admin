@@ -297,3 +297,55 @@ export function formatMoney(amount: number): string {
 export const formatPercentage= (per:number) => {
   return `${per.toFixed(2)}%`;
 }
+
+export const TypeInventoryMoment = [
+  {
+    id: 3,
+    name: 'Recepcion',
+    type: 'Entradas',
+  },
+  {
+    id: 4,
+    name: 'Perdida',
+    type: 'Salidas',
+  },
+  {
+    id: 5,
+    name: 'Dañado',
+    type: 'Salidas',
+  },
+  {
+    id: 6,
+    name: 'Devolucion o Anulacion',
+    type: 'Entradas',
+  },
+];
+
+export const typesInventoryMovement = [
+  {
+    id: 1,
+    type: 'Salidas',
+  },
+  {
+    id: 2,
+    type: 'Entradas',
+  },
+];
+
+ export const hexToRgb = (hex: string) => {
+    hex = hex.replace(/^#/, '');
+
+    if (hex.length === 3) {
+      hex = hex
+        .split('')
+        .map((char) => char + char)
+        .join('');
+    }
+
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+
+    return [r, g, b];
+  };

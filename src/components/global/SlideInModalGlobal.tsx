@@ -2,7 +2,7 @@ import { ISliderInModalGlobalProps } from './types/slider-in-modal';
 
 function SlideInModalGlobal(props: ISliderInModalGlobalProps) {
   return (
-    <div className="relative z-50">
+    <div className="relative z-90">
       {props.open && (
         <button
           className="fixed inset-0 backdrop-filter backdrop-blur-sm z-40"
@@ -10,7 +10,7 @@ function SlideInModalGlobal(props: ISliderInModalGlobalProps) {
         />
       )}
       <div
-        className={`fixed top-0 right-0 w-full sm:w-1/2 md:w-1/3 h-full bg-white dark:bg-gray-800 shadow-lg z-50 transform transition-transform duration-300 ${
+        className={`fixed top-0 right-0  ${props.className ? props.className : 'w-full sm:w-1/2 md:w-1/3'}  h-full bg-white dark:bg-gray-800 shadow-lg z-50 transform transition-transform duration-300 ${
           props.open ? 'translate-x-0' : 'translate-x-full'
         }`}
       >

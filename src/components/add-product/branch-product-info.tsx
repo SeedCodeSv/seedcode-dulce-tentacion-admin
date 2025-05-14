@@ -80,8 +80,8 @@ function BranchProductInfo() {
 
   return (
     <div className="w-full border shadow dark:border-gray-700 rounded-[12px] p-5 mt-3">
-      <p className="text-sm font-semibold">Información a sucursal</p>
-      <div className="grid grid-cols-3 gap-5 mt-3">
+      <p className="text-sm font-semibold text-white">Información a sucursal</p>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-3">
         <Input
           isRequired
           className="dark:text-white"
@@ -216,7 +216,7 @@ function BranchProductInfo() {
             </SelectItem>
           ))}
         </Select>
-        <div className="flex gap-5 items-end">
+        <div className="flex gap-5 items-end col-span-2 md:col-span-1">
           <Input
             readOnly
             className="w-full dark:text-white"

@@ -10,6 +10,10 @@ import { global_styles } from '@/styles/global.styles';
 import { Kardex } from '@/types/reports/reportKardex.types';
 import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
+import {  hexToRgb } from '@/utils/utils';
+import useGlobalStyles from '@/components/global/global.styles';
+ import DEFAULT_LOGO from '@/assets/dulce-logo.png';
+
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable: {
@@ -19,7 +23,12 @@ interface jsPDFWithAutoTable extends jsPDF {
 
 const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
+    const styles = useGlobalStyles();
+  
 
+  const backgroundColorRGB = hexToRgb(styles.darkStyle.backgroundColor || '#0d83ac');
+  const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
+ 
   const handleDownloadPDF = () => {
     try {
       if (!tableData || tableData.length === 0) {
@@ -49,6 +58,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
 
       const createHeader = (doc: jsPDF) => {
+        doc.addImage(DEFAULT_LOGO, 'PNG', 13, 5, 20, 20);
         autoTable(doc, {
           showHead: false,
           body: [
@@ -114,9 +124,10 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
           cellPadding: 2.5,
         },
         headStyles: {
-          fontSize: 7,
-          fillColor: '#091c47'
-        },
+        fontSize: 7,
+        fillColor: backgroundColorRGB as [number, number, number],
+        textColor: textColorRGB as [number, number, number],
+         },
         bodyStyles: {
           fontSize: 8,
         }

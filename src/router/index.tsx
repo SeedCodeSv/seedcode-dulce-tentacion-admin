@@ -12,6 +12,8 @@ import KardexPage from '@/pages/KardexPage';
 import PurchaseOrders from '@/pages/PurchaseOrders';
 import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
+import InventaryAdjustment from '@/pages/InventaryAdjustment';
+import Movements from '@/pages/Movements';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -636,34 +638,22 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/verificar-faltantes"
       />
-       {/* <Route
-          path="/inventary-adjustment"
+       <Route
           element={
             <AnimatedRoute>
               {handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />}
             </AnimatedRoute>
           }
-         /> */}
-        {/* <Route
-          path="/add-inventary-adjustment"
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Ajuste de Inventario') ? (
-                <AddInventaryAdjustment />
-              ) : (
-                <Home />
-              )}
-            </AnimatedRoute>
-          }
+          path="/inventary-adjustment"
          />
       <Route
-          path="/movement"
           element={
             <AnimatedRoute>
               {handleCheckPermission('Movimientos') ? <Movements /> : <Home />}
             </AnimatedRoute>
           }
-        /> */}
+          path="/movement"
+        /> 
       <Route
           element={
             <AnimatedRoute>

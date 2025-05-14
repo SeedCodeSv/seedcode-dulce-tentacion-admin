@@ -198,7 +198,7 @@
     },
     {
       "view": "Movimientos",
-      "actions": ["Mostrar"]
+      "actions": ["Mostrar","Descargar PDF"]
     }
   ]
 }
