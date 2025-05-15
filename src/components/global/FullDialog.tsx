@@ -5,6 +5,7 @@ interface Props {
   onClose: () => void;
   children: React.ReactNode;
   title: string;
+  className?: string
 }
 
 export default function FullDialog(props: Props) {
@@ -13,12 +14,11 @@ export default function FullDialog(props: Props) {
   return (
     <>
       <Transition appear show={isOpen}>
-        <Dialog as="div" className="relative z-[1140] focus:outline-none" onClose={onClose}>
+        <Dialog as="div" className="relative z-[1140] focus:outline-none " onClose={onClose}>
           <div
-            className="fixed inset-0 z-[1150] w-screen h-screen overflow-hidden
-          "
+            className={`fixed inset-0 z-[1150] w-screen h-screen overflow-hidden `}
           >
-            <div className="flex min-h-full items-center justify-center">
+            <div className="flex min-h-full items-center justify-end ">
               <Transition.Child
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 transform-[scale(95%)]"
@@ -27,7 +27,7 @@ export default function FullDialog(props: Props) {
                 leaveFrom="opacity-100 transform-[scale(100%)]"
                 leaveTo="opacity-0 transform-[scale(95%)]"
               >
-                <Dialog.Panel className="w-screen h-screen border border-white rounded-2xl overflow-y-auto bg-white dark:bg-gray-900 p-8 backdrop-blur-2xl">
+                <Dialog.Panel className={`${props.className ? props.className : 'w-screen' } h-screen border border-white rounded-2xl overflow-y-auto bg-white dark:bg-gray-900 p-8 backdrop-blur-2xl`}>
                   <div className="w-full flex justify-between mb-5">
                     <Dialog.Title as="h3" className="text-base/7 font-medium dark:text-white">
                       {title}

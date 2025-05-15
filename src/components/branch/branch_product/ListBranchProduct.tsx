@@ -6,9 +6,9 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
-  ButtonGroup,
+  ButtonGroup
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable } from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable} from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
 import { CategoryProduct } from '../../../types/categories.types';
@@ -29,7 +29,7 @@ interface Props {
   id: number;
   onclick: () => void;
 }
-function ListEmployee({ id, onclick }: Props) {
+export default function ListBranchProduct({ id, onclick }: Props) {
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -59,7 +59,7 @@ function ListEmployee({ id, onclick }: Props) {
 
   return (
     <>
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 pr-2 pl-0 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button className="mb-4  w-24 cursor-pointer flex" onClick={onclick}>
             <ArrowLeft className="dark:text-white mr-2" />
@@ -263,7 +263,7 @@ function ListEmployee({ id, onclick }: Props) {
                       </>
                       <Button
                         className="mb-10 font-semibold"
-                        onClick={() => {
+                        onPress={() => {
                           changePage();
                           setOpenVaul(false);
                         }}
@@ -293,6 +293,12 @@ function ListEmployee({ id, onclick }: Props) {
                       </th>
                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                         Precio
+                      </th>
+                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Stock
+                      </th>
+                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                        Reservado
                       </th>
                     </tr>
                   </thead>
@@ -324,6 +330,26 @@ function ListEmployee({ id, onclick }: Props) {
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   {formatCurrency(Number(cat.price))}
                                 </td>
+                                <td className="p-3 text-sm text-green-500 dark:text-slate-100">
+                                  {cat.stock}
+                                </td>
+                                <td className="p-3 text-sm text-red-500 dark:text-slate-100">
+                                  {cat.reserved}
+                                </td>
+                                {/* <td>
+                                  <ButtonUi
+                                    isIconOnly
+                                    className="flex font-semibold border border-white cursor-pointer"
+                                    theme={Colors.Info}
+                                    type="button"
+                                    onPress={() => {modalDetails.onOpen();
+                                    }}
+                                    // tooltipText='Detalles'
+                                    // showTooltip
+                                  >
+                                     <NotepadText />
+                                  </ButtonUi>
+                                </td> */}
                               </tr>
                             ))}
                           </>
@@ -392,8 +418,8 @@ function ListEmployee({ id, onclick }: Props) {
             </>
           )}
         </div>
+
       </div>
     </>
   );
 }
-export default ListEmployee;

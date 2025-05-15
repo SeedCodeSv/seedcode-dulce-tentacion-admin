@@ -1,3 +1,4 @@
+import { BranchProduct } from "./branch_products.types";
 import { IPagination } from "./global.types";
 
 export interface PurchaseOrderPayload {
@@ -8,7 +9,7 @@ export interface PurchaseOrderPayload {
 }
 
 export interface IBranchProductOrder {
-    productId: number;
+    branchProductId: number;
     quantity: number;
     unitPrice: number;
 }
@@ -99,16 +100,20 @@ export interface BranchProductDetail {
 }
 
 export interface DetailPurchaseOrder {
-    id: number;
-    quantity: number;
-    cost: number;
-    isActive: boolean;
-    purchaseOrder: PurchaseOrderDetail;
-    branchProduct: BranchProductDetail;
-    branchProductId: number;
-    purchaseOrderId: number;
+  isNew?: boolean;
+  name?: string;
+  id: number;
+  quantity: number;
+  cost: number;
+  sellingPrice: string;
+  iva: boolean;
+  subtractedProduct: string;
+  isActive: boolean;
+  purchaseOrder: PurchaseOrder;
+  branchProduct: BranchProduct;
+  branchProductId: number;
+  purchaseOrderId: number;
 }
-
 export interface IGetDetailsPurchaseOrder {
     ok: boolean;
     detailPurchaseOrders: DetailPurchaseOrder[];
@@ -128,11 +133,20 @@ export interface DetailOrderItems {
     isNew: boolean,
     productId: number,
     iva: boolean
+    branchProductId?:number;
+    branchProduct?: BranchProduct
 }
 
 export interface UpdatePurchaseItems {
-    productId: number;
-    quantity: number;
-    unitPrice: number;
-    isNew: boolean;
+  branchProductId: number;
+  quantity: number;
+  cost: number;
+  unitPrice: number;
+  isNew: boolean;
+}
+
+export interface IAddProductOrder {
+  branchProductId: number;
+  quantity: number;
+  stock? : number
 }

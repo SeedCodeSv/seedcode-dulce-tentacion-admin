@@ -117,8 +117,8 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
     getPaginatedProducts(
       page,
       20,
-      '',
-      '',
+      0,
+      0,
       selectedTypeSearch === 'NOMBRE' ? name : '',
       selectedTypeSearch === 'CODIGO' ? name : '',
       1
@@ -146,7 +146,7 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
   return (
     <div className="w-full border shadow rounded-[12px] p-5 mt-3">
       <p className="text-sm font-semibold">Información general del producto</p>
-      <div className="grid grid-cols-3 gap-5 mt-3">
+      <div className="flex flex-col md:grid md:grid-cols-3 gap-5 mt-3">
         <Input
           isRequired
           classNames={{ label: 'font-semibold' }}
@@ -227,9 +227,9 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
             setCodigoGenerado(e.target.value);
           }}
         />
-        <div className="flex gap-5 items-end">
+        <div className="flex gap-1 md:gap-5 items-end">
           <ButtonUi
-            className="px-20"
+            className="w-full"
             theme={Colors.Info}
             onPress={async () => {
               const code = await generarCodigo(formik.values.name);
@@ -242,7 +242,7 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
             Generar
           </ButtonUi>
           <ButtonUi
-            className="px-20"
+            className="w-full"
             theme={Colors.Error}
             onPress={() => verifyCode(formik.values.code)}
           >
@@ -395,8 +395,8 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
                     />
                   </div>
                   <div className="w-full dark:text-white flex flex-col justify-start text-left mt-2">
-                    <p className="w-full dark:text-white">Correo: {bpr.code}</p>
-                    <p className="w-full dark:text-white">NRC: {bpr.subCategory.name}</p>
+                    <p className="w-full dark:text-white">Código: {bpr.code}</p>
+                    <p className="w-full dark:text-white">Subcategoría: {bpr.subCategory.name}</p>
                   </div>
                 </button>
               ))}

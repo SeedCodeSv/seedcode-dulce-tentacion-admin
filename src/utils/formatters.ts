@@ -13,8 +13,8 @@ export const formatDate = (dateString: string | null) => {
 export const getUnitLabel = (unitCode: string) => {
   const unitMap: Record<string, string> = {
     '59': 'Unidad',
-    '36': 'Kg',
-    '38': 'Unidades'
+    '34': 'Kg',
+    '36': 'Lbs',
   };
   
   return unitMap[unitCode] || unitCode;

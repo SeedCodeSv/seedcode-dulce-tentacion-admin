@@ -38,8 +38,8 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
     getPaginatedProducts(
       1,
       20,
-      '',
-      '',
+      0,
+      0,
       selectedTypeSearch === 'NOMBRE' ? name : '',
       selectedTypeSearch === 'CODIGO' ? name : '',
       1
@@ -50,8 +50,8 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
     getPaginatedProducts(
       page,
       20,
-      '',
-      '',
+      0,
+      0,
       selectedTypeSearch === 'NOMBRE' ? name : '',
       selectedTypeSearch === 'CODIGO' ? name : '',
       1
@@ -121,17 +121,19 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
           )}
         </div>
 
-        <div className="w-full mt-3 max-h-96 overflow-y-auto grid grid-cols-3 gap-4">
+         <div className="w-full mt-3 max-h-96 overflow-y-auto md:grid md:grid-cols-3 flex flex-col gap-4">
           {selectedProducts.map((sp: ProductOrder) => (
             <div
               key={sp.id}
               className="items-center gap-2 py-2 shadow border rounded-[12px] p-4 flex flex-col"
             >
-              <p className="text-sm font-semibold w-full">{sp.name}</p>
+              <p className="text-sm font-semibold w-full dark:text-white">{sp.name}</p>
+              <div className='flex justify-between items-end gap-5'>
               <div className="mt-3 w-full">
                 <Input
+                className='dark:text-white'
                   classNames={{
-                    label: 'font-semibold',
+                    label: 'font-semibold dark:text-white',
                   }}
                   endContent={
                     <div className="flex items-center">
@@ -139,7 +141,7 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
                         Currency
                       </label>
                       <select
-                        className="outline-none border-0 bg-transparent text-default-400 text-small"
+                        className="outline-none border-0 bg-transparent text-default-400 text-small dark:text-white"
                         id="currency"
                         name="currency"
                         value={sp.uniMedidaExtra}
@@ -155,6 +157,7 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
                       </select>
                     </div>
                   }
+                  
                   label="Cantidad por unidad"
                   placeholder="Ingresa la cantidad del producto"
                   type="string"
@@ -166,7 +169,6 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
                   }
                 />
               </div>
-              <div className="w-full flex justify-end mt-3">
                 <ButtonUi isIconOnly theme={Colors.Error} onPress={handleDeleteProduct.bind(null, selectedProducts.indexOf(sp))}>
                   <Trash />
                 </ButtonUi>

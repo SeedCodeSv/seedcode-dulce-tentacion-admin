@@ -81,13 +81,13 @@ export const delete_supplier = (id: number) => {
   });
 };
 
-export const get_supplier = () => {
+export const get_supplier = (name: string) => {
   const user = get_user();
   const token = get_token() ?? '';
 
   return axios.get<IGetSuppliers>(
     API_URL +
-    `/suppliers/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
+    `/suppliers/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}?nombre=${name}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

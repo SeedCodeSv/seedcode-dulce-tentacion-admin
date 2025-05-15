@@ -157,7 +157,7 @@ function BirthdayCalendarMobile() {
               </div>
             </div>
           </div>
-          <SlideInModalGlobal open={openModal} setOpen={setOpenModal} title="Empleados">
+          <SlideInModalGlobal open={openModal} setOpen={setOpenModal} title="Empleados" >
             <ParticipantList employee={selectedParticipants} />
           </SlideInModalGlobal>
         </div>

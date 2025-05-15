@@ -69,7 +69,7 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
   const { paginated_products, getPaginatedProducts } = useProductsStore();
 
   useEffect(() => {
-    getPaginatedProducts(1, 20, '', '', '', '', 1);
+    getPaginatedProducts(1, 20, 0, 0, '', '', 1);
   }, []);
 
   const handleEditQuantity = (quantity: number, index: number) => {
@@ -104,8 +104,8 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
     getPaginatedProducts(
       page,
       20,
-      '',
-      '',
+      0,
+      0,
       selectedTypeSearch === 'NOMBRE' ? name : '',
       selectedTypeSearch === 'CODIGO' ? name : '',
       1
@@ -166,16 +166,19 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
       })),
     };
 
-    setLoadingSave(true); 
+    setLoadingSave(true);
 
-    axios.patch(API_URL + `/product-recipe-book/${recipeBook?.id ?? 0}`, recipe).then(() => {
-      toast.success('Receta guardada con exito');
-      setLoadingSave(false);
-      navigate('/products');
-    }).catch(() => {
-      toast.error('Error al guardar la receta');
-      setLoadingSave(false);
-    })
+    axios
+      .patch(API_URL + `/product-recipe-book/${recipeBook?.id ?? 0}`, recipe)
+      .then(() => {
+        toast.success('Receta guardada con exito');
+        setLoadingSave(false);
+        navigate('/products');
+      })
+      .catch(() => {
+        toast.error('Error al guardar la receta');
+        setLoadingSave(false);
+      });
   };
 
   return (
@@ -282,10 +285,16 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
         </div>
 
         <div className="w-full flex justify-end gap-5">
-          <ButtonUi isLoading={loadingSave} theme={Colors.Error} onPress={() => navigate('/products')}>
+          <ButtonUi
+            isLoading={loadingSave}
+            theme={Colors.Error}
+            onPress={() => navigate('/products')}
+          >
             Cancelar
           </ButtonUi>
-          <ButtonUi isLoading={loadingSave} theme={Colors.Primary} onPress={handleSaveRecipe}>Guardar receta</ButtonUi>
+          <ButtonUi isLoading={loadingSave} theme={Colors.Primary} onPress={handleSaveRecipe}>
+            Guardar receta
+          </ButtonUi>
         </div>
       </div>
       <Modal

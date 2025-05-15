@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 
-import { AlertOptions, AlertContextType } from './alert.types'
+import { AlertOptions, AlertContextType } from './alert.types';
 import { AlertModal } from './AlertModal';
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
@@ -9,7 +10,7 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [alert, setAlert] = useState<AlertOptions | null>(null);
 
   const show = useCallback((options: AlertOptions) => {
-    setAlert({...options, key: Date.now().toString()});
+    setAlert({ ...options, key: Date.now().toString() });
   }, []);
 
   const close = useCallback(() => {
@@ -19,7 +20,11 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <AlertContext.Provider value={{ show, close }}>
       {children}
-      {alert && <AlertModal {...alert} onClose={close} />}
+      {alert &&
+        ReactDOM.createPortal(
+          <AlertModal {...alert} onClose={close} />,
+          document.getElementById('alert-root')!
+        )}
     </AlertContext.Provider>
   );
 };

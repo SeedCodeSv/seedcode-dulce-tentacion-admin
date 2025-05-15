@@ -98,6 +98,7 @@ function MenuProductInfo({ selectedProducts, setSelectedProducts }: Props) {
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 col-span-1 md:col-span-2 lg:col-span-3">
               <Input
+                className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 disabled={!formik.values.menu.noDeadline}
                 label="Fecha inicio de vigencia"
@@ -109,6 +110,7 @@ function MenuProductInfo({ selectedProducts, setSelectedProducts }: Props) {
                 isInvalid={!!formik.errors.menu?.deDate && formik.touched.menu?.deDate}
               />
               <Input
+               className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 disabled={!formik.values.menu.noDeadline}
                 label="Fecha fin de vigencia"
@@ -120,6 +122,7 @@ function MenuProductInfo({ selectedProducts, setSelectedProducts }: Props) {
                 isInvalid={!!formik.errors.menu?.alDate && formik.touched.menu?.alDate}
               />
               <Input
+               className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 disabled={!formik.values.menu.noDeadline}
                 label="Hora inicio de vigencia"
@@ -131,6 +134,7 @@ function MenuProductInfo({ selectedProducts, setSelectedProducts }: Props) {
                 isInvalid={!!formik.errors.menu?.deTime && formik.touched.menu?.deTime}
               />
               <Input
+               className='dark:text-white'
                 classNames={{ label: 'font-semibold' }}
                 disabled={!formik.values.menu.noDeadline}
                 label="Hora fin de vigencia"

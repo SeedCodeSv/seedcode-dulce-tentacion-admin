@@ -65,7 +65,7 @@ function ListUsers({ actionss }: Props) {
 
   useEffect(() => {
     getUsersPaginated(
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       limit,
       '',
@@ -93,7 +93,7 @@ function ListUsers({ actionss }: Props) {
 
   const handleSearch = (searchParam: string | undefined) => {
     getUsersPaginated(
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+       user?.pointOfSale?.branch.transmitterId ?? 0,
       page,
       limit,
       searchParam ?? userName,
@@ -105,7 +105,7 @@ function ListUsers({ actionss }: Props) {
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+        user?.pointOfSale?.branch.transmitterId ?? 0,
         1,
         limit,
         '',
@@ -426,7 +426,6 @@ function ListUsers({ actionss }: Props) {
                   totalPages={users_paginated.totalPag}
                   onPageChange={(page) => {
                     getUsersPaginated(
-                      user?.correlative?.branch.transmitterId ??
                         user?.pointOfSale?.branch.transmitterId ??
                         0,
                       page,
@@ -444,8 +443,7 @@ function ListUsers({ actionss }: Props) {
                   handleNext={() => {
                     serPage(users_paginated.nextPag);
                     getUsersPaginated(
-                      user?.correlative?.branch.transmitterId ??
-                        user?.pointOfSale?.branch.transmitterId ??
+                      user?.pointOfSale?.branch.transmitterId ??
                         0,
                       users_paginated.nextPag,
                       limit,
@@ -457,8 +455,7 @@ function ListUsers({ actionss }: Props) {
                   handlePrev={() => {
                     serPage(users_paginated.prevPag);
                     getUsersPaginated(
-                      user?.correlative?.branch.transmitterId ??
-                        user?.pointOfSale?.branch.transmitterId ??
+                      user?.pointOfSale?.branch.transmitterId ??
                         0,
                       users_paginated.prevPag,
                       limit,
@@ -482,8 +479,7 @@ function ListUsers({ actionss }: Props) {
           <AddUsers
             reload={() =>
               getUsersPaginated(
-                user?.correlative?.branch.transmitterId ??
-                  user?.pointOfSale?.branch.transmitterId ??
+               user?.pointOfSale?.branch.transmitterId ??
                   0,
                 1,
                 limit,
@@ -512,8 +508,7 @@ function ListUsers({ actionss }: Props) {
           <UpdateUsers
             reload={() =>
               getUsersPaginated(
-                user?.correlative?.branch.transmitterId ??
-                  user?.pointOfSale?.branch.transmitterId ??
+               user?.pointOfSale?.branch.transmitterId ??
                   0,
                 1,
                 limit,

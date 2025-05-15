@@ -26,6 +26,7 @@ export interface BranchProduct {
   branch: Branch;
   branchId: number;
   productId: number;
+  suppliers: Supplier[]
   supplierId: number;
   fixedPrice: string;
   maximum: number;
