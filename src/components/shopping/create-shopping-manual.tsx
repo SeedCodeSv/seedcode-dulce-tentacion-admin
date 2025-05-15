@@ -57,8 +57,7 @@ function CreateShoppingManual() {
   const { getAccountCatalogs, account_catalog_pagination } = useAccountCatalogsStore();
 
   useEffect(() => {
-    const trandId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    const trandId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
     getBranchesList();
     getAccountCatalogs(trandId ?? 0, '', '');
@@ -91,8 +90,8 @@ function CreateShoppingManual() {
   }, [fiscalDataAndParameter, account_catalog_pagination]);
 
   useEffect(() => {
-    getSupplierPagination(1, 15, searchNRC, '', '', 1);
-    get_correlative_shopping(Number(user?.correlative?.branchId ?? 0))
+    getSupplierPagination(1, 15, searchNRC, '', '','', 1);
+    get_correlative_shopping(Number(user?.pointOfSale?.branchId ?? 0))
       .then(({ data }) => {
         setCorrelative(data.correlative + 1);
       })
@@ -101,7 +100,7 @@ function CreateShoppingManual() {
 
   useEffect(() => {
     if (nrc !== '') {
-      const find = supplier_pagination.suppliers.find((supp) => supp.nrc === nrc);
+      const find = supplier_pagination?.suppliers.find((supp) => supp.nrc === nrc);
 
       if (find) setSupplierSelected(find);
       else {
@@ -309,8 +308,7 @@ function CreateShoppingManual() {
       }
 
       try {
-        const transId =
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+        const transId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
         await validateReceptor(supplierSelected);
         const payload = {

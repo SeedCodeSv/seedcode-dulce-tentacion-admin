@@ -55,7 +55,7 @@ function ShoppingPage({ actions }: ArrayAction) {
 
   useEffect(() => {
     getPaginatedShopping(
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       limit,
       dateInitial,
@@ -67,7 +67,7 @@ function ShoppingPage({ actions }: ArrayAction) {
 
   const searchDailyReport = () => {
     getPaginatedShopping(
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      user?.pointOfSale?.branch.transmitterId ?? 0,
       1,
       limit,
       dateInitial,
@@ -82,7 +82,7 @@ function ShoppingPage({ actions }: ArrayAction) {
       .delete(API_URL + '/shoppings/' + id)
       .then(() => {
         getPaginatedShopping(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           limit,
           dateInitial,
@@ -126,7 +126,7 @@ function ShoppingPage({ actions }: ArrayAction) {
       .delete(API_URL + `/shoppings/delete-permanently/${id}`)
       .then(() => {
         getPaginatedShopping(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+         user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           limit,
           dateInitial,
@@ -231,7 +231,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                   <div className="w-full">
                     <p className="text-sm font-semibold dark:text-white">Sucursal</p>
                     <Autocomplete
-                      className="dark:text-white font-semibold border border-white rounded-xl"
+                      className="dark:text-white font-semibold"
                       clearButtonProps={{ onClick: () => setBranchId('') }}
                       labelPlacement="outside"
                       placeholder="Selecciona la sucursal"
@@ -300,7 +300,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             />
             <Autocomplete
-              className="dark:text-white font-semibold border border-white rounded-xl hidden md:flex"
+              className="dark:text-white font-semibold hidden md:flex"
               clearButtonProps={{ onClick: () => setBranchId('') }}
               label="Sucursal"
               labelPlacement="outside"
@@ -453,10 +453,10 @@ function ShoppingPage({ actions }: ArrayAction) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={8}>
                             <div className="flex flex-col items-center justify-center w-full">
                               <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                              <p className="mt-3 text-xl">No se encontraron resultados</p>
+                              <p className="mt-3 text-xl dark:text-white">No se encontraron resultados</p>
                             </div>
                           </td>
                         </tr>
@@ -476,8 +476,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                     totalPages={pagination_shopping.totalPag}
                     onPageChange={(page) => {
                       getPaginatedShopping(
-                        user?.correlative?.branch.transmitterId ??
-                          user?.pointOfSale?.branch.transmitterId ??
+                        user?.pointOfSale?.branch.transmitterId ??
                           0,
                         page,
                         limit,
