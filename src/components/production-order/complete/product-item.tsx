@@ -103,7 +103,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   const handleEditQuantity = (quantity: number, index: number) => {
     const list_suppliers = [...devolution];
 
-    list_suppliers[index].quantity = quantity;
+    list_suppliers[index].quantity = Number(quantity);
     setDevolution(list_suppliers);
   };
 
@@ -232,8 +232,9 @@ const ProductItem: React.FC<ProductItemProps> = ({
                               id="currency"
                               name="currency"
                               value={ingredient.uniMedida}
-                              onChange={(e) =>
-                                handleEditUniMedida(e.target.value, devolution.indexOf(ingredient))
+                              onChange={(e) =>{
+                                handleEditUniMedida(String(e.target.value), devolution.indexOf(ingredient));
+                                }
                               }
                             >
                               {filtrarPorCategoria(
