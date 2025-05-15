@@ -17,6 +17,8 @@ import { preventLetters } from '@/utils';
 import SelectProduct from '@/components/production-order/select-product';
 import { API_URL, typesProduct } from '@/utils/constants';
 import RecipeBook from '@/components/production-order/product-recipe';
+import DivGlobal from '@/themes/ui/div-global';
+import TdGlobal from '@/themes/ui/td-global';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -134,7 +136,7 @@ function AddProductionOrder() {
         max: p.recipeBook?.maxProduction ?? 0,
       })),
       observation,
-      moreInformation : "[]"
+      moreInformation: '[]',
     };
 
     axios
@@ -166,9 +168,10 @@ function AddProductionOrder() {
           productId={productId}
           onOpenChange={modalRecipe.onOpenChange}
         />
-        <div className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8 bg-gray-50 dark:bg-gray-900">
+        <DivGlobal className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8">
           <div className="grid grid-cols-3 gap-x-5 gap-y-2 mt-3">
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Tipo de Orden"
               placeholder="Seleccione el tipo de orden de producción"
@@ -178,10 +181,13 @@ function AddProductionOrder() {
               onSelectionChange={setSelectedProductionOrderType}
             >
               {productionOrderTypes.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Extraer producto de"
               placeholder="Selecciona la sucursal de origen"
@@ -191,10 +197,13 @@ function AddProductionOrder() {
               onSelectionChange={setSelectedBranch}
             >
               {branch_list.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Mover producto terminado a"
               placeholder="Seleccione la sucursal de destino"
@@ -204,10 +213,13 @@ function AddProductionOrder() {
               onSelectionChange={setMoveSelectedBranch}
             >
               {branch_list.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Encargado de la orden"
               placeholder="Selecciona el encargado de la orden"
@@ -219,6 +231,7 @@ function AddProductionOrder() {
               {employee_list.map((e) => (
                 <SelectItem
                   key={e.id}
+                  className="dark:text-white"
                   textValue={
                     e.firstName +
                     ' ' +
@@ -235,7 +248,8 @@ function AddProductionOrder() {
               ))}
             </Select>
             <Input
-              className="col-span-2"
+              className="col-span-2 d"
+ 
               classNames={{ label: 'font-semibold' }}
               label="Observaciones"
               placeholder="Observaciones"
@@ -273,12 +287,12 @@ function AddProductionOrder() {
                 <tbody>
                   {selectedProducts.map((sp, i) => (
                     <tr key={sp.id}>
-                      <td className="p-3">{i + 1}</td>
-                      <td className="p-3">{sp.product.name}</td>
-                      <td className="p-3">{sp.product.description}</td>
-                      <td className="p-3">{sp.product.code}</td>
-                      <td className="p-3">{sp.product.unidaDeMedida}</td>
-                      <td className="p-3">
+                      <TdGlobal className="p-3">{i + 1}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.name}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.description}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.code}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.unidaDeMedida}</TdGlobal>
+                      <TdGlobal className="p-3">
                         <Input
                           aria-labelledby="Cantidad a producir"
                           className="max-w-44"
@@ -294,9 +308,9 @@ function AddProductionOrder() {
                             handleUpdateQuantity(sp, text as unknown as number)
                           }
                         />
-                      </td>
-                      <td className="p-3">{sp.recipeBook?.maxProduction ?? '0'}</td>
-                      <td className="p-3 flex gap-3">
+                      </TdGlobal>
+                      <TdGlobal className="p-3">{sp.recipeBook?.maxProduction ?? '0'}</TdGlobal>
+                      <TdGlobal className="p-3 flex gap-3">
                         <ButtonUi
                           isIconOnly
                           theme={Colors.Error}
@@ -314,7 +328,7 @@ function AddProductionOrder() {
                         >
                           <Book />
                         </ButtonUi>
-                      </td>
+                      </TdGlobal>
                     </tr>
                   ))}
                 </tbody>
@@ -329,7 +343,7 @@ function AddProductionOrder() {
               Guardar
             </ButtonUi>
           </div>
-        </div>
+        </DivGlobal>
         <SelectProduct
           modalProducts={modalProducts}
           selectedBranch={selectedBranch}

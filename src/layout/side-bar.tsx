@@ -1,13 +1,6 @@
 import { Menu } from 'lucide-react';
 import { ReactNode, useContext, useEffect, useState } from 'react';
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-  User,
-} from "@heroui/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
 import { useNavigate } from 'react-router';
 import classNames from 'classnames';
 
@@ -21,7 +14,6 @@ import { LgLayout } from './lg-layout';
 import { LayoutItems } from './layout-items';
 import { SmLayout } from './sm-layout';
 
-
 interface Props {
   children: ReactNode;
   title: string;
@@ -29,7 +21,7 @@ interface Props {
 
 export const SideBar = (props: Props) => {
   const navigate = useNavigate();
-  const { theme,context } = useContext(ThemeContext);
+  const { theme, context } = useContext(ThemeContext);
 
   const { user, makeLogout } = useAuthStore();
   const { setIsAuth, setToken, setMode } = useContext(SessionContext);
@@ -80,11 +72,22 @@ export const SideBar = (props: Props) => {
   }, [isOpen]);
 
   return (
-    <div className="flex w-screen h-screen overflow-x-hidden bg-gray-50 dark:bg-gray-800">
+    <div
+      className="flex w-screen h-screen overflow-x-hidden"
+      style={{ backgroundColor: theme.colors[context].background }}
+    >
       {windowSize.width < 1280 ? (
-        <SmLayout isOpen={openInMobile} items={() => <LayoutItems isOpen={openInMobile} setIsOpen={setOpenInMobile} />} setIsOpen={setOpenInMobile} />
+        <SmLayout
+          isOpen={openInMobile}
+          items={() => <LayoutItems isOpen={openInMobile} setIsOpen={setOpenInMobile} />}
+          setIsOpen={setOpenInMobile}
+        />
       ) : (
-        <LgLayout isOpen={isOpen} items={() => <LayoutItems isOpen={isOpen} setIsOpen={setIsOpen} />} setIsOpen={setIsOpen} />
+        <LgLayout
+          isOpen={isOpen}
+          items={() => <LayoutItems isOpen={isOpen} setIsOpen={setIsOpen} />}
+          setIsOpen={setIsOpen}
+        />
       )}
       <div className={classNames('flex flex-col w-full ', isOpen ? 'xl:ml-72' : 'xl:ml-0')}>
         <div
@@ -157,7 +160,7 @@ export const SideBar = (props: Props) => {
             </Dropdown>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-900 mt-14">{props.children}</div>
+        <div className="w-full h-full overflow-y-auto mt-14">{props.children}</div>
       </div>
     </div>
   );

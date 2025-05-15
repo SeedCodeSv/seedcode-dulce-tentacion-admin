@@ -75,7 +75,7 @@ function Layout(props: Props) {
               <div
                 className={classNames(
                   transitionStage,
-                  'w-full h-full overflow-y-auto bg-gray-50 dark:bg-gray-800'
+                  'w-full h-full overflow-y-auto'
                 )}
                 onAnimationEnd={() => {
                   if (transitionStage === 'fadeOut') {

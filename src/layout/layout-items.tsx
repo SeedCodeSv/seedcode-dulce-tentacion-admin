@@ -361,7 +361,7 @@ export const LayoutItems = (props: Props) => {
 
   return (
     <>
-      <div className="flex justify-between items-center h-[70px] dark:bg-gray-900">
+      <div className="flex justify-between items-center h-[70px]">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
             <img alt="LOGO" className="max-h-12" src={LOGO} />
