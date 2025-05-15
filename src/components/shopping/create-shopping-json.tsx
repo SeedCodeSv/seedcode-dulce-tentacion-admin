@@ -122,9 +122,7 @@ const JSONMode = () => {
 
   useEffect(() => {
     if (user) {
-      const transId = user.correlative
-        ? user.correlative.branch.transmitter.id
-        : user.pointOfSale
+      const transId = user.pointOfSale
           ? user.pointOfSale.branch.transmitter.id
           : 0;
 
@@ -243,7 +241,7 @@ const JSONMode = () => {
 
   useEffect(() => {
     if (user) {
-      setBranchSelected(user?.correlative?.branch.name ?? '');
+      setBranchSelected(user?.pointOfSale?.branch.name ?? '');
     }
   }, [user]);
 
@@ -289,9 +287,7 @@ const JSONMode = () => {
         return;
       }
 
-      const transmitterId = user?.correlative
-        ? user?.correlative.branch.transmitter.id
-        : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+      const transmitterId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
       const formData = new FormData();
 
@@ -496,7 +492,7 @@ const JSONMode = () => {
               {() => (
                 <>
                   <ModalHeader>Proveedor no encontrado</ModalHeader>
-                  <ModalBody className="flex flex-col justify-center items-center">
+                  <ModalBody className="flex flex-col justify-center items-center dark:text-white">
                     <img alt="" className="w-32" src={ERROR} />
                     <p className="font-semibold pt-3">
                       El proveedor no se encontró en los registros
@@ -613,7 +609,9 @@ const JSONMode = () => {
                         }}
                       >
                         {branch_list.map((item) => (
-                          <SelectItem key={item.id} textValue={item.name}>
+                          <SelectItem key={item.id}
+                           className='dark:text-white'
+                           textValue={item.name}>
                             {item.name}
                           </SelectItem>
                         ))}

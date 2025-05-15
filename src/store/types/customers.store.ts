@@ -29,4 +29,5 @@ export interface IUseCustomersStore {
   get_customer_by_id: (id: number) => Promise<IGetUserById | undefined>;
   deleteCustomer: (id: number) => Promise<boolean>;
   getCustomerById: (id: number) => void;
+  getCustomerByBranchId: () => void;
 }

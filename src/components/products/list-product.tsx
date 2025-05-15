@@ -127,8 +127,7 @@ function ListProducts({ actions }: Props) {
               </div>
             </div>
             <div className="flex gap-5 w-full justify-between items-end lg:justify-end order-1 lg:order-2">
-              <div className="w-[150px]">
-                <span className="font-semibold text-white text-sm">Mostrar</span>
+              <div className="w-[150px] mt-2">
                 <Select
                   className="max-w-44 dark:text-white border border-white rounded-xl "
                   classNames={{

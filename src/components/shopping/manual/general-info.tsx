@@ -113,7 +113,9 @@ function GeneralInfo({
             }}
           >
             {supplier_pagination.suppliers.map((supp) => (
-              <AutocompleteItem key={supp.id} textValue={supp.nombre}>
+              <AutocompleteItem key={supp.id}
+               className='dark:text-white'
+               textValue={supp.nombre}>
                 {supp.nombre}
               </AutocompleteItem>
             ))}
@@ -153,7 +155,10 @@ function GeneralInfo({
             }}
           >
             {filteredTipoDoc.map((item) => (
-              <SelectItem key={item.codigo} textValue={item.valores}>
+              <SelectItem key={item.codigo} 
+              className='dark:text-white'
+              textValue={item.valores}
+              >
                 {item.valores}
               </SelectItem>
             ))}
@@ -188,7 +193,9 @@ function GeneralInfo({
             }}
           >
             {branch_list.map((item) => (
-              <SelectItem key={item.id} textValue={item.name}>
+              <SelectItem key={item.id}
+               className='dark:text-white'
+               textValue={item.name}>
                 {item.name}
               </SelectItem>
             ))}
@@ -213,13 +220,19 @@ function GeneralInfo({
               key ? formik.setFieldValue('typeSale', value) : formik.setFieldValue('typeSale', '');
             }}
           >
-            <SelectItem key={'interna'} textValue="Interna">
+            <SelectItem key={'interna'}
+             className='dark:text-white'
+             textValue="Interna">
               Interna
             </SelectItem>
-            <SelectItem key={'internacion'} textValue="Internación">
+            <SelectItem key={'internacion'}
+             className='dark:text-white'
+             textValue="Internación">
               Internación
             </SelectItem>
-            <SelectItem key={'importacion'} textValue="Importación">
+            <SelectItem key={'importacion'} 
+            className='dark:text-white'
+            textValue="Importación">
               Importación
             </SelectItem>
           </Select>
@@ -233,7 +246,7 @@ function GeneralInfo({
               <p>Numero de control</p>
               <Tooltip
                 content={
-                  <div className="w-44 ">
+                  <div className="w-44 dark:text-white">
                     <span>
                       <span className="font-semibold">Consejo:</span> En caso de ser un DTE ingrese
                       el numero de control del documento con guiones
@@ -341,7 +354,9 @@ function GeneralInfo({
           }}
         >
           {OperationTypes.map((item) => (
-            <SelectItem key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} 
+             className='dark:text-white'
+            textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -379,7 +394,9 @@ function GeneralInfo({
           }}
         >
           {Classifications.map((item) => (
-            <SelectItem key={item.code} textValue={item.value}>
+            <SelectItem key={item.code} 
+             className='dark:text-white'
+            textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -415,7 +432,9 @@ function GeneralInfo({
           }}
         >
           {Sectors.map((item) => (
-            <SelectItem key={item.code} textValue={item.value}>
+            <SelectItem key={item.code}
+             className='dark:text-white'
+             textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}
@@ -453,7 +472,9 @@ function GeneralInfo({
           }}
         >
           {TypeCostSpents.map((item) => (
-            <SelectItem key={item.code} textValue={item.value}>
+            <SelectItem key={item.code}
+             className='dark:text-white'
+             textValue={item.value}>
               {item.value}
             </SelectItem>
           ))}

@@ -142,8 +142,7 @@ function AddTributeSupplier(props: AddSupplierProps) {
 
   const { onPostSupplier } = useSupplierStore();
   const user = get_user();
-  const transmiter = Number(
-    user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
+  const transmiter = Number(user?.pointOfSale?.branch.transmitterId ?? 0
   );
 
   const onSubmit = async (payload: PayloadSupplier) => {

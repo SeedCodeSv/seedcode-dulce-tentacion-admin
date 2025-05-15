@@ -14,6 +14,7 @@ import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
+import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -76,6 +77,8 @@ const Customers = lazy(() => import('../pages/Customers'));
 const Branch = lazy(() => import('../pages/Branch'));
 const Error404 = lazy(() => import('../pages/Error404'));
 const Product = lazy(() => import('../pages/Product'));
+const NoteReferal = lazy(() => import('../pages/ReferalNote'));
+const AddReferalNote = lazy(() => import('../shopping-branch-product/pages/ShippingBranchProdut'));
 const ActionRol = lazy(() => import('../pages/ActionRol'));
 const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
@@ -117,15 +120,19 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/production-orders"
       />
-        <Route
+      <Route
         element={
           <AnimatedRoute>
-            {handleCheckPermission('Tipos de ordenes de producción') ? <ProductionOrderTypes /> : <Home />}
+            {handleCheckPermission('Tipos de ordenes de producción') ? (
+              <ProductionOrderTypes />
+            ) : (
+              <Home />
+            )}
           </AnimatedRoute>
         }
         path="/production-order-types"
       />
-       <Route
+      <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ordenes de producción') ? <AddProductionOrder /> : <Home />}
@@ -487,6 +494,22 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route
         element={
           <AnimatedRoute>
+            {handleCheckPermission('Notas de remisión') ? <NoteReferal /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/note-referal"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Notas de remisión') ? <AddReferalNote /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/list-referal-notes"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
             {handleCheckPermission('Ventas') ? <SalesPage /> : <Home />}
           </AnimatedRoute>
         }
@@ -657,7 +680,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrders /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrders /> : <Home />}
             </AnimatedRoute>
           }
           path="/purchase-orders"
@@ -665,16 +688,23 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <AddPurchaseOrders /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <AddPurchaseOrders /> : <Home />}
             </AnimatedRoute>
           }
           path="/add-purchase-order"
         />
-          
+          <Route
+          element={
+            <AnimatedRoute>
+              <UpdatePurchaseDetail />
+            </AnimatedRoute>
+          }
+          path="/update-purchase-detail/:purchaseId"
+         />
         <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrderForm /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrderForm /> : <Home />}
             </AnimatedRoute>
           }
           path="/add-product-purchase-order"

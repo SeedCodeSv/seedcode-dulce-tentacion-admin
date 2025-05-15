@@ -10,7 +10,7 @@ function PurchaseOrders() {
 
   const actions = useMemo(() => {
     if (roleActions) {
-      const viewActions = roleActions.views.find((view) => view.view.name === 'Ordenes de Compras');
+      const viewActions = roleActions.views.find((view) => view.view.name === 'Ordenes de Compra');
 
       return viewActions ? viewActions.view.actions.map((action) => action.name) : [];
     }

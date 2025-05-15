@@ -26,7 +26,7 @@ function ModalGlobal({ children, isOpen, onClose, title, size, isFull, isMaximiz
       header={
         title && (
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold">{title}</h3>
+            <h3 className="text-lg font-semibold dark:text-white">{title}</h3>
           </div>
         )
       }

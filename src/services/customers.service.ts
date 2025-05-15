@@ -89,6 +89,21 @@ export const get_customer = () => {
     }
   );
 };
+export const get_customer_by_branch = () => {
+  const user = get_user();
+
+  const token = get_token() ?? '';
+
+  return axios.get<IGetCustomers>(
+    API_URL +
+      `/customers/list-by-branch/${user?.correlative?.branch?.id ?? user?.pointOfSale?.branch?.id ?? 0}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
 export const activate_customer = (id: number) => {
   return axios.patch<{ ok: boolean }>(API_URL + '/customers/activate/' + id);
 };
