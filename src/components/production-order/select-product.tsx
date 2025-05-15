@@ -9,7 +9,7 @@ import {
   useDisclosure,
   type Selection,
 } from '@heroui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useContext } from 'react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
 
@@ -21,6 +21,7 @@ import { useBranchProductStore } from '@/store/branch_product.store';
 import { BranchProductRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { useAlert } from '@/lib/alert';
+import { ThemeContext } from '@/hooks/useTheme';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -107,6 +108,8 @@ function SelectProduct({
     }
   };
 
+  const { theme, context } = useContext(ThemeContext);
+
   return (
     <>
       <Drawer
@@ -121,11 +124,11 @@ function SelectProduct({
           {/* <DrawerHeader>Productos</DrawerHeader> */}
           <DrawerBody>
             <div className="flex flex-col gap-4 h-full overflow-y-auto">
-              <p className="text-lg font-semibold">Lista de productos</p>
+              <p className="text-lg font-semibold dark:text-white">Lista de productos</p>
               <div className="grid grid-cols-4 gap-3 place-content-end">
                 <div className="flex gap-3 items-end">
                   <Input
-                    className="text-xs"
+                    className="text-xs dark:text-white"
                     classNames={{ label: 'font-semibold' }}
                     label="Buscar producto..."
                     labelPlacement="outside"
@@ -135,6 +138,7 @@ function SelectProduct({
                   <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi>
                 </div>
                 <Select
+                  className='dark:text-white'
                   classNames={{ label: 'font-semibold' }}
                   label="Tipo de producto"
                   labelPlacement="outside"
@@ -145,26 +149,28 @@ function SelectProduct({
                   onSelectionChange={setSelectedTypeProduct}
                 >
                   {typesProduct.map((typ) => (
-                    <SelectItem key={typ}>{typ}</SelectItem>
+                    <SelectItem key={typ} className='dark:text-white'>{typ}</SelectItem>
                   ))}
                 </Select>
                 <Select
+                  className='dark:text-white'
                   classNames={{ label: 'font-semibold' }}
                   label="Categoría"
                   labelPlacement="outside"
                   placeholder="Seleccione la sucursal"
                   variant="bordered"
                 >
-                  <SelectItem key={'1'}>Sucursal 1</SelectItem>
+                  <SelectItem key={'1'} className='dark:text-white'>Sucursal 1</SelectItem>
                 </Select>
                 <Select
+                  className='dark:text-white'
                   classNames={{ label: 'font-semibold' }}
                   label="Sub-categoría"
                   labelPlacement="outside"
                   placeholder="Seleccione la sucursal"
                   variant="bordered"
                 >
-                  <SelectItem key={'1'}>Sucursal 1</SelectItem>
+                  <SelectItem key={'1'} className='dark:text-white'>Sucursal 1</SelectItem>
                 </Select>
               </div>
 
@@ -174,11 +180,15 @@ function SelectProduct({
                     <button
                       key={recipe.id}
                       className={classNames(
-                        !recipe.recipeBook && ' opacity-50 bg-gray-50 cursor-not-allowed',
+                        !recipe.recipeBook && ' opacity-50 cursor-not-allowed',
                         hasProductInArray(recipe.id) &&
-                          'bg-green-50 border-green-500 shadow shadow-green-50',
+                          ' border-green-500 shadow shadow-green-50',
                         'flex flex-col items-start w-full border shadow rounded-[12px] p-3 cursor-pointer'
                       )}
+                      style={{
+                        backgroundColor: context === 'dark' ? theme.colors[context].table.background : theme.colors[context].table.textColor,
+                        color: context === 'dark' ? theme.colors[context].table.textColor : theme.colors[context].table.background,
+                      }}
                       onClick={() => {
                         if (recipe.recipeBook) {
                           handleVerifyProduct(recipe);
@@ -196,22 +206,22 @@ function SelectProduct({
                             : 'No hay receta disponible'}
                         </p>
                         <p className="text-xs font-semibold py-2">Receta: </p>
-                        <div className="w-full grid grid-cols-1 place-content-start" >
-                        {recipe.recipeBook ? (
-                          <>
-                            <ul className="grid grid-cols-2 gap-3 w-full place-items-start">
-                              {recipe.recipeBook.productRecipeBookDetails.map((rb) => (
-                                <li key={rb.id} className="text-xs">
-                                  • {rb.branchProduct.product.name}
-                                </li>
-                              ))}
-                            </ul>
-                          </>
-                        ) : (
-                          <>
-                            <p>No hay receta disponible</p>
-                          </>
-                        )}
+                        <div className="w-full grid grid-cols-1 place-content-start">
+                          {recipe.recipeBook ? (
+                            <>
+                              <ul className="grid grid-cols-2 gap-3 w-full place-items-start">
+                                {recipe.recipeBook.productRecipeBookDetails.map((rb) => (
+                                  <li key={rb.id} className="text-xs">
+                                    • {rb.branchProduct.product.name}
+                                  </li>
+                                ))}
+                              </ul>
+                            </>
+                          ) : (
+                            <>
+                              <p>No hay receta disponible</p>
+                            </>
+                          )}
                         </div>
                       </div>
                     </button>

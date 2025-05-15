@@ -27,14 +27,14 @@
       }
     },
     "dark": {
-      "background": "#1f1f29",
+      "background": "#0d1321",
       "textColor": "#f7f0f5",
       "menu": {
         "textColor": "#f7f0f5",
-        "background": "#0d1b2a"
+        "background": "#000814"
       },
       "table": {
-        "background": "#0d1b2a",
+        "background": "#000814",
         "textColor": "#f7f0f5"
       },
       "buttons": {
