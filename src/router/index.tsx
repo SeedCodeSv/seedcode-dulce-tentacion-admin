@@ -14,6 +14,7 @@ import AddPurchaseOrders from '@/components/list_purchase/AddPurchaseOrders';
 import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
+import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -657,7 +658,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrders /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrders /> : <Home />}
             </AnimatedRoute>
           }
           path="/purchase-orders"
@@ -665,16 +666,23 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <AddPurchaseOrders /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <AddPurchaseOrders /> : <Home />}
             </AnimatedRoute>
           }
           path="/add-purchase-order"
         />
-          
+          <Route
+          element={
+            <AnimatedRoute>
+              <UpdatePurchaseDetail />
+            </AnimatedRoute>
+          }
+          path="/update-purchase-detail/:purchaseId"
+         />
         <Route
           element={
             <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compras') ? <PurchaseOrderForm /> : <Home />}
+              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrderForm /> : <Home />}
             </AnimatedRoute>
           }
           path="/add-product-purchase-order"

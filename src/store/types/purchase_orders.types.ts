@@ -1,7 +1,8 @@
 import { BranchProduct } from '../../types/branch_products.types';
 import { IPagination } from '../../types/global.types';
 import {
-  DetailOrderItems,
+  DetailPurchaseOrder,
+  IAddProductOrder,
   PurchaseOrder,
   PurchaseOrderPayload,
   UpdatePurchaseItems,
@@ -11,7 +12,10 @@ export interface PurchaseOrderStore {
   purchase_orders: PurchaseOrder[];
   pagination_purchase_orders: IPagination;
   pagination_purchase_orders_loading: boolean;
-  details_order_purchase: DetailOrderItems[];
+  details_order_purchase: DetailPurchaseOrder[];
+   loading_complete: boolean;
+  prchase_product_add: BranchProduct[];
+  removeProductFromPrchaseProductAdd: (productId: number) => void;
   getPurchaseOrderDetail: (id: number) => Promise<void>;
   getPurchaseOrders: (
     startDate: string,
@@ -21,14 +25,18 @@ export interface PurchaseOrderStore {
     supplier?: string,
     state?: string
   ) => Promise<void>;
+   updateCostOrder: (id: number, price: string) => void;
+    removeProductsFromPrchaseProductAdd: () => void;
   postPurchaseOrder: (data: PurchaseOrderPayload) => Promise<void>;
   updateOrderProduct: (id: number, price: number | string, quantity: number | string) => void;
   updateIvaOrder: (id: number, iva: boolean) => void;
-  deleteProductDetail: (id: number) => void;
+ deleteProductDetail: (item: DetailPurchaseOrder) => void;
   addProductToOrder: (product: BranchProduct) => void;
   deleteProductOrder: (id: number) => void;
   updateQuantityOrder: (id: number, quantity: number) => void;
   updatePriceOrder: (id: number, price: number) => void;
   clearProductOrder: () => void;
-  updatePurchaseOrder: (id: number, details: UpdatePurchaseItems[]) => Promise<{ ok: boolean }>;
+  updatePurchaseOrder: (id: number, details: UpdatePurchaseItems[]) => Promise<{ ok: boolean }>;  
+  OnAddProductOrder: (purchaseId: number, data: IAddProductOrder) => Promise<{ ok: boolean }>;
+
 }

@@ -30,7 +30,7 @@
     },
     {
       "view": "Ordenes de Compra",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Completar Orden"]
     },
     {
       "view": "Usuarios",
@@ -191,10 +191,6 @@
     {
       "view": "Ajuste de Inventario",
       "actions": ["Mostrar"]
-    },
-    {
-      "view": "Ordenes de Compra",
-      "actions": ["Mostrar","Agregar"]
     },
     {
       "view": "Movimientos",

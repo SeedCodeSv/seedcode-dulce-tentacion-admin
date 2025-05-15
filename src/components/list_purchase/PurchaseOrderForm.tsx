@@ -323,7 +323,7 @@ const PurchaseOrderForm = () => {
             isBlurred={true}
             isOpen={modalSelect.isOpen}
             size='w-[40vw]'
-            title='Selecccionar proveedor'
+            title='Seleccionar proveedor'
             onClose={() => {
               if (supplierSelected && branchProduct) {
                 addProductOrder({ ...branchProduct, supplier: supplierSelected });

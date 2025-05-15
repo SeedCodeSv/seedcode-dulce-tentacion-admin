@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 
 import {
+  add_product_order,
+  delete_order_item,
   get_details_purchase_order,
   get_order_purchase,
   save_order_purchase,
@@ -9,6 +11,9 @@ import {
 } from '../services/purchase_orders.service';
 
 import { PurchaseOrderStore } from './types/purchase_orders.types';
+
+import { PurchaseOrder } from '@/types/purchase_orders.types';
+import { BranchProduct } from '@/types/branch_products.types';
 
 export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => ({
   purchase_orders: [],
@@ -21,21 +26,38 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
     status: 0,
     ok: false,
   },
+  loading_complete: false,
   pagination_purchase_orders_loading: false,
   details_order_purchase: [],
+  prchase_product_add: [],
   async getPurchaseOrderDetail(id) {
+    set({ details_order_purchase: [] });
     await get_details_purchase_order(id)
       .then((res) => {
         set({
           details_order_purchase: res.data.detailPurchaseOrders.map((detail) => ({
-            price: detail.cost,
+            id: detail.id,
+            sellingPrice: detail.sellingPrice,
+            isActive: detail.isActive,
+            subtractedProduct: detail.subtractedProduct,
+            purchaseOrder: detail.purchaseOrder,
+            branchProduct: detail.branchProduct,
+            priceFixed: Number(detail.branchProduct.price),
+            price: Number(detail.branchProduct.price),
+            stock: Number(detail.branchProduct.stock),
+            cost: detail.cost,
+            priceA: detail.branchProduct.priceA,
+            priceB: detail.branchProduct.priceB,
+            priceC: detail.branchProduct.priceC,
             name: detail.branchProduct.product.name,
             quantity: detail.quantity,
             orderId: detail.id,
             total: Number(detail.cost) * Number(detail.quantity),
             isNew: false,
-            productId: detail.branchProduct.id,
-            iva: true,
+            branchProductId: detail.branchProduct.id,
+            iva: false,
+            profit: 0,
+            purchaseOrderId: detail.purchaseOrder.id,
           })),
         });
       })
@@ -84,31 +106,40 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
       });
   },
   updateOrderProduct(id, price, quantity) {
-    const product = get().details_order_purchase.find((cp) => cp.orderId === id);
+    const product = get().details_order_purchase.find((cp) => cp.id === id);
 
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
-          cp.orderId === id
+          cp.id === id
             ? {
-                ...cp,
-                ...(typeof price === 'number' ? { price } : {}),
-                ...(typeof quantity === 'number' ? { quantity } : {}),
-                total:
-                  typeof price === 'number'
-                    ? Number(price) * Number(cp.quantity)
-                    : typeof quantity === 'number'
-                      ? Number(quantity) * Number(cp.price)
-                      : cp.total,
-              }
+              ...cp,
+              ...(typeof price === 'number' ? { price } : {}),
+              ...(typeof quantity === 'number' ? { quantity } : {}),
+              total:
+                typeof price === 'number'
+                  ? Number(price) * Number(cp.quantity)
+                  : typeof quantity === 'number'
+                    ? Number(quantity) * Number(cp.branchProduct.price)
+                    : Number(cp.branchProduct.price) * cp.quantity,
+            }
             : cp
         ),
       });
     }
   },
-  deleteProductDetail() {},
+  deleteProductDetail(item) {
+    delete_order_item(item?.id as number).then(() => {
+      toast.success('Eliminado correctamente');
+      set({
+        details_order_purchase: get().details_order_purchase.filter((cp) => cp !== item),
+      });
+    });
+  },
   addProductToOrder(product) {
-    const exist = get().details_order_purchase.find((cp) => cp.productId === product.id);
+    const exist = get().details_order_purchase.find(
+      (cp) => cp.branchProductId === product.id
+    );
 
     if (!exist) {
       set({
@@ -116,13 +147,17 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
           ...get().details_order_purchase,
           {
             name: product.product.name,
-            price: Number(product.price),
+            cost: Number(product.costoUnitario),
             quantity: 1,
-            orderId: 0,
-            total: Number(product.price),
-            isNew: true,
-            productId: product.id,
-            iva: true,
+            purchaseOrderId: 0,
+            branchProductId: product.id,
+            iva: false,
+            id: 0,
+            sellingPrice: '',
+            subtractedProduct: '',
+            isActive: false,
+            purchaseOrder: undefined as unknown as PurchaseOrder,
+            branchProduct: undefined as unknown as BranchProduct,
           },
         ],
       });
@@ -131,35 +166,45 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
     }
   },
   deleteProductOrder(id) {
-    const find = get().details_order_purchase.find((cp) => cp.orderId === id);
+    const find = get().details_order_purchase.find((cp) => cp.purchaseOrderId === id);
 
     if (find) {
-      const products = get().details_order_purchase.filter((cp) => cp.productId !== id);
+      const products = get().details_order_purchase.filter((cp) => cp.branchProductId !== id);
 
       set({ details_order_purchase: products });
     }
   },
   updatePriceOrder(id, price) {
-    const product = get().details_order_purchase.find((cp) => cp.productId === id);
+    const product = get().details_order_purchase.find((cp) => cp.branchProductId === id);
 
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
-          cp.productId === id
-            ? { ...cp, price, cost: price * cp.quantity, total: price * cp.quantity }
+          cp.branchProductId === id
+            ? {
+              ...cp,
+              price,
+              cost: price * cp.quantity,
+              total: price * cp.quantity,
+            }
             : cp
         ),
       });
     }
   },
   updateQuantityOrder(id, quantity) {
-    const product = get().details_order_purchase.find((cp) => cp.productId === id);
+    const product = get().details_order_purchase.find((cp) => cp.branchProductId === id);
 
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
-          cp.productId === id
-            ? { ...cp, quantity, cost: cp.price * quantity, total: cp.price * quantity }
+          cp.branchProductId === id
+            ? {
+              ...cp,
+              quantity,
+              cost: Number(cp.branchProduct.price) * quantity,
+              total: Number(cp.branchProduct.price) * quantity,
+            }
             : cp
         ),
       });
@@ -186,8 +231,69 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
   updateIvaOrder(id, iva) {
     set({
       details_order_purchase: get().details_order_purchase.map((cp) =>
-        cp.orderId === id ? { ...cp, iva } : cp
+        cp.purchaseOrderId === id ? { ...cp, iva } : cp
       ),
     });
+  },
+  updateCostOrder(id, cost) {
+    const product = get().details_order_purchase.find((cp) => cp.branchProductId === id);
+
+    if (product) {
+      set({
+        details_order_purchase: get().details_order_purchase.map((cp) =>
+          cp.branchProductId === id
+            ? {
+              ...cp,
+              cost: Number(cost),
+              cost1: Number(cp.branchProduct?.price) * cp.quantity,
+              branchProduct: {
+                ...cp.branchProduct,
+                costoUnitario: cost.toString(),
+              },
+              // costoUnitario: Number(cost),
+              total: Number(cp.branchProduct?.price) * cp.quantity * cp.quantity,
+            }
+            : cp
+        ),
+      });
+    }
+  },
+  removeProductsFromPrchaseProductAdd() {
+    const prchase_product_add = get().prchase_product_add;
+    const details_order_purchase = get().details_order_purchase;
+
+    prchase_product_add.splice(0, prchase_product_add.length);
+    details_order_purchase.splice(0, details_order_purchase.length);
+  },
+  removeProductFromPrchaseProductAdd(productId) {
+    const prchase_product_add = get().prchase_product_add;
+    const details_order_purchase = get().details_order_purchase;
+    const productIndex = prchase_product_add.findIndex((product) => product.id === productId);
+
+    if (productIndex !== -1) {
+      details_order_purchase.splice(productIndex, 1);
+      set({ details_order_purchase });
+
+      toast.success('Producto eliminado');
+    } else {
+      toast.error('Ocurrio un error');
+    }
+  },
+   async OnAddProductOrder(purchaseId, data): Promise<{ ok: boolean }> {
+    try {
+      if (data.stock! <= 0) {
+        toast.error('Stock insuficiente');
+
+        return { ok: false };
+      }
+      await add_product_order(purchaseId, data);
+      toast.success('Producto agregado al pedido con éxito');
+
+      return { ok: true };
+    } catch (error) {
+      toast.error('Error al agregar el producto');
+      
+      return { ok: false };
+    }
   },
 }));

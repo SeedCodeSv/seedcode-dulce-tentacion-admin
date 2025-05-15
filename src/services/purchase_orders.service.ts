@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import {
+    IAddProductOrder,
     IGetDetailsPurchaseOrder,
     IGetPurchaseOrdersPagination,
     PurchaseOrderPayload,
@@ -56,4 +57,25 @@ export const update_order = (id: number, order: UpdatePurchaseItems[]) => {
             },
         }
     );
+};
+
+export const delete_order_item = (id: number) => {
+  return axios.delete<{ ok: boolean }>(
+    import.meta.env.VITE_API_URL + `/detail-purchase-order/${id}`,
+    {
+      headers: {
+        Authorization: 'Bearer ' + get_token(),
+      },
+    }
+  );
+};
+
+export const add_product_order = (purchaseId: number, data: IAddProductOrder) => {
+  delete data.stock;
+  
+  return axios.post<{ ok: boolean }>(API_URL + `/purchase-order/add-product/${purchaseId}`, data, {
+    headers: {
+      Authorization: `Bearer ${get_token()}`,
+    },
+  });
 };

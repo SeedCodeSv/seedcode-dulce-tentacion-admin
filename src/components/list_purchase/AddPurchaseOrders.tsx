@@ -130,7 +130,7 @@ function AddPurchaseOrders() {
   const navigate = useNavigate();
 
   const { viewasAction } = useViewsStore();
-  const viewSupplier = viewasAction.find((action) => action.view.name === 'Ordenes de Compras');
+  const viewSupplier = viewasAction.find((action) => action.view.name === 'Ordenes de Compra');
   const actions = viewSupplier?.actions.name || [];
 
   return (
@@ -174,18 +174,20 @@ function AddPurchaseOrders() {
               <div key={index} className="w-full">
                 <p className="dark:text-white">Proveedor: {supplier?.supplier?.nombre ?? ''}</p>
                 <DataTable
-                  className="shadow mt-5"
+                  className="shadow mt-5 dark:text-white"
                   emptyMessage="No se encontraron resultados"
-                  tableStyle={{ minWidth: '50rem' }}
+                  tableStyle={{ minWidth: '50rem', }}
                   value={supplier.products}
                 >
                   <Column
+                    bodyClassName='dark:text-white'
                     field="id"
                     header="No."
                     headerClassName="text-sm font-semibold"
                     headerStyle={{ ...global_styles().thirdStyle, borderTopLeftRadius: '10px' }}
                   />
                   <Column
+                    bodyClassName='dark:text-white'
                     field="product.name"
                     header="Nombre"
                     headerClassName="text-sm font-semibold"
@@ -204,19 +206,23 @@ function AddPurchaseOrders() {
                         }}
                       />
                     )}
+                    bodyClassName='dark:text-white'
                     field="quantity"
                     header="Cantidad"
                     headerClassName="text-sm font-semibold"
                     headerStyle={global_styles().thirdStyle}
                   />
                   <Column
+                  bodyClassName='dark:text-white'
                     field="product.code"
                     header="Código"
                     headerClassName="text-sm font-semibold"
                     headerStyle={global_styles().thirdStyle}
                   />
 
-                  <Column field="stock" header="Stock" headerStyle={global_styles().thirdStyle} />
+                  <Column
+                  bodyClassName='dark:text-white'
+                   field="stock" header="Stock" headerStyle={global_styles().thirdStyle} />
                   <Column
                     body={(item) => (
                       <Input
@@ -231,6 +237,7 @@ function AddPurchaseOrders() {
                         }}
                       />
                     )}
+                    bodyClassName='dark:text-white'
                     field="price"
                     header="Costo Unitario"
                     headerClassName="text-sm font-semibold"
