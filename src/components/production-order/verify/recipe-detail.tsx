@@ -1,7 +1,8 @@
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
+import { convertToShortNames, convertUnit } from '../utils';
+
 import { ProductStatus, Recipe } from '@/types/production-order.types';
-import { getUnitLabel } from '@/utils/formatters';
 
 interface RecipeDetailProps {
   recipe: Recipe;
@@ -67,15 +68,31 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
                     {ingredient.branchProduct.product.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {ingredient.quantity} {getUnitLabel(ingredient.extraUniMedida)}
+                    {ingredient.quantity} {convertToShortNames(ingredient.extraUniMedida)} (
+                    {convertUnit(
+                      Number(ingredient.quantity),
+                      ingredient.extraUniMedida,
+                      ingredient.branchProduct.product.uniMedida
+                    ).toFixed(2) +
+                      ' ' +
+                      convertToShortNames(ingredient.branchProduct.product.uniMedida)}
+                    )
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {(parseFloat(ingredient.quantity) * orderQuantity).toFixed(2)}{' '}
-                    {getUnitLabel(ingredient.extraUniMedida)}
+                    {(Number(ingredient.quantity) * orderQuantity).toFixed(2)}{' '}
+                    {convertToShortNames(ingredient.extraUniMedida)} (
+                    {convertUnit(
+                      Number(ingredient.quantity) * orderQuantity,
+                      ingredient.extraUniMedida,
+                      ingredient.branchProduct.product.uniMedida
+                    ).toFixed(2) +
+                      ' ' +
+                      convertToShortNames(ingredient.branchProduct.product.uniMedida)}
+                    )
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {ingredientStatus ? ingredientStatus.availableStock : 'Desconocido'}{' '}
-                    {getUnitLabel(ingredient.branchProduct.product.uniMedida)}
+                    {convertToShortNames(ingredient.branchProduct.product.uniMedida)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {ingredientStatus ? (

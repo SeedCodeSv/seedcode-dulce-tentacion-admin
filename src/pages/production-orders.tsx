@@ -263,18 +263,32 @@ function ProductionOrders() {
                       </div>
                     )}
                     {porD.statusOrder === 'En Proceso' && (
-                      <ButtonUi
-                        isIconOnly
-                        showTooltip
-                        theme={Colors.Success}
-                        tooltipText="Completar orden de producción"
-                        onPress={() => {
-                          setSelectedOrderId(porD.id);
-                          modalCompleteOrder.onOpen();
-                        }}
-                      >
-                        <TbCheck size={20} />
-                      </ButtonUi>
+                      <>
+                        <ButtonUi
+                          isIconOnly
+                          showTooltip
+                          theme={Colors.Success}
+                          tooltipText="Completar orden de producción"
+                          onPress={() => {
+                            setSelectedOrderId(porD.id);
+                            modalCompleteOrder.onOpen();
+                          }}
+                        >
+                          <TbCheck size={20} />
+                        </ButtonUi>
+                        <ButtonUi
+                          isIconOnly
+                          showTooltip
+                          theme={Colors.Error}
+                          tooltipText="Cancelar orden de producción"
+                          onPress={() => {
+                            setSelectedOrderId(porD.id);
+                            modalCancelOrder.onOpen();
+                          }}
+                        >
+                          <TbCancel size={20} />
+                        </ButtonUi>
+                      </>
                     )}
                     <ButtonUi
                       isIconOnly
@@ -327,10 +341,12 @@ function ProductionOrders() {
             </ModalFooter>
           </ModalContent>
         </Modal>
-        <DetailsProductionOrder
-          id={selectedOrderId ?? 0}
-          modalMoreInformation={modalMoreInformation}
-        />
+        {selectedOrderId && (
+          <DetailsProductionOrder
+            id={selectedOrderId}
+            modalMoreInformation={modalMoreInformation}
+          />
+        )}
         <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
         <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} />
       </div>

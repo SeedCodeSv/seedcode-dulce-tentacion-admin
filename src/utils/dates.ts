@@ -161,3 +161,11 @@ export const formatDateForReports = (startDate: string, endDate: string) => {
 
   return formattedRange;
 };
+
+export const formatDateToddLLLyyyy = (date: string) => {
+  const fechaFormateada = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm:ss', {
+    locale: 'es',
+  }).toFormat('dd LLL yyyy, hh:mm a');
+
+  return fechaFormateada;
+};
