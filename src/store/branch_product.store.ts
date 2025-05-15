@@ -12,7 +12,8 @@ import { groupBySupplier } from '../utils/filters';
 import { IBranchProductStore } from './types/branch_product.types';
 
 import { get_branch_product_recipe } from '@/services/products.service';
-// import { totalAPagar } from '../components/new_sales/MainView';
+import { generate_uuid } from '@/utils/random/random';
+import { calc_iva } from '@/utils/money';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
@@ -28,7 +29,6 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
   },
   cart_products: [],
   branch_product_order: [],
-  // ! purchase orders
   order_branch_products: [],
   orders_by_supplier: [],
   branches_list: [],
@@ -151,13 +151,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     set({ order_branch_products: [] });
     set({ orders_by_supplier: [] });
   },
-  // getBranchProductOrders(branch, supplier, product, code) {
-  //   get_branch_product_orders(branch, supplier, product, code).then(({ data }) => {
-  //     set({ branch_product_order: data.branchProducts })
-  //   }).catch(() => {
-  //     set({ branch_product_order: [] });
-  //   });
-  // },
+
   getPaginatedBranchProducts(branchId, page = 1, limit = 5, name, code) {
     get_branch_product(branchId, page, limit, name, code)
       .then(({ data }) => {
@@ -267,7 +261,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
             quantity: 1,
             base_price: Number(product.price),
             discount: 0,
-            total: 0, // poner totalAPagar
+            total: 0, 
             porcentaje: 0,
           },
         ],
@@ -336,5 +330,40 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       .catch(() => {
         set((state) => ({ ...state, branches_list: [] }));
       });
+  },
+ async onAddProductsByList(id, CuerpoDocumento) {
+    set({ cart_products: [] });
+
+    get().onAddProductsByList(id, CuerpoDocumento);
+    const promises = CuerpoDocumento.map(async (item) => {
+      const { data } = await get_product_by_code(id, item.codigo ?? '');
+
+      return {
+        ...data.product,
+        uuid: generate_uuid(),
+        quantity: item.cantidad,
+        price: String(item.precioUni),
+        base_price: Number(data.product.price),
+        discount: 0,
+        total: Number(item.ventaGravada),
+        percentage: 0,
+        updated_price: Number(data.product.price),
+        total_iva: calc_iva(Number(data.product.price)).total_with_iva,
+        iva: calc_iva(Number(data.product.price)).iva,
+        fixed_price: 0,
+        monto_descuento: 0,
+        porcentaje_descuento: 0,
+        prices: [
+          Number(item.precioUni).toFixed(2),
+          data.product.price,
+          data.product.priceA,
+          data.product.priceB,
+          data.product.priceC,
+        ],
+      };
+    });
+    const products = await Promise.all(promises);
+
+    set({ cart_products: products });
   },
 }));

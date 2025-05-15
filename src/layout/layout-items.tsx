@@ -27,11 +27,13 @@ import {
   Book,
   X,
   ListOrdered,
+  NotebookIcon,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
+import { FaChartLine } from 'react-icons/fa';
 
 import LOGO from '../assets/dulce-logo.png';
 import { ThemeContext } from '../hooks/useTheme';
@@ -97,13 +99,13 @@ export const LayoutItems = (props: Props) => {
     },
     {
       viewName: 'Ordenes de producción',
-      to: '/production-orders',	
+      to: '/production-orders',
       icon: ListOrdered,
       label: 'Ordenes de producción',
     },
     {
       viewName: 'Tipos de ordenes de producción',
-      to: '/production-order-types',	
+      to: '/production-order-types',
       icon: ListOrdered,
       label: 'Tipos de Ordenes de producción',
     },
@@ -112,6 +114,18 @@ export const LayoutItems = (props: Props) => {
       to: '/shopping',
       icon: ShoppingBag,
       label: 'Compras',
+    },
+    {
+      viewName: 'Notas de remisión',
+      to: '/note-referal',
+      icon: FaChartLine ,
+      label: 'Ver Notas de remisión',
+    },
+    {
+      viewName: 'Notas de remisión',
+      to: '/list-referal-notes',
+      icon: NotebookIcon,
+      label: 'Notas de remisión',
     },
   ];
 
@@ -323,13 +337,13 @@ export const LayoutItems = (props: Props) => {
       <div className="flex justify-between items-center h-[70px] dark:bg-gray-900">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
-            <img alt='LOGO' className="max-h-12" src={LOGO} />
+            <img alt="LOGO" className="max-h-12" src={LOGO} />
           </div>
         ) : (
           <>
             {personalization.map((item) => (
               <div key={item.id} className="flex items-center justify-center w-full shadow">
-                <img alt='LOGO' className="max-h-12" src={item.logo} />
+                <img alt="LOGO" className="max-h-12" src={item.logo} />
               </div>
             ))}
           </>

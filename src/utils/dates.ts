@@ -19,10 +19,8 @@ export const formatDate = () => {
 export const get_el_salvador_date = (dateString: string) => {
   const parsedDate = moment(dateString, 'YYYY-MM-DD');
 
-  // Establece la zona horaria a El Salvador
   parsedDate.tz('America/El_Salvador');
 
-  // Obtiene el objeto Date
   const dateObject = parsedDate.toDate();
 
   return dateObject;
@@ -144,16 +142,7 @@ export function formatDateMMDDYYYY(day: number, month: number, year?: number): s
 
   return `${formattedMonth}/${formattedDay}/${finalYear}`;
 }
-// export function formatDateMMDDYYYY(day: number, month: number): string {
-//   const date = new Date()
-//   const year = date.getFullYear()
 
-//   // Asegurar que el día y el mes tengan dos dígitos
-//   const formattedDay = day < 10 ? `0${day}` : day.toString()
-//   const formattedMonth = month < 10 ? `0${month}` : month.toString()
-
-//   return `${formattedMonth}/${formattedDay}/${year}`
-// }
 
 export const formatDateForReports = (startDate: string, endDate: string) => {
   const formatDate = (date: DateTime) => date.setLocale('es').toFormat("d 'de' LLLL 'de' yyyy");
@@ -161,3 +150,28 @@ export const formatDateForReports = (startDate: string, endDate: string) => {
 
   return formattedRange;
 };
+
+export function formatSimpleDate(date: string): string {
+  if (!date) return '';
+  const days = date.split('|')[0];
+  const time = date.split('|')[1];
+  const monts = [
+    'Ene',
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic',
+  ];
+  const [year, month, day] = days.split('-');
+  const [hour, minute] = time.split(':');
+  const monthName = monts[Number(month) - 1];
+
+  return `${day}-${monthName}-${year} ${hour}:${minute}`;
+}
