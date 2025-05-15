@@ -80,7 +80,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                 labelPlacement="outside"
                 name="searchName"
                 placeholder="Buscar por nombre..."
-                startContent={<Search />}
+                startContent={<Search className='dark:text-white'/>}
                 value={name}
                 variant="bordered"
                 onChange={(e) => setName(e.target.value)}
@@ -99,7 +99,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                 labelPlacement="outside"
                 name="searCode"
                 placeholder="Buscar por codigo..."
-                startContent={<Search />}
+                startContent={<Search className='dark:text-white' />}
                 value={code}
                 variant="bordered"
                 onChange={(e) => setCode(e.target.value)}
@@ -160,6 +160,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                   className="w-44"
                   classNames={{
                     label: 'font-semibold',
+                    selectorIcon:'dark:text-white'
                   }}
                   label="Mostrar"
                   labelPlacement="outside"
@@ -330,10 +331,10 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   {formatCurrency(Number(cat.price))}
                                 </td>
-                                <td className="p-3 text-sm text-green-500 dark:text-slate-100">
+                                <td className="p-3 text-sm text-green-500 dark:text-green-300">
                                   {cat.stock}
                                 </td>
-                                <td className="p-3 text-sm text-red-500 dark:text-slate-100">
+                                <td className="p-3 text-sm text-red-500 dark:text-red-300">
                                   {cat.reserved}
                                 </td>
                                 {/* <td>
