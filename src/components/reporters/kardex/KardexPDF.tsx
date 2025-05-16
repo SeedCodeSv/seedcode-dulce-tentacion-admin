@@ -58,7 +58,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
 
       const createHeader = (doc: jsPDF) => {
-        doc.addImage(DEFAULT_LOGO, 'PNG', 13, 5, 20, 20);
+        doc.addImage(DEFAULT_LOGO, 'PNG', 13, 5, 20, 20,'dulce', 'FAST');
         autoTable(doc, {
           showHead: false,
           body: [

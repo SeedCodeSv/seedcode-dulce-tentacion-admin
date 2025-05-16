@@ -27,6 +27,7 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import { limit_options } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { useDebounce } from '@/hooks/useDebounce';
+import DivGlobal from '@/themes/ui/div-global';
 
 interface Props {
   actions: string[];
@@ -85,8 +86,7 @@ function ListPurchasesOrders({ actions }: Props) {
 
   return (
     <>
-      <div className="w-full h-full p-4 md:p-6  md:px-4 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full flex flex-col p-5 mt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+      <DivGlobal className="flex flex-col h-full overflow-y-auto">
           <div className="flex flex-row justify-between w-full gap-5 lg:flex-col lg:gap-0">
             <ResponsiveFilterWrapper
               onApply={() => handleSearch(undefined)}
@@ -355,8 +355,7 @@ function ListPurchasesOrders({ actions }: Props) {
               </div>
             </>
           )}
-        </div>
-      </div>
+      </DivGlobal>
 
       <AnimatePresence>
         {isOpen.isOpen && (
