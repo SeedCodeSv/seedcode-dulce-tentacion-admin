@@ -12,6 +12,7 @@ import {
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
+import { X } from 'lucide-react';
 
 import Pagination from '../global/Pagination';
 
@@ -23,7 +24,7 @@ import { typesProduct } from '@/utils/constants';
 import { useAlert } from '@/lib/alert';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useDebounce } from '@/hooks/useDebounce';
-import { X } from 'lucide-react';
+
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
