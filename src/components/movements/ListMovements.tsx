@@ -151,7 +151,7 @@ function ListMovements({ actions }: Props) {
   return (
     <div className="w-[99%] h-full p-2 md:pt-5 bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full p-5 md:p-5 mt-2 overflow-y-auto bg-white custom-scrollbar shadow border dark:bg-gray-900">
-        <div className="">
+        <div className="flex justify-between md:flex-col">
           <ResponsiveFilterWrapper onApply={() => OnGetInventoryMovement(
             user?.transmitterId ?? 0,
             1,
@@ -233,12 +233,12 @@ function ListMovements({ actions }: Props) {
               </Autocomplete>
             </div>
           </ResponsiveFilterWrapper>
-        </div>
+        
         <div className="flex items-center gap-3">
           {actions.includes('Descargar PDF') && (
             <TooltipGlobal text="Descargar PDF">
               <Button
-                className="hidden md:flex mt-3"
+                className="mt-3"
                 disabled={loading}
                 style={global_styles().thirdStyle}
                 onPress={() => {
@@ -252,6 +252,7 @@ function ListMovements({ actions }: Props) {
               </Button>
             </TooltipGlobal>
           )}
+        </div>
         </div>
         <div className="max-h-[60vh] xl:flex md:flx hidden min-h-32 overflow-y-auto overflow-x-auto custom-scrollbar mt-6">
           <table className="w-full">

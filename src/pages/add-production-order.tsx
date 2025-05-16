@@ -20,6 +20,8 @@ import { API_URL, typesProduct } from '@/utils/constants';
 import RecipeBook from '@/components/production-order/product-recipe';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 
 
 type ProductRecipe = BranchProductRecipe & {
@@ -29,6 +31,7 @@ type ProductRecipe = BranchProductRecipe & {
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
   const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
+  const isMovil = useIsMobileOrTablet()
 
   const [selectedBranch, setSelectedBranch] = useState<Selection>(new Set([]));
   const [moveSelectedBranch, setMoveSelectedBranch] = useState<Selection>(new Set([]));
@@ -106,24 +109,25 @@ function AddProductionOrder() {
     const productionOrderType = new Set(selectedProductionOrderType).values().next().value;
 
     if (!productionOrderType) {
-      toast.error('Debe seleccionar un tipo de orden',{position:'top-center'});
+      toast.error('Debe seleccionar un tipo de orden',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
 
       return;
     }
 
     if (selectedProducts.length === 0) {
-      toast.error('Debe agregar al menos un producto',{position:'top-center'});
-
-      return;
-    }
-
-    if (!moveSelectedBranch) {
-      toast.error('Debe seleccionar una sucursal de destino',{position:'top-center'});
+      toast.error('Debe agregar al menos un producto',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
 
       return;
     }
 
     const destinationBranch = new Set(moveSelectedBranch).values().next().value;
+
+    if (!destinationBranch) {
+      toast.error('Debe seleccionar una sucursal de destino',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
+
+      return;
+    }
+
     const prodType = new Set(selectedProductionOrderType).values().next().value;
 
     const payload = {
@@ -145,11 +149,11 @@ function AddProductionOrder() {
     axios
       .post(API_URL + '/production-orders', payload)
       .then(() => {
-        toast.success('Orden de producción creada exitosamente',{position: 'top-center'});
+        toast.success('Orden de producción creada exitosamente',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
         navigate('/production-orders')
       })
       .catch(() => {
-        toast.error('Error al crear la orden de producción',{position:'top-center'});
+        toast.error('Error al crear la orden de producción',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
       });
   };
 
@@ -173,7 +177,7 @@ function AddProductionOrder() {
           onOpenChange={modalRecipe.onOpenChange}
         />
         <DivGlobal className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8">
-          <div className="grid grid-cols-3 gap-x-5 gap-y-2 mt-3">
+            <ResponsiveFilterWrapper withButton={false}>
             <Select
               className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
@@ -260,8 +264,8 @@ function AddProductionOrder() {
               variant="bordered"
               onChange={(e) => setObservation(e.target.value)}
             />
-          </div>
-          <div className="flex justify-between items-end w-full my-2">
+            </ResponsiveFilterWrapper>
+          <div className="flex justify-between items-end w-full my-4">
             <p className="text-sm font-semibold">Productos</p>
             <ButtonUi
               isIconOnly

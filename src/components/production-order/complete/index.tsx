@@ -156,10 +156,10 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
           <DrawerHeader>
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Finalizar orden de producción</h1>
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody className='px-4'>
             {productionOrderDetail && (
-              <div className=" py-8 px-4">
-                <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow p-6 mb-6 print:shadow-none">
+              <div className=" md:py-8 md:px-4">
+                <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
                   <OrderHeader
                     category={productionOrderDetail.productionOrderType.name}
                     orderNumber={productionOrderDetail.id.toString()}

@@ -35,6 +35,7 @@ import CompleteOrder from '@/components/production-order/complete';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
 import Pagination from '@/components/global/Pagination';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 type Key = string;
 
@@ -145,7 +146,7 @@ function ProductionOrders() {
   return (
     <Layout title="Ordenes de producción">
       <DivGlobal className="flex flex-col h-full overflow-y-auto">
-        <div className="grid grid-cols-4 gap-4">
+          <ResponsiveFilterWrapper withButton={false}>
           <Input
             className='dark:text-white'
             classNames={{ label: 'font-semibold' }}
@@ -194,7 +195,7 @@ function ProductionOrders() {
               <SelectItem key={type.id} className='dark:text-white'>{type.name}</SelectItem>
             ))}
           </Select>
-        </div>
+          </ResponsiveFilterWrapper>
         <div className="flex justify-end mt-2">
           <ButtonUi
             isIconOnly

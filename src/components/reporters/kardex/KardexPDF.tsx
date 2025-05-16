@@ -146,7 +146,6 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       onPress={handleDownloadPDF}
     >
       <FileDown />
-      Descargar PDF
     </Button>
   );
 };

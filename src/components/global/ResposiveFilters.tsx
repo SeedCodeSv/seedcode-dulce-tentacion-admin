@@ -10,7 +10,7 @@ import { Colors } from '@/types/themes.types';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 
 interface Props {
-  onApply: () => void
+  onApply?: () => void
   children: ReactNode
   applyLabel?: string
   buttonLabel?: string
@@ -50,7 +50,7 @@ export const ResponsiveFilterWrapper = ({
                 color="primary"
                 style={global_styles().darkStyle}
                 onPress={() => {
-                  onApply();
+                  onApply!();
                   setOpen(false);
                 }}
               >
