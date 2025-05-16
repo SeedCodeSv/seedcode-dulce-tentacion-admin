@@ -11,6 +11,7 @@ import useGlobalStyles from '../global/global.styles';
 import TooltipGlobal from '../global/TooltipGlobal';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import NoDataInventory from '../inventory_aqdjusment/NoDataInventory';
+import Pagination from '../global/Pagination';
 
 import { useAuthStore } from '@/store/auth.store';
 import { fechaActualString } from '@/utils/dates';
@@ -23,6 +24,7 @@ import { useInventoryMovement } from '@/store/reports/inventory_movement.store';
 import { hexToRgb, typesInventoryMovement } from '@/utils/utils';
 
 
+
 interface Props {
   actions: string[];
 }
@@ -30,7 +32,7 @@ interface Props {
 function ListMovements({ actions }: Props) {
   const { user } = useAuthStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  const { OnGetInventoryMovement, inventoryMoments } = useInventoryMovement();
+  const { OnGetInventoryMovement, inventoryMoments, pagination_inventory_movement } = useInventoryMovement();
 
   const totalItemPerPageGraphic = 20;
   const styles = useGlobalStyles();
@@ -251,61 +253,83 @@ function ListMovements({ actions }: Props) {
             </TooltipGlobal>
           )}
         </div>
-          <div className="max-h-[60vh] xl:flex md:flx hidden min-h-32 overflow-y-auto overflow-x-auto custom-scrollbar mt-6">
-            <table className="w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  {['Nombre', 'Tipo de Movimiento', 'Motivo', 'Cantidad', 'Fecha', 'Hora', 'Total de Movimiento'].map((header) =>
-                    <th
-                      key={header}
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      {header}
-                    </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="max-h-[400px] w-full overflow-y-auto">
-                {inventoryMoments.length > 0 ? (
-                  <>
-                    {inventoryMoments.map((product, index) => (
-                      <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product?.branchProduct?.product?.name}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product.typeOfMovement}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product.typeOfInventory}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product.quantity}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product.date}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {product.time}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {formatCurrency(Number(product.totalMovement))}
-                        </td>
-                      </tr>
-                    ))}
-                  </>
-                ) : (
-                  <tr>
-                    <td colSpan={7}>
-                      <NoDataInventory title="No se encontraron  movimientos" />
-                    </td>
-                  </tr>
+        <div className="max-h-[60vh] xl:flex md:flx hidden min-h-32 overflow-y-auto overflow-x-auto custom-scrollbar mt-6">
+          <table className="w-full">
+            <thead className="sticky top-0 z-20 bg-white">
+              <tr>
+                {['Nombre', 'Tipo de Movimiento', 'Motivo', 'Cantidad', 'Fecha', 'Hora', 'Total de Movimiento'].map((header) =>
+                  <th
+                    key={header}
+                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
+                    style={styles.darkStyle}
+                  >
+                    {header}
+                  </th>
                 )}
-              </tbody>
-            </table>
-          </div>
-       
+              </tr>
+            </thead>
+            <tbody className="max-h-[400px] w-full overflow-y-auto">
+              {inventoryMoments.length > 0 ? (
+                <>
+                  {inventoryMoments.map((product, index) => (
+                    <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product?.branchProduct?.product?.name}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.typeOfMovement}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.typeOfInventory}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.quantity}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.date}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.time}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(product.totalMovement))}
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <tr>
+                  <td colSpan={7}>
+                    <NoDataInventory title="No se encontraron  movimientos" />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+        {pagination_inventory_movement.totalPag > 1 && (
+          <>
+            <Pagination
+              currentPage={pagination_inventory_movement.currentPag}
+              nextPage={pagination_inventory_movement.nextPag}
+              previousPage={pagination_inventory_movement.prevPag}
+              totalPages={pagination_inventory_movement.totalPag}
+              onPageChange={(page) => {
+                OnGetInventoryMovement(
+                  user?.transmitterId ?? 0,
+                  page,
+                  40,
+                  filter.startDate,
+                  filter.endDate,
+                  filter.branch,
+                  filter.typeOfInventory,
+                  filter.typeOfMoviment
+                );
+              }}
+            />
+          </>
+        )}
+
         {inventoryMoments.length > 0 ? (
           <div className="w-full xl:hidden  mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
             {inventoryMoments.map((product) => (
