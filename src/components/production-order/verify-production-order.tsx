@@ -118,7 +118,7 @@ function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Modal {...modalConfirmation} isDismissable={false}>
+      <Modal className='dark:bg-gray-900 dark:text-gray-100' {...modalConfirmation} isDismissable={false}>
         <ModalContent>
           <ModalHeader>Confirmar orden de producción</ModalHeader>
           <ModalBody>

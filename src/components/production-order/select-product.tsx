@@ -23,6 +23,7 @@ import { typesProduct } from '@/utils/constants';
 import { useAlert } from '@/lib/alert';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useDebounce } from '@/hooks/useDebounce';
+import { X } from 'lucide-react';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -130,6 +131,7 @@ function SelectProduct({
   return (
     <>
       <Drawer
+        closeButton={<X size={40}/>}
         isDismissable={false}
         isOpen={modalProducts.isOpen}
         placement="right"

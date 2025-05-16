@@ -19,7 +19,7 @@ function RecipeBook({ productId, onOpenChange, isOpen }: Props) {
   }, [productId]);
 
   return (
-    <Modal isOpen={isOpen} scrollBehavior="inside" size="2xl" onOpenChange={onOpenChange}>
+    <Modal className='dark:bg-gray-900 dark:text-gray-100' isOpen={isOpen} scrollBehavior="inside" size="2xl" onOpenChange={onOpenChange}>
       <ModalContent>
         <ModalHeader>Receta del producto</ModalHeader>
         <ModalBody>
@@ -31,7 +31,7 @@ function RecipeBook({ productId, onOpenChange, isOpen }: Props) {
           {!recipeBook && !loadingRecipeBook && (
             <div className="flex flex-col justify-center items-center py-10">
               <X color="red" size={80} />
-              <p className="font-normal mt-2">No hay receta disponible para este producto</p>
+              <p className="font-normal mt-2 dark:text-white">No hay receta disponible para este producto</p>
             </div>
           )}
           {!loadingRecipeBook && recipeBook && (
