@@ -9,7 +9,7 @@ import {
   useDisclosure,
   type Selection,
 } from '@heroui/react';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
 
@@ -22,6 +22,7 @@ import { BranchProductRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { useAlert } from '@/lib/alert';
 import { ThemeContext } from '@/hooks/useTheme';
+import { useDebounce } from '@/hooks/useDebounce';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -47,8 +48,7 @@ function SelectProduct({
   selectedTypeProduct,
   setSelectedTypeProduct,
 }: Props) {
-  const { branchProductRecipe, branchProductRecipePaginated, getBranchProductsRecipe } =
-    useBranchProductStore();
+  const { branchProductRecipe, branchProductRecipePaginated, getBranchProductsRecipe } = useBranchProductStore();
 
   const { show, close } = useAlert();
 
@@ -64,7 +64,7 @@ function SelectProduct({
 
       products.splice(productFind, 1);
       setSelectedProducts(products);
-      toast.warning(`Se elimino ${product.product.name} con éxito`);
+      toast.warning(`Se elimino ${product.product.name} con éxito`, { position: 'top-center' });
     } else {
       const products = [...selectedProducts];
 
@@ -73,7 +73,7 @@ function SelectProduct({
         quantity: 1,
       });
       setSelectedProducts(products);
-      toast.success(`Se agrego ${product.product.name} con éxito`);
+      toast.success(`Se agrego ${product.product.name} con éxito`, { position: 'top-center' });
     }
   };
 
@@ -109,6 +109,23 @@ function SelectProduct({
   };
 
   const { theme, context } = useContext(ThemeContext);
+  const [searchParams, setSearchParams] = useState({
+    name: '',
+  })
+
+  const dbounceName = useDebounce(searchParams.name, 300)
+
+  useEffect(() => {
+     getBranchProductsRecipe(
+      Number(new Set(selectedBranch).values().next().value),
+      1,
+      10,
+      '',
+      String(dbounceName),
+      '',
+      String(new Set(selectedTypeProduct).values().next().value ?? '')
+    );
+  },[dbounceName])
 
   return (
     <>
@@ -134,8 +151,9 @@ function SelectProduct({
                     labelPlacement="outside"
                     placeholder="Escriba para buscar"
                     variant="bordered"
+                    onChange={(e) => setSearchParams({...searchParams, name: e.target.value})}
                   />
-                  <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi>
+                  {/* <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi> */}
                 </div>
                 <Select
                   className='dark:text-white'
@@ -175,14 +193,14 @@ function SelectProduct({
               </div>
 
               <div className="h-full overflow-y-auto flex flex-col">
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 2xl:grid-cols-5">
                   {branchProductRecipe.map((recipe) => (
                     <button
                       key={recipe.id}
                       className={classNames(
                         !recipe.recipeBook && ' opacity-50 cursor-not-allowed',
                         hasProductInArray(recipe.id) &&
-                          ' border-green-500 shadow shadow-green-50',
+                        ' border-green-500 shadow shadow-green-50',
                         'flex flex-col items-start w-full border shadow rounded-[12px] p-3 cursor-pointer'
                       )}
                       style={{
@@ -197,8 +215,8 @@ function SelectProduct({
                         }
                       }}
                     >
-                      <div className="w-full flex flex-col items-start">
-                        <p className="font-semibold">{recipe.product.name}</p>
+                      <div className="w-full flex flex-col items-start ">
+                        <p className="font-semibold ">{recipe.product.name}</p>
                         <p className="text-xs">
                           Cantidad maxima:{' '}
                           {recipe.recipeBook
@@ -243,7 +261,7 @@ function SelectProduct({
                   page,
                   10,
                   '',
-                  '',
+                  String(dbounceName),
                   '',
                   String(new Set(selectedTypeProduct).values().next().value ?? '')
                 );

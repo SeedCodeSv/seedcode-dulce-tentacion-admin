@@ -60,6 +60,7 @@ function ProductionOrders() {
     useProductionOrderStore();
   const [selectedStatus, setSelectedStatus] = useState<Selection>(new Set([]));
   const [selectedType, setSelectedType] = useState<Selection>(new Set([]));
+  const [page,setPage] = useState(1)
 
   useEffect(() => {
     onGetProductionOrderTypes();
@@ -75,8 +76,8 @@ function ProductionOrders() {
         ? (selectedType as ExtendedSelection).currentKey || 0
         : 0;
 
-    getProductionsOrders(1, 5, startDate, endDate, 0, status, 0, +type);
-  }, [startDate, endDate, selectedStatus, selectedType]);
+    getProductionsOrders(page, 5, startDate, endDate, 0, status, 0, +type);
+  }, [page,startDate, endDate, selectedStatus, selectedType]);
 
   const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
 
@@ -322,7 +323,7 @@ function ProductionOrders() {
             nextPage={paginationProductionOrders.nextPag}
             previousPage={paginationProductionOrders.prevPag}
             totalPages={paginationProductionOrders.totalPag}
-            onPageChange={() => {}}
+            onPageChange={(page) => setPage(page) }
           />
         </div>
         <Modal {...modalCancelOrder} isDismissable={false}>
@@ -364,8 +365,10 @@ function ProductionOrders() {
             modalMoreInformation={modalMoreInformation}
           />
         )}
-        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
-        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} />
+        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} 
+        onReload={() => {setPage(1)}} />
+        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
+        reload={() => {setPage(1)}}/>
       </DivGlobal>
     </Layout>
   );

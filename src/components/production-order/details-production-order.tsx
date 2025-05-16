@@ -22,7 +22,7 @@ function DetailsProductionOrder({ id, modalMoreInformation }: Props) {
   }, [id]);
 
   return (
-    <Modal {...modalMoreInformation} scrollBehavior="inside" size="full">
+    <Modal {...modalMoreInformation} className='dark:bg-gray-900' scrollBehavior="inside" size="full" >
       <ModalContent>
         <ModalHeader>Orden de Producción #{id}</ModalHeader>
         <ModalBody>

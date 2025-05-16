@@ -50,9 +50,10 @@ type disclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   disclosure: disclosureProps;
+  reload:() => void
 }
 
-const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
+const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
   const [notes, setNotes] = useState<string>('');
   const [employeeCode, setEmployeeCode] = useState('');
@@ -119,6 +120,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
             toast.success('Orden de producción finalizada');
             setLoading(false);
             modalConfirmation.onClose();
+            disclosure.onClose()
+            reload()
           })
           .catch(() => {
             setLoading(false);

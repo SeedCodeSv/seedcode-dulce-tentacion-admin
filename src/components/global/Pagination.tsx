@@ -70,7 +70,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
           <Button
             key={i}
             isIconOnly
-            className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold')}
+            className={classNames(props.currentPage === i ? 'active' : '', 'px-2 font-semibold ')}
             style={props.currentPage === i ? activeStyle : inactiveStyle}
             onPress={() => handlePageChange(i)}
           >
@@ -136,7 +136,7 @@ const Pagination: React.FC<PaginationProps> = (props) => {
         </Button>
       </div>
       <div className='flex lg:hidden w-full'>
-        <div className="flex justify-between w-full lg:hidden gap-2 pagination">
+        <div className="flex justify-between w-full lg:hidden gap-2 pagination dark:text-gray-100">
 
           <Button isIconOnly style={activeStyle} onPress={goToPrevPage}>
             <ChevronLeft />

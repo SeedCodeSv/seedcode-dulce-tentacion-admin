@@ -28,9 +28,10 @@ type DisclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   disclosure: DisclosureProps;
+  onReload: ()=> void
 }
 
-function VerifyProductionOrder({ id, disclosure }: Props) {
+function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
 
   useEffect(() => {
@@ -82,6 +83,7 @@ function VerifyProductionOrder({ id, disclosure }: Props) {
           modalConfirmation.onClose();
           disclosure.onClose();
           setLoading(false);
+          onReload()
         })
         .catch(() => {
           modalConfirmation.onClose();
@@ -93,9 +95,9 @@ function VerifyProductionOrder({ id, disclosure }: Props) {
 
   return (
     <>
-      <Modal {...disclosure} isDismissable={false} scrollBehavior="inside" size="full">
+      <Modal {...disclosure} className='dark:bg-gray-900' isDismissable={false} scrollBehavior="inside" size="full" >
         <ModalContent>
-          <ModalHeader>Confirmar orden de producción</ModalHeader>
+          <ModalHeader className='dark:text-white'>Confirmar orden de producción</ModalHeader>
           <ModalBody>
             {productionOrderDetail && (
               <ProductionOrderView productionOrder={productionOrderDetail!} />

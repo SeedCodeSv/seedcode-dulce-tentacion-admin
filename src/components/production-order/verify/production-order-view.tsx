@@ -11,7 +11,7 @@ interface ProductionOrderViewProps {
 
 const ProductionOrderView: React.FC<ProductionOrderViewProps> = ({ productionOrder }) => {
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn ">
       <OrderHeader order={productionOrder} />
       <ProductList details={productionOrder.details} />
     </div>

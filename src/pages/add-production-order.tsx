@@ -3,6 +3,7 @@ import { Book, Plus, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import ThGlobal from '@/themes/ui/th-global';
@@ -20,6 +21,7 @@ import RecipeBook from '@/components/production-order/product-recipe';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
 
+
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
 };
@@ -34,6 +36,7 @@ function AddProductionOrder() {
   const [selectedProductionOrderType, setSelectedProductionOrderType] = useState<Selection>(
     new Set([])
   );
+  const navigate = useNavigate()
   const [observation, setObservation] = useState('');
 
   const [productId, setProductId] = useState(0);
@@ -87,7 +90,7 @@ function AddProductionOrder() {
     const branch = new Set(selectedBranch).values().next().value;
 
     if (!branch) {
-      toast.error('Debe seleccionar una sucursal');
+      toast.error('Debe seleccionar una sucursal',{position:'top-center'});
 
       return;
     }
@@ -95,7 +98,7 @@ function AddProductionOrder() {
     const employee = new Set(selectedEmployee).values().next().value;
 
     if (!employee) {
-      toast.error('Debe seleccionar un empleado');
+      toast.error('Debe seleccionar un empleado',{position:'top-center'});
 
       return;
     }
@@ -103,19 +106,19 @@ function AddProductionOrder() {
     const productionOrderType = new Set(selectedProductionOrderType).values().next().value;
 
     if (!productionOrderType) {
-      toast.error('Debe seleccionar un tipo de orden');
+      toast.error('Debe seleccionar un tipo de orden',{position:'top-center'});
 
       return;
     }
 
     if (selectedProducts.length === 0) {
-      toast.error('Debe agregar al menos un producto');
+      toast.error('Debe agregar al menos un producto',{position:'top-center'});
 
       return;
     }
 
     if (!moveSelectedBranch) {
-      toast.error('Debe seleccionar una sucursal de destino');
+      toast.error('Debe seleccionar una sucursal de destino',{position:'top-center'});
 
       return;
     }
@@ -142,10 +145,11 @@ function AddProductionOrder() {
     axios
       .post(API_URL + '/production-orders', payload)
       .then(() => {
-        toast.success('Orden de producción creada exitosamente');
+        toast.success('Orden de producción creada exitosamente',{position: 'top-center'});
+        navigate('/production-orders')
       })
       .catch(() => {
-        toast.error('Error al crear la orden de producción');
+        toast.error('Error al crear la orden de producción',{position:'top-center'});
       });
   };
 
@@ -248,8 +252,7 @@ function AddProductionOrder() {
               ))}
             </Select>
             <Input
-              className="col-span-2 d"
- 
+              className="col-span-2 dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Observaciones"
               placeholder="Observaciones"
@@ -336,7 +339,7 @@ function AddProductionOrder() {
             </div>
           </div>
           <div className="flex justify-end gap-5">
-            <ButtonUi className="px-6" theme={Colors.Error}>
+            <ButtonUi className="px-6" theme={Colors.Error} onPress={() => navigate('/production-orders')}>
               Cancelar
             </ButtonUi>
             <ButtonUi className="px-10" theme={Colors.Primary} onPress={handleSaveOrder}>
