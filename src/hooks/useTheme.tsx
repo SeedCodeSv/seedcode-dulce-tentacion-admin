@@ -17,11 +17,11 @@ interface ThemeContextType {
 
 export const ThemeContext = React.createContext<ThemeContextType>({
   theme: defaultTheme as ITheme,
-  toggleTheme: () => {},
+  toggleTheme: () => { },
   navbar: '',
-  toggleNavBar: () => {},
+  toggleNavBar: () => { },
   context: 'light',
-  toggleContext: () => {},
+  toggleContext: () => { },
 });
 
 function ThemeProvider(props: Props) {
@@ -41,6 +41,18 @@ function ThemeProvider(props: Props) {
     (localStorage.getItem('context') as 'light' | 'dark') ?? 'light'
   );
 
+  React.useEffect(() => {
+  const savedContext = localStorage.getItem('context') as 'light' | 'dark';
+  const root = window.document.documentElement;
+
+  if (savedContext === 'dark') {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+  }
+}, []);
+
+
   const toggleTheme = (themeName: ITheme) => {
     window.document.body.style.backgroundColor = themeName.colors[context].background;
     window.document.body.style.color = themeName.colors[context].textColor;
@@ -49,10 +61,19 @@ function ThemeProvider(props: Props) {
     localStorage.setItem('theme', JSON.stringify(themeName));
   };
 
-  const toggleContext = (context: 'light' | 'dark') => {
-    setContext(context);
-    localStorage.setItem('context', context);
+  const toggleContext = (newContext: 'light' | 'dark') => {
+    setContext(newContext);
+    localStorage.setItem('context', newContext);
+
+    const root = window.document.documentElement;
+
+    if (newContext === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
   };
+
 
   return (
     <ThemeContext.Provider
