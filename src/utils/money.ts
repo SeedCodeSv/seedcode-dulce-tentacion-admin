@@ -89,3 +89,12 @@ export const formatCurrencyWithout$ = (value: number) => {
   });
 };
 
+export const calc_iva = (total: number) => {
+  const iva = total * 0.13
+  const total_with_iva = total + iva
+
+  return {
+    iva,
+    total_with_iva
+  }
+}

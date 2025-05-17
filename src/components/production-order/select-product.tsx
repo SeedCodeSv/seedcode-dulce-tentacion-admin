@@ -118,10 +118,9 @@ function SelectProduct({
         onOpenChange={modalProducts.onOpenChange}
       >
         <DrawerContent>
-          {/* <DrawerHeader>Productos</DrawerHeader> */}
           <DrawerBody>
             <div className="flex flex-col gap-4 h-full overflow-y-auto">
-              <p className="text-lg font-semibold">Lista de productos</p>
+              <p className="text-lg font-semibold dark:text-white">Lista de productos</p>
               <div className="grid grid-cols-4 gap-3 place-content-end">
                 <div className="flex gap-3 items-end">
                   <Input

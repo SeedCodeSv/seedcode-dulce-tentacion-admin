@@ -28,26 +28,26 @@ export const get_employees_paginated = (
 
   return axios.get<IGetEmployeesPaginated>(
     API_URL +
-      `/employees/list-paginated/${id}?page=` +
-      page +
-      '&limit=' +
-      limit +
-      '&firstName=' +
-      firstName +
-      '&firstLastName=' +
-      firstLastName +
-      '&branch=' +
-      branch +
-      '&phone=' +
-      phone +
-      '&code=' +
-      codeEmployee +
-      '&active=' +
-      active +
-      '&startDate=' +
-      startDate +
-      '&endDate=' +
-      endDate,
+    `/employees/list-paginated/${id}?page=` +
+    page +
+    '&limit=' +
+    limit +
+    '&firstName=' +
+    firstName +
+    '&firstLastName=' +
+    firstLastName +
+    '&branch=' +
+    branch +
+    '&phone=' +
+    phone +
+    '&code=' +
+    codeEmployee +
+    '&active=' +
+    active +
+    '&startDate=' +
+    startDate +
+    '&endDate=' +
+    endDate,
 
     {
       headers: {
@@ -97,6 +97,15 @@ export const get_employee_list = () => {
   });
 };
 
+export const get_employee_by_branch = (id: number) => {
+  const token = get_token() ?? ''
+  
+  return axios.get<GetEmployeeList>(API_URL + '/employees/get-by-branch/' + id, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
 export const activate_employee = (id: number) => {
   const token = get_token() ?? '';
 

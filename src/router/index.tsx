@@ -77,6 +77,8 @@ const Customers = lazy(() => import('../pages/Customers'));
 const Branch = lazy(() => import('../pages/Branch'));
 const Error404 = lazy(() => import('../pages/Error404'));
 const Product = lazy(() => import('../pages/Product'));
+const NoteReferal = lazy(() => import('../pages/ReferalNote'));
+const AddReferalNote = lazy(() => import('../shopping-branch-product/pages/ShippingBranchProdut'));
 const ActionRol = lazy(() => import('../pages/ActionRol'));
 const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
@@ -118,15 +120,19 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/production-orders"
       />
-        <Route
+      <Route
         element={
           <AnimatedRoute>
-            {handleCheckPermission('Tipos de ordenes de producción') ? <ProductionOrderTypes /> : <Home />}
+            {handleCheckPermission('Tipos de ordenes de producción') ? (
+              <ProductionOrderTypes />
+            ) : (
+              <Home />
+            )}
           </AnimatedRoute>
         }
         path="/production-order-types"
       />
-       <Route
+      <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ordenes de producción') ? <AddProductionOrder /> : <Home />}
@@ -484,6 +490,22 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/add-product-recipe/:id/:recipe"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Notas de remisión') ? <NoteReferal /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/note-referal"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Notas de remisión') ? <AddReferalNote /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/list-referal-notes"
       />
       <Route
         element={

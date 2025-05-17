@@ -195,6 +195,10 @@
     {
       "view": "Movimientos",
       "actions": ["Mostrar","Descargar PDF"]
+    },
+    {
+      "view": "Invalidaciones",
+      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Ver Productos", "Activar Sucursal"]
     }
   ]
 }

@@ -11,6 +11,7 @@ import { Branches } from '@/types/branches.types';
 import { IGetBranchProductOrderPaginated } from '@/types/branch_product_order.types';
 import { BranchProductRecipe } from '@/types/products.types';
 import { IPagination } from '@/types/global.types';
+import { FC_CuerpoDocumentoItems } from '@/types/svf_dte/fc.types';
 
 export interface IBranchProductStore {
   branch_products: BranchProduct[];
@@ -72,4 +73,5 @@ export interface IBranchProductStore {
   onUpdateQuantity: (id: number, quantity: number) => void;
   getProductByCode: (transmitter_id: number, code: string) => void;
   getBranchesList: () => void;
+  onAddProductsByList: (id: number, cuerpoDescuento: FC_CuerpoDocumentoItems[]) => void;
 }

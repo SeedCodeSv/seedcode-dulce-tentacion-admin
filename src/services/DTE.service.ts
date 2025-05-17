@@ -22,6 +22,7 @@ import { SVFE_ND_SEND } from '../types/svf_dte/nd.types';
 import { SVFE_FSE_SEND } from '@/types/svf_dte/fse.types';
 import { SVFE_InvalidacionCredito_SEND } from '@/types/svf_dte/InvalidationCredito';
 import { SVFE_InvalidacionDebito_SEND } from '@/types/svf_dte/InvalidationDebito';
+import { SVFE_InvalidacionNRE_SEND } from '@/types/svf_dte/Invalidation04.types';
 
 export const get_ambiente_destino = () => {
   return axios<IGetAmbienteDestino>(FACTURACION_API + '/cat-001-ambiente-de-destino');
@@ -99,7 +100,7 @@ export const firmarDocumentoInvalidacion = (payload: ISignInvalidationData) => {
 };
 
 export const firmarDocumentoSujetoExcluido = (payload: SVFE_FSE_SEND) => {
-  return axios.post<{ body: string, status:string }>(API_FIRMADOR, payload);
+  return axios.post<{ body: string, status: string }>(API_FIRMADOR, payload);
 };
 
 export const firmarDocumentoInvalidacionCredito = (payload: SVFE_InvalidacionCredito_SEND) => {
@@ -117,6 +118,10 @@ export const get_json_from_space = (url: string) => {
     },
   });
 };
+
+export const firmarDocumentoInvalidacionNRE = (payload: SVFE_InvalidacionNRE_SEND) => {
+  return axios.post<{ body: string }>(API_FIRMADOR, payload)
+}
 
 export const check_dte = (payload: ICheckPayload, token: string) => {
   return axios.post<ICheckResponse>(

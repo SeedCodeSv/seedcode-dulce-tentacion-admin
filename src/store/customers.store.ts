@@ -10,6 +10,7 @@ import {
   delete_customer,
   getCustomerById,
   get_customer_by_id,
+  get_customer_by_branch,
 } from '../services/customers.service';
 import { messages } from '../utils/constants';
 
@@ -54,6 +55,15 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
             ok: false,
           },
         });
+      });
+  },
+  getCustomerByBranchId(){
+ get_customer_by_branch()
+      .then(({ data }) => {
+        set((state) => ({ ...state, customer_list: data.customers }));
+      })
+      .catch(() => {
+        set((state) => ({ ...state, customer_list: [] }));
       });
   },
   // postCustomer: (payload) => {
@@ -139,6 +149,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         return false;
       });
   },
+
   getCustomersList() {
     get_customer()
       .then(({ data }) => {
