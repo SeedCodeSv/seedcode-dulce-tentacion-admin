@@ -103,7 +103,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
   const handleEditQuantity = (quantity: number, index: number) => {
     const list_suppliers = [...devolution];
 
-    list_suppliers[index].quantity = quantity;
+    list_suppliers[index].quantity = Number(quantity);
     setDevolution(list_suppliers);
   };
 
@@ -116,28 +116,28 @@ const ProductItem: React.FC<ProductItemProps> = ({
   }, [canReturnProduct, devolution]);
 
   return (
-    <div className="border rounded-lg mb-4 bg-white overflow-hidden transition-all duration-200">
+    <div className="border dark:bg-gray-900 rounded-lg mb-4 bg-white overflow-hidden transition-all duration-200">
       <div className="flex justify-between items-center p-4">
         <div className="flex items-center space-x-3">
           {getStatusIcon()}
           <div>
-            <h3 className="font-medium text-gray-800">{name}</h3>
-            <p className="text-sm text-gray-500">{code}</p>
+            <h3 className="font-medium text-gray-800 dark:text-gray-100">{name}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-300/80">{code}</p>
           </div>
         </div>
         <div className="flex items-center space-x-4">
           <div className="text-right">
-            <p className="text-sm text-gray-500">Esperado</p>
+            <p className="text-sm text-gray-500 dark:text-gray-300/80">Esperado</p>
             <p className="font-medium">
               {expectedQuantity} {formatNameByCode(unit)}
             </p>
           </div>
           <button
-            className="p-2 rounded-full hover:bg-gray-100"
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 "
             onClick={() => setExpanded(!expanded)}
           >
             <svg
-              className={`w-5 h-5 transform transition-transform ${expanded ? 'rotate-180' : ''}`}
+              className={`w-5 h-5 transform transition-transform dark:text-gray-100 ${expanded ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -155,12 +155,13 @@ const ProductItem: React.FC<ProductItemProps> = ({
       </div>
 
       {expanded && (
-        <div className="p-4 bg-gray-50 border-t">
+        <div className="p-4 bg-gray-50 dark:bg-gray-800/50 border-t">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <Input
                 classNames={{
                   label: 'font-semibold text-xs',
+                  base: 'dark:text-white'
                 }}
                 label="Cantidad Producida (Buena)"
                 labelPlacement="outside"
@@ -174,6 +175,7 @@ const ProductItem: React.FC<ProductItemProps> = ({
               <Input
                 classNames={{
                   label: 'font-semibold text-xs',
+                  base: 'dark:text-white'
                 }}
                 label="Cantidad Dañada/Perdida"
                 labelPlacement="outside"
@@ -214,16 +216,17 @@ const ProductItem: React.FC<ProductItemProps> = ({
           </div>
           {canReturnProduct && (
             <div>
-              <p className="font-semibold text-lg py-3">Receta / Materia prima</p>
+              <p className="font-semibold text-lg py-3 dark:text-gray-300">Receta / Materia prima</p>
               <div className="grid grid-cols-2 gap-5">
                 {devolution.map((ingredient) => (
                   <>
-                    <div className="border p-4 bg-white rounded-[12px]">
-                      <p className="pb-3 font-semibold">{ingredient.name}</p>
+                    <div className="border p-4 bg-white dark:bg-gray-900 rounded-[12px]">
+                      <p className="pb-3 font-semibold dark:text-gray-100">{ingredient.name}</p>
                       <Input
                         className="w-full"
                         classNames={{
                           label: 'text-xs font-semibold',
+                          base: 'dark:text-white'
                         }}
                         endContent={
                           <>
@@ -232,8 +235,9 @@ const ProductItem: React.FC<ProductItemProps> = ({
                               id="currency"
                               name="currency"
                               value={ingredient.uniMedida}
-                              onChange={(e) =>
-                                handleEditUniMedida(e.target.value, devolution.indexOf(ingredient))
+                              onChange={(e) =>{
+                                handleEditUniMedida(String(e.target.value), devolution.indexOf(ingredient));
+                                }
                               }
                             >
                               {filtrarPorCategoria(

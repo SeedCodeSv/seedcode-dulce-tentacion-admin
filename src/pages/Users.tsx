@@ -13,7 +13,7 @@ function Users() {
  
   return (
     <Layout title="Usuarios">
-      <ListUsers actionss={actionView} />
+      <ListUsers actions={actionView} />
     </Layout>
   );
 }

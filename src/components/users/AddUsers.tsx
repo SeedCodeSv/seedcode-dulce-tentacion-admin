@@ -1,10 +1,10 @@
 import { Autocomplete, AutocompleteItem, Input } from '@heroui/react';
 import { Formik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
+import { Eye, EyeOff } from 'lucide-react';
 
 import { useRolesStore } from '../../store/roles.store';
-import { Role } from '../../types/roles.types';
 import { useUsersStore } from '../../store/users.store';
 import { UserPayload } from '../../types/users.types';
 
@@ -46,6 +46,8 @@ function AddUsers(props: Props) {
     });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="dark:text-white ">
       <Formik
@@ -57,7 +59,7 @@ function AddUsers(props: Props) {
       >
         {({ values, touched, errors, handleBlur, handleChange, handleSubmit }) => (
           <>
-            <div className="mt-5 flex flex-col">
+            <div className="flex flex-col">
               <div className="pt-2">
                 <Input
                   className="dark:text-white"
@@ -82,13 +84,26 @@ function AddUsers(props: Props) {
                   classNames={{
                     base: 'text-gray-500 text-sm font-semibold',
                   }}
+                  endContent={
+                    showPassword ? (
+                      <EyeOff
+                        className="cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      />
+                    ) : (
+                      <Eye
+                        className="cursor-pointer"
+                        onClick={() => setShowPassword(!showPassword)}
+                      />
+                    )
+                  }
                   errorMessage={touched.password && errors.password}
                   isInvalid={touched.password && !!errors.password}
                   label="Contraseña"
                   labelPlacement="outside"
                   name="password"
                   placeholder="Ingresa la Contraseña"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={values.password}
                   variant="bordered"
                   onBlur={handleBlur('password')}
@@ -111,16 +126,16 @@ function AddUsers(props: Props) {
                   onBlur={handleBlur('roleId')}
                   onSelectionChange={(key) => {
                     if (key) {
-                      const depSelected = JSON.parse(key as string) as Role;
+                      const depSelected = String(key);
 
-                      handleChange('roleId')(depSelected.id.toString());
+                      handleChange('roleId')(depSelected);
                     }
                   }}
                 >
                   {roles_list
                     .filter((dep) => dep.name !== 'TIENDA')
                     .map((dep) => (
-                      <AutocompleteItem key={JSON.stringify(dep)} className="dark:text-white">
+                      <AutocompleteItem key={dep.id} className="dark:text-white">
                         {dep.name}
                       </AutocompleteItem>
                     ))}

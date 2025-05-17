@@ -5,16 +5,18 @@ import { HiXCircle } from 'react-icons/hi2';
 import { toast } from 'sonner';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
-import { Button, 
-  Chip, 
+import {
+  Button,
+  Chip,
   Listbox,
   ListboxItem,
-  Popover, 
+  Popover,
   PopoverContent,
-  PopoverTrigger, 
+  PopoverTrigger,
   Tab,
-  Tabs, 
-  useDisclosure } from '@heroui/react';
+  Tabs,
+  useDisclosure
+} from '@heroui/react';
 
 import Layout from '../layout/Layout';
 import { salesReportStore } from '../store/reports/sales_report.store';
@@ -31,6 +33,8 @@ import { get_pdf_fe_cfe } from '@/services/pdf.service';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 import FullPageLayout from '@/components/global/FullOverflowLayout';
 import ResendEmail from '@/components/reporters/ResendEmail';
+import LoadingTable from '@/components/global/LoadingTable';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 
 function Home() {
@@ -57,7 +61,7 @@ function Home() {
   const togglePopover = (path: string) => {
     setOpenPopover((prev) => (prev === path ? null : path))
   }
-  
+
   const { user } = useAuthStore();
 
   useEffect(() => {
@@ -73,7 +77,7 @@ function Home() {
       getSalesTableDayDetails(transmitterId)
     }
   }, [user]);
-  
+
   const showPDF = async (sale: Sale): Promise<void> => {
     setLoadingPdf(true);
     showPdf.onOpen();
@@ -141,18 +145,18 @@ function Home() {
 
   const handleAction = (key: string, sale: Sale) => {
     switch (key) {
-    case 'show-pdf':
-      if (isMovil) {
-        downloadPDF(sale);
-      } else {
-        showPDF(sale);
-      }
-      break;
-    case 'download-json':
-      downloadJSON(sale);
-      break;
-    default:
-      toast.error(`Acción desconocida:${key}`);
+      case 'show-pdf':
+        if (isMovil) {
+          downloadPDF(sale);
+        } else {
+          showPDF(sale);
+        }
+        break;
+      case 'download-json':
+        downloadJSON(sale);
+        break;
+      default:
+        toast.error(`Acción desconocida:${key}`);
     }
     setOpenPopover(null)
   };
@@ -217,136 +221,105 @@ function Home() {
           <Charts />
         </div>
         <div >
-        <p className="my-3 text-lg font-semibold dark:text-white">Ventas del dia</p>
-        <Tabs
-        classNames={{
-          tabList: "flex w-full bg-blue-50 p-1 gap-2 mb-4 overflow-x-auto",
-        }}
-        defaultSelectedKey='Details'
-        >
-          <Tab key='Summary' className='w-full'  title="Resumen por sucursal" >
-          <div className="w-full mt-5 max-h-[400px] md:max-h-full overflow-y-auto">
-          <div className="col-span-3 dark:border-gray-500 border p-5 rounded-lg dark:bg-gray-900 xl:mt-0 lg:mt-0 mb:mt-0 sm:mt-0">
-            {loading_sales_by_table_date ? (
-              <>
-                <div className="flex flex-col items-center justify-center w-full h-64">
-                  <div className="loader" />
-                  <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                </div>
-              </>
-            ) : (
-              <div>
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        No.
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Nombre
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  {sales_table_day.map((sl, index) => (
-                    <tr key={index} className="border-b border-slate-200 dark:border-slate-500">
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {index + 1}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {sl.branch}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {formatCurrency(+sl.totalSales)}
-                      </td>
-                    </tr>
-                  ))}
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-          </Tab>
-          <Tab key='Details' title="Ventas detalladas">
-          {loading_sales_by_table_details ? (
-              <>
-                <div className="flex flex-col items-center justify-center w-full h-64">
-                  <div className="loader" />
-                  <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                </div>
-              </>
-            ) : (
-          <div className="max-h-[400px] px-3 min-h-32 overflow-y-auto overflow-x-auto custom-scrollbar">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
-                  <tr>
-                    {['Nº de control','Sucursal', 'Estado', 'Total', 'Acciones'].map((header) => (
-                      <th
-                        
-                        key={header}
-                        className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
-                  {sales_table_day_details.map((sale, index) => (
+          <p className="my-3 text-lg font-semibold dark:text-white">Ventas del dia</p>
+          <Tabs
+            classNames={{
+              tabList: "flex w-full bg-blue-50 p-1 gap-2 mb-4 overflow-x-auto",
+            }}
+            defaultSelectedKey='Details'
+          >
+            <Tab key='Summary' className='w-full' title="Resumen por sucursal" >
+              <div className="w-full max-h-[400px] md:max-h-full overflow-y-auto">
+                <div className="col-span-3 dark:border-gray-500 dark:bg-gray-900">
+                  {loading_sales_by_table_date ? (
                     <>
-                     
-                        <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {sale.numeroControl}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            {sale.employee.branch.name}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            <>
-                              <Chip
-                                classNames={{
-                                  content: 'text-white text-sm !font-bold px-3',
-                                }}
-                                color={
-                                  sale.salesStatus.name === 'CONTINGENCIA'
-                                    ? 'warning'
-                                    : sale.salesStatus.name === 'PROCESADO'
-                                      ? 'success'
-                                      : 'danger'
-                                }
-                              >
-                                {sale.salesStatus.name}
-                              </Chip>
-                            </>
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            ${sale.montoTotalOperacion}
-                          </td>
-                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                            <Popover showArrow
-                            isOpen={openPopover === sale.pathJson}
-                            onOpenChange={() => togglePopover(sale.pathJson)}>
-                              <PopoverTrigger>
-                               <Button isIconOnly onPress={() => togglePopover(sale.pathJson)}>
-                                <EllipsisVertical size={20} />
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="p-1">
-                                {renderSaleActions(sale)}
-                              </PopoverContent>
-                            </Popover>
-                          </td>
-                        </tr>
+                      <LoadingTable />
                     </>
-                  ))}
-                </tbody>
-              </table>
-            </div>)}
-          </Tab>
-        </Tabs>
+                  ) : (
+                    <div>
+                      <TableComponent
+                      className='pt-0'
+                        headers={["Nº", "Nombre", "Total"]}
+                      >
+                        {sales_table_day.map((sl, index) => (
+                          <tr key={index} className="border-b border-slate-200 dark:border-slate-500">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {index + 1}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {sl.branch}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {formatCurrency(+sl.totalSales)}
+                            </td>
+                          </tr>
+                        ))}
+                      </TableComponent>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Tab>
+            <Tab key='Details' title="Ventas detalladas">
+              {loading_sales_by_table_details ? (
+                <>
+                  <LoadingTable/>
+                </>
+              ) : (
+                 <TableComponent
+              headers={['Nº de control', 'Sucursal', 'Estado', 'Total', 'Acciones']}
+            >
+                      {sales_table_day_details.map((sale, index) => (
+                        <>
+
+                          <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {sale.numeroControl}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {sale.employee.branch.name}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              <>
+                                <Chip
+                                  classNames={{
+                                    content: 'text-white text-sm !font-bold px-3',
+                                  }}
+                                  color={
+                                    sale.salesStatus.name === 'CONTINGENCIA'
+                                      ? 'warning'
+                                      : sale.salesStatus.name === 'PROCESADO'
+                                        ? 'success'
+                                        : 'danger'
+                                  }
+                                >
+                                  {sale.salesStatus.name}
+                                </Chip>
+                              </>
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              ${sale.montoTotalOperacion}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              <Popover showArrow
+                                isOpen={openPopover === sale.pathJson}
+                                onOpenChange={() => togglePopover(sale.pathJson)}>
+                                <PopoverTrigger>
+                                  <Button isIconOnly onPress={() => togglePopover(sale.pathJson)}>
+                                    <EllipsisVertical size={20} />
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="p-1">
+                                  {renderSaleActions(sale)}
+                                </PopoverContent>
+                              </Popover>
+                            </td>
+                          </tr>
+                        </>
+                      ))}
+                   </TableComponent>)}
+            </Tab>
+          </Tabs>
         </div>
         <FullPageLayout show={showPdf.isOpen}>
           <div className="w-full h-full bg-white rounded-2xl relative">

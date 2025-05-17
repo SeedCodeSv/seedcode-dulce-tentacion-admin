@@ -29,8 +29,7 @@ import {
   ListOrdered,
   ArrowDownUp,
   ShoppingBasket,
-  FileCog,
-  NotebookIcon,
+  FileCog
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -135,12 +134,6 @@ export const LayoutItems = (props: Props) => {
       icon: FaChartLine ,
       label: 'Ver Notas de remisión',
     },
-    {
-      viewName: 'Notas de remisión',
-      to: '/list-referal-notes',
-      icon: NotebookIcon,
-      label: 'Notas de remisión',
-    }
   ];
 
   const linkAdministration = [
@@ -361,7 +354,7 @@ export const LayoutItems = (props: Props) => {
 
   return (
     <>
-      <div className="flex justify-between items-center h-[70px] dark:bg-gray-900">
+      <div className="flex justify-between items-center h-[70px]">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
             <img alt="LOGO" className="max-h-12" src={LOGO} />

@@ -89,7 +89,7 @@ export interface GetProductionOrder {
 }
 
 export interface ProductionOrderDetails extends ProductionOrder {
-  productionOrderDetails: ProductionOrderDetail[];
+  details: ProductionOrderDetail[];
 }
 
 export interface ProductionOrderDetail {

@@ -1,16 +1,16 @@
 import { ButtonGroup } from '@heroui/react';
-import { CreditCard, List, Table } from 'lucide-react';
+import { CreditCard, Table } from 'lucide-react';
 
-import ButtonUi from '@/themes/ui/button-ui';
+import ButtonUi from './button-ui';
+
 import { Colors } from '@/types/themes.types';
 
 interface Props {
-  view: 'table' | 'grid' | 'list';
-  setView: (view: 'table' | 'grid' | 'list') => void;
-  isList?: boolean
+    view: "table" | "grid";
+    setView: (view: "table" | "grid") => void;
 }
 
-function RenderViewButton({ view, setView, isList = false}: Props) {
+function DisplayView({ view, setView }: Props) {
   return (
     <ButtonGroup>
       <ButtonUi
@@ -27,17 +27,8 @@ function RenderViewButton({ view, setView, isList = false}: Props) {
       >
         <CreditCard />
       </ButtonUi>
-      {isList &&
-        <ButtonUi
-          isIconOnly
-          theme={view === 'list' ? Colors.Primary : Colors.Default}
-          onPress={() => setView('list')}
-        >
-          <List />
-        </ButtonUi>
-      }
     </ButtonGroup>
   );
 }
 
-export default RenderViewButton;
+export default DisplayView;

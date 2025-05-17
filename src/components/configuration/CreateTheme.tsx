@@ -10,6 +10,7 @@ import { defaultTheme } from '../../utils/constants';
 import Layout from '@/layout/Layout';
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
+import DivGlobal from "@/themes/ui/div-global";
 
 function CreateTheme() {
   const [color, setColor] = useState(defaultTheme);
@@ -30,8 +31,7 @@ function CreateTheme() {
     <>
       <Layout title="Agregar tema">
         <>
-          <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <DivGlobal className="flex flex-col h-full overflow-y-auto ">
               <button className="flex cursor-pointer" onClick={() => navigate('/configuration')}>
                 <ArrowLeft className="mr-2 dark:text-white" />
                 <p className="text-lg font-semibold dark:text-white"> Regresar </p>
@@ -202,8 +202,7 @@ function CreateTheme() {
                   Guardar
                 </ButtonUi>
               </div>
-            </div>
-          </div>
+          </DivGlobal>
         </>
       </Layout>
     </>

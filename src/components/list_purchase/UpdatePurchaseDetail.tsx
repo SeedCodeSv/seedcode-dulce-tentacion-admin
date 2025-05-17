@@ -12,6 +12,7 @@ import { global_styles } from '@/styles/global.styles';
 import { usePurchaseOrdersStore } from '@/store/purchase_orders.store';
 import Layout from '@/layout/Layout';
 import HeadlessModal from '@/components/global/HeadlessModal';
+import DivGlobal from '@/themes/ui/div-global';
 function UpdatePurchaseDetail() {
   const { purchaseId } = useParams();
   const {
@@ -104,8 +105,7 @@ function UpdatePurchaseDetail() {
 
   return (
     <Layout title="Confirmar orden">
-      <div className="w-full h-full p-4  md:px-4 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full flex flex-col p-6 mt-2 border  rounded-xl overflow-y-auto  custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+        <DivGlobal className="flex flex-col h-full overflow-y-auto ">
           <div className="flex justify-between">
             <h2 className="text-3xl font-bold dark:text-white mb-6">Detalle de Orden</h2>
           </div>
@@ -319,8 +319,7 @@ function UpdatePurchaseDetail() {
               {/* <input onChange={handleFileChange} type="file" id="uploadFile1" className="hidden" /> */}
             </label>
           </HeadlessModal>
-        </div>
-      </div>
+       </DivGlobal>
     </Layout>
   );
 }

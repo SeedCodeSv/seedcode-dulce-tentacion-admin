@@ -3,6 +3,7 @@ import { Book, Plus, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import ThGlobal from '@/themes/ui/th-global';
@@ -17,6 +18,11 @@ import { preventLetters } from '@/utils';
 import SelectProduct from '@/components/production-order/select-product';
 import { API_URL, typesProduct } from '@/utils/constants';
 import RecipeBook from '@/components/production-order/product-recipe';
+import DivGlobal from '@/themes/ui/div-global';
+import TdGlobal from '@/themes/ui/td-global';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
+
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -25,6 +31,7 @@ type ProductRecipe = BranchProductRecipe & {
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
   const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
+  const isMovil = useIsMobileOrTablet()
 
   const [selectedBranch, setSelectedBranch] = useState<Selection>(new Set([]));
   const [moveSelectedBranch, setMoveSelectedBranch] = useState<Selection>(new Set([]));
@@ -32,6 +39,7 @@ function AddProductionOrder() {
   const [selectedProductionOrderType, setSelectedProductionOrderType] = useState<Selection>(
     new Set([])
   );
+  const navigate = useNavigate()
   const [observation, setObservation] = useState('');
 
   const [productId, setProductId] = useState(0);
@@ -85,7 +93,7 @@ function AddProductionOrder() {
     const branch = new Set(selectedBranch).values().next().value;
 
     if (!branch) {
-      toast.error('Debe seleccionar una sucursal');
+      toast.error('Debe seleccionar una sucursal',{position:'top-center'});
 
       return;
     }
@@ -93,7 +101,7 @@ function AddProductionOrder() {
     const employee = new Set(selectedEmployee).values().next().value;
 
     if (!employee) {
-      toast.error('Debe seleccionar un empleado');
+      toast.error('Debe seleccionar un empleado',{position:'top-center'});
 
       return;
     }
@@ -101,24 +109,25 @@ function AddProductionOrder() {
     const productionOrderType = new Set(selectedProductionOrderType).values().next().value;
 
     if (!productionOrderType) {
-      toast.error('Debe seleccionar un tipo de orden');
+      toast.error('Debe seleccionar un tipo de orden',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
 
       return;
     }
 
     if (selectedProducts.length === 0) {
-      toast.error('Debe agregar al menos un producto');
-
-      return;
-    }
-
-    if (!moveSelectedBranch) {
-      toast.error('Debe seleccionar una sucursal de destino');
+      toast.error('Debe agregar al menos un producto',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
 
       return;
     }
 
     const destinationBranch = new Set(moveSelectedBranch).values().next().value;
+
+    if (!destinationBranch) {
+      toast.error('Debe seleccionar una sucursal de destino',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
+
+      return;
+    }
+
     const prodType = new Set(selectedProductionOrderType).values().next().value;
 
     const payload = {
@@ -134,16 +143,17 @@ function AddProductionOrder() {
         max: p.recipeBook?.maxProduction ?? 0,
       })),
       observation,
-      moreInformation : "[]"
+      moreInformation: '[]',
     };
 
     axios
       .post(API_URL + '/production-orders', payload)
       .then(() => {
-        toast.success('Orden de producción creada exitosamente');
+        toast.success('Orden de producción creada exitosamente',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
+        navigate('/production-orders')
       })
       .catch(() => {
-        toast.error('Error al crear la orden de producción');
+        toast.error('Error al crear la orden de producción',{ position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
       });
   };
 
@@ -158,6 +168,8 @@ function AddProductionOrder() {
     }
   };
 
+  const navigation = useNavigate();
+
   return (
     <Layout title="Nueva Orden de Producción">
       <>
@@ -166,9 +178,10 @@ function AddProductionOrder() {
           productId={productId}
           onOpenChange={modalRecipe.onOpenChange}
         />
-        <div className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8 bg-gray-50 dark:bg-gray-900">
-          <div className="grid grid-cols-3 gap-x-5 gap-y-2 mt-3">
+        <DivGlobal className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8">
+            <ResponsiveFilterWrapper withButton={false}>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Tipo de Orden"
               placeholder="Seleccione el tipo de orden de producción"
@@ -178,10 +191,13 @@ function AddProductionOrder() {
               onSelectionChange={setSelectedProductionOrderType}
             >
               {productionOrderTypes.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Extraer producto de"
               placeholder="Selecciona la sucursal de origen"
@@ -191,10 +207,13 @@ function AddProductionOrder() {
               onSelectionChange={setSelectedBranch}
             >
               {branch_list.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Mover producto terminado a"
               placeholder="Seleccione la sucursal de destino"
@@ -204,10 +223,13 @@ function AddProductionOrder() {
               onSelectionChange={setMoveSelectedBranch}
             >
               {branch_list.map((b) => (
-                <SelectItem key={b.id}>{b.name}</SelectItem>
+                <SelectItem key={b.id} className="dark:text-white">
+                  {b.name}
+                </SelectItem>
               ))}
             </Select>
             <Select
+              className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Encargado de la orden"
               placeholder="Selecciona el encargado de la orden"
@@ -219,6 +241,7 @@ function AddProductionOrder() {
               {employee_list.map((e) => (
                 <SelectItem
                   key={e.id}
+                  className="dark:text-white"
                   textValue={
                     e.firstName +
                     ' ' +
@@ -235,7 +258,7 @@ function AddProductionOrder() {
               ))}
             </Select>
             <Input
-              className="col-span-2"
+              className="col-span-2 dark:text-white"
               classNames={{ label: 'font-semibold' }}
               label="Observaciones"
               placeholder="Observaciones"
@@ -243,8 +266,8 @@ function AddProductionOrder() {
               variant="bordered"
               onChange={(e) => setObservation(e.target.value)}
             />
-          </div>
-          <div className="flex justify-between items-end w-full my-2">
+            </ResponsiveFilterWrapper>
+          <div className="flex justify-between items-end w-full my-4">
             <p className="text-sm font-semibold">Productos</p>
             <ButtonUi
               isIconOnly
@@ -273,12 +296,12 @@ function AddProductionOrder() {
                 <tbody>
                   {selectedProducts.map((sp, i) => (
                     <tr key={sp.id}>
-                      <td className="p-3">{i + 1}</td>
-                      <td className="p-3">{sp.product.name}</td>
-                      <td className="p-3">{sp.product.description}</td>
-                      <td className="p-3">{sp.product.code}</td>
-                      <td className="p-3">{sp.product.unidaDeMedida}</td>
-                      <td className="p-3">
+                      <TdGlobal className="p-3">{i + 1}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.name}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.description}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.code}</TdGlobal>
+                      <TdGlobal className="p-3">{sp.product.unidaDeMedida}</TdGlobal>
+                      <TdGlobal className="p-3">
                         <Input
                           aria-labelledby="Cantidad a producir"
                           className="max-w-44"
@@ -294,9 +317,9 @@ function AddProductionOrder() {
                             handleUpdateQuantity(sp, text as unknown as number)
                           }
                         />
-                      </td>
-                      <td className="p-3">{sp.recipeBook?.maxProduction ?? '0'}</td>
-                      <td className="p-3 flex gap-3">
+                      </TdGlobal>
+                      <TdGlobal className="p-3">{sp.recipeBook?.maxProduction ?? '0'}</TdGlobal>
+                      <TdGlobal className="p-3 flex gap-3">
                         <ButtonUi
                           isIconOnly
                           theme={Colors.Error}
@@ -314,7 +337,7 @@ function AddProductionOrder() {
                         >
                           <Book />
                         </ButtonUi>
-                      </td>
+                      </TdGlobal>
                     </tr>
                   ))}
                 </tbody>
@@ -322,14 +345,18 @@ function AddProductionOrder() {
             </div>
           </div>
           <div className="flex justify-end gap-5">
-            <ButtonUi className="px-6" theme={Colors.Error}>
+            <ButtonUi
+              className="px-6"
+              theme={Colors.Error}
+              onPress={() => navigation('/production-orders')}
+            >
               Cancelar
             </ButtonUi>
             <ButtonUi className="px-10" theme={Colors.Primary} onPress={handleSaveOrder}>
               Guardar
             </ButtonUi>
           </div>
-        </div>
+        </DivGlobal>
         <SelectProduct
           modalProducts={modalProducts}
           selectedBranch={selectedBranch}
