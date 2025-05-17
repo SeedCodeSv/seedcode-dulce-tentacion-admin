@@ -39,10 +39,12 @@ function PurchaseOrders() {
 
               <Tabs aria-label="Options" 
                 classNames={{
-                  tab: 'bg-[#f4a261] text-white shadow py-1 h-full ',
-                  tabContent: "text-white group-data-[selected=true]:text-[#f4a261]",
+                  tab: 'bg-white text-white shadow py-1 h-full ',
+                  tabList:'bg-gray-100 border-2 border-indigo-100',
+                  tabContent: "text-[#f4a261] group-data-[selected=true]:text-white",
+                  cursor: 'bg-[#f4a261]'
                 }}
-               variant="solid">
+               variant="bordered">
                 <Tab
                   key="photos"
                   title={

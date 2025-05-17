@@ -7,10 +7,10 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
 import { usePermission } from '@/hooks/usePermission';
-import ThGlobal from '@/themes/ui/th-global';
 import AddProductionOrderType from '@/components/production-order-type/add-production-order-type';
 import DivGlobal from '@/themes/ui/div-global';
 import EmptyTable from '@/components/global/EmptyTable';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function ProductionOrderTypes() {
   const { roleActions, returnActionsByView } = usePermission();
@@ -41,33 +41,24 @@ function ProductionOrderTypes() {
             </>
           )}
         </div>
-        <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                <ThGlobal className="text-left p-3">No.</ThGlobal>
-                <ThGlobal className="text-left p-3">Nombre</ThGlobal>
-                <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-              </tr>
-            </thead>
-            <tbody>
-              {productionOrderTypes.length === 0 && (
-                <tr>
-                  <td className="p-3" colSpan={3}>
-                   <EmptyTable/>
-                  </td>
-                </tr>
-              )}
-              {productionOrderTypes.map((productionOrderType, index) => (
-                <tr key={index}>
-                  <td className="p-3">{index + 1}</td>
-                  <td className="p-3">{productionOrderType.name}</td>
-                  <td className="p-3">Acciones</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <TableComponent
+          headers={['Nº', 'Nombre', 'Acciones']}
+        >
+          {productionOrderTypes.length === 0 && (
+            <tr>
+              <td className="p-3" colSpan={3}>
+                <EmptyTable />
+              </td>
+            </tr>
+          )}
+          {productionOrderTypes.map((productionOrderType, index) => (
+            <tr key={index}>
+              <td className="p-3">{index + 1}</td>
+              <td className="p-3">{productionOrderType.name}</td>
+              <td className="p-3">Acciones</td>
+            </tr>
+          ))}
+        </TableComponent>
       </DivGlobal>
     </Layout>
   );

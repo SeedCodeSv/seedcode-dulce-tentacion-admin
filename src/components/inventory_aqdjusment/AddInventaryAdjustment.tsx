@@ -163,7 +163,7 @@ export default function InventoryManagement({
   return (
     <>
       <></>
-      <div className="w-full  bg-transparent h-full relative">
+      <div className="w-full bg-transparent h-full relative">
         <div className="w-full h-full flex flex-col overflow-hidden">
           <div className="flex flex-col lg:flex-row gap-6 flex-grow overflow-hidden">
             <div className="w-full h-[calc(100vh-200px)] p-4 border rounded-xl space-y-6 overflow-auto scrollbar-hide relative">

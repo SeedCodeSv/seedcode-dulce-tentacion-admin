@@ -20,7 +20,6 @@ import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
-import ThGlobal from '@/themes/ui/th-global';
 import { formatDate } from '@/utils/dates';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -36,6 +35,7 @@ import TdGlobal from '@/themes/ui/td-global';
 import Pagination from '@/components/global/Pagination';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import EmptyTable from '@/components/global/EmptyTable';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 type Key = string;
 
@@ -207,20 +207,9 @@ function ProductionOrders() {
             <Plus />
           </ButtonUi>
         </div>
-        <div className="overflow-y-auto h-full custom-scrollbar mt-4">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                <ThGlobal className="text-left p-3">No.</ThGlobal>
-                <ThGlobal className="text-left p-3">Fecha de inicio</ThGlobal>
-                <ThGlobal className="text-left p-3">Hora de inicio</ThGlobal>
-                <ThGlobal className="text-left p-3">Fecha de fin</ThGlobal>
-                <ThGlobal className="text-left p-3">Hora de fin </ThGlobal>
-                <ThGlobal className="text-left p-3">Estado</ThGlobal>
-                <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-              </tr>
-            </thead>
-            <tbody>
+        <TableComponent
+            headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin",'Hora de fin','Estado','Acciones']}
+          >
               {productionOrders.length === 0 && (
                 <tr>
                   <td className="p-3" colSpan={7}>
@@ -310,9 +299,7 @@ function ProductionOrders() {
                   </TdGlobal>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableComponent>
         <div className="mt-3">
           <Pagination
             currentPage={paginationProductionOrders.currentPag}

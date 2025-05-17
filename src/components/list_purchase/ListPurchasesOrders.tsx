@@ -8,10 +8,7 @@ import {
 } from '@heroui/react';
 import { AlignJustify, ClipboardCheck, Shield, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
-// eslint-disable-next-line import/order
 import { AnimatePresence, motion } from 'framer-motion';
-
-// import AddPurchaseOrders from './AddPurchaseOrders';
 import { useEffect, useState } from 'react';
 
 import AddButton from '../global/AddButton';
@@ -28,6 +25,7 @@ import { limit_options } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { useDebounce } from '@/hooks/useDebounce';
 import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 interface Props {
   actions: string[];
@@ -226,49 +224,9 @@ function ListPurchasesOrders({ actions }: Props) {
             </div>
           </div>
           <>
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
-                  <tr>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      No.
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Fecha
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Proveedor
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Sucursal
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Estado
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
+             <TableComponent
+              headers={["Nº", "Fecha", "Proveedor", "Sucursal",'Estado','Acciones']}
+            >
                   {pagination_purchase_orders_loading ? (
                     <tr>
                       <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
@@ -356,9 +314,7 @@ function ListPurchasesOrders({ actions }: Props) {
                       )}
                     </>
                   )}
-                </tbody>
-              </table>
-            </div>
+               </TableComponent>
           </>
 
           {pagination_purchase_orders.totalPag > 1 && (

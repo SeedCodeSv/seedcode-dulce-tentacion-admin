@@ -25,17 +25,18 @@ import Pagination from '../global/Pagination';
 import AddButton from '../global/AddButton';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import EmptyTable from '../global/EmptyTable';
+import LoadingTable from '../global/LoadingTable';
 
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
 import { useShoppingStore } from '@/store/shopping.store';
 import { ArrayAction } from '@/types/view.types';
 import { API_URL, limit_options } from '@/utils/constants';
-import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const {
@@ -255,28 +256,13 @@ function ShoppingPage({ actions }: ArrayAction) {
           </ResponsiveFilterWrapper>
         </div>
         <div className="mt-6 m-6">
-          <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-            <table className="w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  <ThGlobal className="text-left p-3">No.</ThGlobal>
-                  <ThGlobal className="text-left p-3">No. de control</ThGlobal>
-                  <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
-                  <ThGlobal className="text-left p-3">Fecha/Hora emisión</ThGlobal>
-                  <ThGlobal className="text-left p-3">Subtotal</ThGlobal>
-                  <ThGlobal className="text-left p-3">IVA</ThGlobal>
-                  <ThGlobal className="text-left p-3">Monto total</ThGlobal>
-                  <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-                </tr>
-              </thead>
-              <tbody className="max-h-[600px] w-full overflow-y-auto">
+           <TableComponent
+              headers={["Nº", "No. de control", "Cod. generación", "Fecha/Hora emisión",'Subtotal','IVA','Monto total','Acciones']}
+            >
                 {loading_shopping ? (
                   <tr>
                     <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                      <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader" />
-                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                      </div>
+                      <LoadingTable/>
                     </td>
                   </tr>
                 ) : (
@@ -368,9 +354,7 @@ function ShoppingPage({ actions }: ArrayAction) {
                     )}
                   </>
                 )}
-              </tbody>
-            </table>
-          </div>
+             </TableComponent>
           {pagination_shopping.totalPag > 1 && (
             <>
               <div className="w-full mt-5">
