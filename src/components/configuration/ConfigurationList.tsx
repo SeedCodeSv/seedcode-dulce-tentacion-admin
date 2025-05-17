@@ -42,8 +42,7 @@ const ConfigurationList = ({ actions }: Props) => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
 
-  const tramsiter =
-    user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+  const tramsiter = user?.pointOfSale?.branch.transmitterId ?? 0;
 
   useEffect(() => {
     GetConfigurationByTransmitter(tramsiter || 0);

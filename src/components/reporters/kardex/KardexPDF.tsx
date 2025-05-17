@@ -10,10 +10,10 @@ import { global_styles } from '@/styles/global.styles';
 import { Kardex } from '@/types/reports/reportKardex.types';
 import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
-import {  hexToRgb } from '@/utils/utils';
+import { hexToRgb } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
- import DEFAULT_LOGO from '@/assets/dulce-logo.png';
-
+import DEFAULT_LOGO from '@/assets/dulce-logo.png';
+import { useConfigurationStore } from '@/store/perzonalitation.store';
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable: {
@@ -23,17 +23,18 @@ interface jsPDFWithAutoTable extends jsPDF {
 
 const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
-    const styles = useGlobalStyles();
-  
+  const styles = useGlobalStyles();
 
-  const backgroundColorRGB = hexToRgb(styles.darkStyle.backgroundColor || '#0d83ac');
+  const backgroundColorRGB = styles.darkStyle.backgroundColor || '#0d83ac';
   const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
- 
+
+  const { personalization } = useConfigurationStore();
+
   const handleDownloadPDF = () => {
     try {
       if (!tableData || tableData.length === 0) {
         toast.warning('No hay datos disponibles para generar el PDF.');
-        
+
         return;
       }
 
@@ -58,20 +59,27 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
 
       const createHeader = (doc: jsPDF) => {
-        doc.addImage(DEFAULT_LOGO, 'PNG', 13, 5, 20, 20,'dulce', 'FAST');
+        const logo =
+          personalization && personalization[0]?.logo
+            ? (personalization[0].logo.startsWith('data:image')
+              ? personalization[0].logo
+              : `data:image/png;base64,${personalization[0].logo}`)
+            : DEFAULT_LOGO;
+
+        doc.addImage(logo, 'PNG', 13, 5, 20, 20, 'logo', 'FAST');
         autoTable(doc, {
           showHead: false,
           body: [
-            [{ content: transmitter.nombre, styles: { halign: 'center', fontStyle: 'bold' } }],
-            // [{ content: transmitter.nombreComercial, styles: { halign: 'center' } }],
+            [{ content: transmitter.nombre, styles: { halign: 'left', fontStyle: 'bold' } }],
+            [{ content: transmitter.nombreComercial, styles: { halign: 'left' } }],
             [
               {
                 content: 'Sucursal: ' + branch.name,
-                styles: { halign: 'center' },
+                styles: { halign: 'left' },
               },
             ],
-            [{ content: 'Fecha: ' + `${formattedDate}`, styles: { halign: 'center' } }],
-            [{ content: 'Hora: ' + `${formattedTime}`, styles: { halign: 'center' } }],
+            [{ content: 'Fecha: ' + `${formattedDate}`, styles: { halign: 'left' } }],
+            [{ content: 'Hora: ' + `${formattedTime}`, styles: { halign: 'left' } }],
           ],
           theme: 'plain',
           startY: 5,
@@ -114,7 +122,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
         head: [headers],
         body: rows,
         startY: lastY + 5,
-        theme: 'grid' as ThemeType,
+        theme: 'plain' as ThemeType,
         columnStyles: {
           0: { cellWidth: 10, halign: 'center' as HAlignType },
           1: { cellWidth: 65 },
@@ -124,14 +132,68 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
           cellPadding: 2.5,
         },
         headStyles: {
-        fontSize: 7,
-        fillColor: backgroundColorRGB as [number, number, number],
-        textColor: textColorRGB as [number, number, number],
-         },
+          fontSize: 7,
+        },
         bodyStyles: {
           fontSize: 8,
+        },
+        didDrawPage: ({ table, doc, cursor }) => {
+          if (!table) return;
+
+          const isFirstPage = table.pageNumber === 1;
+
+          const endY = cursor?.y;
+          const marginX = 5;
+          const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+
+          const startY = isFirstPage
+            ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
+            : table.settings.margin.top;
+
+          doc.setFillColor(backgroundColorRGB);
+          doc.setDrawColor('#091c47');
+          doc.setLineWidth(0);
+          const headHeight = table.getHeadHeight(table.columns);
+
+          doc.roundedRect(marginX, startY, tableWidth, headHeight, 2, 2, 'F');
+
+
+          doc.setDrawColor('#b3b8bd');
+          doc.setLineWidth(0.2);
+          doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
+        },
+        didDrawCell: (data) => {
+          const { cell, row, column } = data;
+
+          if (row.section === 'body' && column.index < headers.length - 1) {
+            doc.setLineWidth(0.2);
+            doc.setDrawColor('#b3b8bd');
+            doc.line(cell.x + cell.width, cell.y, cell.x + cell.width, cell.y + cell.height);
+          }
         }
       });
+
+      // 2. Tabla de datos
+      autoTable(doc, {
+        head: [headers],
+        body: [['', '', '', '', '', '', '','','']],
+        startY: lastY + 5 ,
+        theme: 'plain' as ThemeType,
+        margin: { horizontal: 5 },
+        styles: {
+          cellPadding: 2.5,
+          fontSize: 8,
+        },
+        headStyles: {
+          fontSize: 7,
+          textColor: textColorRGB as [number, number, number],
+        },
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' as HAlignType },
+          1: { cellWidth: 65 },
+        },
+      });
+
 
       doc.save(`REPORTE_KARDEX_${date}.pdf`);
     } catch {

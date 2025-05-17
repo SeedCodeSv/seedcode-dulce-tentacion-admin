@@ -49,7 +49,7 @@ function ListProducts({ actions }: Props) {
   const [subCategory, setSubCategory] = useState<Key | null>();
   const [limit, setLimit] = useState(5);
   const { windowSize } = useWindowSize();
-  const [view, setView] = useState<'table' | 'grid'>(
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
   const [page, serPage] = useState(1);
