@@ -135,12 +135,6 @@ export const LayoutItems = (props: Props) => {
       icon: FaChartLine ,
       label: 'Ver Notas de remisión',
     },
-    {
-      viewName: 'Notas de remisión',
-      to: '/list-referal-notes',
-      icon: NotebookIcon,
-      label: 'Notas de remisión',
-    }
   ];
 
   const linkAdministration = [

@@ -3,6 +3,7 @@ import { Book, Plus, Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import ThGlobal from '@/themes/ui/th-global';
@@ -160,6 +161,8 @@ function AddProductionOrder() {
     }
   };
 
+  const navigation = useNavigate();
+
   return (
     <Layout title="Nueva Orden de Producción">
       <>
@@ -249,7 +252,6 @@ function AddProductionOrder() {
             </Select>
             <Input
               className="col-span-2 d"
- 
               classNames={{ label: 'font-semibold' }}
               label="Observaciones"
               placeholder="Observaciones"
@@ -336,7 +338,11 @@ function AddProductionOrder() {
             </div>
           </div>
           <div className="flex justify-end gap-5">
-            <ButtonUi className="px-6" theme={Colors.Error}>
+            <ButtonUi
+              className="px-6"
+              theme={Colors.Error}
+              onPress={() => navigation('/production-orders')}
+            >
               Cancelar
             </ButtonUi>
             <ButtonUi className="px-10" theme={Colors.Primary} onPress={handleSaveOrder}>

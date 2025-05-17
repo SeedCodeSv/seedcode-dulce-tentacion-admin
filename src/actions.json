@@ -195,6 +195,10 @@
     {
       "view": "Movimientos",
       "actions": ["Mostrar","Descargar PDF"]
+    },
+    {
+      "view": "Notas de remisión",
+      "actions": ["Mostrar", "Completar", "Ver comprobante"]
     }
   ]
 }
