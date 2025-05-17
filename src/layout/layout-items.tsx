@@ -29,8 +29,7 @@ import {
   ListOrdered,
   ArrowDownUp,
   ShoppingBasket,
-  FileCog,
-  NotebookIcon,
+  FileCog
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';

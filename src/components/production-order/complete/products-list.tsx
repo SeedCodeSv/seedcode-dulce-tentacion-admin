@@ -87,7 +87,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ products, onProductUpdate }
   return (
     <div className="mb-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">Productos ({productsList.length})</h2>
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Productos ({productsList.length})</h2>
       </div>
 
       {productsList.map((product) => (
@@ -101,20 +101,20 @@ const ProductsList: React.FC<ProductsListProps> = ({ products, onProductUpdate }
         />
       ))}
 
-      <div className="bg-gray-50 p-4 rounded-lg mt-6">
-        <h3 className="font-medium text-gray-700 mb-3">Resumen de Producción</h3>
+      <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg mt-6">
+        <h3 className="font-medium text-gray-700 dark:text-gray-300/80 mb-3">Resumen de Producción</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white p-3 rounded-md shadow-sm">
-            <p className="text-gray-500 text-sm">Total Esperado</p>
-            <p className="text-xl font-bold text-gray-800">{totalExpected}</p>
+          <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-sm">
+            <p className="text-gray-500 text-sm dark:text-gray-300">Total Esperado</p>
+            <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{totalExpected}</p>
           </div>
-          <div className="bg-white p-3 rounded-md shadow-sm">
-            <p className="text-gray-500 text-sm">Total Producido</p>
-            <p className="text-xl font-bold text-gray-800">{totalProduced}</p>
+          <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-sm">
+            <p className="text-gray-500 text-sm dark:text-gray-300">Total Producido</p>
+            <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{totalProduced}</p>
           </div>
-          <div className="bg-white p-3 rounded-md shadow-sm">
-            <p className="text-gray-500 text-sm">Total Dañado</p>
-            <p className="text-xl font-bold text-gray-800">{totalDamaged}</p>
+          <div className="bg-white dark:bg-gray-800 p-3 rounded-md shadow-sm">
+            <p className="text-gray-500 text-sm dark:text-gray-300">Total Dañado</p>
+            <p className="text-xl font-bold text-gray-800 dark:text-gray-100">{totalDamaged}</p>
           </div>
         </div>
       </div>

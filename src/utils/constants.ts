@@ -39,12 +39,12 @@ export const defaultTheme = {
   name: 'theme1',
   context: 'dark',
   colors: {
-    danger: '#e63946',
-    primary: '#f1faee',
-    secondary: '#5eb8e0',
-    third: '#457b9d',
-    warning: '#f35b04',
-    dark: '#1d3557',
+    danger: '#e57373',
+    primary: '#f4b6ba',
+    secondary: '#a5d6a7',
+    third: '#f4a261',
+    warning: '#d38b19',
+    dark: '#000814',
   },
 };
 

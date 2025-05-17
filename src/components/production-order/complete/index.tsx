@@ -50,9 +50,10 @@ type disclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   disclosure: disclosureProps;
+  reload:() => void
 }
 
-const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
+const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
   const [notes, setNotes] = useState<string>('');
   const [employeeCode, setEmployeeCode] = useState('');
@@ -119,6 +120,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
             toast.success('Orden de producción finalizada');
             setLoading(false);
             modalConfirmation.onClose();
+            disclosure.onClose()
+            reload()
           })
           .catch(() => {
             setLoading(false);
@@ -148,15 +151,15 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
 
   return (
     <>
-      <Drawer {...disclosure} scrollBehavior="inside" size="full">
+      <Drawer className='dark:bg-gray-900' {...disclosure} scrollBehavior="inside" size="full">
         <DrawerContent>
           <DrawerHeader>
-            <h1 className="text-2xl font-bold text-gray-800">Finalizar orden de producción</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Finalizar orden de producción</h1>
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody className='px-4'>
             {productionOrderDetail && (
-              <div className=" py-8 px-4">
-                <div className="bg-white rounded-lg shadow p-6 mb-6 print:shadow-none">
+              <div className=" md:py-8 md:px-4">
+                <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
                   <OrderHeader
                     category={productionOrderDetail.productionOrderType.name}
                     orderNumber={productionOrderDetail.id.toString()}
@@ -207,7 +210,7 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Modal {...modalConfirmation} isDismissable={false}>
+      <Modal {...modalConfirmation} className='dark:bg-gray-900 dark:text-gray-100' isDismissable={false}>
         <ModalContent>
           <ModalHeader>Confirmar orden de producción</ModalHeader>
           <ModalBody>
@@ -217,7 +220,7 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure }) => {
                 Para completar la orden de producción debe ingresar el código de confirmación
               </p>
               <Input
-                className="w-full"
+                className="w-full dark:text-white"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                 }}

@@ -10,7 +10,7 @@ import { Colors } from '@/types/themes.types';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 
 interface Props {
-  onApply: () => void
+  onApply?: () => void
   children: ReactNode
   applyLabel?: string
   buttonLabel?: string
@@ -31,7 +31,7 @@ export const ResponsiveFilterWrapper = ({
 
   if (isMobile) {
     return (
-      <div className="flex items-end gap-5 md:hidden">
+      <div className="flex items-end gap-5">
         <ButtonUi
           isIconOnly showTooltip className="lg:hidden"
           theme={Colors.Info}
@@ -50,7 +50,7 @@ export const ResponsiveFilterWrapper = ({
                 color="primary"
                 style={global_styles().darkStyle}
                 onPress={() => {
-                  onApply();
+                  onApply!();
                   setOpen(false);
                 }}
               >

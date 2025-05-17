@@ -49,7 +49,7 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
         </div>
       </div>
       {view === 'grid' && (
-        <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
+        <div className="grid pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
           {sortedProducts.map((item, index) => (
             <div
               key={index}
@@ -81,22 +81,17 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
         </div>
       )}
       {view === 'list' && (
-        <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 gap-5 mt-5 dark:text-white">
+        <div className="grid pb-10 grid-cols-1 gap-5 mt-5 dark:text-white">
           {sortedProducts.map((item, index) => (
             <div key={index} className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5">
               <div className="flex-grow">
                 <span className="flex gap-2">
                   <Box className="text-blue-500" size={24} />
                   <h2 className="text-lg font-bold">{item.productName}</h2></span>
-                {/* <p className="text-sm text-gray-500 dark:text-gray-400">Última actualización: {item.lastUpdated}</p> */}
                 <p className="text-sm text-gray-500 dark:text-gray-400">Existencias: {item.quantity}</p>
 
                 <div className="mt-4 flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-x-6 font-medium text-gray-700 dark:text-gray-300">
-                  {/* <div className="flex items-center gap-2">
-                     <span className="flex items-center">
-                       Stock: <span className="ml-1 text-gray-800 dark:text-gray-200">{item.quantity}</span>
-                     </span>
-                   </div> */}
+                 
                   <div className="flex items-center gap-2">
                     <p className="flex items-center gap-1">
                       <Box className="text-gray-500" size={16} /> Costo unitario: <span className="text-gray-800 dark:text-gray-200">${item.cost}</span>
@@ -121,9 +116,6 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
 
               <div className="flex flex-col justify-center items-end ml-5 text-sm font-medium text-gray-700 dark:text-gray-300">
 
-                {/* <p className="flex items-center gap-1 mt-2">
-                   <Box className="text-gray-500" size={16} /> Costo promedio: <span className="text-gray-800 dark:text-gray-200">${item.avgCost}</span>
-                 </p> */}
                 <p className="flex items-center gap-1 mt-2">
                   <TrendingUp className="text-blue-500" size={16} /> Utilidad: <span className="text-blue-500">${(item.utility ? item.utility.toFixed(2) : 0)}</span>
                 </p>

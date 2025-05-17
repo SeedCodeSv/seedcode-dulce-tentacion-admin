@@ -9,11 +9,13 @@ import {
   useDisclosure,
   type Selection,
 } from '@heroui/react';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
+import { X } from 'lucide-react';
 
 import Pagination from '../global/Pagination';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -22,6 +24,11 @@ import { BranchProductRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { useAlert } from '@/lib/alert';
 import { ThemeContext } from '@/hooks/useTheme';
+import { useDebounce } from '@/hooks/useDebounce';
+import EmptyBox from '@/assets/empty-box.png';
+import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
+
+
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -47,14 +54,15 @@ function SelectProduct({
   selectedTypeProduct,
   setSelectedTypeProduct,
 }: Props) {
-  const { branchProductRecipe, branchProductRecipePaginated, getBranchProductsRecipe } =
-    useBranchProductStore();
+  const { branchProductRecipe, branchProductRecipePaginated, getBranchProductsRecipe } = useBranchProductStore();
 
   const { show, close } = useAlert();
 
   const hasProductInArray = (id: number) => {
     return selectedProducts.some((p) => p.id === id);
   };
+
+  const isMovil = useIsMobileOrTablet()
 
   const handleAddProductRecipe = (product: BranchProductRecipe) => {
     const productFind = selectedProducts.findIndex((sp) => sp.id === product.id);
@@ -64,7 +72,7 @@ function SelectProduct({
 
       products.splice(productFind, 1);
       setSelectedProducts(products);
-      toast.warning(`Se elimino ${product.product.name} con éxito`);
+      toast.warning(`Se elimino ${product.product.name} con éxito`, { position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
     } else {
       const products = [...selectedProducts];
 
@@ -73,7 +81,7 @@ function SelectProduct({
         quantity: 1,
       });
       setSelectedProducts(products);
-      toast.success(`Se agrego ${product.product.name} con éxito`);
+      toast.success(`Se agrego ${product.product.name} con éxito`, { position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
     }
   };
 
@@ -109,10 +117,28 @@ function SelectProduct({
   };
 
   const { theme, context } = useContext(ThemeContext);
+  const [searchParams, setSearchParams] = useState({
+    name: '',
+  })
+
+  const dbounceName = useDebounce(searchParams.name, 300)
+
+  useEffect(() => {
+    getBranchProductsRecipe(
+      Number(new Set(selectedBranch).values().next().value),
+      1,
+      10,
+      '',
+      String(dbounceName),
+      '',
+      String(new Set(selectedTypeProduct).values().next().value ?? '')
+    );
+  }, [dbounceName])
 
   return (
     <>
       <Drawer
+        closeButton={<X size={40} />}
         isDismissable={false}
         isOpen={modalProducts.isOpen}
         placement="right"
@@ -125,18 +151,16 @@ function SelectProduct({
           <DrawerBody>
             <div className="flex flex-col gap-4 h-full overflow-y-auto">
               <p className="text-lg font-semibold dark:text-white">Lista de productos</p>
-              <div className="grid grid-cols-4 gap-3 place-content-end">
-                <div className="flex gap-3 items-end">
-                  <Input
-                    className="text-xs dark:text-white"
-                    classNames={{ label: 'font-semibold' }}
-                    label="Buscar producto..."
-                    labelPlacement="outside"
-                    placeholder="Escriba para buscar"
-                    variant="bordered"
-                  />
-                  <ButtonUi theme={Colors.Primary}>Guardar</ButtonUi>
-                </div>
+              <ResponsiveFilterWrapper withButton={false}>
+                <Input
+                  className="text-xs dark:text-white w-full"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Buscar producto..."
+                  labelPlacement="outside"
+                  placeholder="Escriba para buscar"
+                  variant="bordered"
+                  onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })}
+                />
                 <Select
                   className='dark:text-white'
                   classNames={{ label: 'font-semibold' }}
@@ -172,17 +196,17 @@ function SelectProduct({
                 >
                   <SelectItem key={'1'} className='dark:text-white'>Sucursal 1</SelectItem>
                 </Select>
-              </div>
+              </ResponsiveFilterWrapper>
 
               <div className="h-full overflow-y-auto flex flex-col">
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2 2xl:grid-cols-5">
                   {branchProductRecipe.map((recipe) => (
                     <button
                       key={recipe.id}
                       className={classNames(
                         !recipe.recipeBook && ' opacity-50 cursor-not-allowed',
                         hasProductInArray(recipe.id) &&
-                          ' border-green-500 shadow shadow-green-50',
+                        ' border-green-500 shadow shadow-green-50',
                         'flex flex-col items-start w-full border shadow rounded-[12px] p-3 cursor-pointer'
                       )}
                       style={{
@@ -197,8 +221,8 @@ function SelectProduct({
                         }
                       }}
                     >
-                      <div className="w-full flex flex-col items-start">
-                        <p className="font-semibold">{recipe.product.name}</p>
+                      <div className="w-full flex flex-col items-start ">
+                        <p className="font-semibold ">{recipe.product.name}</p>
                         <p className="text-xs">
                           Cantidad maxima:{' '}
                           {recipe.recipeBook
@@ -226,6 +250,14 @@ function SelectProduct({
                       </div>
                     </button>
                   ))}
+                  {branchProductRecipe.length === 0 &&
+                   <div className="flex flex-col justify-center items-center w-full h-full py-10 col-span-5">
+                      <img alt="NO DATA" className="w-40" src={EmptyBox} />
+                      <p className="text-lg font-semibold mt-3 dark:text-white">
+                        No se encontraron resultados
+                      </p>
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -243,7 +275,7 @@ function SelectProduct({
                   page,
                   10,
                   '',
-                  '',
+                  String(dbounceName),
                   '',
                   String(new Set(selectedTypeProduct).values().next().value ?? '')
                 );
@@ -251,7 +283,7 @@ function SelectProduct({
             />
           </DrawerFooter>
         </DrawerContent>
-      </Drawer>
+      </Drawer >
     </>
   );
 }

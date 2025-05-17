@@ -26,7 +26,7 @@ function CreateConfiguration(props: Props) {
     name: '',
     themeName: '',
     transmitterId:
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+     user?.pointOfSale?.branch.transmitterId ?? 0,
     selectedTemplate: 'template',
     wantPrint: 0,
     file: null,

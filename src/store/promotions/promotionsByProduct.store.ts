@@ -49,7 +49,7 @@ export const usePromotionsProductsStore = create<IPromotionsByProductStore>((set
         return;
       } else {
         set((state) => ({ products: [...state.products, id] }));
-        toast.success('Se agrego el producto con exito');
+        toast.success('Se agrego el producto con exito',{position: 'top-center'});
       }
     } catch (error) {
       toast.error(messages.error);

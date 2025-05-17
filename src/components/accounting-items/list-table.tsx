@@ -57,9 +57,7 @@ function List() {
   const [typeOrder, setTypeOrder] = useState(search_item.typeOrder);
 
   const transId = useMemo(() => {
-    return user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    return (user?.pointOfSale?.branch.transmitter.id ?? 0);
   }, [user]);
 
   useEffect(() => {

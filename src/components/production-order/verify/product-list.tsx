@@ -14,7 +14,7 @@ const ProductList: React.FC<ProductListProps> = ({ details }) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">Productos ({details.length})</h2>
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-200">Productos ({details.length})</h2>
         <div className={`px-4 py-2 rounded-md inline-flex items-center text-sm font-medium ${
           canFulfillAll 
             ? "bg-green-100 text-green-800" 
@@ -25,7 +25,7 @@ const ProductList: React.FC<ProductListProps> = ({ details }) => {
             : "Stock insuficiente para algunos productos"}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-6 ">
         {details.map((detail) => (
           <ProductCard
             key={detail.id} 

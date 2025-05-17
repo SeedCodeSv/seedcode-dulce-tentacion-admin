@@ -65,7 +65,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
   return (
     <div className="border rounded-lg mb-4 overflow-hidden transition-all duration-300">
       <div
-        className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50"
+        className="p-4 flex justify-between items-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
         role="button"
         tabIndex={0}
         onClick={toggleExpand}
@@ -73,10 +73,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
       >
         <div className="flex-1">
           <div className="flex items-center">
-            <div className="flex-1">
+            <div className="flex-1 ">
               <h3 className="text-lg font-medium">{products.name}</h3>
-              <div className="text-sm text-gray-500 flex items-center gap-2">
-                <span className="text-gray-600">{products.code}</span>
+              <div className="text-sm text-gray-500 flex items-center gap-2 dark:text-gray-200/70">
+                <span className="text-gray-600 dark:text-gray-300">{products.code}</span>
                 <span>•</span>
                 <span>{products.unidaDeMedida}</span>
               </div>
@@ -90,25 +90,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
           </div>
           <div className="mt-2 grid grid-cols-4 gap-4">
             <div>
-              <p className="text-sm text-gray-500">Cantidad</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">Cantidad</p>
               <p className="font-medium">
                 {quantity} {products.unidaDeMedida}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Producidos</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">Producidos</p>
               <p className="font-medium">
                 {producedQuantity} {products.unidaDeMedida}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Dañados</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">Dañados</p>
               <p className="font-medium text-red-600">
                 {damagedQuantity} {products.unidaDeMedida}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Estado</p>
+              <p className="text-sm text-gray-500 dark:text-gray-300">Estado</p>
               <p className={`font-medium ${statusInfo.textColor}`}>{orderStatus}</p>
             </div>
           </div>
@@ -117,22 +117,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
       </div>
 
       {isExpanded && (
-        <div className="p-4 pt-0 border-t mt-2 bg-gray-50 transition-all duration-300 ease-in-out">
-          <h4 className="font-medium text-gray-700 mb-2 mt-4">Receta</h4>
+        <div className="p-4 pt-0 border-t bg-gray-50 transition-all duration-300 ease-in-out dark:bg-gray-800/50">
+          <h4 className="font-medium text-gray-700 mb-2 mt-4 dark:text-gray-300">Receta</h4>
           <div className="bg-white rounded-lg border">
             {recipeDetails.length > 0 ? (
               <div className="divide-y">
                 {recipeDetails.map((item) => (
-                  <div key={item.id} className="p-3 flex justify-between">
+                  <div key={item.id} className="p-3 flex justify-between dark:bg-gray-900">
                     <div>
                       <p className="font-medium">{item.branchProduct.product.name}</p>
-                      <p className="text-sm text-gray-500">{item.branchProduct.product.code}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-200/70">{item.branchProduct.product.code}</p>
                     </div>
                     <div className="text-right">
                       <p className="font-medium">
                         {item.quantity} {convertToShortNames(item.extraUniMedida)}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 dark:text-gray-200/70">
                         Stock: {item.branchProduct.stock}{' '}
                         {convertToShortNames(item.branchProduct.product.uniMedida)}
                       </p>

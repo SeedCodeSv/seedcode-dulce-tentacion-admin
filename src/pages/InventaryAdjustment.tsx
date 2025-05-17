@@ -8,6 +8,7 @@ import Layout from '../layout/Layout';
 import AddInventaryAdjustment from '@/components/inventory_aqdjusment/AddInventaryAdjustment';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusment/AddInventoryAdjustmentRecountStock';
+import DivGlobal from '@/themes/ui/div-global';
 
 function PurchaseOrders() {
   const [isOpenModalProduct, setIsOpenModalProduct] = useState(false);
@@ -18,8 +19,7 @@ function PurchaseOrders() {
   return (
     <Layout title="Ajuste de Inventario">
       <>
-        <div className="w-full h-full p-4 md:p-6  md:px-4 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-3 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+       <DivGlobal className="flex flex-col h-full overflow-y-auto ">
             <div className="flex w-full flex-col">
               <div className="flex justify-end absolute right-8">
                 <Button
@@ -39,10 +39,12 @@ function PurchaseOrders() {
 
               <Tabs aria-label="Options" 
                 classNames={{
-                  tab: 'bg-[#f4a261] text-white shadow py-1 h-full ',
-                  tabContent: "text-white group-data-[selected=true]:text-[#f4a261]",
+                  tab: 'bg-white dark:bg-white/10 text-white shadow py-1 h-full ',
+                  tabList:'bg-gray-100 border-2 border-indigo-100',
+                  tabContent: "text-[#f4a261] group-data-[selected=true]:text-white",
+                  cursor: 'bg-[#f4a261] dark:bg-[#f4a261]'
                 }}
-               variant="solid">
+               variant="bordered">
                 <Tab
                   key="photos"
                   title={
@@ -75,8 +77,7 @@ function PurchaseOrders() {
                 </Tab>
               </Tabs>
             </div>
-          </div>
-        </div>
+          </DivGlobal>
       </>
     </Layout>
   );

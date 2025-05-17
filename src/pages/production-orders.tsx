@@ -20,8 +20,6 @@ import { useNavigate } from 'react-router';
 
 import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
-import ThGlobal from '@/themes/ui/th-global';
-import EmptyBox from '@/assets/empty-box.png';
 import { formatDate } from '@/utils/dates';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -35,6 +33,9 @@ import CompleteOrder from '@/components/production-order/complete';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
 import Pagination from '@/components/global/Pagination';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import EmptyTable from '@/components/global/EmptyTable';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 type Key = string;
 
@@ -60,6 +61,7 @@ function ProductionOrders() {
     useProductionOrderStore();
   const [selectedStatus, setSelectedStatus] = useState<Selection>(new Set([]));
   const [selectedType, setSelectedType] = useState<Selection>(new Set([]));
+  const [page,setPage] = useState(1)
 
   useEffect(() => {
     onGetProductionOrderTypes();
@@ -75,8 +77,8 @@ function ProductionOrders() {
         ? (selectedType as ExtendedSelection).currentKey || 0
         : 0;
 
-    getProductionsOrders(1, 5, startDate, endDate, 0, status, 0, +type);
-  }, [startDate, endDate, selectedStatus, selectedType]);
+    getProductionsOrders(page, 5, startDate, endDate, 0, status, 0, +type);
+  }, [page,startDate, endDate, selectedStatus, selectedType]);
 
   const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
 
@@ -144,7 +146,7 @@ function ProductionOrders() {
   return (
     <Layout title="Ordenes de producción">
       <DivGlobal className="flex flex-col h-full overflow-y-auto">
-        <div className="grid grid-cols-4 gap-4">
+          <ResponsiveFilterWrapper withButton={false}>
           <Input
             className='dark:text-white'
             classNames={{ label: 'font-semibold' }}
@@ -193,7 +195,7 @@ function ProductionOrders() {
               <SelectItem key={type.id} className='dark:text-white'>{type.name}</SelectItem>
             ))}
           </Select>
-        </div>
+          </ResponsiveFilterWrapper>
         <div className="flex justify-end mt-2">
           <ButtonUi
             isIconOnly
@@ -205,29 +207,13 @@ function ProductionOrders() {
             <Plus />
           </ButtonUi>
         </div>
-        <div className="overflow-y-auto h-full custom-scrollbar mt-4">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                <ThGlobal className="text-left p-3">No.</ThGlobal>
-                <ThGlobal className="text-left p-3">Fecha de inicio</ThGlobal>
-                <ThGlobal className="text-left p-3">Hora de inicio</ThGlobal>
-                <ThGlobal className="text-left p-3">Fecha de fin</ThGlobal>
-                <ThGlobal className="text-left p-3">Hora de fin </ThGlobal>
-                <ThGlobal className="text-left p-3">Estado</ThGlobal>
-                <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-              </tr>
-            </thead>
-            <tbody>
+        <TableComponent
+            headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin",'Hora de fin','Estado','Acciones']}
+          >
               {productionOrders.length === 0 && (
                 <tr>
                   <td className="p-3" colSpan={7}>
-                    <div className="flex flex-col justify-center items-center h-full">
-                      <img alt="NO DATA" className="w-40" src={EmptyBox} />
-                      <p className="text-lg font-semibold mt-3 dark:text-white">
-                        No se encontraron resultados
-                      </p>
-                    </div>
+                    <EmptyTable/>
                   </td>
                 </tr>
               )}
@@ -313,16 +299,14 @@ function ProductionOrders() {
                   </TdGlobal>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TableComponent>
         <div className="mt-3">
           <Pagination
             currentPage={paginationProductionOrders.currentPag}
             nextPage={paginationProductionOrders.nextPag}
             previousPage={paginationProductionOrders.prevPag}
             totalPages={paginationProductionOrders.totalPag}
-            onPageChange={() => {}}
+            onPageChange={(page) => setPage(page) }
           />
         </div>
         <Modal {...modalCancelOrder} isDismissable={false}>
@@ -364,8 +348,17 @@ function ProductionOrders() {
             modalMoreInformation={modalMoreInformation}
           />
         )}
-        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} />
-        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} />
+        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} 
+        onReload={() => {
+          setPage(1)
+          getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+
+        }} />
+        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
+        reload={() => {
+          setPage(1);
+          getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+        }}/>
       </DivGlobal>
     </Layout>
   );

@@ -31,9 +31,9 @@ function App() {
       <AlertProvider>
         <PrimeReactProvider value={{ unstyled: true, pt: Tailwind }}>
           <SessionProvider>
-            <ThemeProvider>
+            <ThemeProvider >
               <Toaster richColors />
-              <HeroUIProvider labelPlacement="outside">
+              <HeroUIProvider labelPlacement="outside" >
                 <ActionsProvider>
                   <PermissionProvider>
                     <SocketContext/>

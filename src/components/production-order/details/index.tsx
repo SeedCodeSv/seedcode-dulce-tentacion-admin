@@ -79,12 +79,12 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
   const statusInfo = getStatusMessage(statusOrder);
 
   return (
-    <div className="">
+    <div className="dark:text-white">
       {/* Header Section */}
       <div className="lg:p-6 border-b">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <p className="text-gray-600 uppercase">{productionOrderType.name}</p>
+            <p className="text-gray-600 uppercase dark:text-white">{productionOrderType.name}</p>
           </div>
           <StatusBadge status={statusOrder} />
         </div>
@@ -96,7 +96,7 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
           {/* Left Column - Order Details */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center">
-              <FileText className="mr-2 text-gray-600" size={20} />
+              <FileText className="mr-2 text-gray-600 dark:text-gray-200/70" size={20} />
               Detalles de la Orden
             </h2>
             <div className="grid grid-cols-2 gap-4">
@@ -117,21 +117,21 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
             </div>
 
             <h2 className="text-lg font-semibold mt-8 mb-4 flex items-center">
-              <Truck className="mr-2 text-gray-600" size={20} />
+              <Truck className="mr-2 text-gray-600 dark:text-gray-200/70" size={20} />
               Información de Sucursales
             </h2>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center mb-4">
+            <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-800 dark:border border-gray-300">
+              <div className="flex items-center mb-4 ">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500">Sucursal de Recepción</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-300">Sucursal de Recepción</p>
                   <p className="font-medium">{receptionBranch.name}</p>
-                  <p className="text-sm text-gray-600">{receptionBranch.address}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{receptionBranch.address}</p>
                 </div>
                 <ArrowRight className="mx-4 text-gray-400" />
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500">Sucursal de Destino</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-300">Sucursal de Destino</p>
                   <p className="font-medium">{destinationBranch.name}</p>
-                  <p className="text-sm text-gray-600">{destinationBranch.address}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{destinationBranch.address}</p>
                 </div>
               </div>
             </div>
@@ -140,32 +140,32 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
           {/* Right Column - Production Summary */}
           <div>
             <h2 className="text-lg font-semibold mb-4 flex items-center">
-              <ClipboardList className="mr-2 text-gray-600" size={20} />
+              <ClipboardList className="mr-2 text-gray-600 dark:text-gray-200/70" size={20} />
               Resumen de Producción
             </h2>
-            <div className="bg-green-50 p-4 rounded-lg mb-6">
+            <div className="bg-green-50 dark:bg-gray-800 dark:border border-gray-300 p-4 rounded-lg mb-6">
               <div className="grid grid-cols-3 gap-4 mb-4">
                 <div>
-                  <p className="text-sm text-gray-500">Producidos</p>
+                  <p className="dark:text-gray-100 text-sm text-gray-500">Producidos</p>
                   <p className="text-2xl font-bold text-green-700">{producedQuantity}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Dañados</p>
+                  <p className="dark:text-gray-100 text-sm text-gray-500">Dañados</p>
                   <p className="text-2xl font-bold text-red-700">{damagedQuantity}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Faltantes</p>
+                  <p className="dark:text-gray-100 text-sm text-gray-500">Faltantes</p>
                   <p className="text-2xl font-bold text-yellow-700">{missingQuantity}</p>
                 </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-500">Notas Finales</p>
-                <p className="text-gray-700">{finalNotes || 'Sin notas finales'}</p>
+              <div >
+                <p className="dark:text-gray-100 text-sm text-gray-500">Notas Finales</p>
+                <p className="text-gray-700 dark:text-gray-100">{finalNotes || 'Sin notas finales'}</p>
               </div>
             </div>
 
             <h2 className="text-lg font-semibold mb-4 flex items-center">
-              <Calendar className="mr-2 text-gray-600" size={20} />
+              <Calendar className="mr-2 text-gray-600 dark:text-gray-200/70" size={20} />
               Historial de la Orden
             </h2>
             <div className="border rounded-lg p-4">

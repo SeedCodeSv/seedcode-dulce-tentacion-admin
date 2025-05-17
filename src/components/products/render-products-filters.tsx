@@ -165,7 +165,7 @@ function RenderProductsFilters(props: Props) {
           <DrawerBody>{renderFilter()}</DrawerBody>
           <DrawerFooter>
             <ButtonUi
-              className="px-10"
+              className="px-10 w-full"
               theme={Colors.Primary}
               onPress={() => {
                 modalFilters.onClose();

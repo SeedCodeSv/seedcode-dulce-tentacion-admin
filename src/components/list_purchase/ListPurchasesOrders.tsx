@@ -8,10 +8,7 @@ import {
 } from '@heroui/react';
 import { AlignJustify, ClipboardCheck, Shield, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
-// eslint-disable-next-line import/order
 import { AnimatePresence, motion } from 'framer-motion';
-
-// import AddPurchaseOrders from './AddPurchaseOrders';
 import { useEffect, useState } from 'react';
 
 import AddButton from '../global/AddButton';
@@ -27,6 +24,8 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import { limit_options } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
 import { useDebounce } from '@/hooks/useDebounce';
+import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 interface Props {
   actions: string[];
@@ -85,8 +84,7 @@ function ListPurchasesOrders({ actions }: Props) {
 
   return (
     <>
-      <div className="w-full h-full p-4 md:p-6  md:px-4 bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full flex flex-col p-5 mt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+      <DivGlobal className="flex flex-col h-full overflow-y-auto">
           <div className="flex flex-row justify-between w-full gap-5 lg:flex-col lg:gap-0">
             <ResponsiveFilterWrapper
               onApply={() => handleSearch(undefined)}
@@ -145,9 +143,31 @@ function ListPurchasesOrders({ actions }: Props) {
                   ))}
                 </Autocomplete>
               </div>
+              <div className="flex lg:hidden">
+                <Select
+                  className="w-full dark:text-white"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  defaultSelectedKeys={['5']}
+                  label="Mostrar"
+                  labelPlacement="outside"
+                  variant="bordered"
+
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((limit) => (
+                    <SelectItem key={limit} className="dark:text-white">
+                      {limit}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             </ResponsiveFilterWrapper>
             <div className="flex justify-between gap-4 mt-4">
-              <div className="hidden md:flex">
+              <div className="hidden lg:flex">
                 <Select
                   className="w-44 dark:text-white"
                   classNames={{
@@ -204,49 +224,9 @@ function ListPurchasesOrders({ actions }: Props) {
             </div>
           </div>
           <>
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
-                  <tr>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      No.
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Fecha
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Proveedor
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Sucursal
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Estado
-                    </th>
-                    <th
-                      className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                      style={styles.darkStyle}
-                    >
-                      Acciones
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
+             <TableComponent
+              headers={["Nº", "Fecha", "Proveedor", "Sucursal",'Estado','Acciones']}
+            >
                   {pagination_purchase_orders_loading ? (
                     <tr>
                       <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
@@ -327,16 +307,14 @@ function ListPurchasesOrders({ actions }: Props) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={6}>
                             <EmptyTable />
                           </td>
                         </tr>
                       )}
                     </>
                   )}
-                </tbody>
-              </table>
-            </div>
+               </TableComponent>
           </>
 
           {pagination_purchase_orders.totalPag > 1 && (
@@ -355,8 +333,7 @@ function ListPurchasesOrders({ actions }: Props) {
               </div>
             </>
           )}
-        </div>
-      </div>
+      </DivGlobal>
 
       <AnimatePresence>
         {isOpen.isOpen && (
