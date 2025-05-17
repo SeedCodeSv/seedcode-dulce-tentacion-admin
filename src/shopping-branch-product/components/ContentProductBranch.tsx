@@ -14,7 +14,6 @@ import { steps } from './process/types/process.types';
 
 import { useBranchesStore } from '@/store/branches.store';
 import SelectProductNote from '@/components/note-remision/SelectProduct';
-import useGlobalStyles from '@/components/global/global.styles';
 
 
 export default function ContentProductBranch() {
@@ -56,7 +55,6 @@ export default function ContentProductBranch() {
   useEffect(() => {
     getBranchesList();
   }, []);
-  const styles = useGlobalStyles()
 
   useEffect(() => {
     if (branchData?.id === 0) {

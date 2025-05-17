@@ -26,6 +26,6 @@ export interface IEmployeeStore {
   activateEmployee: (id: number) => Promise<void>;
   verifyCode: (code: string) => Promise<boolean>;
   OnGetBirthDays: () => void;
-  getEmployeesByBranch(branchId: number)=> void
+  getEmployeesByBranch:(branchId: number)=> void
 
 }

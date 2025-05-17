@@ -2,6 +2,7 @@ import moment from 'moment-timezone';
 import { format } from '@formkit/tempo';
 import 'moment/locale/es';
 import { DateTime } from 'luxon';
+
 import { Employee } from '@/types/referal-note.types';
 import { Employee as Employee2 } from '@/types/employees.types';
 
@@ -188,15 +189,18 @@ export function formatEmployee(value: Employee | Employee2) {
     value?.firstLastName +
     ' ' +
     value?.secondLastName
+
   return render
 }
 
 export function typeNumDoc(value: Employee | Employee2) {
   const typeDoc = (value?.dui && '13') || (value?.nit && '36')
+
   return typeDoc as string
 }
 
 export function numbDocument(value: Employee | Employee2) {
   const numDoc = (value?.dui ?? 0) || (value?.nit ?? 0)
+
   return numDoc as number
 }

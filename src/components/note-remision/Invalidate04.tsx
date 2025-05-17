@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/order
 import {
     Autocomplete,
     AutocompleteItem,
@@ -224,11 +223,9 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                                         const payload = formatAnnulations(item!, res.data.selloRecibido ?? 'N/A', employeeId, motivo.codigo, data_info)
 
                                         await annulations(payload).then(() => {
-                                            toast('Se guardo con exito la invalidacion')
-
+                                            toast.success('Se guardo con exito la invalidacion')
                                         }).catch(() => {
-
-                                            toast('No se guardo la invalidacion')
+                                            toast.error('No se guardo la invalidacion')
                                         })
                                         toast.success('Invalidado  correctamente')
                                         setLoading(false)

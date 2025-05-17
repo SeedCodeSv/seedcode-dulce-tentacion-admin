@@ -112,7 +112,7 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
       set({ loading: false })
     }
   },
-  async getReferalNoteDetail(id) {
+  async getReferalNoteDetail() {
     try {
     } catch (error) { }
   },

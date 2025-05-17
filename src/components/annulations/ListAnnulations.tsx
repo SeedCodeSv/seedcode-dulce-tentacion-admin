@@ -207,6 +207,10 @@ const Filters = (props: FiltersProps): JSX.Element => {
                 onChange={(e) => props.setDateInitial(e.target.value)}
             />
             <Input
+                classNames={{
+                    input: 'dark:text-white dark:border-gray-600',
+                    label: 'text-sm font-semibold dark:text-white'
+                }}
                 label="Fecha final"
                 labelPlacement="outside"
                 placeholder="Buscar por nombre..."
@@ -214,11 +218,6 @@ const Filters = (props: FiltersProps): JSX.Element => {
                 value={props.endDate}
                 variant="bordered"
                 onChange={(e) => props.setEndDate(e.target.value)}
-                classNames={{
-                    input: 'dark:text-white dark:border-gray-600',
-                    label: 'text-sm font-semibold dark:text-white'
-                }}
-            // isDisabled
             />
         </div>
     )
