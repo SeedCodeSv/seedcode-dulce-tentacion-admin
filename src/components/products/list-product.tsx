@@ -14,6 +14,7 @@ import { useProductsStore } from '../../store/products.store';
 import Pagination from '../global/Pagination';
 import { Product } from '../../types/products.types';
 import { limit_options } from '../../utils/constants';
+import EmptyTable from '../global/EmptyTable';
 import useWindowSize from '../../hooks/useWindowSize';
 import RenderViewButton from '../global/render-view-button';
 
@@ -23,10 +24,10 @@ import RecipeBook from './recipe-book';
 import RenderProductsFilters from './render-products-filters';
 import { DeletePopover } from './delete-popover';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
+import DivGlobal from '@/themes/ui/div-global';
 
 interface Props {
   actions: string[];
@@ -94,8 +95,7 @@ function ListProducts({ actions }: Props) {
 
   return (
     <>
-      <div className=" w-full h-full bg-white dark:bg-gray-900">
-        <div className="w-full h-full  p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal className="flex flex-col h-full overflow-y-auto ">
           <div className="hidden lg:flex w-full">
             <RenderProductsFilters
               category={category}
@@ -281,12 +281,7 @@ function ListProducts({ actions }: Props) {
                         ) : (
                           <tr>
                             <td colSpan={5}>
-                              <div className="flex flex-col items-center justify-center w-full">
-                                <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                                <p className="mt-3 text-xl dark:text-white">
-                                  No se encontraron resultados
-                                </p>
-                              </div>
+                              <EmptyTable/>
                             </td>
                           </tr>
                         )}
@@ -321,7 +316,6 @@ function ListProducts({ actions }: Props) {
               </div>
             </>
           )}
-        </div>
         <UpdateProduct
           isOpen={isOpenModalUpdate}
           product={selectedProduct}
@@ -332,7 +326,7 @@ function ListProducts({ actions }: Props) {
           productId={selectedId}
           onOpenChange={modalRecipe.onOpenChange}
         />
-      </div>
+      </DivGlobal>
     </>
   );
 }

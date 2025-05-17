@@ -24,22 +24,23 @@ import classNames from 'classnames';
 
 import AddButton from '../global/AddButton';
 import { limit_options } from '../../utils/constants';
-import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import { ISubCategory } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
 import Pagination from '../global/Pagination';
+import EmptyTable from '../global/EmptyTable';
 
 import AddSubCategory from './add-sub-category';
 import CardSubCategory from './card-sub-category';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import useWindowSize from '@/hooks/useWindowSize';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
+
 
 interface PProps {
   actions: string[];
@@ -77,8 +78,7 @@ function ListSubCategory({ actions }: PProps) {
   };
 
   return (
-    <div className=" w-full h-full bg-white dark:bg-gray-900">
-      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+   <DivGlobal className="flex flex-col h-full overflow-y-auto ">
         <div className="w-full flex justify-between">
           <div className="flex gap-5">
             <Input
@@ -270,11 +270,8 @@ function ListSubCategory({ actions }: PProps) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                              <p className="mt-3 text-xl">No se encontraron resultados</p>
-                            </div>
+                          <td colSpan={4}>
+                            <EmptyTable/>
                           </td>
                         </tr>
                       )}
@@ -287,7 +284,7 @@ function ListSubCategory({ actions }: PProps) {
         )}
         {sub_categories_paginated.totalPag > 1 && (
           <>
-            <div className="hidden w-full mt-5 md:flex">
+            <div className="w-full mt-5">
               <Pagination
                 currentPage={sub_categories_paginated.currentPag}
                 nextPage={sub_categories_paginated.nextPag}
@@ -298,21 +295,8 @@ function ListSubCategory({ actions }: PProps) {
                 }}
               />
             </div>
-            <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-              <SmPagination
-                currentPage={sub_categories_paginated.currentPag}
-                handleNext={() => {
-                  getSubCategoriesPaginated(sub_categories_paginated.nextPag, limit, search);
-                }}
-                handlePrev={() => {
-                  getSubCategoriesPaginated(sub_categories_paginated.prevPag, limit, search);
-                }}
-                totalPages={sub_categories_paginated.totalPag}
-              />
-            </div>
           </>
         )}
-      </div>
       <HeadlessModal
         isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
@@ -321,7 +305,7 @@ function ListSubCategory({ actions }: PProps) {
       >
         <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
       </HeadlessModal>
-    </div>
+    </DivGlobal>
   );
 }
 

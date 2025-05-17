@@ -15,7 +15,7 @@ import {
   SelectItem,
   useDisclosure,
 } from '@heroui/react';
-import { Filter, Pen, SearchIcon, Trash } from 'lucide-react';
+import { Pen, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -23,10 +23,9 @@ import { toast } from 'sonner';
 
 import Pagination from '../global/Pagination';
 import AddButton from '../global/AddButton';
-import TooltipGlobal from '../global/TooltipGlobal';
-import BottomDrawer from '../global/BottomDrawer';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
+import EmptyTable from '../global/EmptyTable';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
 import { useShoppingStore } from '@/store/shopping.store';
@@ -36,6 +35,7 @@ import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const {
@@ -48,7 +48,6 @@ function ShoppingPage({ actions }: ArrayAction) {
   const [dateInitial, setDateInitial] = useState(search_params.startDate);
   const [dateEnd, setDateEnd] = useState(search_params.endDate);
   const [limit, setLimit] = useState(5);
-  const [openVaul, setOpenVaul] = useState(false);
   const { user } = useAuthStore();
   const { getBranchesList, branches_list } = useBranchProductStore();
   const [branchId, setBranchId] = useState(search_params.branchId ?? 0);
@@ -126,7 +125,7 @@ function ShoppingPage({ actions }: ArrayAction) {
       .delete(API_URL + `/shoppings/delete-permanently/${id}`)
       .then(() => {
         getPaginatedShopping(
-         user?.pointOfSale?.branch.transmitterId ?? 0,
+          user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           limit,
           dateInitial,
@@ -178,99 +177,17 @@ function ShoppingPage({ actions }: ArrayAction) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full flex flex-col border border-white overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="flex justify-between mt-6 w-full px-5">
-            <div className="md:hidden justify-start flex-grow mt-0">
-              <TooltipGlobal text="Filtrar">
-                <ButtonUi
-                  isIconOnly
-                  theme={Colors.Primary}
-                  type="button"
-                  onPress={() => setOpenVaul(true)}
-                >
-                  <Filter />
-                </ButtonUi>
-              </TooltipGlobal>
-              <BottomDrawer
-                open={openVaul}
-                title="Filtros disponibles"
-                onClose={() => setOpenVaul(false)}
-              >
-                <div className="flex flex-col  gap-2">
-                  <Input
-                    className="dark:text-white border border-white rounded-xl"
-                    classNames={{
-                      label: 'text-sm font-semibold',
-                    }}
-                    label="Fecha inicial"
-                    labelPlacement="outside"
-                    placeholder="Buscar por fecha..."
-                    type="date"
-                    value={dateInitial}
-                    variant="bordered"
-                    onChange={(e) => {
-                      setDateInitial(e.target.value);
-                    }}
-                  />
-                  <Input
-                    className="dark:text-white border border-white rounded-xl"
-                    classNames={{
-                      label: 'text-sm font-semibold',
-                    }}
-                    label="Fecha final"
-                    labelPlacement="outside"
-                    placeholder="Buscar por fecha..."
-                    type="date"
-                    value={dateEnd}
-                    variant="bordered"
-                    onChange={(e) => {
-                      setDateEnd(e.target.value);
-                    }}
-                  />
-                  <div className="w-full">
-                    <p className="text-sm font-semibold dark:text-white">Sucursal</p>
-                    <Autocomplete
-                      className="dark:text-white font-semibold"
-                      clearButtonProps={{ onClick: () => setBranchId('') }}
-                      labelPlacement="outside"
-                      placeholder="Selecciona la sucursal"
-                      selectedKey={branchId}
-                      variant="bordered"
-                      onSelectionChange={(key) =>
-                        key ? setBranchId(String(key)) : setBranchId('')
-                      }
-                    >
-                      {branches_list.map((item) => (
-                        <AutocompleteItem key={item.name} className="dark:text-white">
-                          {item.name}
-                        </AutocompleteItem>
-                      ))}
-                    </Autocomplete>
-                  </div>
-
-                  <ButtonUi
-                    className="mt-6 font-semibold"
-                    theme={Colors.Primary}
-                    onPress={() => {
-                      searchDailyReport();
-                      setOpenVaul(false);
-                    }}
-                  >
-                    Buscar
-                  </ButtonUi>
-                </div>
-              </BottomDrawer>
-            </div>
-            <div className="flex justify-end mt-0 flex-grow">
-              {actions.includes('Agregar') && (
-                <AddButton onClick={() => navigate('/create-shopping')} />
-              )}
-            </div>
+      <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+        <div className="flex flex-row-reverse lg:flex-col mt-3 w-full px-5">
+          <div className="flex justify-end mt-0 flex-grow">
+            {actions.includes('Agregar') && (
+              <AddButton onClick={() => navigate('/create-shopping')} />
+            )}
           </div>
-          <div className="flex justify-between mt-4 gap-3 md:gap-5 items-end px-2">
+
+          <ResponsiveFilterWrapper onApply={searchDailyReport}>
             <Input
-              className="dark:text-white border border-white rounded-xl hidden md:flex"
+              className="dark:text-white border border-white rounded-xl "
               classNames={{
                 label: 'text-sm font-semibold',
               }}
@@ -285,7 +202,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             />
             <Input
-              className="dark:text-white border border-white rounded-xl hidden md:flex"
+              className="dark:text-white border border-white rounded-xl "
               classNames={{
                 label: 'text-sm font-semibold',
               }}
@@ -300,7 +217,7 @@ function ShoppingPage({ actions }: ArrayAction) {
               }}
             />
             <Autocomplete
-              className="dark:text-white font-semibold hidden md:flex"
+              className="dark:text-white font-semibold "
               clearButtonProps={{ onClick: () => setBranchId('') }}
               label="Sucursal"
               labelPlacement="outside"
@@ -335,163 +252,150 @@ function ShoppingPage({ actions }: ArrayAction) {
                 </SelectItem>
               ))}
             </Select>
-            <div className="hidden md:flex items-end justify-end">
-              <ButtonUi
-                startContent={<SearchIcon className="w-full" />}
-                theme={Colors.Primary}
-                onPress={searchDailyReport}
-              >
-                Buscar
-              </ButtonUi>
-            </div>
-          </div>
-
-          <div className="mt-6 m-6">
-            <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
-                <thead className="sticky top-0 z-20 bg-white">
-                  <tr>
-                    <ThGlobal className="text-left p-3">No.</ThGlobal>
-                    <ThGlobal className="text-left p-3">No. de control</ThGlobal>
-                    <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
-                    <ThGlobal className="text-left p-3">Fecha/Hora emisión</ThGlobal>
-                    <ThGlobal className="text-left p-3">Subtotal</ThGlobal>
-                    <ThGlobal className="text-left p-3">IVA</ThGlobal>
-                    <ThGlobal className="text-left p-3">Monto total</ThGlobal>
-                    <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-                  </tr>
-                </thead>
-                <tbody className="max-h-[600px] w-full overflow-y-auto">
-                  {loading_shopping ? (
-                    <tr>
-                      <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                        <div className="flex flex-col items-center justify-center w-full h-64">
-                          <div className="loader" />
-                          <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                        </div>
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {shoppingList.length > 0 ? (
-                        <>
-                          {shoppingList.map((cat) => (
-                            <tr key={cat.id} className="border-b border-slate-200">
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {cat.id}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.controlNumber}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.generationCode}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.fecEmi} {cat.horEmi}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.subTotal}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.totalIva}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                {cat.montoTotalOperacion}
-                              </td>
-
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                <div className="flex gap-2">
-                                  <ButtonUi
-                                    isIconOnly
-                                    theme={Colors.Success}
-                                    onPress={() =>
-                                      navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
-                                    }
-                                  >
-                                    <Pen />
-                                  </ButtonUi>
-                                  {cat.generationCode !== 'N/A' && (
-                                    <>
-                                      <ButtonUi
-                                        isIconOnly
-                                        theme={Colors.Error}
-                                        onPress={() => handleVerify(cat.id)}
-                                      >
-                                        <Trash />
-                                      </ButtonUi>
-                                    </>
-                                  )}
-                                  {cat.generationCode === 'N/A' && (
-                                    <Popover className="border border-white rounded-xl">
-                                      <PopoverTrigger>
-                                        <Button isIconOnly style={style}>
-                                          <Trash />
-                                        </Button>
-                                      </PopoverTrigger>
-                                      <PopoverContent>
-                                        <div className="p-4">
-                                          <p className="text-sm font-normal text-gray-600">
-                                            ¿Deseas eliminar el registro {cat.controlNumber}?
-                                          </p>
-                                          <div className="flex justify-center mt-4">
-                                            <ButtonUi
-                                              className="mr-2"
-                                              theme={Colors.Error}
-                                              onPress={() => onDeleteConfirm(cat.id)}
-                                            >
-                                              Sí, eliminar
-                                            </ButtonUi>
-                                          </div>
-                                        </div>
-                                      </PopoverContent>
-                                    </Popover>
-                                  )}
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan={8}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                              <p className="mt-3 text-xl dark:text-white">No se encontraron resultados</p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            {pagination_shopping.totalPag > 1 && (
-              <>
-                <div className="w-full mt-5">
-                  <Pagination
-                    currentPage={pagination_shopping.currentPag}
-                    nextPage={pagination_shopping.nextPag}
-                    previousPage={pagination_shopping.prevPag}
-                    totalPages={pagination_shopping.totalPag}
-                    onPageChange={(page) => {
-                      getPaginatedShopping(
-                        user?.pointOfSale?.branch.transmitterId ??
-                          0,
-                        page,
-                        limit,
-                        dateInitial,
-                        dateEnd,
-                        branchId
-                      );
-                    }}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+          </ResponsiveFilterWrapper>
         </div>
-      </div>
+        <div className="mt-6 m-6">
+          <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            <table className="w-full">
+              <thead className="sticky top-0 z-20 bg-white">
+                <tr>
+                  <ThGlobal className="text-left p-3">No.</ThGlobal>
+                  <ThGlobal className="text-left p-3">No. de control</ThGlobal>
+                  <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
+                  <ThGlobal className="text-left p-3">Fecha/Hora emisión</ThGlobal>
+                  <ThGlobal className="text-left p-3">Subtotal</ThGlobal>
+                  <ThGlobal className="text-left p-3">IVA</ThGlobal>
+                  <ThGlobal className="text-left p-3">Monto total</ThGlobal>
+                  <ThGlobal className="text-left p-3">Acciones</ThGlobal>
+                </tr>
+              </thead>
+              <tbody className="max-h-[600px] w-full overflow-y-auto">
+                {loading_shopping ? (
+                  <tr>
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
+                      <div className="flex flex-col items-center justify-center w-full h-64">
+                        <div className="loader" />
+                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {shoppingList.length > 0 ? (
+                      <>
+                        {shoppingList.map((cat) => (
+                          <tr key={cat.id} className="border-b border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {cat.id}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.controlNumber}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.generationCode}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.fecEmi} {cat.horEmi}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.subTotal}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.totalIva}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.montoTotalOperacion}
+                            </td>
+
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              <div className="flex gap-2">
+                                <ButtonUi
+                                  isIconOnly
+                                  theme={Colors.Success}
+                                  onPress={() =>
+                                    navigate(`/edit-shopping/${cat.id}/${cat.controlNumber}`)
+                                  }
+                                >
+                                  <Pen />
+                                </ButtonUi>
+                                {cat.generationCode !== 'N/A' && (
+                                  <>
+                                    <ButtonUi
+                                      isIconOnly
+                                      theme={Colors.Error}
+                                      onPress={() => handleVerify(cat.id)}
+                                    >
+                                      <Trash />
+                                    </ButtonUi>
+                                  </>
+                                )}
+                                {cat.generationCode === 'N/A' && (
+                                  <Popover className="border border-white rounded-xl">
+                                    <PopoverTrigger>
+                                      <Button isIconOnly style={style}>
+                                        <Trash />
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent>
+                                      <div className="p-4">
+                                        <p className="text-sm font-normal text-gray-600">
+                                          ¿Deseas eliminar el registro {cat.controlNumber}?
+                                        </p>
+                                        <div className="flex justify-center mt-4">
+                                          <ButtonUi
+                                            className="mr-2"
+                                            theme={Colors.Error}
+                                            onPress={() => onDeleteConfirm(cat.id)}
+                                          >
+                                            Sí, eliminar
+                                          </ButtonUi>
+                                        </div>
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan={8}>
+                          <EmptyTable />
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          </div>
+          {pagination_shopping.totalPag > 1 && (
+            <>
+              <div className="w-full mt-5">
+                <Pagination
+                  currentPage={pagination_shopping.currentPag}
+                  nextPage={pagination_shopping.nextPag}
+                  previousPage={pagination_shopping.prevPag}
+                  totalPages={pagination_shopping.totalPag}
+                  onPageChange={(page) => {
+                    getPaginatedShopping(
+                      user?.pointOfSale?.branch.transmitterId ??
+                      0,
+                      page,
+                      limit,
+                      dateInitial,
+                      dateEnd,
+                      branchId
+                    );
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </DivGlobal>
     </>
   );
 }

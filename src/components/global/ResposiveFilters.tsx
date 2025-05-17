@@ -31,7 +31,7 @@ export const ResponsiveFilterWrapper = ({
 
   if (isMobile) {
     return (
-      <div className="flex items-end gap-5 md:hidden">
+      <div className="flex items-end gap-5">
         <ButtonUi
           isIconOnly showTooltip className="lg:hidden"
           theme={Colors.Info}

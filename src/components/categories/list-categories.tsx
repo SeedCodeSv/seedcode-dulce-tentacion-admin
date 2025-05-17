@@ -27,16 +27,16 @@ import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { CategoryProduct } from '../../types/categories.types';
 import { limit_options } from '../../utils/constants';
-import SmPagination from '../global/SmPagination';
+import EmptyTable from '../global/EmptyTable';
 
 import AddCategory from './add-category';
 import CardCategory from './card-category';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
 interface PProps {
   actions: string[];
 }
@@ -72,8 +72,7 @@ function ListCategories({ actions }: PProps) {
   };
 
   return (
-    <div className=" w-full h-full bg-white dark:bg-gray-900">
-      <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+    <DivGlobal className="flex flex-col h-full overflow-y-auto ">
         <div className="flex justify-between gap-5">
           <div className="flex gap-5">
             <Input
@@ -255,11 +254,8 @@ function ListCategories({ actions }: PProps) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                              <p className="mt-3 text-xl">No se encontraron resultados</p>
-                            </div>
+                          <td colSpan={3}>
+                           <EmptyTable/>
                           </td>
                         </tr>
                       )}
@@ -272,7 +268,7 @@ function ListCategories({ actions }: PProps) {
         )}
         {paginated_categories.totalPag > 1 && (
           <>
-            <div className="hidden w-full mt-5 md:flex">
+          <div className="w-full mt-5">
               <Pagination
                 currentPage={paginated_categories.currentPag}
                 nextPage={paginated_categories.nextPag}
@@ -282,28 +278,15 @@ function ListCategories({ actions }: PProps) {
                   getPaginatedCategories(page, limit, search);
                 }}
               />
-            </div>
-            <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-              <SmPagination
-                currentPage={paginated_categories.currentPag}
-                handleNext={() => {
-                  getPaginatedCategories(paginated_categories.nextPag, limit, search);
-                }}
-                handlePrev={() => {
-                  getPaginatedCategories(paginated_categories.prevPag, limit, search);
-                }}
-                totalPages={paginated_categories.totalPag}
-              />
-            </div>
+              </div>
           </>
         )}
-      </div>
       <AddCategory
         category={selectedCategory}
         closeModal={modalAdd.onClose}
         isOpen={modalAdd.isOpen}
       />
-    </div>
+    </DivGlobal>
   );
 }
 

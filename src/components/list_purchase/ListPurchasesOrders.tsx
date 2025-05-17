@@ -145,9 +145,31 @@ function ListPurchasesOrders({ actions }: Props) {
                   ))}
                 </Autocomplete>
               </div>
+              <div className="flex lg:hidden">
+                <Select
+                  className="w-full dark:text-white"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  defaultSelectedKeys={['5']}
+                  label="Mostrar"
+                  labelPlacement="outside"
+                  variant="bordered"
+
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((limit) => (
+                    <SelectItem key={limit} className="dark:text-white">
+                      {limit}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
             </ResponsiveFilterWrapper>
             <div className="flex justify-between gap-4 mt-4">
-              <div className="hidden md:flex">
+              <div className="hidden lg:flex">
                 <Select
                   className="w-44 dark:text-white"
                   classNames={{
@@ -327,7 +349,7 @@ function ListPurchasesOrders({ actions }: Props) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={6}>
                             <EmptyTable />
                           </td>
                         </tr>

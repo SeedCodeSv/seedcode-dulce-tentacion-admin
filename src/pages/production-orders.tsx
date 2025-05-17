@@ -21,7 +21,6 @@ import { useNavigate } from 'react-router';
 import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
 import ThGlobal from '@/themes/ui/th-global';
-import EmptyBox from '@/assets/empty-box.png';
 import { formatDate } from '@/utils/dates';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -36,6 +35,7 @@ import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
 import Pagination from '@/components/global/Pagination';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import EmptyTable from '@/components/global/EmptyTable';
 
 type Key = string;
 
@@ -224,12 +224,7 @@ function ProductionOrders() {
               {productionOrders.length === 0 && (
                 <tr>
                   <td className="p-3" colSpan={7}>
-                    <div className="flex flex-col justify-center items-center h-full">
-                      <img alt="NO DATA" className="w-40" src={EmptyBox} />
-                      <p className="text-lg font-semibold mt-3 dark:text-white">
-                        No se encontraron resultados
-                      </p>
-                    </div>
+                    <EmptyTable/>
                   </td>
                 </tr>
               )}

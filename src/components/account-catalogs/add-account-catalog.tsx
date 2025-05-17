@@ -64,8 +64,7 @@ function AddAccountCatalogs() {
     }),
     onSubmit(values, formikHelpers) {
       try {
-        const transmitterId =
-          user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+        const transmitterId = user?.pointOfSale?.branch.transmitter.id
 
         const payload: AccountCatalogPayload = {
           ...values,
@@ -97,7 +96,7 @@ function AddAccountCatalogs() {
             <div className="">
               <Button
                 className="bg-transparent dark:text-white flex"
-                onClick={() => navigate('/account-catalogs')}
+                onPress={() => navigate('/account-catalogs')}
               >
                 <ArrowLeft /> Regresar
               </Button>
