@@ -1,6 +1,6 @@
 import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
-import { Image as NextImage, Input, Checkbox } from "@heroui/react";
+import { Image as NextImage, Input, Checkbox } from '@heroui/react';
 import compressImage from 'browser-image-compression';
 
 import { useConfigurationStore } from '../../store/perzonalitation.store';
@@ -15,7 +15,7 @@ interface Props {
   theme: string;
 }
 
-function CreateConfiguration(props: Props) {
+function CreateConfiguration(_: Props) {
   const { OnCreateConfiguration } = useConfigurationStore();
   const [selectedImage, setSelectedImage] = useState(DefaultImage);
   const { user } = useAuthStore();
@@ -24,12 +24,11 @@ function CreateConfiguration(props: Props) {
 
   const [formData, setFormData] = useState<ICreacteConfiguaration>({
     name: '',
-    themeName: '',
-    transmitterId:
-     user?.pointOfSale?.branch.transmitterId ?? 0,
+    transmitterId: user?.pointOfSale?.branch.transmitterId ?? 0,
     selectedTemplate: 'template',
     wantPrint: 0,
     file: null,
+    salesForm: '',
   });
 
   useEffect(() => {
@@ -99,8 +98,8 @@ function CreateConfiguration(props: Props) {
     await new Promise((resolve) => setTimeout(resolve, 0));
 
     try {
-      await OnCreateConfiguration({ ...formData, themeName: props.theme });
-    } catch (error) {
+      await OnCreateConfiguration({ ...formData });
+    } catch {
       toast.info('Debes de seleccionar un tema para la configuración');
     }
   };

@@ -1,15 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import { ButtonGroup, Card, useDisclosure } from '@heroui/react';
-import { Check, Edit, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ButtonGroup, useDisclosure } from '@heroui/react';
+import { Edit, Pencil, Plus } from 'lucide-react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from '@heroui/react';
 import { Image } from 'primereact/image';
 import { Table as ITable, CreditCard } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { FaUserEdit } from 'react-icons/fa';
+import { TbSettingsPlus } from 'react-icons/tb';
 
 import { useThemeStore } from '../../store/theme.store';
-import { ThemeContext } from '../../hooks/useTheme';
 import AddButton from '../global/AddButton';
 import { useConfigurationStore } from '../../store/perzonalitation.store';
 import { useAuthStore } from '../../store/auth.store';
@@ -20,8 +21,7 @@ import CreateConfiguration from './CreateConfiguration';
 import UpdateFile from './UpdateFile';
 import UpdateConfigurationName from './UpdateConfigurationName';
 import MobileViewConfi from './MobileViewConfi';
-
-
+import ThemesList from './themes-list';
 
 import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
@@ -33,10 +33,9 @@ interface Props {
 
 const ConfigurationList = ({ actions }: Props) => {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
-  const { getPaginatedThemes, themes } = useThemeStore();
-  const { theme } = useContext(ThemeContext);
+  const { getPaginatedThemes } = useThemeStore();
   const [logoId, setLogoId] = useState(0);
-  const [selectedTheme,] = useState('');
+  const [selectedTheme] = useState('');
   const [selectedConfiguration, setSelectedConfiguration] = useState<IConfiguration>();
   const { personalization, GetConfigurationByTransmitter } = useConfigurationStore();
   const { user } = useAuthStore();
@@ -57,7 +56,6 @@ const ConfigurationList = ({ actions }: Props) => {
   const addLogo = useDisclosure();
   const UpdateImgModal = useDisclosure();
   const updateName = useDisclosure();
-
 
   return (
     <>
@@ -84,26 +82,27 @@ const ConfigurationList = ({ actions }: Props) => {
 
               {actions.includes('Agregar') && (
                 <>
-                  <Button
+                  <ButtonUi
                     className="hidden font-semibold md:flex"
                     endContent={<Plus size={20} />}
-                    style={global_styles().thirdStyle}
-                    type="button"
+                    theme={Colors.Info}
                     onPress={() => navigate('/add-theme')}
                   >
                     Agregar nuevo tema
-                  </Button>
-                  <Button
+                  </ButtonUi>
+                  <ButtonUi
                     isIconOnly
+                    showTooltip
                     className="flex font-semibold md:hidden"
-                    style={global_styles().thirdStyle}
+                    theme={Colors.Info}
+                    tooltipText="Agregar nuevo tema"
                     type="button"
-                    onClick={() => navigate('/add-theme')}
+                    onPress={() => navigate('/add-theme')}
                   >
-                    <Plus />
-                  </Button>
+                    <TbSettingsPlus size={25} />
+                  </ButtonUi>
                 </>
-              ) }
+              )}
 
               {actions.includes('Agregar') && (
                 <>
@@ -116,42 +115,54 @@ const ConfigurationList = ({ actions }: Props) => {
                   {personalization.length > 0 &&
                     personalization.map((item) => (
                       <>
-                        <Button
+                        <ButtonUi
                           className="hidden font-semibold md:flex"
                           endContent={<Plus size={20} />}
-                          style={global_styles().thirdStyle}
-                          type="button"
-                          onClick={() => {
+                          theme={Colors.Primary}
+                          onPress={() => {
                             UpdateImgModal.onOpen();
                             setLogoId(item.id || 0);
                           }}
                         >
                           Actualizar logo
-                        </Button>
-                        <Button
+                        </ButtonUi>
+                        <ButtonUi
                           isIconOnly
+                          showTooltip
                           className="flex font-semibold md:hidden"
-                          style={global_styles().thirdStyle}
-                          type="button"
-                          onClick={() => {
+                          theme={Colors.Primary}
+                          tooltipText="Editar logo"
+                          onPress={() => {
                             UpdateImgModal.onOpen();
                             setLogoId(item.id || 0);
                           }}
                         >
-                          <Plus />
-                        </Button>
+                          <Pencil />
+                        </ButtonUi>
                       </>
                     ))}
                 </>
-              ) }
-              <Button
-                className="hidden font-semibold md:flex"
-                endContent={<Edit size={20} />}
-                style={global_styles().secondaryStyle}
-                onClick={() => navigate('/edit-transmitter-info')}
-              >
-                Editar emisor
-              </Button>
+              )}
+              <div>
+                <ButtonUi
+                  isIconOnly
+                  showTooltip
+                  className="flex font-semibold md:hidden"
+                  theme={Colors.Success}
+                  tooltipText="Editar emisor"
+                  onPress={() => navigate('/edit-transmitter-info')}
+                >
+                  <FaUserEdit size={20} />
+                </ButtonUi>
+                <ButtonUi
+                  className="hidden font-semibold md:flex"
+                  endContent={<Edit size={20} />}
+                  theme={Colors.Success}
+                  onPress={() => navigate('/edit-transmitter-info')}
+                >
+                  Editar emisor
+                </ButtonUi>
+              </div>
             </div>
           </div>
 
@@ -206,7 +217,7 @@ const ConfigurationList = ({ actions }: Props) => {
                             >
                               Actualizar
                             </Button>
-                          ) }
+                          )}
                         </>
                       )}
                       header="Actualizar Nombre"
@@ -218,50 +229,7 @@ const ConfigurationList = ({ actions }: Props) => {
             </div>
           </div>
 
-          <div className="dark:bg-gray-900 w-full">
-            <div className="p-4 ">
-              <div className="p-5 dark:bg-gray-900">
-                <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {themes.map((themeS, index) => (
-                    <Card
-                      key={index}
-                      isPressable
-                      className="grid w-full grid-cols-6 border shadow"
-                    >
-                      <span className="col-span-6 font-semibold">{themeS.name}</span>
-                      <div className="absolute top-5 right-5">
-                        {themeS.name === theme.name && <Check color="#fff" size={30} />}
-                      </div>
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.danger }}
-                       />
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.dark }}
-                       />
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.primary }}
-                       />
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.secondary }}
-                       />
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.third }}
-                       />
-                      <span
-                        className="w-full h-44"
-                        style={{ backgroundColor: themeS.colors.warning }}
-                       />
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <ThemesList personalization={personalization} />
         </div>
       </div>
 

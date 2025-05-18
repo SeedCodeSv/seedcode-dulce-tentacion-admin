@@ -18,7 +18,6 @@ export const create_configuration = (configuration: ICreacteConfiguaration) => {
     formData.append('file', configuration.file);
   }
   formData.append('name', configuration.name);
-  formData.append('themeName', configuration.themeName.toString());
   formData.append('transmitterId', configuration.transmitterId.toString());
   formData.append('selectedTemplate', configuration.selectedTemplate);
   formData.append('wantPrint', configuration.wantPrint.toString());
@@ -50,12 +49,12 @@ export const update_configuration_name = (payload: pachConfigurationName, id: nu
   });
 };
 
-export const update_theme = (id: number, name: string) => {
+export const update_theme = (id: number, themeId: number) => {
   const token = get_token() ?? '';
 
   return axios.patch<{ ok: boolean }>(
-    API_URL + '/personalization/change-theme/' + id,
-    { name },
+    API_URL + '/personalization/change-theme/' + id + '/' + themeId,
+    {},
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -69,9 +68,7 @@ export const get_theme_by_transmitter = () => {
   const token = get_token() ?? '';
 
   return axios.get<IGetTheme>(
-    `${API_URL}/personalization/theme/${
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0
-    }`,
+    `${API_URL}/personalization/theme/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
