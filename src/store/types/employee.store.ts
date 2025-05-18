@@ -3,7 +3,7 @@ import { Employee, EmployeePayload, IGetEmployeesPaginated, MonthsAttendance } f
 export interface IEmployeeStore {
   employee_paginated: IGetEmployeesPaginated;
   employee_list: Employee[];
-  birthdays : MonthsAttendance[]
+  birthdays: MonthsAttendance[]
   loading_employees: boolean;
   saveEmployeesPaginated: (employee_paginated: IGetEmployeesPaginated) => void;
   getEmployeesPaginated: (
@@ -26,5 +26,6 @@ export interface IEmployeeStore {
   activateEmployee: (id: number) => Promise<void>;
   verifyCode: (code: string) => Promise<boolean>;
   OnGetBirthDays: () => void;
+  getEmployeesByBranch:(branchId: number)=> void
 
 }

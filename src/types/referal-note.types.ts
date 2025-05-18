@@ -1,11 +1,16 @@
 import { Branch } from './branch_products.types';
 import { Customer } from './customers.types';
+import { NRE_CuerpoDocumento, SVFC_NRE_Firmado } from './svf_dte/nre.types';
 
 export interface Employee {
   id: number;
   fullName: string;
   firstName?: string;
   secondName?: string;
+  firstLastName?: string
+  secondLastName?: string
+  dui?: string
+  nit?: string
   phone: string;
   typeDocument: string;
   numDocument: string;
@@ -56,6 +61,8 @@ export interface ReferalNote {
   customerId?: any;
   employeeId: number;
   statusId: number;
+  isCompleted?:boolean
+  receivingEmployeeId?:number
 }
 
 export interface IGetReferalNotes {
@@ -67,4 +74,29 @@ export interface IGetReferalNotes {
   nextPag: number;
   prevPag: number;
   status: number;
+}
+
+
+export interface IReferal_JSON_Note extends SVFC_NRE_Firmado {
+  itemsCopy: NRE_CuerpoDocumento[]
+  indexEdited: number[]
+}
+export interface IGetRecenReferal {
+  ok: boolean
+  status: number
+  referalNotes: ReferalNote[]
+}
+
+export interface InvalidateNoteRemision {
+  nameResponsible: string
+  nameApplicant: string
+  docNumberResponsible: string
+  docNumberApplicant: string
+  typeDocResponsible: string
+  typeDocApplicant: string
+}
+
+export interface PayloadReferel {
+  code: string
+  descriptionCompleted: string
 }

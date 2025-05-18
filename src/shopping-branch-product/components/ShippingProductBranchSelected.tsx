@@ -30,11 +30,6 @@ import { useCustomerStore } from '@/store/customers.store';
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
 
-
-
-
-
-
 interface Props {
   branchData: Branches;
   setErrors: Dispatch<SetStateAction<string[]>>;
@@ -52,6 +47,7 @@ function ShippingProductBranchSelected(props: Props) {
     OnPlusProductSelected,
     OnMinusProductSelected,
     OnChangeQuantityManual,
+    OnUpdateCosteManual,
     OnUpdatePriceManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
@@ -170,7 +166,7 @@ function ShippingProductBranchSelected(props: Props) {
                     'N°',
                     'Nombre',
                     'Categoria',
-                    'SubCategoria',
+                    'Costo Unitario',
                     'Precio',
                     'Cantidad',
                     'Acciones',
@@ -209,10 +205,17 @@ function ShippingProductBranchSelected(props: Props) {
                       {item?.product.name}
                     </td>
                     <td className="px-6 py-4 dark:text-white">
-                      {item.product?.subCategoryProduct?.categoryProduct?.name}
+                      {item.product?.subCategory?.categoryProduct?.name}
                     </td>
+                   
                     <td className="px-6 py-4 dark:text-white">
-                      {item?.product?.subCategoryProduct?.name}
+                      <Input
+                        value={item.costoUnitario!.toString()}
+                        variant="bordered"
+                        onChange={(e) => {
+                          OnUpdateCosteManual(item.id, String(e.currentTarget.value));
+                        }}
+                      />
                     </td>
                     <td className="px-6 py-4 dark:text-white">
                       <Input
@@ -302,7 +305,7 @@ function ShippingProductBranchSelected(props: Props) {
                   }
                 }}
               >
-               
+
                 <SelectItem
                   key={2}
                   className="dark:text-white"
@@ -494,7 +497,7 @@ function ShippingProductBranchSelected(props: Props) {
                 value={observations}
                 variant="bordered"
                 onChange={(e) => setObservations(e.target.value)}
-               />
+              />
             </div>
           </ModalBody>
           <ModalFooter className="flex justify-between items-end">

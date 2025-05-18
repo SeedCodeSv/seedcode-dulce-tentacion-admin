@@ -33,7 +33,7 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
           },
         });
       }
-    ).catch(() =>  set({
+    ).catch(() => set({
       branchProducts: [],
       pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
     }));
@@ -139,6 +139,13 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
     set((state) => ({
       product_selected: state.product_selected.map((cp) =>
         cp.id === productId ? { ...cp, total: Number(price) * Number(cp.quantity), price } : cp
+      ),
+    }));
+  },
+  OnUpdateCosteManual(productId, costoUnitario) {
+    set((state) => ({
+      product_selected: state.product_selected.map((cp) =>
+        cp.id === productId ? { ...cp, total: Number(costoUnitario) * Number(cp.quantity), costoUnitario } : cp
       ),
     }));
   },

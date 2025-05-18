@@ -5,6 +5,7 @@ import {
   activate_employee,
   delete_employee,
   get_birthday_employees,
+  get_employee_by_branch,
   get_employee_list,
   get_employees_paginated,
   // get_list_employees,
@@ -197,6 +198,15 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         birthdays: data.birthdays,
       });
     });
+  },
+  getEmployeesByBranch(branchId) {
+    get_employee_by_branch(branchId)
+      .then(({ data }) => {
+        set((state) => ({ ...state, employee_list: data.employees }))
+      })
+      .catch(() => {
+        set((state) => ({ ...state, employee_list: [] }))
+      })
   },
   // getListEmployees() {
   //   get_list_employees()

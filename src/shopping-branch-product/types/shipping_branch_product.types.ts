@@ -8,7 +8,7 @@ export interface IResponseBranchProductPaginatedSent {
   totalPag: number;
   currentPag: number;
   nextPag: number;
-prevPag: number;
+  prevPag: number;
 }
 export interface BranchProduct {
   quantity?: number;
@@ -40,7 +40,7 @@ export interface Product {
   isActive: boolean;
   subCategoryProduct: SubCategoryProduct;
   subCategoryProductId: number;
-  subCategory?:SubCategoryProduct
+  subCategory?: SubCategoryProduct
 }
 export interface SubCategoryProduct {
   id: number;
@@ -98,6 +98,8 @@ export interface IShippingProductBranchStore {
   OnClearProductSelectedAll: () => void;
   OnChangeQuantityManual: (productId: number, quantity: number) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
+  OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
+
   OnClearDataShippingProductBranch: () => void;
   OnGetShippinProductBranch: (
     branchId: number,

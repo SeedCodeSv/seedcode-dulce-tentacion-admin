@@ -18,6 +18,7 @@ import { useCustomerStore } from '@/store/customers.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useReferalNote } from '@/store/referal-notes';
 import { NRE_DteJson } from '@/types/svf_dte/nre.types';
+import ThGlobal from '@/themes/ui/th-global';
 
 interface Props {
   setCustomer: Dispatch<SetStateAction<Customer | undefined>>;
@@ -132,12 +133,12 @@ const GenerateSaleByNote = ({ setCustomer }: Props) => {
           <table className="min-w-full bg-white border-collapse">
             <thead className="sticky top-0 z-10 text-white border border-gray-600 bg-gray-800">
               <tr>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">N°</th>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Cliente </th>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Fecha</th>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Hora</th>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Total</th>
-                <th className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Acciones</th>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">N°</ThGlobal>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Cliente </ThGlobal>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Fecha</ThGlobal>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Hora</ThGlobal>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Total</ThGlobal>
+                <ThGlobal className="px-4 text-[10px] whitespace-nowrap py-3 text-left">Acciones</ThGlobal>
               </tr>
             </thead>
             <tbody className="dark:bg-gray-800 text-gray-700 dark:text-gray-200">

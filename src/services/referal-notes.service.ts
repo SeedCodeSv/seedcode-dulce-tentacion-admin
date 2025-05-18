@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IGetReferalNotes } from '@/types/referal-note.types';
+import { IGetRecenReferal, IGetReferalNotes, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -22,8 +22,8 @@ export const get_referal_notes = (
   );
 };
 
-export const complete_referal_note = async (id: number) => {
-  return (await axios.post<{ ok: boolean }>(API_URL + `/referal-note/receive/${id}`)).data;
+export const complete_referal_note = async (id: number, payload:PayloadReferel) => {
+  return (await axios.post<{ ok: boolean }>(API_URL + `/referal-note/receive/${id}`, payload)).data;
 };
 
 export const get_pdf_nre = (code: string) => {
@@ -33,3 +33,9 @@ export const get_pdf_nre = (code: string) => {
 export const re_send_email_nre = (code: string) => {
   return axios.post<{ ok: boolean }>(API_URL + `/pdf/re-send-email-nre/${code}`);
 };
+
+export const get_referal_note_recent = (id: number) => {
+  return axios.get<IGetRecenReferal>(API_URL + `/referal-note/get-referal-note-recents/${id}`)
+}
+
+

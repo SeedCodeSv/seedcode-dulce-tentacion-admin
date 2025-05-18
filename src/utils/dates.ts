@@ -3,6 +3,9 @@ import { format } from '@formkit/tempo';
 import 'moment/locale/es';
 import { DateTime } from 'luxon';
 
+import { Employee } from '@/types/referal-note.types';
+import { Employee as Employee2 } from '@/types/employees.types';
+
 const l = 'es';
 
 export const formatDateShort = (date: string) => {
@@ -181,4 +184,30 @@ export function formatSimpleDate(date: string): string {
   const monthName = monts[Number(month) - 1];
 
   return `${day}-${monthName}-${year} ${hour}:${minute}`;
+}
+
+
+export function formatEmployee(value: Employee | Employee2) {
+  const render =
+    value?.firstName +
+    ' ' +
+    value?.secondName +
+    ' ' +
+    value?.firstLastName +
+    ' ' +
+    value?.secondLastName
+
+  return render
+}
+
+export function typeNumDoc(value: Employee | Employee2) {
+  const typeDoc = (value?.dui && '13') || (value?.nit && '36')
+
+  return typeDoc as string
+}
+
+export function numbDocument(value: Employee | Employee2) {
+  const numDoc = (value?.dui ?? 0) || (value?.nit ?? 0)
+
+  return numDoc as number
 }

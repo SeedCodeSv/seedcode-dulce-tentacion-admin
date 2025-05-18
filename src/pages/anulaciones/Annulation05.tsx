@@ -3,6 +3,11 @@ import {
   AutocompleteItem,
   Button,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Select,
   SelectItem,
   Spinner,
@@ -33,6 +38,9 @@ import { ErrorMHInvalidation } from '@/types/svf_dte/InvalidationDebito';
 import { ambiente, API_URL, sending_steps } from '@/utils/constants';
 import { getElSalvadorDateTime } from '@/utils/dates';
 import { generate_uuid } from '@/utils/random/random';
+import { get_employee_by_code } from "@/services/employess.service";
+import { annulations } from "@/services/innvalidations.services";
+import { formatAnnulations05 } from "@/utils/DTE/innvalidations";
 
 interface Props {
   id: string;
@@ -42,18 +50,21 @@ function Invalidation05({ id }: Props) {
   const services = new SeedcodeCatalogosMhService();
   const styles = global_styles();
   const { user } = useAuthStore();
-
+  const [modalInitializate, setModalInitialize] = useState(true)
   const { json_credit, onGetSaleAndCredit, loading_credit, recent_credit_notes } = useCreditNotes();
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
   const { employee_list, getEmployeesList } = useEmployeeStore();
-
+  const [employeeCode, setEmployeeCode] = useState<Employee>()
+  const [code, setCode] = useState<string | null>(null)
+  const [firstPase, setFirstPase] = useState(false)
   const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('');
   const [docResponsible, setDocResponsible] = useState('00000000-0');
   const [typeDocResponsible, setTypeDocResponsible] = useState('13');
+  const modalInvalidation = useDisclosure()
 
   useEffect(() => {
     onGetSaleAndCredit(+id);
@@ -197,7 +208,16 @@ function Invalidation05({ id }: Props) {
                   .patch(API_URL + `/nota-de-credito/invalidate/${id}`, {
                     selloInvalidacion: res.data.selloRecibido,
                   })
-                  .then(() => {
+                  .then(async () => {
+                    const payload = formatAnnulations05(generate, res.data.selloRecibido!, employeeCode!.id ?? 0, motivo.codigo)
+
+                    await annulations(payload).then(() => {
+                      toast.success('Se guardo con exito la invalidacion')
+
+                    }).catch(() => {
+                      toast.error('No se guardo la invalidacion')
+
+                    })
                     toast.success('Invalidado  correctamente');
                     setLoading(false);
                     setCurrentStep(0);
@@ -244,335 +264,392 @@ function Invalidation05({ id }: Props) {
       }
     });
   };
+  const handleProccesEmployee = async () => {
+    try {
+      if (code === null) {
+        toast.error('Debes ingresar un codigo')
+
+        return
+      }
+      await get_employee_by_code(code).then((i) => {
+        if (i.data.employee.id) {
+          setEmployeeCode(i.data.employee as Employee)
+          setFirstPase(true)
+          modalInvalidation.onOpen()
+          setModalInitialize(false)
+          toast.success('Empleado confirmado')
+
+        }
+      }).catch(() => {
+        toast.error('No se encontraron coincidencias')
+      })
+
+    } catch (error) {
+      toast.error('No se proceso la solicitud')
+
+    }
+
+  }
 
   return (
     <>
-      <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
-        <ArrowLeft />
-        <p className=" whitespace-nowrap">Volver a listado</p>
-      </button>
-      {loading_credit && (
-        <div className="w-full h-full flex flex-col justify-center items-center">
-          <div className="loader" />
-          <p className="mt-3 text-xl font-semibold">Cargando...</p>
-        </div>
-      )}
-      {loading && (
-        <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
-          <Spinner className="w-24 h-24 animate-spin" />
-          <p className="text-lg font-semibold mt-4">Cargando...</p>
-          <div className="flex flex-col">
-            {sending_steps.map((step, index) => (
-              <div key={index} className="flex items-start py-2">
-                <div
-                  className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${
-                    index <= currentStep
+      {firstPase ? (<>
+        <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
+          <ArrowLeft />
+          <p className=" whitespace-nowrap">Volver a listado</p>
+        </button>
+        {loading_credit && (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            <div className="loader" />
+            <p className="mt-3 text-xl font-semibold">Cargando...</p>
+          </div>
+        )}
+        {loading && (
+          <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
+            <Spinner className="w-24 h-24 animate-spin" />
+            <p className="text-lg font-semibold mt-4">Cargando...</p>
+            <div className="flex flex-col">
+              {sending_steps.map((step, index) => (
+                <div key={index} className="flex items-start py-2">
+                  <div
+                    className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${index <= currentStep
                       ? 'bg-green-600 border-green-600 text-white'
                       : 'bg-white border-gray-300 text-gray-500'
-                  }`}
-                >
-                  {index + 1}
-                </div>
-                <div className="ml-4">
-                  <div
-                    className={`font-semibold ${
-                      index <= currentStep ? 'text-green-600' : 'text-gray-500'
-                    }`}
+                      }`}
                   >
-                    {step.label}
+                    {index + 1}
                   </div>
-                  {step.description && (
-                    <div className="text-xs font-semibold text-gray-700">{step.description}</div>
-                  )}
+                  <div className="ml-4">
+                    <div
+                      className={`font-semibold ${index <= currentStep ? 'text-green-600' : 'text-gray-500'
+                        }`}
+                    >
+                      {step.label}
+                    </div>
+                    {step.description && (
+                      <div className="text-xs font-semibold text-gray-700">{step.description}</div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      <HeadlessModal
-        isOpen={modalError.isOpen}
-        size="w-96 p-5"
-        title={title}
-        onClose={modalError.onClose}
-      >
-        <div className="w-full">
-          <div className="flex flex-col justify-center items-center">
-            <ShieldAlert color="red" size={75} />
-            <p className="text-lg font-semibold dark:text-white">{errorMessage}</p>
-          </div>
-          <div className="flex justify-end items-end mt-5 w-full">
-            <Button className="w-full" style={style.dangerStyles} onClick={modalError.onClose}>
-              Aceptar
-            </Button>
-          </div>
-        </div>
-      </HeadlessModal>
-      {!loading_credit && json_credit && (
-        <div className="w-full h-full p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 z-0">
-            <p className="font-semibold">
-              Fecha de emisión:{' '}
-              <span className="font-normal">{json_credit.identificacion.fecEmi}</span>
-            </p>
-            <p className="font-semibold">
-              Hora de emisión:{' '}
-              <span className="font-normal">{json_credit.identificacion.horEmi}</span>
-            </p>
-            <p className="font-semibold">
-              Numero de control:{' '}
-              <span className="font-normal">{json_credit.identificacion.numeroControl}</span>
-            </p>
-            <p className="font-semibold">
-              Código de generación:{' '}
-              <span className="font-normal">{json_credit.identificacion.codigoGeneracion}</span>
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 mt-10">
-            <Select
-              className="my-3 dark:text-white z-0"
-              classNames={{ label: 'text-sm font-semibold' }}
-              defaultSelectedKeys={[selectedMotivo.toString()]}
-              label="Motivo de invalidación"
-              labelPlacement="outside"
-              placeholder="Selecciona un motivo"
-              value={selectedMotivo}
-              variant="bordered"
-              onSelectionChange={(e) => {
-                if (e) {
-                  const array = Array.from(new Set(e).values());
-
-                  setSelectedMotivo(Number(array[0]) as 1 | 2 | 3);
-                } else {
-                  setSelectedMotivo(1);
-                }
-              }}
-            >
-              {services.get024TipoDeInvalidacion().map((item) => (
-                <SelectItem
-                  key={item.id}
-                  className="dark:text-white"
-                  textValue={item.valores}
-                >
-                  {item.valores}
-                </SelectItem>
               ))}
-            </Select>
-            {(selectedMotivo === 1 || selectedMotivo === 3) && (
+            </div>
+          </div>
+        )}
+        <HeadlessModal
+          isOpen={modalError.isOpen}
+          size="w-96 p-5"
+          title={title}
+          onClose={modalError.onClose}
+        >
+          <div className="w-full">
+            <div className="flex flex-col justify-center items-center">
+              <ShieldAlert color="red" size={75} />
+              <p className="text-lg font-semibold dark:text-white">{errorMessage}</p>
+            </div>
+            <div className="flex justify-end items-end mt-5 w-full">
+              <Button className="w-full" style={style.dangerStyles} onClick={modalError.onClose}>
+                Aceptar
+              </Button>
+            </div>
+          </div>
+        </HeadlessModal>
+        {!loading_credit && json_credit && (
+          <div className="w-full h-full p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 z-0">
+              <p className="font-semibold">
+                Fecha de emisión:{' '}
+                <span className="font-normal">{json_credit.identificacion.fecEmi}</span>
+              </p>
+              <p className="font-semibold">
+                Hora de emisión:{' '}
+                <span className="font-normal">{json_credit.identificacion.horEmi}</span>
+              </p>
+              <p className="font-semibold">
+                Numero de control:{' '}
+                <span className="font-normal">{json_credit.identificacion.numeroControl}</span>
+              </p>
+              <p className="font-semibold">
+                Código de generación:{' '}
+                <span className="font-normal">{json_credit.identificacion.codigoGeneracion}</span>
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 mt-10">
               <Select
-                className="my-3"
+                className="my-3 dark:text-white z-0"
                 classNames={{ label: 'text-sm font-semibold' }}
                 defaultSelectedKeys={[selectedMotivo.toString()]}
-                label="Código de generación que reemplaza"
+                label="Motivo de invalidación"
                 labelPlacement="outside"
-                placeholder="Nota de débito que reemplaza"
+                placeholder="Selecciona un motivo"
                 value={selectedMotivo}
                 variant="bordered"
                 onSelectionChange={(e) => {
                   if (e) {
-                    setCodigoGeneracionR(new Set(e).values().next().value as string);
+                    const array = Array.from(new Set(e).values());
+
+                    setSelectedMotivo(Number(array[0]) as 1 | 2 | 3);
                   } else {
-                    setCodigoGeneracionR('');
+                    setSelectedMotivo(1);
                   }
                 }}
               >
-                {recent_credit_notes.map((item) => (
+                {services.get024TipoDeInvalidacion().map((item) => (
                   <SelectItem
-                    key={item.codigoGeneracion}
-                    textValue={item.codigoGeneracion}
+                    key={item.id}
+                    className="dark:text-white"
+                    textValue={item.valores}
                   >
-                    {item.numeroControl + ' - ' + item.codigoGeneracion}
+                    {item.valores}
                   </SelectItem>
                 ))}
               </Select>
-            )}
-          </div>
-          <div className="mt-5">
-            <Formik
-              initialValues={{
-                nameResponsible: '',
-                nameApplicant: '',
-                docNumberResponsible: '',
-                docNumberApplicant: '',
-                typeDocResponsible: '',
-                typeDocApplicant: '',
-              }}
-              validationSchema={validationSchema}
-              onSubmit={handleAnnulation}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleBlur,
-                handleChange,
-                handleSubmit,
-                isSubmitting,
-              }) => (
-                <>
-                  <div className="p-8 border shadow rounded">
-                    <p className="text-xl font-semibold">Responsable</p>
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
-                      <Autocomplete
-                        className="dark:text-white font-semibold text-sm z-0"
-                        errorMessage={touched.nameResponsible ? errors.nameResponsible : undefined}
-                        label="Nombre"
-                        labelPlacement="outside"
-                        placeholder="Selecciona al responsable"
-                        variant="bordered"
-                        onBlur={handleBlur}
-                        onSelectionChange={(key) => {
-                          if (key) {
-                            const employee = JSON.parse(key as string) as Employee;
-
-                            handleChange('nameResponsible')(
-                              `${employee.firstName + ' ' + employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`
-                            );
-                            handleChange('docNumberResponsible')(employee.dui);
-                            handleChange('typeDocResponsible')('13');
-                            setDocResponsible(employee.dui);
-                            setTypeDocResponsible('13');
-                          } else {
-                            setDocResponsible('');
-                            setTypeDocResponsible('');
-                          }
-                        }}
-                      >
-                        {employee_list.map((item) => (
-                          <AutocompleteItem
-                            key={JSON.stringify(item)}
-                            className=" dark:text-white"
-                          >
-                            {`${item.id} - ${item.firstName + ' ' + item.secondName} ${item.firstLastName} ${item.secondLastName}`}
-                          </AutocompleteItem>
-                        ))}
-                      </Autocomplete>
-                      <Input
-                        isReadOnly
-                        className="w-full text-sm dark:text-white"
-                        classNames={{ label: 'text-xs font-semibold' }}
-                        id="docNumberResponsible"
-                        label="Tipo de documento"
-                        labelPlacement="outside"
-                        name="docNumberResponsible"
-                        placeholder="DUI"
-                        type="text"
-                        value={
-                          services
-                            .get022TipoDeDocumentoDeIde()
-                            .find((doc) => doc.codigo === typeDocResponsible)?.valores
-                        }
-                        variant="bordered"
-                      />
-                      <Input
-                        isReadOnly
-                        className="w-full text-sm dark:text-white"
-                        classNames={{ label: 'text-xs font-semibold' }}
-                        id="docNumberResponsible"
-                        label="Numero de documento"
-                        labelPlacement="outside"
-                        name="docNumberResponsible"
-                        placeholder="00000000-0"
-                        type="text"
-                        value={docResponsible}
-                        variant="bordered"
-                      />
-                    </div>
-                  </div>
-                  <div className="p-8 border mt-5 shadow rounded">
-                    <p className="text-xl font-semibold">Solicitante</p>
-                    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
-                      <div>
-                        <Input
-                          className="w-full text-sm dark:text-white z-0"
-                          classNames={{ label: 'text-xs font-semibold' }}
-                          errorMessage={errors.nameApplicant}
-                          id="nameApplicant"
-                          isInvalid={touched.nameApplicant && !!errors.nameApplicant}
-                          label="Nombre de solicitante"
+              {(selectedMotivo === 1 || selectedMotivo === 3) && (
+                <Select
+                  className="my-3"
+                  classNames={{ label: 'text-sm font-semibold' }}
+                  defaultSelectedKeys={[selectedMotivo.toString()]}
+                  label="Código de generación que reemplaza"
+                  labelPlacement="outside"
+                  placeholder="Nota de débito que reemplaza"
+                  value={selectedMotivo}
+                  variant="bordered"
+                  onSelectionChange={(e) => {
+                    if (e) {
+                      setCodigoGeneracionR(new Set(e).values().next().value as string);
+                    } else {
+                      setCodigoGeneracionR('');
+                    }
+                  }}
+                >
+                  {recent_credit_notes.map((item) => (
+                    <SelectItem
+                      key={item.codigoGeneracion}
+                      textValue={item.codigoGeneracion}
+                    >
+                      {item.numeroControl + ' - ' + item.codigoGeneracion}
+                    </SelectItem>
+                  ))}
+                </Select>
+              )}
+            </div>
+            <div className="mt-5">
+              <Formik
+                initialValues={{
+                  nameResponsible: '',
+                  nameApplicant: '',
+                  docNumberResponsible: '',
+                  docNumberApplicant: '',
+                  typeDocResponsible: '',
+                  typeDocApplicant: '',
+                }}
+                validationSchema={validationSchema}
+                onSubmit={handleAnnulation}
+              >
+                {({
+                  values,
+                  errors,
+                  touched,
+                  handleBlur,
+                  handleChange,
+                  handleSubmit,
+                  isSubmitting,
+                }) => (
+                  <>
+                    <div className="p-8 border shadow rounded">
+                      <p className="text-xl font-semibold">Responsable</p>
+                      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
+                        <Autocomplete
+                          className="dark:text-white font-semibold text-sm z-0"
+                          errorMessage={touched.nameResponsible ? errors.nameResponsible : undefined}
+                          label="Nombre"
                           labelPlacement="outside"
-                          name="nameApplicant"
-                          placeholder="Ingresa el nombre del solicitante"
-                          type="text"
-                          value={values.nameApplicant}
+                          placeholder="Selecciona al responsable"
                           variant="bordered"
-                          onBlur={handleBlur('nameApplicant')}
-                          onChange={handleChange('nameApplicant')}
+                          onBlur={handleBlur}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const employee = JSON.parse(key as string) as Employee;
+
+                              handleChange('nameResponsible')(
+                                `${employee.firstName + ' ' + employee.secondName} ${employee.firstLastName} ${employee.secondLastName}`
+                              );
+                              handleChange('docNumberResponsible')(employee.dui);
+                              handleChange('typeDocResponsible')('13');
+                              setDocResponsible(employee.dui);
+                              setTypeDocResponsible('13');
+                            } else {
+                              setDocResponsible('');
+                              setTypeDocResponsible('');
+                            }
+                          }}
+                        >
+                          {employee_list.map((item) => (
+                            <AutocompleteItem
+                              key={JSON.stringify(item)}
+                              className=" dark:text-white"
+                            >
+                              {`${item.id} - ${item.firstName + ' ' + item.secondName} ${item.firstLastName} ${item.secondLastName}`}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
+                        <Input
+                          isReadOnly
+                          className="w-full text-sm dark:text-white"
+                          classNames={{ label: 'text-xs font-semibold' }}
+                          id="docNumberResponsible"
+                          label="Tipo de documento"
+                          labelPlacement="outside"
+                          name="docNumberResponsible"
+                          placeholder="DUI"
+                          type="text"
+                          value={
+                            services
+                              .get022TipoDeDocumentoDeIde()
+                              .find((doc) => doc.codigo === typeDocResponsible)?.valores
+                          }
+                          variant="bordered"
+                        />
+                        <Input
+                          isReadOnly
+                          className="w-full text-sm dark:text-white"
+                          classNames={{ label: 'text-xs font-semibold' }}
+                          id="docNumberResponsible"
+                          label="Numero de documento"
+                          labelPlacement="outside"
+                          name="docNumberResponsible"
+                          placeholder="00000000-0"
+                          type="text"
+                          value={docResponsible}
+                          variant="bordered"
                         />
                       </div>
-                      <div>
-                        <Select
-                          className="dark:text-white"
-                          classNames={{
-                            label: 'font-semibold text-xs',
-                          }}
-                          errorMessage={errors.typeDocApplicant}
-                          isInvalid={touched.typeDocApplicant && !!errors.typeDocApplicant}
-                          label="Tipo de documento de identificación"
-                          labelPlacement="outside"
-                          placeholder="Selecciona el tipo de documento"
-                          size="md"
-                          value={values.typeDocApplicant}
-                          variant="bordered"
-                          onChange={handleChange('typeDocApplicant')}
-                        >
-                          {services.get022TipoDeDocumentoDeIde().map((doc) => (
-                            <SelectItem
-                              key={doc.codigo}
-                              className="dark:text-white"
-                            >
-                              {doc.valores}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      </div>
-                      <Input
-                        className="w-full text-sm dark:text-white"
-                        classNames={{ label: 'text-xs font-semibold' }}
-                        errorMessage={errors.docNumberApplicant}
-                        id="`docNumberApplicant`"
-                        isInvalid={touched.docNumberApplicant && !!errors.docNumberApplicant}
-                        label="Numero de documento"
-                        labelPlacement="outside"
-                        name="docNumberApplicant"
-                        placeholder="Ingresa el numero de documento"
-                        type="text"
-                        value={values.docNumberApplicant}
-                        variant="bordered"
-                        onBlur={handleBlur('docNumberApplicant')}
-                        onChange={handleChange('docNumberApplicant')}
-                       />
                     </div>
-                  </div>
-                  <div className="w-full flex justify-end mt-10 pb-10">
-                    <Button
-                      className="w-full md:w-auto px-20"
-                      disabled={isSubmitting}
-                      style={styles.thirdStyle}
-                      type="submit"
-                      onClick={() => handleSubmit()}
-                    >
-                      Procesar anulación
-                    </Button>
-                  </div>
-                </>
-              )}
-            </Formik>
+                    <div className="p-8 border mt-5 shadow rounded">
+                      <p className="text-xl font-semibold">Solicitante</p>
+                      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
+                        <div>
+                          <Input
+                            className="w-full text-sm dark:text-white z-0"
+                            classNames={{ label: 'text-xs font-semibold' }}
+                            errorMessage={errors.nameApplicant}
+                            id="nameApplicant"
+                            isInvalid={touched.nameApplicant && !!errors.nameApplicant}
+                            label="Nombre de solicitante"
+                            labelPlacement="outside"
+                            name="nameApplicant"
+                            placeholder="Ingresa el nombre del solicitante"
+                            type="text"
+                            value={values.nameApplicant}
+                            variant="bordered"
+                            onBlur={handleBlur('nameApplicant')}
+                            onChange={handleChange('nameApplicant')}
+                          />
+                        </div>
+                        <div>
+                          <Select
+                            className="dark:text-white"
+                            classNames={{
+                              label: 'font-semibold text-xs',
+                            }}
+                            errorMessage={errors.typeDocApplicant}
+                            isInvalid={touched.typeDocApplicant && !!errors.typeDocApplicant}
+                            label="Tipo de documento de identificación"
+                            labelPlacement="outside"
+                            placeholder="Selecciona el tipo de documento"
+                            size="md"
+                            value={values.typeDocApplicant}
+                            variant="bordered"
+                            onChange={handleChange('typeDocApplicant')}
+                          >
+                            {services.get022TipoDeDocumentoDeIde().map((doc) => (
+                              <SelectItem
+                                key={doc.codigo}
+                                className="dark:text-white"
+                              >
+                                {doc.valores}
+                              </SelectItem>
+                            ))}
+                          </Select>
+                        </div>
+                        <Input
+                          className="w-full text-sm dark:text-white"
+                          classNames={{ label: 'text-xs font-semibold' }}
+                          errorMessage={errors.docNumberApplicant}
+                          id="`docNumberApplicant`"
+                          isInvalid={touched.docNumberApplicant && !!errors.docNumberApplicant}
+                          label="Numero de documento"
+                          labelPlacement="outside"
+                          name="docNumberApplicant"
+                          placeholder="Ingresa el numero de documento"
+                          type="text"
+                          value={values.docNumberApplicant}
+                          variant="bordered"
+                          onBlur={handleBlur('docNumberApplicant')}
+                          onChange={handleChange('docNumberApplicant')}
+                        />
+                      </div>
+                    </div>
+                    <div className="w-full flex justify-end mt-10 pb-10">
+                      <Button
+                        className="w-full md:w-auto px-20"
+                        disabled={isSubmitting}
+                        style={styles.thirdStyle}
+                        type="submit"
+                        onClick={() => handleSubmit()}
+                      >
+                        Procesar anulación
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </Formik>
+            </div>
           </div>
-        </div>
-      )}
-      {!json_credit && (
-        <div className="w-full h-full flex flex-col justify-center items-center">
-          {/* <Lottie
+        )}
+        {!json_credit && (
+          <div className="w-full h-full flex flex-col justify-center items-center">
+            {/* <Lottie
             width={300}
             height={300}
             options={{
               animationData: EMPTY_BOX,
             }}
           /> */}
-          <p className="mt-3 text-xl font-normal">No se encontró la nota de débito solicitada</p>
-        </div>
-      )}
+            <p className="mt-3 text-xl font-normal">No se encontró la nota de débito solicitada</p>
+          </div>
+        )}
+      </>) : (<>
+        <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigation(-1) }}>
+          <ModalContent>
+            <ModalHeader className='dark:text-white'>Anular nota de remision</ModalHeader>
+            <ModalBody>
+              <Input
+                classNames={{
+                  label: 'font-semibold text-gray-500 text-sm',
+                  input: 'dark:text-white',
+                  base: 'font-semibold'
+                }}
+                label="Código de empleado"
+                labelPlacement="outside"
+                placeholder="Ingrese el código de empleado"
+                type="text"
+                value={code!}
+                variant="bordered"
+                onChange={(e) => setCode(e.target.value)}
+              />
+            </ModalBody>
+            <ModalFooter>
+
+              <Button
+                style={styles.thirdStyle}
+                onClick={() => handleProccesEmployee()}
+              >
+                Procesar
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>)}
     </>
   );
 }

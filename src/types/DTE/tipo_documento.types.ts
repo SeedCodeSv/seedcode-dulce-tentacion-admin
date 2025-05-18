@@ -11,3 +11,4 @@ export interface IGetTiposDocumento {
   status: number;
   objects: ITipoDocumento[];
 }
+

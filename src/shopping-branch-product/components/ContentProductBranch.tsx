@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button, Input, useDisclosure } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, useDisclosure } from '@heroui/react';
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
 import { Branches } from '../types/shipping_branch_product.types';
@@ -10,13 +12,14 @@ import ShippingProductBranchSelected from './ShippingProductBranchSelected';
 import { SigningProcess } from './process/SingningProcess';
 import { steps } from './process/types/process.types';
 
-import { useCategoriesStore } from '@/store/categories.store';
 import { useBranchesStore } from '@/store/branches.store';
 import SelectProductNote from '@/components/note-remision/SelectProduct';
+
+
 export default function ContentProductBranch() {
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { list_categories, getListCategories } = useCategoriesStore();
   const [branchData, setBranchData] = useState<Branches>();
+  const navigate = useNavigate()
   const [filter, setFilter] = useState({
     page: 1,
     limit: 5,
@@ -51,9 +54,7 @@ export default function ContentProductBranch() {
 
   useEffect(() => {
     getBranchesList();
-    getListCategories();
   }, []);
-
 
   useEffect(() => {
     if (branchData?.id === 0) {
@@ -66,6 +67,12 @@ export default function ContentProductBranch() {
     <>
       <div className="w-full ">
         <div className="space-y-6">
+           <Button
+                className="bg-transparent dark:text-white flex"
+                onClick={() => navigate('/note-referal')}
+              >
+                <ArrowLeft /> Regresar
+              </Button>
           <motion.div
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
@@ -111,55 +118,9 @@ export default function ContentProductBranch() {
                 ))}
               </Autocomplete>
 
-              <Autocomplete
-                className="dark:text-white"
-                classNames={{
-                  base: 'font-semibold text-sm text-gray-900 dark:text-white',
-                }}
-                clearButtonProps={{
-                  onClick: () => {
-                    setFilter({ ...filter, category: '' });
-                  },
-                }}
-                label="Selecciona la categoria"
-                labelPlacement="outside"
-                placeholder="Seleccione la categoria"
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setFilter({ ...filter, category: String(key) });
-                  }
-                }}
-              >
-                {list_categories.map((b) => (
-                  <AutocompleteItem key={b.name} className="dark:text-white">
-                    {b.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
-              <Input
-                className="dark:text-white"
-                classNames={{
-                  base: 'font-semibold text-sm text-gray-900 dark:text-white',
-                }}
-                label="Código"
-                labelPlacement="outside"
-                placeholder="Codigo"
-                variant="bordered"
-                onChange={(e) => setFilter({ ...filter, code: e.target.value })}
-              />
-              <Input
-                className="dark:text-white"
-                classNames={{
-                  base: 'font-semibold text-sm text-gray-900 dark:text-white',
-                }}
-                defaultValue={filter?.name}
-                label="Nombre del producto"
-                labelPlacement="outside"
-                placeholder="Buscar por nombre del producto"
-                variant="bordered"
-                onChange={(e) => setFilter({ ...filter, name: e.target.value })}
-              />
+
+
+
               <div />
               <Button
                 isDisabled={!isEnabled}
@@ -176,7 +137,7 @@ export default function ContentProductBranch() {
                 Seleccionar productos
               </Button>
             </div>
-          
+
             {branchData && (
               <ShippingProductBranchSelected
                 branchData={branchData}
@@ -202,7 +163,7 @@ export default function ContentProductBranch() {
         modalProducts={modalProducts}
         selectedBranch={branchData ?? ({} as Branches)}
         setFilter={setFilter}
-       
+
       />
     </>
   );

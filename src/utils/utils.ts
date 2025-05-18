@@ -349,3 +349,20 @@ export const typesInventoryMovement = [
 
     return [r, g, b];
   };
+
+  export const TypesVentas=[
+  {label:"TODOS", value:''},
+  {label:'Notas de Remisión', value:'04'},
+  {label:"Factura Comercial", value:'01'},
+  {label:'Factura Credito Fiscal', value:'03'},
+  {label:'Sujeto Excluido', value:'14'},
+  {label:'Nota de Credito', value:'05'},
+  {label:'Nota de Debito', value:'06'}
+  
+]
+
+export const estadosV = [
+  { label: 'PROCESADO', value: 'PROCESADO' },
+  { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
+  { label: 'INVALIDADO', value: 'INVALIDADO' }
+]

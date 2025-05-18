@@ -69,7 +69,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
         <DrawerContent>
           <DrawerBody>
             <div className="flex flex-col gap-4 h-full overflow-y-auto">
-              <p className="text-lg font-semibold">Lista de productos</p>
+              <p className="text-lg font-semibold dark:text-white">Lista de productos</p>
               <div className="grid grid-cols-4 gap-3 place-content-end">
                 <div className="flex gap-3 items-end">
                   <Input
@@ -112,6 +112,17 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
+                <Input
+                  className="dark:text-white"
+                  classNames={{
+                    base: 'font-semibold text-sm text-gray-900 dark:text-white',
+                  }}
+                  label="Código"
+                  labelPlacement="outside"
+                  placeholder="Codigo"
+                  variant="bordered"
+                  onChange={(e) => setFilter({ ...filter, code: e.target.value })}
+                />
               </div>
 
               <div className="h-full overflow-y-auto flex flex-col">
@@ -125,22 +136,26 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                         className={classNames(
                           'flex flex-col items-start w-full border shadow rounded-[12px] p-3 cursor-pointer',
                           !item?.product?.name && 'opacity-50 bg-gray-50 cursor-not-allowed',
-                          isSelected && 'border-green-500 bg-green-50'
+                          isSelected && 'border-green-500'
                         )}
                         onClick={() => {
                           OnAddProductSelected(item);
                         }}
                       >
                         <div className="w-full flex flex-col items-start">
-                          <p className="font-semibold">{item?.product?.name}</p>
-                          <p className="text-xs">{item?.product?.subCategoryProduct?.name}</p>
+                          <p className="font-semibold dark:text-white">{item?.product?.name}</p>
+                          <p className="text-xs dark:text-white">{item?.product?.subCategoryProduct?.name}</p>
                           <div className="flex row gap-2">
-                            <p className="text-xs font-semibold py-2">Categoria: </p>
-                            <p className="text-xs py-2">{item?.product?.subCategory?.name}</p>
+                            <p className="text-xs font-semibold py-2 dark:text-white">Categoria: </p>
+                            <p className="text-xs py-2 dark:text-white">{item?.product?.subCategory?.name}</p>
                           </div>
                           <div className="flex row gap-2">
-                            <p className="text-xs font-semibold py-2">Precio: </p>
-                            <p className="text-xs py-2">${item?.price ?? 'N/A'}</p>
+                            <p className="text-xs font-semibold py-2 dark:text-white">Precio: </p>
+                            <p className="text-xs py-2 dark:text-white">${item?.price ?? 'N/A'}</p>
+                          </div>
+                          <div className="flex row gap-2">
+                            <p className="text-xs font-semibold py-2 dark:text-white">Codigo: </p>
+                            <p className="text-xs py-2 dark:text-white">{item?.product?.code ?? 'N/A'}</p>
                           </div>
                         </div>
                       </button>

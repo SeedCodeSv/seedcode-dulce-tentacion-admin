@@ -2,51 +2,105 @@
   "view_actions": [
     {
       "view": "Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Correlativos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Catalogos de Cuentas",
-      "actions": ["Mostrar", "Agregar"]
+      "actions": [
+        "Mostrar",
+        "Agregar"
+      ]
     },
     {
       "view": "Categorias de Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Sub Categorias",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Compras",
-      "actions": ["Mostrar", "Agregar"]
+      "actions": [
+        "Mostrar",
+        "Agregar"
+      ]
     },
     {
       "view": "Reportes contables",
-      "actions": ["Mostrar"]
+      "actions": [
+        "Mostrar"
+      ]
     },
     {
       "view": "Ordenes de Compra",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Completar Orden"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Completar Orden"
+      ]
     },
     {
       "view": "Usuarios",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Cambiar Contraseña", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Cambiar Contraseña",
+        "Activar"
+      ]
     },
     {
       "view": "Ventas",
-      "actions": ["Mostrar", "Ver Detalle", "Invalidar"]
+      "actions": [
+        "Mostrar",
+        "Ver Detalle",
+        "Invalidar"
+      ]
     },
     {
       "view": "Ventas Ticket",
-      "actions": ["Mostrar", "Ver Detalle"]
+      "actions": [
+        "Mostrar",
+        "Ver Detalle"
+      ]
     },
-     {
+    {
       "view": "Kardex",
-      "actions": ["Mostrar"]
+      "actions": [
+        "Mostrar"
+      ]
     },
     {
       "view": "Empleados",
@@ -75,7 +129,14 @@
     },
     {
       "view": "Sucursales",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Ver Productos", "Activar Sucursal"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Ver Productos",
+        "Activar Sucursal"
+      ]
     },
     {
       "view": "Clientes",
@@ -90,115 +151,230 @@
     },
     {
       "view": "Permisos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Ventas por Periodo",
-      "actions": ["Mostrar", "Exportar Excel", "Descargar PDF"]
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Descargar PDF"
+      ]
     },
     {
       "view": "Ventas por Productos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Nivel de Estudio",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Tipo de Contratacion",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Estados del Empleado",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Activar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Activar"
+      ]
     },
     {
       "view": "Cargos de Empleados",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Reportes",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Descuentos",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Corte Gran Z",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel"
+      ]
     },
     {
       "view": "Corte Z",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel"
+      ]
     },
     {
       "view": "Corte X",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel"
+      ]
     },
     {
       "view": "IVA de Compras",
-      "actions": ["Imprimir", "Exportar Excel", "Exportar PDF"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel",
+        "Exportar PDF"
+      ]
     },
     {
       "view": "IVA de CCF",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel"
+      ]
     },
     {
       "view": "IVA de FE",
-      "actions": ["Imprimir", "Exportar Excel"]
+      "actions": [
+        "Imprimir",
+        "Exportar Excel"
+      ]
     },
     {
       "view": "Configuración",
-      "actions": ["Mostrar", "Agregar", "Editar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar"
+      ]
     },
     {
       "view": "Puntos de Venta",
-      "actions": ["Mostrar", "Editar"]
+      "actions": [
+        "Mostrar",
+        "Editar"
+      ]
     },
     {
       "view": "Anexos de compras",
-      "actions": ["Mostrar", "Exportar", "Exportar CSV"]
+      "actions": [
+        "Mostrar",
+        "Exportar",
+        "Exportar CSV"
+      ]
     },
     {
       "view": "Anexos de consumidor final",
-      "actions": ["Mostrar", "Exportar", "Exportar CSV"]
+      "actions": [
+        "Mostrar",
+        "Exportar",
+        "Exportar CSV"
+      ]
     },
     {
       "view": "Anexos ventas a contribuyentes",
-      "actions": ["Mostrar", "Exportar", "Exportar CSV"]
+      "actions": [
+        "Mostrar",
+        "Exportar",
+        "Exportar CSV"
+      ]
     },
     {
       "view": "Partidas contables",
-      "actions": ["Mostrar", "Agregar"]
+      "actions": [
+        "Mostrar",
+        "Agregar"
+      ]
     },
     {
       "view": "Tipos de partida",
-      "actions": ["Mostrar", "Agregar"]
+      "actions": [
+        "Mostrar",
+        "Agregar"
+      ]
     },
     {
       "view": "Contingencias",
-      "actions": ["Mostrar"]
+      "actions": [
+        "Mostrar"
+      ]
     },
     {
       "view": "Ordenes de producción",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar", "Completar", "Cancelar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Completar",
+        "Cancelar"
+      ]
     },
     {
       "view": "Tipos de ordenes de producción",
-      "actions": ["Mostrar", "Agregar", "Editar", "Eliminar"]
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar"
+      ]
     },
     {
       "view": "Ajuste de Inventario",
-      "actions": ["Mostrar"]
+      "actions": [
+        "Mostrar"
+      ]
     },
     {
       "view": "Movimientos",
-      "actions": ["Mostrar","Descargar PDF"]
+      "actions": [
+        "Mostrar",
+        "Descargar PDF"
+      ]
     },
     {
       "view": "Notas de remisión",
-      "actions": ["Mostrar", "Completar", "Ver comprobante"]
+      "actions": [
+        "Mostrar",
+        "Completar",
+        "Ver comprobante"
+      ]
     }
+   
   ]
 }
