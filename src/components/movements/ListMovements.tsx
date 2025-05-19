@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, Input, Spinner } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Spinner } from '@heroui/react';
 import jsPDF from 'jspdf';
 import classNames from 'classnames';
-import { FileDown } from 'lucide-react';
 import autoTable, { ThemeType } from 'jspdf-autotable';
 import { toast } from 'sonner';
+import { AiOutlineFilePdf } from 'react-icons/ai';
 
-// import FilterInventoryMovement from '../reporters/report-products/filters/FilterInventoryMoement';
 import useGlobalStyles from '../global/global.styles';
-import TooltipGlobal from '../global/TooltipGlobal';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import NoDataInventory from '../inventory_aqdjusment/NoDataInventory';
 import Pagination from '../global/Pagination';
+
+import MovementsExportExcell from './MovementsExcell';
 
 import { useAuthStore } from '@/store/auth.store';
 import { fechaActualString } from '@/utils/dates';
@@ -19,9 +19,12 @@ import { useBranchesStore } from '@/store/branches.store';
 import { formatCurrency } from '@/utils/dte';
 import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import { useTransmitterStore } from '@/store/transmitter.store';
-import { global_styles } from '@/styles/global.styles';
 import { useInventoryMovement } from '@/store/reports/inventory_movement.store';
 import { hexToRgb, typesInventoryMovement } from '@/utils/utils';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Branches } from '@/types/branches.types';
+import { Colors } from '@/types/themes.types';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 
 
@@ -37,6 +40,8 @@ function ListMovements({ actions }: Props) {
   const totalItemPerPageGraphic = 20;
   const styles = useGlobalStyles();
   const [loading, setLoading] = useState(false);
+  const [branch, setBranch] = useState<Branches>();
+
 
   const { branch_list, getBranchesList } = useBranchesStore();
   const [filter, setFilter] = useState({
@@ -203,6 +208,7 @@ function ListMovements({ actions }: Props) {
                     className="dark:text-white"
                     onPress={() => {
                       handleAutocompleteChange('branch', branch.name);
+                      setBranch(branch)
                     }}
 
                   >
@@ -233,81 +239,66 @@ function ListMovements({ actions }: Props) {
               </Autocomplete>
             </div>
           </ResponsiveFilterWrapper>
-        
-        <div className="flex items-center gap-3">
-          {actions.includes('Descargar PDF') && (
-            <TooltipGlobal text="Descargar PDF">
-              <Button
-                className="mt-3"
+
+          <div className="flex items-center gap-3 mt-3">
+            {actions.includes('Descargar PDF') && (
+              <ButtonUi
+                showTooltip
                 disabled={loading}
-                style={global_styles().thirdStyle}
+                isDisabled={inventoryMoments.length === 0}
+                startContent={loading ? <Spinner /> : <AiOutlineFilePdf className="" size={25} />}
+                theme={Colors.Info}
+                tooltipText='Descargar PDF'
                 onPress={() => {
                   inventoryMoments.length > 0
                     ? downloadPDF()
                     : toast.error('No hay movimientos para descargar');
                 }}
-              >
-                {' '}
-                {loading ? <Spinner /> : <FileDown />}
-              </Button>
-            </TooltipGlobal>
-          )}
+              />
+
+            )}
+            <MovementsExportExcell branch={branch} filters={filter} tableData={inventoryMoments} transmitter={transmitter} />
+          </div>
         </div>
-        </div>
-        <div className="max-h-[60vh] xl:flex md:flx hidden min-h-32 overflow-y-auto overflow-x-auto custom-scrollbar mt-6">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                {['Nombre', 'Tipo de Movimiento', 'Motivo', 'Cantidad', 'Fecha', 'Hora', 'Total de Movimiento'].map((header) =>
-                  <th
-                    key={header}
-                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                    style={styles.darkStyle}
-                  >
-                    {header}
-                  </th>
-                )}
-              </tr>
-            </thead>
-            <tbody className="max-h-[400px] w-full overflow-y-auto">
-              {inventoryMoments.length > 0 ? (
-                <>
-                  {inventoryMoments.map((product, index) => (
-                    <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product?.branchProduct?.product?.name}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.typeOfMovement}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.typeOfInventory}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.quantity}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.date}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.time}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {formatCurrency(Number(product.totalMovement))}
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan={7}>
-                    <NoDataInventory title="No se encontraron  movimientos" />
+        <TableComponent
+          headers={['Nombre', 'Tipo de Movimiento', 'Motivo', 'Cantidad', 'Fecha', 'Hora', 'Total de Movimiento']}
+        >
+          {inventoryMoments.length > 0 ? (
+            <>
+              {inventoryMoments.map((product, index) => (
+                <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product?.branchProduct?.product?.name}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.typeOfMovement}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.typeOfInventory}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.quantity}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.date}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.time}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {formatCurrency(Number(product.totalMovement))}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))}
+            </>
+          ) : (
+            <tr>
+              <td colSpan={7}>
+                <NoDataInventory title="No se encontraron  movimientos" />
+              </td>
+            </tr>
+          )}
+        </TableComponent>
         {pagination_inventory_movement.totalPag > 1 && (
           <>
             <Pagination

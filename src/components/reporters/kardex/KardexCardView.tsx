@@ -3,6 +3,7 @@ import { ArrowDown, ArrowDownUp, ArrowUp, Box, ChevronDown, ChevronUp, TrendingU
 import { useState } from 'react';
 
 import DownloadPDFButton from './KardexPDF';
+import KardexExportExcell from './kardexExcell';
 
 import { global_styles } from '@/styles/global.styles';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
@@ -10,7 +11,7 @@ import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
 
 
-export default function ViewKardexList({ view, branch, transmitter }: { view: string; transmitter: ITransmitter, branch: Branches }) {
+export default function ViewKardexList({ view, branch, transmitter, actions }: { view: string; transmitter: ITransmitter, branch: Branches, actions: string[] }) {
   const { kardex } = useReportKardex();
 
   const [sortBy, setSortBy] = useState<keyof typeof kardex[0] | null>(null);
@@ -20,7 +21,7 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
   const sortedProducts = [...kardex].sort((a, b) => {
     if (!sortBy) return 0;
     const order = sortDirection === 'asc' ? 1 : -1;
-    
+
     return a[sortBy] > b[sortBy] ? order : -order;
   });
 
@@ -36,7 +37,14 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
   return (
     <div>
       <div className="flex gap-2 md:justify-between mt-2">
-        <DownloadPDFButton branch={branch} tableData={sortedProducts} transmitter={transmitter} />
+        <div className='flex gap-4'>
+          {actions.includes('Descargar PDF') && (
+            <DownloadPDFButton branch={branch} tableData={sortedProducts} transmitter={transmitter} />
+          )}
+          {actions.includes('Exportar Excel') && (
+            <KardexExportExcell branch={branch!} tableData={sortedProducts} transmitter={transmitter} />
+          )}
+        </div>
         <div className="flex justify-start md:justify-end gap-2">
           <Button style={global_styles().thirdStyle} onPress={() => handleSort('price')} >
             <ArrowDownUp size={15} />
@@ -58,16 +66,12 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
               <span className="flex gap-2">
                 <Box className="text-blue-500" size={24} />
                 <h2 className="text-lg font-bold">{item.productName}</h2></span>
-              {/* <p className="text-sm text-gray-500 dark:text-gray-300">Código: {item.code}</p> */}
-              {/* <p className="text-sm text-gray-500 dark:text-gray-300">Última actualización: {item.lastUpdated}</p> */}
               <p className="text-sm text-gray-500 dark:text-gray-300">Existencias: {item.quantity}</p>
               <div className="mt-3 grid grid-cols-2 gap-4 font-semibold dark:text-white text-gray-800">
-                {/* <span className="flex ">Stock: <p className="ml-1 font-normal text-gray-950 dark:text-white">{item.quantity}</p></span> */}
                 <span >Costo unitario:<p className="ml-1 font-normal text-gray-950 dark:text-white">${item.cost}</p></span>
                 <span className="flex flex-col">Precio:<p className="ml-1 font-normal text-gray-950 dark:text-white">${item.price}</p></span>
                 <span className="flex ">Entrada:<p className="ml-1 font-normal text-gray-950 dark:text-white">{item.entries}</p></span>
                 <span className="flex ">Salida:<p className="ml-1 font-normal text-gray-950 dark:text-white">{item.exits}</p></span>
-                {/* <span >Costo promedio:<p className="ml-1 font-normal text-gray-950 dark:text-white">${item.avgCost}</p></span> */}
               </div>
               <div className="mt-3 flex justify-between font-semibold text-gray-800 dark:text-white">
                 <span className="flex">Utilidad:<p className="ml-1 font-normal text-gray-950 dark:text-white">${(item.utility ? item.utility.toFixed(2) : 0)}</p></span>
@@ -91,7 +95,7 @@ export default function ViewKardexList({ view, branch, transmitter }: { view: st
                 <p className="text-sm text-gray-500 dark:text-gray-400">Existencias: {item.quantity}</p>
 
                 <div className="mt-4 flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-x-6 font-medium text-gray-700 dark:text-gray-300">
-                 
+
                   <div className="flex items-center gap-2">
                     <p className="flex items-center gap-1">
                       <Box className="text-gray-500" size={16} /> Costo unitario: <span className="text-gray-800 dark:text-gray-200">${item.cost}</span>

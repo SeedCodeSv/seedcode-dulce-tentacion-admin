@@ -12,6 +12,7 @@ import Lottie from 'lottie-react';
 import KardexTable from './TableKardex';
 import MobileViewKardex from './KardexCardView';
 import DownloadPDFButton from './KardexPDF';
+import KardexExportExcell from './kardexExcell';
 
 import { useBranchesStore } from '@/store/branches.store';
 import { limit_options } from '@/utils/constants';
@@ -29,8 +30,11 @@ import DivGlobal from '@/themes/ui/div-global';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import RenderViewButton from '@/components/global/render-view-button';
 
+interface PProps {
+  actions: string[];
+}
 
-export default function KardexComponent() {
+export default function KardexComponent({ actions }: PProps) {
   const user = get_user();
   const { transmitter, gettransmitter } = useTransmitterStore();
 
@@ -155,8 +159,13 @@ export default function KardexComponent() {
         <div className="w-full flex gap-5 justify-between items-end">
         <RenderViewButton isList setView={setView} view={view} />
         {view === 'table' && (
-          <div className="">
+          <div className="flex gap-3">
+            {actions.includes('Descargar PDF') && (
             <DownloadPDFButton branch={branch!} tableData={data} transmitter={transmitter} />
+            )}
+            {actions.includes('Exportar Excel') && (
+            <KardexExportExcell  branch={branch!} tableData={data} transmitter={transmitter} />
+            )}
           </div>
         )}
         </div>
@@ -168,7 +177,7 @@ export default function KardexComponent() {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />
@@ -186,7 +195,7 @@ export default function KardexComponent() {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />

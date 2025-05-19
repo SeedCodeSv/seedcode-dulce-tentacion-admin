@@ -347,8 +347,19 @@ export const typesInventoryMovement = [
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
 
-    return [r, g, b];
+     return [r, g, b] as [number, number, number];
   };
+
+export const hexToARGB = (hex: string) => {
+  hex = hex.replace(/^#/, '');
+
+  if (hex.length === 3) {
+    hex = hex.split('').map(c => c + c).join('');
+  }
+
+  return `FF${hex.toUpperCase()}`;
+};
+
 
   export const TypesVentas=[
   {label:"TODOS", value:''},

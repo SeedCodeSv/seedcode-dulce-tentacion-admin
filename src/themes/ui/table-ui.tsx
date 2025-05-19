@@ -6,9 +6,11 @@ interface TableProps {
   headers: string[];
   children: ReactNode;
   className?: string;
+  onThClick?: (header:string) => void
+  renderHeader?:(header:string) => ReactNode
 }
 
-export const TableComponent: React.FC<TableProps> = ({ headers, children, className }) => {
+export const TableComponent: React.FC<TableProps> = ({ headers, children, className, onThClick, renderHeader}) => {
 
   return (
     <div
@@ -18,8 +20,8 @@ export const TableComponent: React.FC<TableProps> = ({ headers, children, classN
         <thead className="sticky top-0 z-20 bg-white">
           <tr>
             {headers.map((header, index) => (
-              <ThGlobal key={index} className="text-left p-3">
-                {header}
+              <ThGlobal key={index} className="text-left p-3" onClick={() =>{onThClick!(header)}}>
+                 {renderHeader ? renderHeader(header) : header}
               </ThGlobal>
             ))}
           </tr>

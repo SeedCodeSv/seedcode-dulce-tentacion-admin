@@ -2,7 +2,6 @@ import {
   Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
@@ -14,8 +13,6 @@ import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  Table as ITable,
-  CreditCard,
   RefreshCcw,
   SearchIcon,
   Trash,
@@ -29,6 +26,7 @@ import { CategoryProduct } from '../../types/categories.types';
 import { limit_options } from '../../utils/constants';
 import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
+import RenderViewButton from '../global/render-view-button';
 
 import AddCategory from './add-category';
 import CardCategory from './card-category';
@@ -159,23 +157,7 @@ function ListCategories({ actions }: PProps) {
               ))}
             </Select>
           </div>
-
-          <ButtonGroup className="mt-4">
-            <ButtonUi
-              isIconOnly
-              theme={view === 'table' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('table')}
-            >
-              <ITable />
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={view === 'grid' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('grid')}
-            >
-              <CreditCard />
-            </ButtonUi>
-          </ButtonGroup>
+          <RenderViewButton setView={setView} view={view}/>
         </div>
       </div>
 

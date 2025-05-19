@@ -2,7 +2,6 @@ import {
   Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
@@ -14,8 +13,6 @@ import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  Table as ITable,
-  CreditCard,
   RefreshCcw,
   SearchIcon,
   Trash,
@@ -31,6 +28,7 @@ import TooltipGlobal from '../global/TooltipGlobal';
 import Pagination from '../global/Pagination';
 import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
+import RenderViewButton from '../global/render-view-button';
 
 import AddSubCategory from './add-sub-category';
 import CardSubCategory from './card-sub-category';
@@ -163,23 +161,7 @@ function ListSubCategory({ actions }: PProps) {
               ))}
             </Select>
           </div>
-
-          <ButtonGroup className="mt-4 xl:flex hidden border border-white rounded-xl">
-            <ButtonUi
-              isIconOnly
-              theme={view === 'table' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('table')}
-            >
-              <ITable />
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={view === 'grid' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('grid')}
-            >
-              <CreditCard />
-            </ButtonUi>
-          </ButtonGroup>
+          <RenderViewButton setView={setView} view={view} />
         </div>
       </div>
 

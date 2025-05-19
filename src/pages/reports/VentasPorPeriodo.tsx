@@ -22,6 +22,7 @@ import { usePointOfSales } from '@/store/point-of-sales.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
+import DivGlobal from '@/themes/ui/div-global';
 
 function VentasPorPeriodo() {
   const [filter, setFilter] = useState({
@@ -85,8 +86,7 @@ function VentasPorPeriodo() {
 
   return (
     <Layout title="Ventas por Periodo">
-      <div className=" w-full h-full bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border border-white p-5 overflow-y-auto  bg-white shadow rounded-xl dark:bg-gray-900">
+     <DivGlobal className="flex flex-col h-full overflow-y-auto">
           <div className="hidden md:grid w-full grid-cols-1 gap-5 md:grid-cols-4">
             <Input
               className="w-full dark:text-white"
@@ -548,8 +548,7 @@ function VentasPorPeriodo() {
               </div>
             </>
           )}
-        </div>
-      </div>
+       </DivGlobal>
     </Layout>
   );
 }

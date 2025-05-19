@@ -1,12 +1,10 @@
-import { Button } from '@heroui/react';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import autoTable, { ThemeType, HAlignType } from 'jspdf-autotable';
-import { FileDown } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
+import { AiOutlineFilePdf } from "react-icons/ai";
 
-import { global_styles } from '@/styles/global.styles';
 import { Kardex } from '@/types/reports/reportKardex.types';
 import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
@@ -14,6 +12,9 @@ import { hexToRgb } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
 import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import { useConfigurationStore } from '@/store/perzonalitation.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable: {
@@ -87,6 +88,17 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
             cellPadding: 1,
           },
           margin: { top: 10, left: 50, right: 50 },
+          // didDrawPage: ({ table, doc, cursor }) => {
+          //   if (!table) return;
+
+          //   const endY = cursor?.y;
+          //   const marginX = 47;
+          //   const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+
+          //   doc.setDrawColor('#b3b8bd');
+          //   doc.setLineWidth(0.2);
+          //   doc.roundedRect(marginX, 5, tableWidth + marginX , endY! - 5, 3, 3);
+          // },
         });
 
       };
@@ -118,83 +130,82 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       createHeader(doc);
       const lastY = (doc as jsPDFWithAutoTable).lastAutoTable.finalY;
 
-      autoTable(doc, {
-        head: [headers],
-        body: rows,
-        startY: lastY + 5,
-        theme: 'plain' as ThemeType,
-        columnStyles: {
-          0: { cellWidth: 10, halign: 'center' as HAlignType },
-          1: { cellWidth: 65 },
-        },
-        margin: { horizontal: 5 },
-        styles: {
-          cellPadding: 2.5,
-        },
-        headStyles: {
-          fontSize: 7,
-        },
-        bodyStyles: {
-          fontSize: 8,
-        },
-        didDrawPage: ({ table, doc, cursor }) => {
-          if (!table) return;
+        autoTable(doc, {
+          body: rows,
+          startY: lastY + 5,
+          theme: 'plain' as ThemeType,
+          columnStyles: {
+            0: { cellWidth: 10, halign: 'center' as HAlignType },
+            1: { cellWidth: 65 },
+          },
+          margin: { horizontal: 5 },
+          styles: {
+            cellPadding: 2.5,
+          },
+          headStyles: {
+            fontSize: 7,
+            textColor: backgroundColorRGB
+          },
+          bodyStyles: {
+            fontSize: 8,
+          },
+          didDrawPage: ({ table, doc, cursor }) => {
+            if (!table) return;
 
-          const isFirstPage = table.pageNumber === 1;
+            const isFirstPage = table.pageNumber === 1;
 
-          const endY = cursor?.y;
-          const marginX = 5;
-          const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+            const endY = cursor?.y;
+            const marginX = 5;
+            const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
 
-          const startY = isFirstPage
-            ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
-            : table.settings.margin.top;
+            const startY = isFirstPage
+              ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
+              : table.settings.margin.top;
 
-          doc.setFillColor(backgroundColorRGB);
-          doc.setDrawColor('#091c47');
-          doc.setLineWidth(0);
-          const headHeight = table.getHeadHeight(table.columns);
-
-          doc.roundedRect(marginX, startY, tableWidth, headHeight, 2, 2, 'F');
-
-
-          doc.setDrawColor('#b3b8bd');
-          doc.setLineWidth(0.2);
-          doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
-        },
-        didDrawCell: (data) => {
-          const { cell, row, column } = data;
-
-          if (row.section === 'body' && column.index < headers.length - 1) {
-            doc.setLineWidth(0.2);
+        
             doc.setDrawColor('#b3b8bd');
-            doc.line(cell.x + cell.width, cell.y, cell.x + cell.width, cell.y + cell.height);
-          }
-        }
-      });
+            doc.setLineWidth(0.2);
+            doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
 
-      // 2. Tabla de datos
-      autoTable(doc, {
-        head: [headers],
-        body: [['', '', '', '', '', '', '','','']],
-        startY: lastY + 5 ,
-        theme: 'plain' as ThemeType,
-        margin: { horizontal: 5 },
-        styles: {
-          cellPadding: 2.5,
-          fontSize: 8,
-        },
-        headStyles: {
-          fontSize: 7,
-          textColor: textColorRGB as [number, number, number],
-        },
-        columnStyles: {
-          0: { cellWidth: 10, halign: 'center' as HAlignType },
-          1: { cellWidth: 65 },
-        },
-      });
+          },
+          head: [headers],
+          didDrawCell: (data) => {
+            const { cell, row, column, table } = data;
 
+            if (row.section === 'head' && column.index === 0) {
+             
+              const marginX = table.settings.margin.left;
+              const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+              const headHeight = table.getHeadHeight(table.columns);
+              const startY = cell.y;
 
+              doc.setFillColor(backgroundColorRGB);
+              doc.setDrawColor(backgroundColorRGB);
+              doc.setLineWidth(0);
+              doc.roundedRect(marginX, startY, tableWidth, headHeight, 2, 2, 'F');
+            }
+
+            if (row.section === 'head') {
+             
+              doc.setTextColor(...textColorRGB);
+              doc.setFontSize(7);
+              doc.text(
+                String(cell.raw),
+                cell.x + cell.width / 2,
+                cell.y + cell.height / 2 + 2,
+                { align: 'center' }
+              );
+            }
+
+            // Borde vertical de celdas
+            if (row.section === 'body' && column.index < headers.length - 1) {
+              doc.setLineWidth(0.2);
+              doc.setDrawColor('#b3b8bd');
+              doc.line(cell.x + cell.width, cell.y, cell.x + cell.width, cell.y + cell.height);
+            }
+          },
+        });
+      
       doc.save(`REPORTE_KARDEX_${date}.pdf`);
     } catch {
       toast.error('Ocurrió un error al descargar el PDF. Intente de nuevo más tarde.');
@@ -202,13 +213,14 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
   };
 
   return (
-    <Button
+    <ButtonUi
       isDisabled={tableData.length === 0}
-      style={global_styles().dangerStyles}
+      startContent={<AiOutlineFilePdf className="" size={25} />}
+      theme={Colors.Primary}
       onPress={handleDownloadPDF}
     >
-      <FileDown />
-    </Button>
+      <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+    </ButtonUi>
   );
 };
 

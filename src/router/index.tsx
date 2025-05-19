@@ -44,7 +44,7 @@ const Shopping = lazy(() => import('../pages/shopping'));
 const CreateShopping = lazy(() => import('../components/shopping/create-shopping-json'));
 const CFFBookIVA = lazy(() => import('../pages/iva/CFFBookIVA'));
 const FEBookIVA = lazy(() => import('../pages/iva/FEBookIVA'));
-const CreateTheme = lazy(() => import('../components/configuration/CreateTheme'));
+// const CreateTheme = lazy(() => import('../components/configuration/CreateTheme'));
 const AddClientContributor = lazy(() => import('../components/clients/AddClientContributor'));
 const AddClientNormal = lazy(() => import('../components/clients/AddClientNormal'));
 const AddNormalSupplier = lazy(() => import('../components/supplier/AddNormalSupplier'));
@@ -148,7 +148,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route element={<KardexPage />} path="/kardex-inventory" />
+      <Route element={<AnimatedRoute> {handleCheckPermission('Kardex') ? <KardexPage /> : <Home/> }</AnimatedRoute>} path="/kardex-inventory" />
       <Route
         element={
           <AnimatedRoute>
@@ -475,14 +475,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="*"
       />
-      <Route
+      {/* <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Configuración') ? <CreateTheme /> : <Home />}
           </AnimatedRoute>
         }
         path="/add-theme"
-      />
+      /> */}
       <Route
         element={
           <AnimatedRoute>
