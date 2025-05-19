@@ -28,7 +28,6 @@ import { create_action_by_view, create_view } from '@/services/actions.service';
 import { useRolesStore } from '@/store/roles.store';
 import { useActionsRolStore } from '@/store/role-actions.store';
 import { save_role_actions } from '@/storage/localStorage';
-import DivGlobal from '@/themes/ui/div-global';
 
 function ListActionRol() {
   const { roles_list, getRolesList } = useRolesStore();

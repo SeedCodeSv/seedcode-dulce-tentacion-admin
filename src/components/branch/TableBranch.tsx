@@ -1,10 +1,9 @@
 import { useBranchesStore } from "../../store/branches.store";
 import { Branches } from "../../types/branches.types";
-
-import NO_DATA from "@/assets/svg/no_data.svg";
-import { TableComponent } from "@/themes/ui/table-ui";
 import LoadingTable from "../global/LoadingTable";
 import EmptyTable from "../global/EmptyTable";
+
+import { TableComponent } from "@/themes/ui/table-ui";
 
 interface Props {
   actionsElement: (item: Branches) => JSX.Element;

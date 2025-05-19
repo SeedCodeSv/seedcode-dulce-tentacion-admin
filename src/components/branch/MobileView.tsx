@@ -1,4 +1,3 @@
-import { DataView } from 'primereact/dataview';
 import { BadgeCheck, Edit, MapPin, Phone, Scroll, ShoppingBag } from 'lucide-react';
 import { classNames } from 'primereact/utils';
 

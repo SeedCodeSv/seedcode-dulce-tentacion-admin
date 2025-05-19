@@ -3,13 +3,10 @@ import { useEffect, useState } from 'react';
 import {
   EditIcon,
   User,
-  CreditCard,
-  Table as ITable,
   Mail,
   RefreshCcw,
   Repeat,
 } from 'lucide-react';
-import { ButtonGroup } from '@heroui/react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 import Lottie from 'lottie-react';
@@ -19,22 +16,22 @@ import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
 import TooltipGlobal from '../global/TooltipGlobal';
 import AddButton from '../global/AddButton';
+import RenderViewButton from '../global/render-view-button';
+import LoadingTable from '../global/LoadingTable';
+import EmptyTable from '../global/EmptyTable';
 
 import SearchClient from './search_client/SearchClient';
 import ModeGridClients from './view-modes/ModeGridClients';
 import { DeletePopover } from './view-modes/DeleteClients';
 
 import useWindowSize from '@/hooks/useWindowSize';
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { useBranchesStore } from '@/store/branches.store';
 import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
-import RenderViewButton from '../global/render-view-button';
 import { TableComponent } from '@/themes/ui/table-ui';
-import LoadingTable from '../global/LoadingTable';
-import EmptyTable from '../global/EmptyTable';
+
 interface Props {
   actions: string[];
 }
