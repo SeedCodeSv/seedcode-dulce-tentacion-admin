@@ -8,7 +8,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
 
-function CardSubCategory({ actions, handleEdit, handleActive, deletePopover }: MobileViewProps) {
+function CardSubCategory({ actions, handleEdit, handleActive, DeletePopover }: MobileViewProps) {
   const { sub_categories_paginated } = useSubCategoryStore();
 
   return (
@@ -28,7 +28,7 @@ function CardSubCategory({ actions, handleEdit, handleActive, deletePopover }: M
                 <EditIcon className="dark:text-white" size={20} />
               </ButtonUi>
             )}
-            {actions.includes('Editar') && prd.isActive && deletePopover({ subcategory: prd })}
+            {actions.includes('Editar') && prd.isActive && <DeletePopover subcategory={prd} />}
             {actions.includes('Activar') && !prd.isActive && (
               <ButtonUi isIconOnly theme={Colors.Info} onPress={() => handleActive(prd.id)}>
                 <RefreshCcw />

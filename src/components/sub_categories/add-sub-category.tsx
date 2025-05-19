@@ -1,7 +1,7 @@
 import { Input, Autocomplete, AutocompleteItem } from '@heroui/react';
-import { Formik } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 import * as yup from 'yup';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
@@ -38,26 +38,28 @@ const AddSubCategory = (props: Props) => {
     getListCategories();
   }, []);
 
-  const [loading, setLoging] = useState(false);
-  const handleSave = async (payload: ISubCategoryPayload) => {
-    setLoging(true);
+  const handleSave = async (
+    payload: ISubCategoryPayload,
+    helpers: FormikHelpers<ISubCategoryPayload>
+  ) => {
     try {
       if (props.subCategory) {
         const data = await patchSubCategory(payload, props.subCategory.id);
 
         if (data.ok === true) {
+          helpers.setSubmitting(false);
           props.closeModal();
-          setLoging(true);
         }
       } else {
         const data = await postSubCategory(payload);
 
         if (data.ok === true) {
-          props.closeModal();
-          setLoging(true);
+          helpers.setSubmitting(false);
         }
       }
     } catch (error) {
+      helpers.setSubmitting(false);
+
       return;
     }
   };
@@ -79,7 +81,7 @@ const AddSubCategory = (props: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSave}
       >
-        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+        {({ values, errors, touched, handleBlur, handleChange, handleSubmit, isSubmitting }) => (
           <>
             <div className="flex flex-col w-full dark:text-white">
               <Input
@@ -127,16 +129,17 @@ const AddSubCategory = (props: Props) => {
                 ))}
               </Autocomplete>
             </div>
-            {!loading ? (
-              <ButtonUi theme={Colors.Primary} onPress={() => handleSubmit()}>
+            <div className="mt-3 w-full flex justify-end">
+              <ButtonUi
+                className="px-10"
+                isDisabled={isSubmitting}
+                isLoading={isSubmitting}
+                theme={Colors.Primary}
+                onPress={() => handleSubmit()}
+              >
                 Guardar
               </ButtonUi>
-            ) : (
-              <div className="flex flex-col items-center justify-center w-full">
-                <div className="loaderBranch w-2 h-2 mt-2" />
-                <p className="mt-3 text-sm font-semibold">Cargando...</p>
-              </div>
-            )}
+            </div>
           </>
         )}
       </Formik>
