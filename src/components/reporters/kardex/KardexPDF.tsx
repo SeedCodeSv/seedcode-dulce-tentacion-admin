@@ -31,7 +31,31 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
 
   const { personalization } = useConfigurationStore();
 
-  const handleDownloadPDF = () => {
+  const convertImageToBase64 = (url: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.crossOrigin = 'Anonymous';
+      img.src = url;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx?.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+
+        resolve(dataURL);
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const handleDownloadPDF = async () => {
     try {
       if (!tableData || tableData.length === 0) {
         toast.warning('No hay datos disponibles para generar el PDF.');
@@ -59,15 +83,13 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
       const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
 
-      const createHeader = (doc: jsPDF) => {
-        const logo =
-          personalization && personalization[0]?.logo
-            ? (personalization[0].logo.startsWith('data:image')
-              ? personalization[0].logo
-              : `data:image/png;base64,${personalization[0].logo}`)
-            : DEFAULT_LOGO;
+      const logo = personalization && personalization[0]?.logo ? personalization[0].logo : DEFAULT_LOGO;
 
-        doc.addImage(logo, 'PNG', 13, 5, 20, 20, 'logo', 'FAST');
+      const logoBase64 = await convertImageToBase64(logo);
+
+      const createHeader = (doc: jsPDF) => {
+
+        doc.addImage(logoBase64, 'PNG', 13, 5, 25, 25, 'logo', 'FAST');
         autoTable(doc, {
           showHead: false,
           body: [
@@ -130,82 +152,82 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
       createHeader(doc);
       const lastY = (doc as jsPDFWithAutoTable).lastAutoTable.finalY;
 
-        autoTable(doc, {
-          body: rows,
-          startY: lastY + 5,
-          theme: 'plain' as ThemeType,
-          columnStyles: {
-            0: { cellWidth: 10, halign: 'center' as HAlignType },
-            1: { cellWidth: 65 },
-          },
-          margin: { horizontal: 5 },
-          styles: {
-            cellPadding: 2.5,
-          },
-          headStyles: {
-            fontSize: 7,
-            textColor: backgroundColorRGB
-          },
-          bodyStyles: {
-            fontSize: 8,
-          },
-          didDrawPage: ({ table, doc, cursor }) => {
-            if (!table) return;
+      autoTable(doc, {
+        body: rows,
+        startY: lastY + 5,
+        theme: 'plain' as ThemeType,
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' as HAlignType },
+          1: { cellWidth: 65 },
+        },
+        margin: { horizontal: 5 },
+        styles: {
+          cellPadding: 2.5,
+        },
+        headStyles: {
+          fontSize: 7,
+          textColor: backgroundColorRGB
+        },
+        bodyStyles: {
+          fontSize: 8,
+        },
+        didDrawPage: ({ table, doc, cursor }) => {
+          if (!table) return;
 
-            const isFirstPage = table.pageNumber === 1;
+          const isFirstPage = table.pageNumber === 1;
 
-            const endY = cursor?.y;
-            const marginX = 5;
+          const endY = cursor?.y;
+          const marginX = 5;
+          const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+
+          const startY = isFirstPage
+            ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
+            : table.settings.margin.top;
+
+
+          doc.setDrawColor('#b3b8bd');
+          doc.setLineWidth(0.2);
+          doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
+
+        },
+        head: [headers],
+        didDrawCell: (data) => {
+          const { cell, row, column, table } = data;
+
+          if (row.section === 'head' && column.index === 0) {
+
+            const marginX = table.settings.margin.left;
             const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
+            const headHeight = table.getHeadHeight(table.columns);
+            const startY = cell.y;
 
-            const startY = isFirstPage
-              ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
-              : table.settings.margin.top;
+            doc.setFillColor(backgroundColorRGB);
+            doc.setDrawColor(backgroundColorRGB);
+            doc.setLineWidth(0);
+            doc.roundedRect(marginX, startY, tableWidth, headHeight, 2, 2, 'F');
+          }
 
-        
-            doc.setDrawColor('#b3b8bd');
+          if (row.section === 'head') {
+
+            doc.setTextColor(...textColorRGB);
+            doc.setFontSize(7);
+            doc.text(
+              String(cell.raw),
+              cell.x + cell.width / 2,
+              cell.y + cell.height / 2 + 2,
+              { align: 'center' }
+            );
+          }
+
+          // Borde vertical de celdas
+          if (row.section === 'body' && column.index < headers.length - 1) {
             doc.setLineWidth(0.2);
-            doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
+            doc.setDrawColor('#b3b8bd');
+            doc.line(cell.x + cell.width, cell.y, cell.x + cell.width, cell.y + cell.height);
+          }
+        },
+      });
 
-          },
-          head: [headers],
-          didDrawCell: (data) => {
-            const { cell, row, column, table } = data;
-
-            if (row.section === 'head' && column.index === 0) {
-             
-              const marginX = table.settings.margin.left;
-              const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
-              const headHeight = table.getHeadHeight(table.columns);
-              const startY = cell.y;
-
-              doc.setFillColor(backgroundColorRGB);
-              doc.setDrawColor(backgroundColorRGB);
-              doc.setLineWidth(0);
-              doc.roundedRect(marginX, startY, tableWidth, headHeight, 2, 2, 'F');
-            }
-
-            if (row.section === 'head') {
-             
-              doc.setTextColor(...textColorRGB);
-              doc.setFontSize(7);
-              doc.text(
-                String(cell.raw),
-                cell.x + cell.width / 2,
-                cell.y + cell.height / 2 + 2,
-                { align: 'center' }
-              );
-            }
-
-            // Borde vertical de celdas
-            if (row.section === 'body' && column.index < headers.length - 1) {
-              doc.setLineWidth(0.2);
-              doc.setDrawColor('#b3b8bd');
-              doc.line(cell.x + cell.width, cell.y, cell.x + cell.width, cell.y + cell.height);
-            }
-          },
-        });
-      
       doc.save(`REPORTE_KARDEX_${date}.pdf`);
     } catch {
       toast.error('Ocurrió un error al descargar el PDF. Intente de nuevo más tarde.');

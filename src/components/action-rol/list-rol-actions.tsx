@@ -28,6 +28,7 @@ import { create_action_by_view, create_view } from '@/services/actions.service';
 import { useRolesStore } from '@/store/roles.store';
 import { useActionsRolStore } from '@/store/role-actions.store';
 import { save_role_actions } from '@/storage/localStorage';
+import DivGlobal from '@/themes/ui/div-global';
 
 function ListActionRol() {
   const { roles_list, getRolesList } = useRolesStore();
@@ -306,8 +307,7 @@ function ListActionRol() {
           </Button>
         </div>
       </HeadlessModal>
-      <div className="w-full h-full p-4">
-        <div className="w-full h-full p-4 flex flex-col mt-2 rounded-xl overflow-y-auto bg-background/20 custom-scrollbar shadow border dark:border-gray-700">
+      <div >
           <div>
             <Select
               className="w-96 dark:text-white"
@@ -372,7 +372,6 @@ function ListActionRol() {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }

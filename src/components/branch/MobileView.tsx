@@ -22,32 +22,20 @@ function MobileView(props: MobileViewProps) {
   const { branches_paginated } = useBranchesStore();
 
   return (
-    <div className="w-full pb-10">
-      <DataView
-        gutter
-        color="surface"
-        emptyMessage="No users found"
-        itemTemplate={(item) => (
-          <GridItem
-            actions={actions}
-            branch={item}
-            deletePopover={deletePopover}
-            handleActive={handleActive}
-            handleBox={handleBox}
-            handleBranchProduct={handleBranchProduct}
-            handleEdit={handleEdit}
-            layout={layout}
-          />
-        )}
-        layout={layout}
-        pt={{
-          grid: () => ({
-            className:
-              'grid  pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
-          }),
-        }}
-        value={branches_paginated.branches}
-      />
+    <div className="grid pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
+      {branches_paginated.branches.map((item) => (
+        <GridItem
+          key={item.id}
+          actions={actions}
+          branch={item}
+          deletePopover={deletePopover}
+          handleActive={handleActive}
+          handleBox={handleBox}
+          handleBranchProduct={handleBranchProduct}
+          handleEdit={handleEdit}
+          layout={layout}
+        />
+      ))}
     </div>
   );
 }
@@ -72,7 +60,7 @@ const GridItem = (props: GridProps) => {
         <div
           key={branch.id}
           className={classNames(
-            'w-full shadow flex border dark:border-white flex-col justify-between hover:shadow-lg p-5 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full shadow flex border dark:border-white flex-col justify-between hover:shadow-lg p-5 rounded-2xl'
           )}
         >
           <div>

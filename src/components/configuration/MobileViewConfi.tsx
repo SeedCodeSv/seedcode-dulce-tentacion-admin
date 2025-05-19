@@ -25,7 +25,7 @@ function MobileViewConfi(props: MovileViewProps) {
         pt={{
           grid: () => ({
             className:
-              "grid dark:bg-gray-900 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5",
+              "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5",
           }),
         }}
         value={personalization}
@@ -45,7 +45,7 @@ const GridItem = (props: GridProps) => {
         <div
           key={configuration.id}
           className={classNames(
-            'w-full lg:ml-96 md:ml-48 xl:ml-96 flex bg-white dark:bg-gray-900 flex-col border items-center shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
+            'w-full lg:ml-96 md:ml-48 xl:ml-96 flex flex-col border items-center shadow-sm hover:shadow-lg p-8 dark:border dark:border-gray-600 rounded-2xl'
           )}
         >
           <div className="flex w-full gap-2 justify-center dark:text-white">

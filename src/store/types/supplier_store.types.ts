@@ -9,7 +9,7 @@ export interface ISupplierStore {
   getSupplierPagination: (
     page: number,
     limit: number,
-    searchNRC: string,
+    name: string,
     email: string,
     nit: string,
     nrc: string,

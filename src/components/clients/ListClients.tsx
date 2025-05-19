@@ -30,6 +30,11 @@ import { useBranchesStore } from '@/store/branches.store';
 import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
+import RenderViewButton from '../global/render-view-button';
+import { TableComponent } from '@/themes/ui/table-ui';
+import LoadingTable from '../global/LoadingTable';
+import EmptyTable from '../global/EmptyTable';
 interface Props {
   actions: string[];
 }
@@ -80,8 +85,7 @@ const ListClients = ({ actions }: Props) => {
 
   return (
     <>
-      <div className=" w-full h-full bg-white dark:bg-gray-900">
-        <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal className="flex flex-col h-full overflow-y-auto">
           <div className="flex justify-between items-end ">
             <SearchClient
               emailCustomer={(email: string) => setEmail(email)}
@@ -274,22 +278,7 @@ const ListClients = ({ actions }: Props) => {
                 Mostrar {active ? 'inactivos' : 'activos'}
               </span>
             </Switch>
-            <ButtonGroup className="mt-4">
-              <ButtonUi
-                isIconOnly
-                theme={view === 'table' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('table')}
-              >
-                <ITable />
-              </ButtonUi>
-              <ButtonUi
-                isIconOnly
-                theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('grid')}
-              >
-                <CreditCard />
-              </ButtonUi>
-            </ButtonGroup>
+            <RenderViewButton setView={setView} view={view} />
           </div>
           <div className="flex items-center justify-center ml-2" />
 
@@ -306,38 +295,12 @@ const ListClients = ({ actions }: Props) => {
                 <div className="flex justify-end w-full py-3 md:py-0 bg-first-300" />
                 {view === 'table' && (
                   <>
-                    <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                      <table className="w-full">
-                        <thead className="sticky top-0 z-20 bg-white">
-                          <tr>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              No.
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Nombre
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Teléfono
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Correo
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Contribuyente
-                            </th>
-                            <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Acciones
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="max-h-[600px] w-full overflow-y-auto">
+                      <TableComponent
+                headers={['Nº', 'Nombre','Teléfono','Correo','Contribuyente','Acciones']}>
                           {loading_customer ? (
                             <tr>
                               <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                                <div className="flex flex-col items-center justify-center w-full h-64">
-                                  <div className="loader" />
-                                  <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                                </div>
+                               <LoadingTable/>
                               </td>
                             </tr>
                           ) : (
@@ -437,18 +400,13 @@ const ListClients = ({ actions }: Props) => {
                               ) : (
                                 <tr>
                                   <td colSpan={5}>
-                                    <div className="flex flex-col items-center justify-center w-full">
-                                      <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                                      <p className="mt-3 text-xl">No se encontraron resultados</p>
-                                    </div>
+                                    <EmptyTable/>
                                   </td>
                                 </tr>
                               )}
                             </>
                           )}
-                        </tbody>
-                      </table>
-                    </div>
+                       </TableComponent>
                   </>
                 )}
               </>
@@ -517,126 +475,9 @@ const ListClients = ({ actions }: Props) => {
               </div>
             </>
           )}
-        </div>
-      </div>
+        </DivGlobal>
     </>
   );
 };
 
 export default ListClients;
-
-// export const BottomAdd = () => {
-//   const { theme } = useContext(ThemeContext);
-//   const { isOpen, onClose, onOpen } = useDisclosure();
-
-//   const navigate = useNavigate();
-
-//   return (
-//     <Popover
-//       aria-labelledby="popover-title"
-//       aria-describedby="popover-id"
-//       showArrow
-//       onClose={onClose}
-//       isOpen={isOpen}
-//       backdrop="blur"
-//     >
-//       <PopoverTrigger>
-//         <Button
-//           className="hidden lg:flex"
-//           style={{
-//             backgroundColor: theme.colors.third,
-//             color: theme.colors.primary,
-//           }}
-//           endContent={<PlusIcon size={35} />}
-//           onClick={() => (isOpen ? onClose() : onOpen())}
-//         >
-//           Agregar nuevo
-//         </Button>
-//       </PopoverTrigger>
-//       <PopoverContent aria-labelledby="popover-title">
-//         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
-//           <Button
-//             type="button"
-//             onClick={() => {
-//               navigate(`/add-client`);
-//             }}
-//             style={{
-//               backgroundColor: theme.colors.secondary,
-//               color: theme.colors.primary,
-//             }}
-//           >
-//             Cliente consumidor final
-//           </Button>
-//           <Button
-//             type="button"
-//             onClick={() => {
-//               navigate(`/add-client-contributor/0`);
-//             }}
-//             style={{
-//               backgroundColor: theme.colors.third,
-//               color: theme.colors.primary,
-//             }}
-//           >
-//             Cliente contribuyente
-//           </Button>
-//         </div>
-//       </PopoverContent>
-//     </Popover>
-//   );
-// };
-
-// export const BottomSm = () => {
-//   const { theme } = useContext(ThemeContext);
-//   const { isOpen, onClose, onOpen } = useDisclosure();
-
-//   const navigate = useNavigate();
-//   return (
-//     <Popover
-//       aria-labelledby="popover-title"
-//       aria-describedby="popover-id"
-//       showArrow
-//       onClose={onClose}
-//       isOpen={isOpen}
-//       backdrop="blur"
-//     >
-//       <PopoverTrigger>
-//         <Button
-//           className="flex lg:hidden"
-//           style={global_styles().thirdStyle}
-//           onClick={() => (isOpen ? onClose() : onOpen())}
-//           isIconOnly
-//         >
-//           <PlusIcon />
-//         </Button>
-//       </PopoverTrigger>
-//       <PopoverContent aria-labelledby="popover-title">
-//         <div className="flex flex-col gap-5 p-3 bg-white">
-//           <Button
-//             type="button"
-//             onClick={() => {
-//               navigate(`/add-client`);
-//             }}
-//             style={{
-//               backgroundColor: theme.colors.secondary,
-//               color: theme.colors.primary,
-//             }}
-//           >
-//             Cliente consumidor final
-//           </Button>
-//           <Button
-//             type="button"
-//             onClick={() => {
-//               navigate(`/add-client-contributor/0`);
-//             }}
-//             style={{
-//               backgroundColor: theme.colors.third,
-//               color: theme.colors.primary,
-//             }}
-//           >
-//             Cliente contribuyente
-//           </Button>
-//         </div>
-//       </PopoverContent>
-//     </Popover>
-//   );
-// };
