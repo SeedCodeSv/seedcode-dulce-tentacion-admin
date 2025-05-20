@@ -11,6 +11,7 @@ import { formatCurrency } from '@/utils/dte';
 import { global_styles } from '@/styles/global.styles';
 import { useAuthStore } from '@/store/auth.store';
 import { months } from '@/utils/constants';
+import DivGlobal from '@/themes/ui/div-global';
 
 function AnexoFe() {
   const { user } = useAuthStore();
@@ -25,9 +26,7 @@ function AnexoFe() {
   const [yearSelected, setYearSelected] = useState(currentYear);
 
   useEffect(() => {
-    const transId = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    const transId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
     onGetAnnexesIva(
       Number(transId),
@@ -59,8 +58,7 @@ function AnexoFe() {
 
   return (
     <Layout title="Anexo FE">
-      <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+     <DivGlobal>
           <div className="w-full flex justify-between gap-5">
             <Select
               className="w-44"
@@ -197,8 +195,7 @@ function AnexoFe() {
               )}
             </>
           </div>
-        </div>
-      </div>
+        </DivGlobal>
     </Layout>
   );
 }

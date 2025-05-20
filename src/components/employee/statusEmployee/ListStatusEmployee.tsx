@@ -29,6 +29,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
 
 function ListStatusEmployee({ actions }: ArrayAction) {
   const [openVaul, setOpenVaul] = useState(false);
@@ -73,8 +74,7 @@ function ListStatusEmployee({ actions }: ArrayAction) {
   };
 
   return (
-    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+   <DivGlobal>
         <div className="grid w-full grid-cols-2 gap-5 md:flex">
           <div className="w-full flex gap-4">
             <Input
@@ -313,7 +313,6 @@ function ListStatusEmployee({ actions }: ArrayAction) {
             </div>
           </>
         )}
-      </div>
       <HeadlessModal
         isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
@@ -322,7 +321,7 @@ function ListStatusEmployee({ actions }: ArrayAction) {
       >
         <AddStatusEmployee closeModal={modalAdd.onClose} statusEmployees={selectedStatusEmployee} />
       </HeadlessModal>
-    </div>
+    </DivGlobal>
   );
 }
 

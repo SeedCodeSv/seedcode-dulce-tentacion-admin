@@ -31,7 +31,6 @@ import { ContractType } from '../../../types/contarctType.types';
 
 import AddTypeContract from './AddTypeContract';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { ArrayAction } from '@/types/view.types';
@@ -39,6 +38,8 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
+import EmptyTable from '@/components/global/EmptyTable';
 
 function ListContractType({ actions }: ArrayAction) {
   const [openVaul, setOpenVaul] = useState(false);
@@ -81,8 +82,7 @@ function ListContractType({ actions }: ArrayAction) {
   };
 
   return (
-    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+   <DivGlobal>
         <div className="flex justify-between items-end ">
           <div className="grid w-full grid-cols-2 gap-5 md:flex ">
             <div className="w-full flex gap-4">
@@ -287,10 +287,7 @@ function ListContractType({ actions }: ArrayAction) {
                     ) : (
                       <tr>
                         <td colSpan={5}>
-                          <div className="flex flex-col items-center justify-center w-full">
-                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                            <p className="mt-3 text-xl">No se encontraron resultados</p>
-                          </div>
+                          <EmptyTable/>
                         </td>
                       </tr>
                     )}
@@ -329,7 +326,6 @@ function ListContractType({ actions }: ArrayAction) {
             </div>
           </>
         )}
-      </div>
       <HeadlessModal
         isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
@@ -338,7 +334,7 @@ function ListContractType({ actions }: ArrayAction) {
       >
         <AddTypeContract ContractTypes={selectedContractType} closeModal={modalAdd.onClose} />
       </HeadlessModal>
-    </div>
+    </DivGlobal>
   );
 }
 

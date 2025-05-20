@@ -26,6 +26,8 @@ import { useBranchesStore } from '@/store/branches.store';
 import { usePointOfSales } from '@/store/point-of-sales.store';
 import { PointOfSale } from '@/types/point-of-sales.types';
 import { limit_options } from '@/utils/constants';
+import DivGlobal from "@/themes/ui/div-global";
+import { TableComponent } from "@/themes/ui/table-ui";
 
 function ListSales() {
   const styles = global_styles();
@@ -85,246 +87,218 @@ function ListSales() {
   };
 
   return (
-    <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
-      <div className="w-full h-full flex flex-col p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-        <Filters
-          branch={branch}
-          dateInitial={dateInitial}
-          endDate={dateEnd}
-          pointOfSale={pointOfSale}
-          setBranch={setBranch}
-          setDateInitial={setDateInitial}
-          setEndDate={setDateEnd}
-          setPointOfSale={setPointOfSale}
-          setState={setState}
-          setTypeVoucher={setTypeVoucher}
-          state={state}
-          typeVoucher={typeVoucher}
-        />
-        <div className="flex items-end justify-end mt-3">
-          <div>
-            <Select
-              className="w-44"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              defaultSelectedKeys={['5']}
-              label="Cantidad a mostrar"
-              labelPlacement="outside"
-              placeholder="Selecciona la cantidad a mostrar"
-              value={limit}
-              variant="bordered"
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              {limit_options.map((limit) => (
-                <SelectItem key={limit}>
-                  {limit}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
+    <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <Filters
+        branch={branch}
+        dateInitial={dateInitial}
+        endDate={dateEnd}
+        pointOfSale={pointOfSale}
+        setBranch={setBranch}
+        setDateInitial={setDateInitial}
+        setEndDate={setDateEnd}
+        setPointOfSale={setPointOfSale}
+        setState={setState}
+        setTypeVoucher={setTypeVoucher}
+        state={state}
+        typeVoucher={typeVoucher}
+      />
+      <div className="flex items-end justify-end mt-3">
+        <div>
+          <Select
+            className="w-44"
+            classNames={{
+              label: 'font-semibold',
+            }}
+            defaultSelectedKeys={['5']}
+            label="Cantidad a mostrar"
+            labelPlacement="outside"
+            placeholder="Selecciona la cantidad a mostrar"
+            value={limit}
+            variant="bordered"
+            onChange={(e) => {
+              setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+            }}
+          >
+            {limit_options.map((limit) => (
+              <SelectItem key={limit}>
+                {limit}
+              </SelectItem>
+            ))}
+          </Select>
         </div>
-        <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  No.
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  Fecha - Hora
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  Número de control
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  SubTotal
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  IVA
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  Estado
-                </th>
-                <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="max-h-[600px] w-full overflow-y-auto">
-              {sales_dates?.map((sale, index) => (
-                <tr key={index} className="border-b border-slate-200">
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {sale.fecEmi + ' - ' + sale.horEmi}
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {sale.numeroControl}
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {formatCurrency(Number(sale.montoTotalOperacion))}
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {formatCurrency(Number(sale.totalIva))}
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <Chip
-                      classNames={{
-                        content: 'text-white text-sm !font-bold px-3',
-                      }}
-                      color={
-                        sale.salesStatus.name === 'CONTINGENCIA'
-                          ? 'warning'
-                          : sale.salesStatus.name === 'PROCESADO'
-                            ? 'success'
-                            : 'danger'
-                      }
-                    >
-                      {sale.salesStatus.name}
-                    </Chip>
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    {!pdfPath && (
-                      <Popover showArrow>
-                        <PopoverTrigger>
-                          <Button isIconOnly onClick={() => verifyNotes(sale.id)}>
-                            <EllipsisVertical size={20} />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="p-1">
-                          {sale.salesStatus.name === 'CONTINGENCIA' ? (
-                            <>
-                              <Listbox
-                                aria-label="Actions"
-                                className="dark:text-white"
-                              >
-                                <ListboxItem
-                                  key="show-pdf"
-                                  classNames={{ base: 'font-semibold' }}
-                                  color="danger"
-                                  variant="flat"
-                                  onPress={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
+      </div>
+      <TableComponent
+        headers={['Nº', 'Fecha - Hora', 'Número de control', 'SubTotal', 'IVA', 'Estado', 'Acciones']}>
+        {sales_dates?.map((sale, index) => (
+          <tr key={index} className="border-b border-slate-200">
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {sale.fecEmi + ' - ' + sale.horEmi}
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {sale.numeroControl}
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {formatCurrency(Number(sale.montoTotalOperacion))}
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {formatCurrency(Number(sale.totalIva))}
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              <Chip
+                classNames={{
+                  content: 'text-white text-sm !font-bold px-3',
+                }}
+                color={
+                  sale.salesStatus.name === 'CONTINGENCIA'
+                    ? 'warning'
+                    : sale.salesStatus.name === 'PROCESADO'
+                      ? 'success'
+                      : 'danger'
+                }
+              >
+                {sale.salesStatus.name}
+              </Chip>
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {!pdfPath && (
+                <Popover showArrow>
+                  <PopoverTrigger>
+                    <Button isIconOnly onClick={() => verifyNotes(sale.id)}>
+                      <EllipsisVertical size={20} />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-1">
+                    {sale.salesStatus.name === 'CONTINGENCIA' ? (
+                      <>
+                        <Listbox
+                          aria-label="Actions"
+                          className="dark:text-white"
+                        >
+                          <ListboxItem
+                            key="show-pdf"
+                            classNames={{ base: 'font-semibold' }}
+                            color="danger"
+                            variant="flat"
+                            onPress={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
+                          >
+                            Ver comprobante
+                          </ListboxItem>
+                        </Listbox>
+                      </>
+                    ) : (
+                      <>
+                        {sale.salesStatus.name === 'PROCESADO' ? (
+                          <>
+                            {sale.tipoDte === '03' ? (
+                              <>
+                                <Listbox
+                                  aria-label="Actions"
+                                  className="dark:text-white"
+                                  onAction={(key) => {
+                                    switch (key) {
+                                      case 'debit-note':
+                                        navigation('/debit-note/' + sale.id);
+                                        break;
+                                      case 'show-debit-note':
+                                        navigation('/get-debit-note/' + sale.id);
+                                        break;
+                                      case 'credit-note':
+                                        navigation('/credit-note/' + sale.id);
+                                        break;
+                                      case 'show-credit-note':
+                                        navigation('/get-credit-note/' + sale.id);
+                                        break;
+                                      default:
+                                        break;
+                                    }
+                                  }}
                                 >
-                                  Ver comprobante
-                                </ListboxItem>
-                              </Listbox>
-                            </>
-                          ) : (
-                            <>
-                              {sale.salesStatus.name === 'PROCESADO' ? (
-                                <>
-                                  {sale.tipoDte === '03' ? (
-                                    <>
-                                      <Listbox
-                                        aria-label="Actions"
-                                        className="dark:text-white"
-                                        onAction={(key) => {
-                                          switch (key) {
-                                            case 'debit-note':
-                                              navigation('/debit-note/' + sale.id);
-                                              break;
-                                            case 'show-debit-note':
-                                              navigation('/get-debit-note/' + sale.id);
-                                              break;
-                                            case 'credit-note':
-                                              navigation('/credit-note/' + sale.id);
-                                              break;
-                                            case 'show-credit-note':
-                                              navigation('/get-credit-note/' + sale.id);
-                                              break;
-                                            default:
-                                              break;
-                                          }
-                                        }}
-                                      >
-                                        {notes.debits > 0 ? (
-                                          <ListboxItem
-                                            key="show-debit-note"
-                                            classNames={{ base: 'font-semibold' }}
-                                            color="primary"
-                                            variant="flat"
-                                          >
-                                            Ver notas de débito
-                                          </ListboxItem>
-                                        ) : (
-                                          <ListboxItem
-                                            key="debit-note"
-                                            classNames={{ base: 'font-semibold' }}
-                                            color="danger"
-                                            variant="flat"
-                                          >
-                                            Nota de débito
-                                          </ListboxItem>
-                                        )}
-
-                                        {notes.credits > 0 ? (
-                                          <ListboxItem
-                                            key="show-credit-note"
-                                            classNames={{ base: 'font-semibold' }}
-                                            color="primary"
-                                            variant="flat"
-                                          >
-                                            Ver notas de crédito
-                                          </ListboxItem>
-                                        ) : (
-                                          <ListboxItem
-                                            key="credit-note"
-                                            classNames={{ base: 'font-semibold' }}
-                                            color="danger"
-                                            variant="flat"
-                                          >
-                                            Nota de crédito
-                                          </ListboxItem>
-                                        )}
-                                      </Listbox>
-                                    </>
-                                  ) : (
-                                    <></>
-                                  )}
-                                  <Listbox
-                                    aria-label="Actions"
-                                    className="dark:text-white"
-                                  >
+                                  {notes.debits > 0 ? (
                                     <ListboxItem
-                                      key="show-pdf"
+                                      key="show-debit-note"
+                                      classNames={{ base: 'font-semibold' }}
+                                      color="primary"
+                                      variant="flat"
+                                    >
+                                      Ver notas de débito
+                                    </ListboxItem>
+                                  ) : (
+                                    <ListboxItem
+                                      key="debit-note"
                                       classNames={{ base: 'font-semibold' }}
                                       color="danger"
                                       variant="flat"
-                                      onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                                     >
-                                      Ver comprobante
+                                      Nota de débito
                                     </ListboxItem>
-                                  </Listbox>
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                            </>
-                          )}
-                          {sale.salesStatus.name === 'INVALIDADO' && (
-                            <Listbox aria-label="Actions" className="dark:text-white">
+                                  )}
+
+                                  {notes.credits > 0 ? (
+                                    <ListboxItem
+                                      key="show-credit-note"
+                                      classNames={{ base: 'font-semibold' }}
+                                      color="primary"
+                                      variant="flat"
+                                    >
+                                      Ver notas de crédito
+                                    </ListboxItem>
+                                  ) : (
+                                    <ListboxItem
+                                      key="credit-note"
+                                      classNames={{ base: 'font-semibold' }}
+                                      color="danger"
+                                      variant="flat"
+                                    >
+                                      Nota de crédito
+                                    </ListboxItem>
+                                  )}
+                                </Listbox>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                            <Listbox
+                              aria-label="Actions"
+                              className="dark:text-white"
+                            >
                               <ListboxItem
-                                key=""
+                                key="show-pdf"
                                 classNames={{ base: 'font-semibold' }}
                                 color="danger"
                                 variant="flat"
+                                onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                               >
-                                <CircleX size={20} />
+                                Ver comprobante
                               </ListboxItem>
                             </Listbox>
-                          )}
-                        </PopoverContent>
-                      </Popover>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
                     )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {sales_dates_pagination.totalPag > 1 && (
+                    {sale.salesStatus.name === 'INVALIDADO' && (
+                      <Listbox aria-label="Actions" className="dark:text-white">
+                        <ListboxItem
+                          key=""
+                          classNames={{ base: 'font-semibold' }}
+                          color="danger"
+                          variant="flat"
+                        >
+                          <CircleX size={20} />
+                        </ListboxItem>
+                      </Listbox>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              )}
+            </td>
+          </tr>
+        ))}
+      </TableComponent>
+      {
+        sales_dates_pagination.totalPag > 1 && (
           <div className="mt-5 w-full dark:bg-gray-900">
             <Pagination
               currentPage={sales_dates_pagination.currentPag}
@@ -345,49 +319,53 @@ function ListSales() {
               }}
             />
           </div>
-        )}
-      </div>
-      {loadingPdf && (
-        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
-          <div className="flex flex-col items-center justify-center w-full h-full">
-            <LoaderCircle className="animate-spin" size={100} />
-            <p className="mt-4 text-lg font-semibold">Cargando...</p>
-          </div>
-        </div>
-      )}
-      {pdfPath && (
-        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
-          <Button
-            isIconOnly
-            className="fixed bg-red-600 bottom-10 left-10"
-            style={styles.dangerStyles}
-            onClick={() => {
-              setPdfPath('');
-            }}
-          >
-            <X />
-          </Button>
-          {loadingPdf ? (
+        )
+      }
+      {
+        loadingPdf && (
+          <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
             <div className="flex flex-col items-center justify-center w-full h-full">
               <LoaderCircle className="animate-spin" size={100} />
               <p className="mt-4 text-lg font-semibold">Cargando...</p>
             </div>
-          ) : (
-            <>
-              {pdfPath !== '' ? (
-                <div className="w-full h-full">
-                  <iframe className="w-screen h-screen z-[2000]" src={pdfPath} title="pdf" />
-                </div>
-              ) : (
-                <div className="flex items-center justify-center w-full h-full">
-                  <p>No hay información acerca de este PDF</p>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
-    </div>
+          </div>
+        )
+      }
+      {
+        pdfPath && (
+          <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+            <Button
+              isIconOnly
+              className="fixed bg-red-600 bottom-10 left-10"
+              style={styles.dangerStyles}
+              onClick={() => {
+                setPdfPath('');
+              }}
+            >
+              <X />
+            </Button>
+            {loadingPdf ? (
+              <div className="flex flex-col items-center justify-center w-full h-full">
+                <LoaderCircle className="animate-spin" size={100} />
+                <p className="mt-4 text-lg font-semibold">Cargando...</p>
+              </div>
+            ) : (
+              <>
+                {pdfPath !== '' ? (
+                  <div className="w-full h-full">
+                    <iframe className="w-screen h-screen z-[2000]" src={pdfPath} title="pdf" />
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-center w-full h-full">
+                    <p>No hay información acerca de este PDF</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )
+      }
+    </DivGlobal >
   );
 }
 export default ListSales;
