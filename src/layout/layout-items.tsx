@@ -206,12 +206,6 @@ export const LayoutItems = (props: Props) => {
       label: 'Ventas facturación electronica',
     },
     {
-      viewName: 'Ventas Ticket',
-      to: '/sales-ticket',
-      icon: Tag,
-      label: 'Ventas Ticket',
-    },
-    {
       viewName: 'Contingencias',
       to: '/contingence-section',
       icon: DatabaseBackup,

@@ -23,7 +23,7 @@ export const get_correlatives_dte = (transmitter_id: number, tipo_dte: string) =
 export const get_point_of_sales = (branch_id: number) => {
   const token = get_token() ?? null;
 
-  return axios.get<IGetCorrelatives>(`${API_URL}/correlatives/by-branch/${branch_id}`, {
+  return axios.get<IGetCorrelatives>(`${API_URL}/point-of-sale/by-branch/${branch_id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -18,6 +18,7 @@ import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
 import { useAuthStore } from '@/store/auth.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 function AddAccountCatalogs() {
   const [name, setName] = useState('');
@@ -31,14 +32,14 @@ function AddAccountCatalogs() {
 
   useEffect(() => {
     const transmitterId =
-      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+      user?.pointOfSale?.branch.transmitter.id;
 
     getAccountCatalogs(Number(transmitterId ?? 0), name, code);
   }, []);
 
   const handleSearch = (searchParam: string | undefined) => {
     const transmitterId =
-      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+      user?.pointOfSale?.branch.transmitter.id;
 
     getAccountCatalogs(Number(transmitterId ?? 0), searchParam ?? name, searchParam ?? code);
   };
@@ -58,7 +59,7 @@ function AddAccountCatalogs() {
       .delete(API_URL + '/account-catalogs/' + id)
       .then(() => {
         const transmitterId =
-          user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+          user?.pointOfSale?.branch.transmitter.id;
 
         getAccountCatalogs(Number(transmitterId ?? 0), name, code);
         toast.success('Eliminado con éxito');
@@ -71,7 +72,7 @@ function AddAccountCatalogs() {
   return (
     <Layout title="Catálogos de Cuentas">
       <>
-        <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
+<DivGlobal>
           <div className="w-full mt-2">
             <div className="w-full flex flex-col lg:flex-row justify-between gap-5 mt-4">
               <div className="w-full">
@@ -234,7 +235,7 @@ function AddAccountCatalogs() {
                     </>
                   ) : (
                     <>
-                      <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                      <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                         <img alt="" className="w-44 mt-10" src={NO_DATA} />
                         <p className="mt-5 dark:text-white text-gray-600 text-xl">
                           No se encontraron resultados
@@ -246,7 +247,7 @@ function AddAccountCatalogs() {
               )}
             </div>
           </div>
-        </div>
+        </DivGlobal>
       </>
     </Layout>
   );

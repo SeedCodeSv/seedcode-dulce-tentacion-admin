@@ -1,10 +1,8 @@
-import { Button } from '@heroui/react';
 import { Filter } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 
 import BottomDrawer from './BottomDrawer';
 
-import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
@@ -15,6 +13,10 @@ interface Props {
   applyLabel?: string
   buttonLabel?: string
   withButton?: boolean
+  showSearchButton?: boolean;
+  showApplyButton?: boolean;
+  classLg?: string
+  classButtonLg?: string
 }
 
 export const ResponsiveFilterWrapper = ({
@@ -22,7 +24,11 @@ export const ResponsiveFilterWrapper = ({
   children,
   applyLabel = 'Aplicar',
   buttonLabel = 'Buscar',
-  withButton = true
+  withButton = true,
+  showApplyButton = true,
+  showSearchButton = true,
+  classLg,
+  classButtonLg
 }: Props) => {
 
   const isMobile = useIsMobileOrTablet();
@@ -44,18 +50,17 @@ export const ResponsiveFilterWrapper = ({
         <BottomDrawer open={open} title="Filtros disponibles" onClose={() => setOpen(false)}>
           <div className="flex flex-col gap-3">
             {children}
-            {withButton &&
-              <Button
+            {withButton && showApplyButton &&
+              <ButtonUi
                 className="font-semibold"
-                color="primary"
-                style={global_styles().darkStyle}
+                theme={Colors.Info}
                 onPress={() => {
                   onApply!();
                   setOpen(false);
                 }}
               >
                 {applyLabel}
-              </Button>
+              </ButtonUi>
             }
           </div>
         </BottomDrawer>
@@ -65,11 +70,12 @@ export const ResponsiveFilterWrapper = ({
 
   return (
     <div className="w-full hidden gap-5 md:flex">
-      <div className="flex justify-between gap-5 w-full items-end">
+      <div className={classLg ?? "flex justify-between gap-5 w-full items-end"}>
         {children}
-        {withButton &&
+        {withButton && showSearchButton &&
           <ButtonUi
-            className="px-5 font-semibold"
+            className={`px-5 font-semibold ${classButtonLg}`}
+            
             theme={Colors.Info}
             onPress={onApply}
           >

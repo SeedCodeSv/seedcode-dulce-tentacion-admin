@@ -1,5 +1,4 @@
 import { Button } from "@heroui/react";
-import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import {
   ArrowLeft,
@@ -26,29 +25,18 @@ function MobileView(props: IMobileViewProps) {
   const { layout, openEditModal, actions } = props;
 
   return (
-    <div className="w-full pb-10">
-      <DataView
-        gutter
-        className="dark:text-white"
-        color="surface"
-        emptyMessage="No se encontraron resultados"
-        itemTemplate={(correlative) => (
-          <GridItem
-            actions={actions}
-            correlative={correlative}
-            layout={layout}
-            openEditModal={openEditModal}
-          />
-        )}
-        layout={layout}
-        pt={{
-          grid: () => ({
-            className:
-              'w-full grid dark:bg-transparent pb-10 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3 gap-5 mt-5',
-          }),
-        }}
-        value={correlatives}
-      />
+    <div className="w-full grid pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
+
+      {correlatives.map((correlative) => (
+        <GridItem
+          key={correlative.id}
+          actions={actions}
+          correlative={correlative}
+          layout={layout}
+          openEditModal={openEditModal}
+        />
+      ))}
+
     </div>
   );
 }
@@ -71,7 +59,7 @@ const GridItem = (props: GridProps) => {
               {/* Se agregaron items-center para alinear íconos */}
               <Barcode className="dark:text-blue-300" size={20} />
               <p className="w-full dark:text-white">
-                Codigo : {correlative.code.trim() !== '' ? correlative.code : 'N/A'}
+                Codigo : {correlative?.code?.trim() !== '' ? correlative.code : 'N/A'}
               </p>
             </div>
             <div className="flex w-full gap-2 items-center">
@@ -154,7 +142,7 @@ const ListItem = (props: GridProps) => {
             {/* items-center para alinear los íconos y el texto */}
             <Barcode className="dark:text-blue-300" size={20} />
             <p className="w-full dark:text-white">
-              Codigo : {correlative.code.trim() !== '' ? correlative.code : 'N/A'}
+              Codigo : {correlative.code?.trim() !== '' ? correlative.code : 'N/A'}
             </p>
           </div>
           <div className="flex w-full gap-2 items-center">

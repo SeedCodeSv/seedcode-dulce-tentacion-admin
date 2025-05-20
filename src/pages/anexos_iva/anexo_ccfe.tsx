@@ -174,7 +174,7 @@ function AnexoCcfe() {
                     </>
                   ) : (
                     <>
-                      <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                      <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                         <img alt="" className="w-44 mt-10" src={NO_DATA} />
                         <p className="mt-5 dark:text-white text-gray-600 text-xl">
                           No se encontraron resultados

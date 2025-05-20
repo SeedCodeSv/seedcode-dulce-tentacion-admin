@@ -15,6 +15,7 @@ import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
 import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
+import ActionRol from '@/pages/ActionRol';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -67,7 +68,6 @@ const AddAccountCatalogs = lazy(() => import('../components/account-catalogs/add
 const UpdateAccountCatalogs = lazy(
   () => import('../components/account-catalogs/update-account-catalog')
 );
-const TicketSales = lazy(() => import('../pages/ticket-sales'));
 const EditTransmitterInfo = lazy(() => import('../pages/edit-transmitter-info'));
 const Home = lazy(() => import('../pages/home'));
 const ProductsCategories = lazy(() => import('../pages/ProductsCategories'));
@@ -79,7 +79,6 @@ const Error404 = lazy(() => import('../pages/Error404'));
 const Product = lazy(() => import('../pages/Product'));
 const NoteReferal = lazy(() => import('../pages/ReferalNote'));
 const AddReferalNote = lazy(() => import('../shopping-branch-product/pages/ShippingBranchProdut'));
-const ActionRol = lazy(() => import('../pages/ActionRol'));
 const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
@@ -305,7 +304,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
             {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
           </AnimatedRoute>
         }
-        path="/sales-by-product"
+        path="/reports/sales-by-product"
       />
       <Route
         element={
@@ -514,14 +513,6 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/sales"
-      />
-      <Route
-        element={
-          <AnimatedRoute>
-            {handleCheckPermission('Ventas Ticket') ? <TicketSales /> : <Home />}
-          </AnimatedRoute>
-        }
-        path="/sales-ticket"
       />
       <Route
         element={

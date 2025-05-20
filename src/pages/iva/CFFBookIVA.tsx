@@ -272,7 +272,7 @@ function CFFBookIVA() {
                       <TableCcfe />
                     </>
                   ) : (
-                    <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                    <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                       <p className="mt-5 dark:text-white text-gray-600 text-xl">
                         No se encontraron resultados
                       </p>
