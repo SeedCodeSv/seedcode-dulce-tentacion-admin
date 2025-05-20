@@ -7,7 +7,7 @@ import { IGetCorrelatives } from '../types/correlatives.types';
 export const get_correlatives = (id: number) => {
   const token = get_token() ?? null;
 
-  return axios.get<IGetCorrelatives>(`${API_URL}/correlatives/by-branch/${id}`, {
+  return axios.get<IGetCorrelatives>(`${API_URL}/point-of-sale/by-branch/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

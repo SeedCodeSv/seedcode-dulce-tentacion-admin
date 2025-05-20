@@ -18,10 +18,12 @@ import { formatCurrency } from '../utils/dte';
 import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
+import { useTransmitterStore } from '@/store/transmitter.store';
 
 const CashCutsX = () => {
   const { actions } = useViewsStore();
-
+  const { transmitter, gettransmitter } = useTransmitterStore();
+  
   const x = actions.find((view) => view.view.name === 'Corte X');
   const actionsView = x?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
@@ -48,7 +50,7 @@ const CashCutsX = () => {
       if (branchId > 0) {
         const data = await get_correlatives(branchId);
 
-        setCodeSale(data.data.correlatives);
+        setCodeSale(data.data.pointOfSales);
       }
     };
 
@@ -71,6 +73,7 @@ const CashCutsX = () => {
 
   useEffect(() => {
     getBranchesList();
+    gettransmitter();
   }, []);
 
   const printCutX = () => {
@@ -590,7 +593,7 @@ const CashCutsX = () => {
       <DivGlobal>
           <div className="flex flex-col justify-between w-full gap-5 flex-row lg:gap-0">
             <div className="flex flex-col items-center p-4">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 w-full">
+              <div className="flex gap-4">
                 <Autocomplete
                   className="mt-4"
                   label="Sucursal"
@@ -619,7 +622,7 @@ const CashCutsX = () => {
                   variant="bordered"
                 >
                   {codeSale
-                    .filter((item) => item.typeVoucher === 'T')
+                    .filter((item) => item.typeVoucher === 'FE')
                     .map((item) => (
                       <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
                         {item.code}
@@ -630,7 +633,7 @@ const CashCutsX = () => {
 
               <div className="flex flex-col items-center w-full h-full p-4 mt-4  rounded-md">
                 <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
-                  <h1 className="text-black dark:text-white">MADNESS</h1>
+                  <h1 className="text-black dark:text-white">{transmitter.nombre}</h1>
                   <h1 className="text-black dark:text-white">{branchName}</h1>
 
                   <h1 className="text-black dark:text-white">{branchAdress}</h1>
@@ -642,36 +645,6 @@ const CashCutsX = () => {
                     PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}
                   </h1>
                   <br />
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">VENTAS CON TICKET</h1>
-                    <h1 className="text-black dark:text-white">
-                      N. INICIAL: {data?.Ticket?.inicio}
-                    </h1>
-                    <h1 className="text-black dark:text-white">N. FINAL: {data?.Ticket?.fin}</h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(Number(data?.Ticket?.total) / 1.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA:{' '}
-                      {formatCurrency(
-                        Number(data?.Ticket?.total ?? 0) - Number(data?.Ticket?.total) / 1.13
-                      )}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB_TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(Number(data?.Ticket?.total.toFixed(2)))}
-                    </h1>
-                  </div>
                   <br />
                   <h1 className="text-black dark:text-white">
                     ---------------------------------------------------------------------
