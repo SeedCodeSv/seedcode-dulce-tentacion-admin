@@ -1,39 +1,56 @@
 import { Input } from '@heroui/react';
-import { Dispatch, SetStateAction, useMemo } from 'react';
-import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { Trash } from 'lucide-react';
 
-import { filtrarPorCategoria } from './validation-add-product';
 
 import { Product } from '@/types/products.types';
 import { preventLetters } from '@/utils';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
-
-type ProductOrder = Product & { quantity: number; extraUniMedida: string };
+type ProductOrder = Product & { quantity: number; performanceQuantity: string; cost: number };
 
 interface Props {
   selectedProducts: ProductOrder[];
-  setSelectedProducts: Dispatch<SetStateAction<ProductOrder[]>>
+  setSelectedProducts: Dispatch<SetStateAction<ProductOrder[]>>;
+  performance: string;
 }
 
-function RecipeBookProduct({ selectedProducts, setSelectedProducts }: Props) {
-
+function RecipeBookProduct({ selectedProducts, setSelectedProducts, performance }: Props) {
   const handleEditQuantity = (quantity: number, index: number) => {
     const list_suppliers = [...selectedProducts];
 
     list_suppliers[index].quantity = quantity;
+
+    const performanceQuantity = quantity / (Number(performance || 1) || 1);
+    const cost = Number(list_suppliers[index].costoUnitario) / performanceQuantity;
+
+    list_suppliers[index].cost = cost;
+    list_suppliers[index].performanceQuantity = performanceQuantity.toFixed(4);
+
     setSelectedProducts(list_suppliers);
   };
 
-  const handleEditUniMedida = (uniMedida: string, index: number) => {
-    const list_suppliers = [...selectedProducts];
+  useEffect(() => {
+    if (selectedProducts.length > 0) {
+      const products = [...selectedProducts];
 
-    list_suppliers[index].extraUniMedida = uniMedida;
-    setSelectedProducts(list_suppliers);
-  };
+      const newProducts = products.map((product) => {
+        const quantity = Number(product.quantity);
+        const performanceQuantity = quantity / (Number(performance || 1) || 1);
+        const cost = Number(product.costoUnitario) / Number(performance);
 
+        return {
+          ...product,
+          quantity: quantity,
+          performanceQuantity: performanceQuantity.toFixed(4),
+          cost: Number(cost),
+        };
+      });
+
+      setSelectedProducts(newProducts);
+    }
+  }, [performance]);
   const handleDeleteProduct = (index: number) => {
     const list_suppliers = [...selectedProducts];
 
@@ -41,48 +58,32 @@ function RecipeBookProduct({ selectedProducts, setSelectedProducts }: Props) {
     setSelectedProducts(list_suppliers);
   };
 
-  const services = useMemo(() => new SeedcodeCatalogosMhService(), [])
-
   return (
-    <div className="w-full mt-3 max-h-96 overflow-y-auto md:grid md:grid-cols-3 flex flex-col gap-4">
+    <div className="w-full mt-3 max-h-96 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
       {selectedProducts.map((sp: ProductOrder) => (
         <div
           key={sp.id}
           className="items-center gap-2 py-2 shadow border rounded-[12px] p-4 flex flex-col"
         >
-          <p className="text-sm font-semibold w-full dark:text-white">{sp.name}</p>
-          <div className='flex justify-between items-end gap-5'>
-            <div className="mt-3 w-full">
+          <div className="flex justify-between w-full">
+            <p className="text-sm font-semibold w-full dark:text-white">{sp.name}</p>
+            <ButtonUi
+              isIconOnly
+              theme={Colors.Error}
+              onPress={handleDeleteProduct.bind(null, selectedProducts.indexOf(sp))}
+            >
+              <Trash />
+            </ButtonUi>
+          </div>
+          <div className="flex justify-between items-end gap-5 w-full">
+            <div className=" w-full grid grid-cols-2 gap-5">
               <Input
+                className="w-full"
                 classNames={{
                   label: 'font-semibold',
                 }}
-                endContent={
-                  <div className="flex items-center">
-                    <label className="sr-only" htmlFor="currency">
-                      Currency
-                    </label>
-                    <select
-                      className="outline-none border-0 bg-transparent text-default-400 text-small"
-                      id="currency"
-                      name="currency"
-                      value={sp.extraUniMedida}
-                      onChange={(e) =>
-                        handleEditUniMedida(e.target.value, selectedProducts.indexOf(sp))
-                      }
-                    >
-                      {filtrarPorCategoria(sp.unidaDeMedida, services.get014UnidadDeMedida()).map(
-                        (tpS) => (
-                          <option key={tpS.codigo} value={tpS.codigo}>
-                            {tpS.valores}
-                          </option>
-                        )
-                      )}
-                    </select>
-                  </div>
-                }
-                label="Cantidad por unidad"
-                placeholder="Ingresa la cantidad del producto"
+                label="Cantidad por rendimiento"
+                placeholder="Ingresa la cantidad por rendimiento"
                 type="string"
                 value={sp.quantity.toString()}
                 variant="bordered"
@@ -91,14 +92,19 @@ function RecipeBookProduct({ selectedProducts, setSelectedProducts }: Props) {
                   handleEditQuantity(quantity as unknown as number, selectedProducts.indexOf(sp))
                 }
               />
+              <Input
+                readOnly
+                className="w-full"
+                classNames={{
+                  label: 'font-semibold',
+                }}
+                label="Cantidad por unidad"
+                placeholder="Ingresa la cantidad del producto"
+                type="string"
+                value={sp.performanceQuantity.toString()}
+                variant="bordered"
+              />
             </div>
-            <ButtonUi
-              isIconOnly
-              theme={Colors.Error}
-              onPress={handleDeleteProduct.bind(null, selectedProducts.indexOf(sp))}
-            >
-              <Trash />
-            </ButtonUi>
           </div>
         </div>
       ))}

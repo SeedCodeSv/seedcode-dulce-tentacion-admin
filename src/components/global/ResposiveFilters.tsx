@@ -33,7 +33,7 @@ export const ResponsiveFilterWrapper = ({
     return (
       <div className="flex items-end gap-5">
         <ButtonUi
-          isIconOnly showTooltip className="lg:hidden"
+          isIconOnly showTooltip className="xl:hidden"
           theme={Colors.Info}
           tooltipText='Buscar por filtros'
           onPress={() => setOpen(true)}
@@ -64,7 +64,7 @@ export const ResponsiveFilterWrapper = ({
   }
 
   return (
-    <div className="w-full hidden gap-5 md:flex">
+    <div className="w-full hidden gap-5 xl:flex">
       <div className="flex justify-between gap-5 w-full items-end">
         {children}
         {withButton &&

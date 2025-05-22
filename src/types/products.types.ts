@@ -219,58 +219,122 @@ export interface Product {
   subCategoryId: number;
 }
 
-export interface GetProductDetail{
-  product: Product,
-  ok: boolean,
-  status: number
+export interface GetProductDetail {
+  product: Product;
+  ok: boolean;
+  status: number;
 }
 
 export interface GetBranchProductRecipe extends IPagination {
-  data: BranchProductRecipe[]
+  data: BranchProductRecipe[];
 }
 
 export interface BranchProductRecipe {
-  id: number
-  stock: number
-  price: string
-  priceA: string
-  priceB: string
-  priceC: string
-  minimumStock: number
-  costoUnitario: string
-  isActive: boolean
-  product: Product
-  branchId: number
-  productId: number
-  recipeBook?: RecipeBook
+  id: number;
+  stock: number;
+  price: string;
+  priceA: string;
+  priceB: string;
+  priceC: string;
+  minimumStock: number;
+  costoUnitario: string;
+  isActive: boolean;
+  product: Product;
+  branchId: number;
+  productId: number;
+  recipeBook: RecipeBook;
 }
 
 export interface Product {
-  id: number
-  name: string
-  description: string
-  tipoItem: string
-  tipoDeItem: string
-  uniMedida: string
-  unidaDeMedida: string
-  code: string
-  isActive: boolean
-  subCategoryId: number
+  id: number;
+  name: string;
+  description: string;
+  tipoItem: string;
+  tipoDeItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  code: string;
+  isActive: boolean;
+  subCategoryId: number;
 }
 
 export interface RecipeBook {
-  id: number
-  isActive: boolean
-  productRecipeBookDetails: ProductRecipeBookDetail[]
-  productId: number
-  maxProduction: number
+  id: number;
+  isActive: boolean;
+  productRecipeBookDetails: ProductRecipeBookDetail[];
+  productId: number;
+  maxProduction: number;
+  performance: number;
 }
 
 export interface ProductRecipeBookDetail {
-  id: number
-  quantity: string
-  extraUniMedida: string
-  productIdReference: number
-  productRecipeBookId: number
-  branchProduct: BranchProduct
+  id: number;
+  quantity: string;
+  quantityPerPerformance: string;
+  extraUniMedida: string;
+  productIdReference: number;
+  productRecipeBookId: number;
+  branchProduct: BranchProduct;
+}
+
+//products and recipe book
+
+export interface GetProductAndRecipe extends IPagination {
+  products: ProductAndRecipe[];
+}
+
+export interface ProductAndRecipe {
+  id: number;
+  name: string;
+  description: string;
+  tipoItem: string;
+  tipoDeItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  code: string;
+  isActive: boolean;
+  productType: string;
+  subCategory: SubCategory;
+  recipeBook?: RecipeBookProduct;
+  subCategoryId: number;
+}
+
+export interface RecipeBookProduct {
+  id: number;
+  isActive: boolean;
+  performance: number;
+  cost: string;
+  productRecipeBookDetails: ProductRecipeBookDetailList[];
+  productId: number;
+}
+
+export interface ProductRecipeBookDetailList {
+  id: number;
+  quantity: string;
+  productIdReference: number;
+  quantityPerPerformance: string;
+  product: Product;
+  productRecipeBookId: number;
+}
+
+export interface PostVerifyRecipePayload {
+  branchDestinationId: number;
+  branchDepartureId: number;
+  productId: number;
+  recipeBook: RecipeBook[];
+}
+
+export interface VerifyRecipeBook {
+  recipeId: number;
+}
+
+export interface PostVerifyRecipe {
+  ok: boolean;
+  data: VerifyRecipe[];
+  status: number;
+}
+
+export interface VerifyRecipe {
+  product: Product;
+  branchProduct: BranchProduct;
 }

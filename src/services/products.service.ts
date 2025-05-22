@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import {
   GetBranchProductRecipe,
+  GetProductAndRecipe,
   GetProductDetail,
   GetProductRecipeBook,
   IGetProductsPaginated,
@@ -26,6 +27,29 @@ export const get_products = (
   return axios.get<IGetProductsPaginated>(
     API_URL +
       `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const get_products_and_recipe = (
+  page = 1,
+  limit = 5,
+  category = 0,
+  subCategory = 0,
+  name = '',
+  code = '',
+  active = 1,
+  typeProduct = ''
+) => {
+  const token = get_token() ?? '';
+
+  return axios.get<GetProductAndRecipe>(
+    API_URL +
+      `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

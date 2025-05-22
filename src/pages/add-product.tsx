@@ -3,6 +3,7 @@ import { FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
@@ -17,7 +18,11 @@ import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
-type ProductOrderReceipt = Product & { quantity: number; extraUniMedida: string };
+type ProductOrderReceipt = Product & {
+  quantity: number;
+  performanceQuantity: string;
+  cost: number;
+};
 
 function AddProduct() {
   const { getBranchesList } = useBranchesStore();
@@ -25,6 +30,7 @@ function AddProduct() {
 
   const [selectedProducts, setSelectedProducts] = useState<ProductOrder[]>([]);
   const [selectedProductsReceipt, setSelectedProductsReceipt] = useState<ProductOrderReceipt[]>([]);
+  const [performance, setPerformance] = useState<string>('1');
 
   useEffect(() => {
     getBranchesList();
@@ -39,10 +45,11 @@ function AddProduct() {
     onSubmit(values) {
       const valuesToSend = {
         ...values,
+        performance: Number(performance ?? '1'),
         receipt: selectedProductsReceipt.map((product) => ({
           productId: product.id,
-          quantity: product.quantity,
-          extraUniMedida: product.extraUniMedida,
+          quantity: product.performanceQuantity,
+          performanceQuantity: product.quantity,
         })),
         products: selectedProducts.map((product) => ({
           productId: product.id,
@@ -51,7 +58,15 @@ function AddProduct() {
         })),
       };
 
-      axios.post(API_URL + '/branch-products', valuesToSend).then(() => {});
+      axios
+        .post(API_URL + '/branch-products', valuesToSend)
+        .then(() => {
+          toast.success('Producto creado con éxito');
+          navigate('/products');
+        })
+        .catch(() => {
+          toast.error('Error al crear el producto');
+        });
     },
   });
 
@@ -73,7 +88,9 @@ function AddProduct() {
         >
           <FormikProvider value={formik}>
             <GeneralProductInfo
+              performance={performance}
               selectedProducts={selectedProductsReceipt}
+              setPerformance={setPerformance}
               setSelectedProducts={setSelectedProductsReceipt}
             />
             <BranchProductInfo />
