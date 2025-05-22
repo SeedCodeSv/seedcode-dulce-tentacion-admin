@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, ButtonGroup } from '@heroui/react';
-import { CreditCard, EditIcon, Table as ITable, Search } from 'lucide-react';
+import { Autocomplete, AutocompleteItem } from '@heroui/react';
+import { EditIcon, Search } from 'lucide-react';
 
 import Pagination from '../global/Pagination';
-import SmPagination from '../global/SmPagination';
 import HeadlessModal from '../global/HeadlessModal';
 import AddButton from '../global/AddButton';
+import EmptyTable from '../global/EmptyTable';
+import RenderViewButton from '../global/render-view-button';
 
 import UpdateCorrelative from './UpdateCorrelative';
 import CreateCorrelative from './CreateCorrelatives';
@@ -19,7 +20,8 @@ import useWindowSize from '@/hooks/useWindowSize';
 import { useCorrelativesStore } from '@/store/correlatives-store/correlatives.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-import ThGlobal from '@/themes/ui/th-global';
+import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function CorrelativesList({ actions }: { actions: string[] }) {
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -48,8 +50,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
   );
 
   return (
-    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+    <DivGlobal>
         <div className="flex justify-between items-end ">
           <SearchCorrelative
             branchName={(name) => {
@@ -134,23 +135,8 @@ function CorrelativesList({ actions }: { actions: string[] }) {
           </ButtonUi>
         </div>
 
-        <div className="flex items-end justify-end gap-10 mt-3   lg:justify-end">
-          <ButtonGroup className="mt-4">
-            <ButtonUi
-              isIconOnly
-              theme={view === 'table' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('table')}
-            >
-              <ITable />
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={view === 'grid' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('grid')}
-            >
-              <CreditCard />
-            </ButtonUi>
-          </ButtonGroup>
+        <div className='w-full flex justify-end'>
+        <RenderViewButton setView={setView} view={view} />
         </div>
 
         <div className="flex flex-col justify-between  xl:mt-5 w-full gap-5 lg:flex-row lg:gap-0">
@@ -161,26 +147,11 @@ function CorrelativesList({ actions }: { actions: string[] }) {
               openEditModal={(correlative) => handleUpdate(correlative)}
             />
           )}
+           </div>
           {view === 'table' && (
             <>
-              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <ThGlobal className="text-left p-3">No.</ThGlobal>
-                      <ThGlobal className="text-left p-3">Código</ThGlobal>
-                      <ThGlobal className="text-left p-3">Tipo de Factura</ThGlobal>
-                      <ThGlobal className="text-left p-3">Resolucion</ThGlobal>
-                      <ThGlobal className="text-left p-3">Serie</ThGlobal>
-                      <ThGlobal className="text-left p-3">Inicio</ThGlobal>
-                      <ThGlobal className="text-left p-3">Fin</ThGlobal>
-                      <ThGlobal className="text-left p-3">Anterior</ThGlobal>
-                      <ThGlobal className="text-left p-3">Siguiente</ThGlobal>
-                      <ThGlobal className="text-left p-3">Sucursal</ThGlobal>
-                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-                    </tr>
-                  </thead>
-                  <tbody className="max-h-[600px] w-full overflow-y-auto">
+              <TableComponent
+                    headers={['Nº', 'Código','Tipo de Factura','Resolucion','Serie','Inicio','Fin','Anterior','Siguiente','Sucursal','Acciones']}>
                     <>
                       {correlatives.length > 0 ? (
                         <>
@@ -238,27 +209,20 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full">
-                              {/* <img src={NO_DATA} alt="X" className="w-32 h-32" /> */}
-                              <p className="mt-3 text-xl dark:text-white">
-                                No se encontraron resultados
-                              </p>
-                            </div>
+                          <td colSpan={11}>
+                            <EmptyTable/>
                           </td>
                         </tr>
                       )}
                     </>
-                  </tbody>
-                </table>
-              </div>
+                 </TableComponent>
             </>
           )}
-        </div>
+       
         <div>
           {pagination_correlatives.totalPag > 1 && (
             <>
-              <div className="hidden w-full mt-5 md:flex">
+              <div className="w-full mt-5">
                 <Pagination
                   currentPage={pagination_correlatives.currentPag}
                   nextPage={pagination_correlatives.nextPag}
@@ -272,28 +236,6 @@ function CorrelativesList({ actions }: { actions: string[] }) {
                       filter.correlativeType
                     );
                   }}
-                />
-              </div>
-              <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-                <SmPagination
-                  currentPage={pagination_correlatives.currentPag}
-                  handleNext={() => {
-                    OnGetByBranchAndTypeVoucherCorrelatives(
-                      pagination_correlatives.nextPag,
-                      5,
-                      filter.branchName,
-                      filter.correlativeType
-                    );
-                  }}
-                  handlePrev={() => {
-                    OnGetByBranchAndTypeVoucherCorrelatives(
-                      pagination_correlatives.prevPag,
-                      5,
-                      filter.branchName,
-                      filter.correlativeType
-                    );
-                  }}
-                  totalPages={pagination_correlatives.totalPag}
                 />
               </div>
             </>
@@ -345,8 +287,7 @@ function CorrelativesList({ actions }: { actions: string[] }) {
             }}
           />
         </HeadlessModal>
-      </div>
-    </div>
+      </DivGlobal>
   );
 }
 

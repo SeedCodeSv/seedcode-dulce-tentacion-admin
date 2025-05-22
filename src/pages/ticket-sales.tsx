@@ -2,7 +2,6 @@ import {
   Accordion,
   AccordionItem,
   Button,
-  ButtonGroup,
   Input,
   Select,
   SelectItem,
@@ -11,7 +10,7 @@ import {
 } from '@heroui/react';
 import classNames from 'classnames';
 import jsPDF from 'jspdf';
-import { CreditCard, Eye, Filter, Table2Icon, X } from 'lucide-react';
+import { Eye, Filter, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import FullPageLayout from '@/components/global/FullOverflowLayout';
@@ -22,13 +21,18 @@ import { get_ticket } from '@/services/ticket.service';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTicketStore } from '@/store/ticket.store';
 import ButtonUi from '@/themes/ui/button-ui';
-import ThGlobal from '@/themes/ui/th-global';
 import { Colors } from '@/types/themes.types';
 import { DetailSale } from '@/types/ticket.types';
 import { formatDate } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
+import DivGlobal from '@/themes/ui/div-global';
+import RenderViewButton from '@/components/global/render-view-button';
+import { limit_options } from '@/utils/constants';
+import { TableComponent } from '@/themes/ui/table-ui';
+import LoadingTable from '@/components/global/LoadingTable';
 
 function TicketSales() {
+  //unused component
   const [dateInitial, setDateInitial] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [branch, setBranch] = useState(0);
@@ -37,7 +41,7 @@ function TicketSales() {
   const { branch_list, getBranchesList } = useBranchesStore();
 
   const { windowSize } = useWindowSize();
-  const [view, setView] = useState<'table' | 'grid'>(windowSize.width < 768 ? 'grid' : 'table');
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(windowSize.width < 768 ? 'grid' : 'table');
 
   useEffect(() => {
     getBranchesList();
@@ -68,262 +72,215 @@ function TicketSales() {
   return (
     <Layout title="Ventas por Ticket">
       <>
-        <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-3 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-            <Accordion isCompact defaultSelectedKeys={['1']} variant="splitted">
-              <AccordionItem
-                key="1"
-                aria-label="Accordion 1"
-                startContent={<Filter />}
-                title="Filtros disponibles"
-              >
-                <div className="grid grid-cols-3 gap-5">
-                  <Input
-                    className="z-0"
-                    classNames={{
-                      input: 'dark:text-white dark:border-gray-600',
-                      label: 'text-sm font-semibold dark:text-white',
-                    }}
-                    defaultValue={formatDate()}
-                    label="Fecha inicial"
-                    labelPlacement="outside"
-                    placeholder="Buscar por nombre..."
-                    type="date"
-                    value={dateInitial}
-                    variant="bordered"
-                    onChange={(e) => setDateInitial(e.target.value)}
-                  />
-                  <Input
-                    classNames={{
-                      input: 'dark:text-white dark:border-gray-600',
-                      label: 'text-sm font-semibold dark:text-white',
-                    }}
-                    label="Fecha final"
-                    labelPlacement="outside"
-                    placeholder="Buscar por nombre..."
-                    type="date"
-                    value={endDate}
-                    variant="bordered"
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                  <Select
-                    className="z-0"
-                    classNames={{
-                      label: 'text-sm font-semibold dark:text-white',
-                    }}
-                    label="Sucursal"
-                    labelPlacement="outside"
-                    placeholder="Selecciona la sucursal"
-                    variant="bordered"
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const branchId = Number(new Set(key).values().next().value);
+        <DivGlobal>
+          <Accordion isCompact defaultSelectedKeys={['1']} variant="splitted">
+            <AccordionItem
+              key="1"
+              aria-label="Accordion 1"
+              startContent={<Filter />}
+              title="Filtros disponibles"
+            >
+              <div className="grid grid-cols-3 gap-5">
+                <Input
+                  className="z-0"
+                  classNames={{
+                    input: 'dark:text-white dark:border-gray-600',
+                    label: 'text-sm font-semibold dark:text-white',
+                  }}
+                  defaultValue={formatDate()}
+                  label="Fecha inicial"
+                  labelPlacement="outside"
+                  placeholder="Buscar por nombre..."
+                  type="date"
+                  value={dateInitial}
+                  variant="bordered"
+                  onChange={(e) => setDateInitial(e.target.value)}
+                />
+                <Input
+                  classNames={{
+                    input: 'dark:text-white dark:border-gray-600',
+                    label: 'text-sm font-semibold dark:text-white',
+                  }}
+                  label="Fecha final"
+                  labelPlacement="outside"
+                  placeholder="Buscar por nombre..."
+                  type="date"
+                  value={endDate}
+                  variant="bordered"
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                <Select
+                  className="z-0"
+                  classNames={{
+                    label: 'text-sm font-semibold dark:text-white',
+                  }}
+                  label="Sucursal"
+                  labelPlacement="outside"
+                  placeholder="Selecciona la sucursal"
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const branchId = Number(new Set(key).values().next().value);
 
-                        setBranch(branchId);
-                      } else {
-                        setBranch(0);
-                      }
-                    }}
-                  >
-                    {branch_list.map((item) => (
-                      <SelectItem key={item.id}>{item.name}</SelectItem>
-                    ))}
-                  </Select>
+                      setBranch(branchId);
+                    } else {
+                      setBranch(0);
+                    }
+                  }}
+                >
+                  {branch_list.map((item) => (
+                    <SelectItem key={item.id}>{item.name}</SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <div className="flex flex-row justify-between mt-6 w-full">
+                <RenderViewButton setView={setView} view={view} />
+                <Select
+                  className="w-44 dark:text-white border-white border rounded-xl"
+                  classNames={{
+                    label: 'font-semibold',
+                  }}
+                  defaultSelectedKeys={['5']}
+                  label="Cantidad a mostrar"
+                  labelPlacement="outside"
+                  selectedKeys={[limit.toString()]}
+                  value={limit}
+                  variant="bordered"
+                  onChange={(e) => {
+                    setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  }}
+                >
+                  {limit_options.map((limit) => (
+                    <SelectItem key={limit} className="dark:text-white">
+                      {limit}
+                    </SelectItem>
+                  ))}
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-5 mt-3 pb-5">
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl">
+                  {isLoading ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <span className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                      Total de ventas: {formatCurrency(totalSales)}
+                    </span>
+                  )}
                 </div>
-                <div className="flex flex-row justify-between mt-6 w-full">
-                  <ButtonGroup className="mt-4">
-                    <ButtonUi
-                      isIconOnly
-                      theme={view === 'table' ? Colors.Primary : Colors.Default}
-                      onPress={() => setView('table')}
-                    >
-                      <Table2Icon />
-                    </ButtonUi>
-                    <ButtonUi
-                      isIconOnly
-                      theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                      onPress={() => setView('grid')}
-                    >
-                      <CreditCard />
-                    </ButtonUi>
-                  </ButtonGroup>
-                  <Select
-                    className="w-44 dark:text-white border-white border rounded-xl"
-                    classNames={{
-                      label: 'font-semibold',
-                    }}
-                    defaultSelectedKeys={['5']}
-                    label="Cantidad a mostrar"
-                    labelPlacement="outside"
-                    selectedKeys={[limit.toString()]}
-                    value={limit}
-                    variant="bordered"
-                    onChange={(e) => {
-                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-                    }}
-                  >
-                    <SelectItem key={'5'} className="dark:text-white">
-                      5
-                    </SelectItem>
-                    <SelectItem key={'10'} className="dark:text-white">
-                      10
-                    </SelectItem>
-                    <SelectItem key={'20'} className="dark:text-white">
-                      20
-                    </SelectItem>
-                    <SelectItem key={'30'} className="dark:text-white">
-                      30
-                    </SelectItem>
-                    <SelectItem key={'40'} className="dark:text-white">
-                      40
-                    </SelectItem>
-                    <SelectItem key={'50'} className="dark:text-white">
-                      50
-                    </SelectItem>
-                    <SelectItem key={'100'} className="dark:text-white">
-                      100
-                    </SelectItem>
-                  </Select>
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl">
+                  {isLoading ? (
+                    <div className="flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  ) : (
+                    <span className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                      Cantidad de tickets: {ticketPagination.total}
+                    </span>
+                  )}
                 </div>
-                <div className="grid grid-cols-2 gap-5 mt-3 pb-5">
-                  <div className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl">
-                    {isLoading ? (
-                      <div className="flex justify-center items-center">
-                        <Spinner />
-                      </div>
-                    ) : (
-                      <span className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                        Total de ventas: {formatCurrency(totalSales)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl">
-                    {isLoading ? (
-                      <div className="flex justify-center items-center">
-                        <Spinner />
-                      </div>
-                    ) : (
-                      <span className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                        Cantidad de tickets: {ticketPagination.total}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </AccordionItem>
-            </Accordion>
+              </div>
+            </AccordionItem>
+          </Accordion>
 
-            <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
-              {view === 'table' && (
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <ThGlobal className="text-left p-3">Fecha - hora</ThGlobal>
-                      <ThGlobal className="text-left p-3">Número de control</ThGlobal>
-                      <ThGlobal className="text-left p-3">Sucursal</ThGlobal>
-                      <ThGlobal className="text-left p-3">Punto de venta</ThGlobal>
-                      <ThGlobal className="text-left p-3">Monto total</ThGlobal>
-                      <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-                    </tr>
-                  </thead>
-                  <tbody className="max-h-[600px] w-full overflow-y-auto">
-                    {isLoading ? (
-                      <>
-                        <tr>
-                          <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                            <div className="flex flex-col items-center justify-center w-full h-64">
-                              <div className="loader" />
-                              <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                            </div>
+            {view === 'table' && (
+          <TableComponent
+              headers={['Fecha - hora','Número de control','Sucursal','Punto de venta','Monto total','Acciones']}
+            >
+                  {isLoading ? (
+                    <>
+                      <tr>
+                        <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
+                          <LoadingTable/>
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <>
+                      {tickets.map((sale, index) => (
+                        <tr key={index} className="border-b border-slate-200">
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {sale.fecEmi} - {sale.horEmi}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {sale.numeroControl}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {sale.box.correlative.branch.name}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {sale.box.correlative.code}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            {formatCurrency(Number(sale.montoTotalOperacion))}
+                          </td>
+                          <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                            <ButtonUi
+                              isIconOnly
+                              theme={Colors.Info}
+                              onPress={() => handleShowPdf(sale.id)}
+                            >
+                              <Eye />
+                            </ButtonUi>
                           </td>
                         </tr>
-                      </>
-                    ) : (
-                      <>
-                        {tickets.map((sale, index) => (
-                          <tr key={index} className="border-b border-slate-200">
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.fecEmi} - {sale.horEmi}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.numeroControl}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.box.correlative.branch.name}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.box.correlative.code}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {formatCurrency(Number(sale.montoTotalOperacion))}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              <ButtonUi
-                                isIconOnly
-                                theme={Colors.Info}
-                                onPress={() => handleShowPdf(sale.id)}
-                              >
-                                <Eye />
-                              </ButtonUi>
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    )}
-                  </tbody>
-                </table>
-              )}
-              {view === 'grid' && (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {tickets.map((sale, index) => (
-                      <div
-                        key={index}
-                        className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl"
-                      >
-                        <div className="flex flex-col justify-between">
-                          <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                            {sale.fecEmi} - {sale.horEmi}
-                          </p>
-                          <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                            Total: {formatCurrency(Number(sale.montoTotalOperacion))}
-                          </p>
-                        </div>
-                        <div className="flex flex-col justify-between">
-                          <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                            Sucursal: {sale.box.correlative.branch.name}
-                          </p>
-                          <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
-                            Punto de venta: {sale.box.correlative.code}
-                          </p>
-                        </div>
-                        <ButtonUi
-                          isIconOnly
-                          theme={Colors.Info}
-                          onPress={() => handleShowPdf(sale.id)}
-                        >
-                          <Eye />
-                        </ButtonUi>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-            {!isLoading && ticketPagination.totalPag > 1 && (
-              <div className="mt-5 w-full dark:bg-gray-900">
-                <Pagination
-                  currentPage={ticketPagination.currentPag}
-                  nextPage={ticketPagination.prevPag}
-                  previousPage={ticketPagination.nextPag}
-                  totalPages={ticketPagination.totalPag}
-                  onPageChange={(page) => {
-                    onGetTickets(page, limit, dateInitial, endDate, branch);
-                  }}
-                />
-              </div>
+                      ))}
+                    </>
+                  )}
+               </TableComponent>
             )}
-          </div>
-        </div>
+            {view === 'grid' && (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {tickets.map((sale, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-gray-50 dark:bg-gray-800 border dark:border-white rounded-xl"
+                    >
+                      <div className="flex flex-col justify-between">
+                        <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                          {sale.fecEmi} - {sale.horEmi}
+                        </p>
+                        <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                          Total: {formatCurrency(Number(sale.montoTotalOperacion))}
+                        </p>
+                      </div>
+                      <div className="flex flex-col justify-between">
+                        <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                          Sucursal: {sale.box.correlative.branch.name}
+                        </p>
+                        <p className="text-lg font-semibold text-slate-500 dark:text-slate-100">
+                          Punto de venta: {sale.box.correlative.code}
+                        </p>
+                      </div>
+                      <ButtonUi
+                        isIconOnly
+                        theme={Colors.Info}
+                        onPress={() => handleShowPdf(sale.id)}
+                      >
+                        <Eye />
+                      </ButtonUi>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          
+          {!isLoading && ticketPagination.totalPag > 1 && (
+            <div className="mt-5 w-full dark:bg-gray-900">
+              <Pagination
+                currentPage={ticketPagination.currentPag}
+                nextPage={ticketPagination.prevPag}
+                previousPage={ticketPagination.nextPag}
+                totalPages={ticketPagination.totalPag}
+                onPageChange={(page) => {
+                  onGetTickets(page, limit, dateInitial, endDate, branch);
+                }}
+              />
+            </div>
+          )}
+        </DivGlobal>
         <FullPageLayout show={showFullLayout.isOpen}>
           <div
             className={classNames(
@@ -362,7 +319,7 @@ function generateTicket(details: DetailSale[]) {
   const doc = new jsPDF();
 
   doc.setFontSize(12);
-  doc.text('MADNESS', 105, 10, { align: 'center' });
+  doc.text('', 105, 10, { align: 'center' });
 
   const { transmitter } = details[0].sale.box.correlative.branch;
   const { branch } = details[0].sale.box.correlative;
@@ -374,7 +331,7 @@ function generateTicket(details: DetailSale[]) {
   doc.text(`${branch.address}`, 105, 28, { align: 'center' });
   doc.text(`No. Reg.: ${transmitter.nrc}`, 105, 34, { align: 'center' });
   doc.text(`NIT: ${transmitter.nit}`, 105, 40, { align: 'center' });
-  doc.text('GIRO: VENTA AL POR MENOR DE ROPA', 105, 52, { align: 'center' });
+  doc.text('GIRO: ', 105, 52, { align: 'center' });
   doc.text(`FECHA: ${details[0].sale.fecEmi} - ${details[0].sale.horEmi}`, 105, 58, {
     align: 'center',
   });

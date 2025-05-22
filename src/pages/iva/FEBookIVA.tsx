@@ -15,6 +15,7 @@ import { months } from '@/utils/constants';
 import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { useViewsStore } from '@/store/views.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -101,8 +102,7 @@ function FEBookIVA() {
 
   return (
     <Layout title="IVA - FE">
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal>
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -304,8 +304,7 @@ function FEBookIVA() {
               )}
             </div>
           </div>
-        </div>
-      </div>
+      </DivGlobal>
     </Layout>
   );
 }

@@ -26,7 +26,6 @@ import { limit_options } from '../../../utils/constants';
 
 import AddStudyLevel from './AddStudyLevel';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { useStatusStudyLevel } from '@/store/studyLevel';
 import { StudyLevel } from '@/types/study_level.types';
 import BottomDrawer from '@/components/global/BottomDrawer';
@@ -37,6 +36,8 @@ import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
 import HeadlessModal from '@/components/global/HeadlessModal';
+import DivGlobal from '@/themes/ui/div-global';
+import EmptyTable from '@/components/global/EmptyTable';
 
 
 function ListStudyLevel({ actions }: ArrayAction) {
@@ -79,8 +80,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
   };
 
   return (
-    <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-      <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+    <DivGlobal>
         <div className="grid w-full grid-cols-2 gap-5 md:flex">
           <div className="w-full flex gap-4">
             <Input
@@ -298,10 +298,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
                     ) : (
                       <tr>
                         <td colSpan={5}>
-                          <div className="flex flex-col items-center justify-center w-full">
-                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                            <p className="mt-3 text-xl">No se encontraron resultados</p>
-                          </div>
+                          <EmptyTable/>
                         </td>
                       </tr>
                     )}
@@ -326,7 +323,6 @@ function ListStudyLevel({ actions }: ArrayAction) {
             </div>
           </>
         )}
-      </div>
       <HeadlessModal
         isOpen={modalAdd.isOpen}
         size="w-[350px] md:w-[500px]"
@@ -335,7 +331,7 @@ function ListStudyLevel({ actions }: ArrayAction) {
       >
         <AddStudyLevel closeModal={modalAdd.onClose} studyLevel={selectedStatusEmployee} />
       </HeadlessModal>
-    </div>
+    </DivGlobal>
   );
 }
 

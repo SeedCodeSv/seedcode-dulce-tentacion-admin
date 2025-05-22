@@ -16,6 +16,7 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { formatCurrency } from '@/utils/dte';
 import { useViewsStore } from '@/store/views.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 // import jsPDF from "jspdf"
 // import autoTable from "jspdf-autotable"
@@ -169,8 +170,7 @@ function CFFBookIVA() {
 
   return (
     <Layout title="IVA - CFF">
-      <div className=" w-full h-full p-10 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+     <DivGlobal>
           <div className="w-full flex flex-col lg:flex-row gap-5">
             <div className="w-full">
               <Select
@@ -272,7 +272,7 @@ function CFFBookIVA() {
                       <TableCcfe />
                     </>
                   ) : (
-                    <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                    <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                       <p className="mt-5 dark:text-white text-gray-600 text-xl">
                         No se encontraron resultados
                       </p>
@@ -357,8 +357,7 @@ function CFFBookIVA() {
               ))}
             </div>
           </div>
-        </div>
-      </div>
+      </DivGlobal>
     </Layout>
   );
 }

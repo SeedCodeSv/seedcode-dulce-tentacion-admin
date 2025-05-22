@@ -19,6 +19,8 @@ import { PiFilePdfDuotone } from 'react-icons/pi';
 import Pagination from '../global/Pagination';
 import useGlobalStyles from '../global/global.styles';
 import FullPageLayout from '../global/FullOverflowLayout';
+import LoadingTable from '../global/LoadingTable';
+import EmptyTable from '../global/EmptyTable';
 
 import ItemPdf from './ItemPdf';
 
@@ -26,9 +28,10 @@ import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { limit_options, typeOrden } from '@/utils/constants';
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
 import { useAuthStore } from '@/store/auth.store';
-import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function List() {
   const {
@@ -113,7 +116,7 @@ function List() {
 
   return (
     <>
-      <div className="w-full h-full flex flex-col border border-white p-3 bg-white shadow rounded-xl dark:bg-gray-900">
+    <DivGlobal>
         <div className="w-full grid grid-cols-3 gap-5">
           <Input
             classNames={{ label: 'font-semibold' }}
@@ -202,27 +205,18 @@ function List() {
             </ButtonUi>
           </div>
         </div>
-        <div className="overflow-y-auto flex flex-col h-full custom-scrollbar mt-4">
-          <table className="w-full">
-            <thead className="sticky top-0 z-20 bg-white">
-              <tr>
-                <ThGlobal className="text-left p-3">No.</ThGlobal>
-                <ThGlobal className="text-left p-3">Fecha</ThGlobal>
-                <ThGlobal className="text-left p-3">Tipo</ThGlobal>
-                <ThGlobal className="text-left p-3">Concepto</ThGlobal>
-                <ThGlobal className="text-left p-3">Correlativo</ThGlobal>
-                <ThGlobal className="text-left p-3">Acciones</ThGlobal>
-              </tr>
-            </thead>
-            <tbody>
+        <TableComponent
+              headers={["Nº", 'Fecha'
+,'Tipo'
+,'Concepto'
+,'Correlativo'
+,'Acciones']}
+            >
               {loading ? (
                 <>
                   <tr>
                     <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                      <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader" />
-                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                      </div>
+                      <LoadingTable/>
                     </td>
                   </tr>
                 </>
@@ -281,19 +275,15 @@ function List() {
                   ) : (
                     <tr>
                       <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                        <div className="flex flex-col items-center justify-center w-full h-64">
-                          <p className="mt-3 text-xl font-semibold">
-                            No se encontraron partidas contables
-                          </p>
-                        </div>
+                        <EmptyTable classText='mt-3 text-xl font-semibold'
+                        text='No se encontraron partidas contables'
+                        />
                       </td>
                     </tr>
                   )}
                 </>
               )}
-            </tbody>
-          </table>
-        </div>
+            </TableComponent>
         {accounting_items_pagination.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
@@ -309,7 +299,7 @@ function List() {
             </div>
           </>
         )}
-      </div>
+      </DivGlobal>
       <Modal isOpen={deleteModal.isOpen} onClose={deleteModal.onClose}>
         <ModalContent>
           {(onClose) => (

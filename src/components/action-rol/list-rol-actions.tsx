@@ -306,8 +306,7 @@ function ListActionRol() {
           </Button>
         </div>
       </HeadlessModal>
-      <div className="w-full h-full p-4">
-        <div className="w-full h-full p-4 flex flex-col mt-2 rounded-xl overflow-y-auto bg-background/20 custom-scrollbar shadow border dark:border-gray-700">
+      <div >
           <div>
             <Select
               className="w-96 dark:text-white"
@@ -372,7 +371,6 @@ function ListActionRol() {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 }

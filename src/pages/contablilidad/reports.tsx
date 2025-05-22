@@ -7,6 +7,7 @@ import DailyMajorBook from '@/components/accounting-items/daily-major-book';
 import MajorBook from '@/components/accounting-items/major-book';
 import TrialBalance from '@/components/accounting-items/trial-balance';
 import Layout from '@/layout/Layout';
+import DivGlobal from '@/themes/ui/div-global';
 
 function Reports() {
   const modalDailyBook = useDisclosure();
@@ -62,8 +63,7 @@ function Reports() {
 
   return (
     <Layout title="Reportes contables">
-      <div className=" w-full h-full p-3 pt-6 flex flex-col bg-white dark:bg-gray-900 dark:border-gray-500">
-        <div className="w-full h-full flex flex-col border border-white p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
             {reports.map((r) => (
               <Card key={r.name} isPressable onPress={r.onPress}>
@@ -79,13 +79,12 @@ function Reports() {
               </Card>
             ))}
           </div>
-        </div>
         <DailyBook disclosure={modalDailyBook} />
         <MajorBook disclosure={modalMajorBook} />
         <DailyMajorBook disclosure={modalDailyMajorBook} />
         <AuxiliarBook disclosure={modalAuxiliarBook} />
         <TrialBalance disclosure={modalTrialBalance} />
-      </div>
+      </DivGlobal>
     </Layout>
   );
 }
