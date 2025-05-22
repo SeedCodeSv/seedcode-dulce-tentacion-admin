@@ -11,21 +11,11 @@ function MobileView({ layout }: Props) {
   const { branch_products_list } = useBranchesStore();
 
   return (
-    <div className="w-full pb-10">
-      <DataView
-        gutter
-        color="surface"
-        emptyMessage="No employee found"
-        itemTemplate={(branchProduct) => gridItem(branchProduct, layout)}
-        layout={layout}
-        pt={{
-          grid: () => ({
-            className:
-              'grid  pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-nogutter gap-5 mt-5',
-          }),
-        }}
-        value={branch_products_list}
-      />
+       <div className="grid pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
+      {branch_products_list.map((branchProduct) =>
+      gridItem(branchProduct, layout)
+      )}
+      
     </div>
   );
 }

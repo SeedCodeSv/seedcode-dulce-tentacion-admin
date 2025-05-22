@@ -6,11 +6,7 @@ export interface Product {
   id: number;
   name: string;
   description: string;
-  price: string;
   code: string;
-  costoUnitario: string;
-  type: string;
-  minimumStock: number;
   isActive: boolean;
   tipoDeItem: string;
   tipoItem: string;
@@ -18,6 +14,7 @@ export interface Product {
   unidaDeMedida: string;
   subCategoryId: number;
   subCategory: SubCategory;
+  recipeBook:  RecipeBook ;
 }
 
 export interface Verify_Code {
@@ -200,25 +197,10 @@ export interface Recipe {
 export interface ProductRecipeBookDetail {
   id: number;
   quantity: string;
-  extraUniMedida: string;
   productIdReference: number;
   productRecipeBookId: number;
   product: Product;
 }
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  tipoItem: string;
-  tipoDeItem: string;
-  uniMedida: string;
-  unidaDeMedida: string;
-  code: string;
-  isActive: boolean;
-  subCategoryId: number;
-}
-
 export interface GetProductDetail {
   product: Product;
   ok: boolean;
@@ -242,28 +224,15 @@ export interface BranchProductRecipe {
   product: Product;
   branchId: number;
   productId: number;
-  recipeBook: RecipeBook;
+  // recipeBook: RecipeBook;
 }
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  tipoItem: string;
-  tipoDeItem: string;
-  uniMedida: string;
-  unidaDeMedida: string;
-  code: string;
-  isActive: boolean;
-  subCategoryId: number;
-}
-
 export interface RecipeBook {
   id: number;
   isActive: boolean;
   productRecipeBookDetails: ProductRecipeBookDetail[];
   productId: number;
-  maxProduction: number;
+  // maxProduction: number;
+  cost: string
   performance: number;
 }
 
@@ -271,10 +240,10 @@ export interface ProductRecipeBookDetail {
   id: number;
   quantity: string;
   quantityPerPerformance: string;
-  extraUniMedida: string;
+  // extraUniMedida: string;
   productIdReference: number;
   productRecipeBookId: number;
-  branchProduct: BranchProduct;
+  // branchProduct: BranchProduct;
 }
 
 //products and recipe book
@@ -338,3 +307,6 @@ export interface VerifyRecipe {
   product: Product;
   branchProduct: BranchProduct;
 }
+
+
+

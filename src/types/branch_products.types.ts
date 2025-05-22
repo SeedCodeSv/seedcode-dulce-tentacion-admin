@@ -153,3 +153,16 @@ export interface SupplierProducts {
   supplier: Supplier;
   products: IBranchProductOrderQuantity[];
 }
+
+export interface IPayloadBranchProduct {
+  productId: number;
+  branchId: number;
+  stock: number;
+  price: number;
+  priceA: number;
+  priceB: number;
+  priceC: number;
+  costoUnitario: number;
+  minimumStock: number;
+
+}

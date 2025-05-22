@@ -12,6 +12,8 @@ import {
 } from '../types/products.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
+import { BasicResponse } from '@/types/global.types';
+import { IPayloadBranchProduct } from '@/types/branch_products.types';
 
 export const get_products = (
   page = 1,
@@ -158,3 +160,7 @@ export const get_branch_product_recipe = (
     }
   );
 };
+
+export const create_branch_product = (payload: IPayloadBranchProduct) =>{
+  return axios.post<BasicResponse>(API_URL + '/branch-products/add-branch-product', payload)
+}

@@ -25,6 +25,8 @@ import BottomDrawer from '@/components/global/BottomDrawer';
 import { limit_options } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 interface Props {
   id: number;
   onclick: () => void;
@@ -59,8 +61,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
 
   return (
     <>
-      <div className=" w-full h-full p-5 pr-2 pl-0 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+     <DivGlobal>
           <button className="mb-4  w-24 cursor-pointer flex" onClick={onclick}>
             <ArrowLeft className="dark:text-white mr-2" />
             <p className="dark:text-white">Regresar</p>
@@ -279,31 +280,9 @@ export default function ListBranchProduct({ id, onclick }: Props) {
           </div>
           {view === 'table' && (
             <>
-              <div className="max-h-[400px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                <table className="w-full">
-                  <thead className="sticky top-0 z-20 bg-white">
-                    <tr>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        No.
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Nombre
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Codigo
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Precio
-                      </th>
-                       <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Stock
-                      </th>
-                      <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                        Reservado
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="max-h-[600px] w-full overflow-y-auto">
+              <TableComponent
+                         headers={["Nº", "Nombre", "Codigo", "Precio",'Stock','Reservado']}
+                       >
                     {loading_branch_product ? (
                       <tr>
                         <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
@@ -366,9 +345,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                         )}
                       </>
                     )}
-                  </tbody>
-                </table>
-              </div>
+                  </TableComponent>
             </>
           )}
           {(view === 'grid' || view === 'list') && <MobileView layout={'grid'} />}
@@ -418,9 +395,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
               </div>
             </>
           )}
-        </div>
-
-      </div>
+        </DivGlobal>
     </>
   );
 }

@@ -126,9 +126,8 @@ function AddProductionOrder() {
       products: selectedProducts.map((p) => ({
         branchProductId: p.id,
         productId: p.product.id,
-        recipeId: p.recipeBook?.id ?? 0,
+        recipeId: p.product.recipeBook?.id ?? 0,
         quantity: +p.quantity,
-        max: p.recipeBook?.maxProduction ?? 0,
       })),
       observation,
       moreInformation: '[]',
@@ -155,12 +154,12 @@ function AddProductionOrder() {
     const products = [...selectedProducts];
 
     if (Number(performance) > 0) {
-      products[index].recipeBook.productRecipeBookDetails.forEach((detail) => {
+      products[index].product.recipeBook.productRecipeBookDetails.forEach((detail) => {
         detail.quantityPerPerformance = (Number(performance) * Number(detail.quantity)).toFixed(4);
       });
     }
 
-    products[index].recipeBook['performance'] = performance as unknown as number;
+    products[index].product.recipeBook['performance'] = performance as unknown as number;
 
     setSelectedProducts(products);
   };
@@ -169,12 +168,13 @@ function AddProductionOrder() {
 
   const calcMp = (index: number) => {
     const product = selectedProducts[index];
+    const total = 0
 
-    const total = product.recipeBook.productRecipeBookDetails.reduce(
-      (acc, detail) =>
-        acc + Number(detail.branchProduct.costoUnitario) * Number(detail.quantityPerPerformance),
-      0
-    );
+    // const total = product.product.recipeBook.productRecipeBookDetails.reduce(
+    //   (acc, detail) =>
+    //     acc + Number(detail.branchProduct.costoUnitario) * Number(detail.quantityPerPerformance),
+    //   0
+    // );
 
     return total;
   };
@@ -206,7 +206,7 @@ function AddProductionOrder() {
       return '0';
     }
 
-    const performance = selectedProducts[index].recipeBook.performance;
+    const performance = selectedProducts[index].product.recipeBook.performance;
 
     return (Number(costCif) * Number(performance)).toFixed(2);
   };
@@ -313,7 +313,7 @@ function AddProductionOrder() {
               </div>
               <ButtonUi
                 isIconOnly
-                isDisabled={new Set(selectedBranch).size === 0}
+                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0  }
                 theme={Colors.Success}
                 onPress={modalProducts.onOpen}
               >
@@ -330,7 +330,7 @@ function AddProductionOrder() {
                     <p>PRODUCCIÓN: </p>
                     <Input
                       className="max-w-32"
-                      value={String(selectedProducts[0].recipeBook.performance)}
+                      value={String(selectedProducts[0].product.recipeBook.performance)}
                       variant="bordered"
                       onKeyDown={preventLetters}
                       onValueChange={(e) => handleChangePerformance(0, e)}
@@ -339,7 +339,7 @@ function AddProductionOrder() {
                 </div>
 
                 <div className="h-full overflow-y-auto hidden md:flex flex-col ">
-                  {selectedProducts[0].recipeBook && (
+                  {selectedProducts[0].product.recipeBook && (
                     <>
                       <TableComponent
                         headers={[
@@ -351,23 +351,23 @@ function AddProductionOrder() {
                           'Costo total',
                         ]}
                       >
-                        {selectedProducts[0].recipeBook.productRecipeBookDetails.map((r) => (
+                        {selectedProducts[0].product.recipeBook.productRecipeBookDetails.map((r) => (
                           <tr key={r.id}>
-                            <td className="p-3">{r.branchProduct.product.name}</td>
-                            <td className="p-3">{r.branchProduct.product.code}</td>
+                            <td className="p-3">{r.product.name}</td>
+                            <td className="p-3">{r.product.code}</td>
                             <td className="p-3">{Number(r.quantityPerPerformance).toFixed(2)}</td>
                             <td className="p-3">{r.quantity}</td>
-                            <td className="p-3">
-                              {(Number(r.branchProduct.costoUnitario) * Number(r.quantity)).toFixed(
+                            {/* <td className="p-3">
+                              {(Number(r.product.costoUnitario) * Number(r.quantity)).toFixed(
                                 4
                               )}
-                            </td>
-                            <td className="p-3">
+                            </td> */}
+                            {/* <td className="p-3">
                               {(
-                                Number(r.branchProduct.costoUnitario) *
+                                Number(r.costoUnitario) *
                                 Number(r.quantityPerPerformance)
                               ).toFixed(4)}
-                            </td>
+                            </td> */}
                           </tr>
                         ))}
                       </TableComponent>
@@ -452,7 +452,7 @@ function AddProductionOrder() {
                       size="sm"
                       value={
                         selectedProducts.length > 0
-                          ? String(selectedProducts[0].recipeBook.performance)
+                          ? String(selectedProducts[0].product.recipeBook.performance)
                           : '0'
                       }
                       variant="bordered"
@@ -502,6 +502,7 @@ function AddProductionOrder() {
         </DivGlobal>
         <SelectProduct
           modalProducts={modalProducts}
+          moveSelectedBranch={moveSelectedBranch}
           selectedBranch={selectedBranch}
           selectedProducts={selectedProducts}
           selectedTypeProduct={selectedTypeProduct}

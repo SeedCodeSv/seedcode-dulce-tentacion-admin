@@ -12,6 +12,7 @@ export interface IBranchStore {
   limit: number;
   loading: boolean;
   active: 1 | 0;
+  branch: Branches;
   branch_products_list: IGetBranchProduct[];
   loading_branch_product: boolean
   saveBranchesPaginated: (data: IGetBranchesPaginated) => void;
@@ -37,4 +38,5 @@ export interface IBranchStore {
     category: string,
     code: string
   ) => void;
+  getBranchById:(id:number) => void;
 }
