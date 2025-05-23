@@ -239,38 +239,38 @@ function ListSales() {
                                       >
                                         {notes.debits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="primary"
                                             key="show-debit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="primary"
+                                            variant="flat"
                                           >
                                             Ver notas de débito
                                           </ListboxItem>
                                         ) : notes.credits > 0 ? (
                                           <ListboxItem
-                                            classNames={{ base: 'font-semibold' }}
-                                            variant="flat"
-                                            color="primary"
                                             key="show-credit-note"
+                                            classNames={{ base: 'font-semibold' }}
+                                            color="primary"
+                                            variant="flat"
                                           >
                                             Ver notas de crédito
                                           </ListboxItem>
                                         ) : (
                                           <>
                                             <ListboxItem
-                                              classNames={{ base: 'font-semibold' }}
-                                              variant="flat"
-                                              color="danger"
                                               key="debit-note"
+                                              classNames={{ base: 'font-semibold' }}
+                                              color="danger"
+                                              variant="flat"
                                             >
                                               Nota de débito
                                             </ListboxItem>
 
                                             <ListboxItem
-                                              classNames={{ base: 'font-semibold' }}
-                                              variant="flat"
-                                              color="danger"
                                               key="credit-note"
+                                              classNames={{ base: 'font-semibold' }}
+                                              color="danger"
+                                              variant="flat"
                                             >
                                               Nota de crédito
                                             </ListboxItem>

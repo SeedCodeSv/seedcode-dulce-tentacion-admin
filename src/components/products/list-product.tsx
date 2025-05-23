@@ -5,7 +5,7 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { EditIcon, RefreshCcw, Book, BookDown, ShoppingBag } from 'lucide-react';
+import { EditIcon, RefreshCcw, Book, ShoppingBag } from 'lucide-react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 

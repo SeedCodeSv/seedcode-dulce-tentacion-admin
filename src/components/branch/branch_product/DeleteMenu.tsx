@@ -18,6 +18,7 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
     const deleteDisclosure = useDisclosure();
     const { DeleteMenu, getMenuByBranchProduct, menu } = useMenuStore()
     const [view, setView] = useState<'button' | ''>('button')
+
     useEffect(() => {
         getMenuByBranchProduct(branchProductId, branchId)
     }, [branchProductId, branchId])
@@ -27,9 +28,6 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
             setView('')
         }
     }, [branchProductId, view])
-    // const verify = ()=>{
-
-    // }
 
     const handleDelete = () => {
         if (menu) {

@@ -3,6 +3,7 @@ import { FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
@@ -15,7 +16,6 @@ import { initialValues, validationSchema } from '@/components/add-product/valida
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
-import { toast } from 'sonner';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
 type ProductOrderReceipt = Product & { quantity: number; extraUniMedida: string };

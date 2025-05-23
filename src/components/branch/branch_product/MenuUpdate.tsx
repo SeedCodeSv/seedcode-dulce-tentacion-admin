@@ -50,6 +50,7 @@ function MenuUpdate({ branch_products, onClose, reloadData }: Props) {
 
             return data
         })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { id, branchProduct, branchProductId, applyDiscount, ...newValues } = values;
 
 

@@ -43,8 +43,8 @@ function List() {
         backgroundColor: colors[context].buttons.colors.success,
         color: colors[context].buttons.textColor
     }
-    const [selectedNote, setSelectedNote] = useState<ReferalNote | null>(null);
-    const [items, setItems] = useState<ReferalNote | undefined>(undefined)
+    const [, setSelectedNote] = useState<ReferalNote | null>(null);
+    const [, setItems] = useState<ReferalNote | undefined>(undefined)
     const modalInvalidate = useDisclosure()
     const modalComplete = useDisclosure()
 

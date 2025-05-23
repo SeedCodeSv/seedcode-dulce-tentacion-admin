@@ -3,6 +3,7 @@ import { FormikProvider, useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
@@ -10,24 +11,19 @@ import { useCategoriesStore } from '@/store/categories.store';
 import { Product, ProductPayloadFormTwo } from '@/types/products.types';
 import BranchProductInfo from '@/components/add-product/branch-product-info';
 import MenuProductInfo from '@/components/add-product/menu-product-info';
-import { initialValues, validationSchema } from '@/components/add-product/validation-add-product';
+import { initialValues } from '@/components/add-product/validation-add-product';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
-import { toast } from 'sonner';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
-// type ProductOrderReceipt = Product & { quantity: number; extraUniMedida: string };
-// interface Props {
-//   id: string;
-// }
+
 function AddBranchProduct() {
     const { id } = useParams<{ id: string }>();
     const { getBranchesList } = useBranchesStore();
     const { getListCategories } = useCategoriesStore();
 
     const [selectedProducts, setSelectedProducts] = useState<ProductOrder[]>([]);
-    // const [selectedProductsReceipt, setSelectedProductsReceipt] = useState<ProductOrderReceipt[]>([]);
 
     useEffect(() => {
         getBranchesList();
@@ -38,7 +34,6 @@ function AddBranchProduct() {
 
     const formik = useFormik<ProductPayloadFormTwo>({
         initialValues,
-        // validationSchema,
 
         onSubmit(values) {
             const valuesToSend = {
@@ -75,10 +70,7 @@ function AddBranchProduct() {
                     }}
                 >
                     <FormikProvider value={formik}>
-                        {/* <GeneralProductInfo
-                            selectedProducts={selectedProductsReceipt}
-                            setSelectedProducts={setSelectedProductsReceipt}
-                        /> */}
+                    
                         <BranchProductInfo />
                         <MenuProductInfo
                             selectedProducts={selectedProducts}
