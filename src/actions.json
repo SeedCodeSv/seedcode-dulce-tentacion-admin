@@ -100,7 +100,9 @@
     {
       "view": "Kardex",
       "actions": [
-        "Mostrar"
+        "Mostrar",
+        "Descargar PDF",
+        "Exportar Excel"
       ]
     },
     {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { get_token } from '@/storage/localStorage';
+import { get_token, get_user } from '@/storage/localStorage';
 import {
   Correlatives,
   CreateCorrelativesDto,
@@ -15,9 +15,11 @@ export const get_by_branch_and_typeVoucher = (
   branchName: string,
   typeDte: string
 ) => {
+  const user = get_user()
+
   return axios.get<IResponseDataCorrelatives>(
     API_URL +
-      `/correlatives/list-paginated?page=${page}&limit=${limit}&branch=${branchName}&typeDte=${typeDte}`
+      `/point-of-sale/list-paginated/${user?.transmitterId}?page=${page}&limit=${limit}&branch=${branchName}&dteType=${typeDte}`
   );
 };
 

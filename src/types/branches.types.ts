@@ -63,3 +63,12 @@ export interface IGetBranchProductList {
   prevPag: number;
   status: number;
 }
+
+export interface GetBranchResponse {
+  ok:      boolean;
+  message: string;
+  branch:  Branches;
+  status:  number;
+}
+
+

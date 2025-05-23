@@ -9,6 +9,7 @@ import ContingenceFSE from "./contingence/ContingenceFSE";
 
 import { useEmployeeStore } from "@/store/employee.store";
 import Layout from "@/layout/Layout";
+import DivGlobal from "@/themes/ui/div-global";
 
 function ContingenceSection() {
     const { getEmployeesList } = useEmployeeStore();
@@ -19,8 +20,7 @@ function ContingenceSection() {
 
     return (
         <Layout title="Contingencia">
-            <div className="w-full h-full p-4 lg:p-8 bg-gray-50 dark:bg-gray-800">
-                <div className="w-full h-full p-3 mt-3 bg-white shadow rounded-xl dark:bg-gray-900 overflow-y-auto overflow-x-auto">
+            <DivGlobal>
                     <Tabs
                         aria-label="Options"
                         className="px-2 grid lg:grid-cols-1 gap-4"
@@ -75,8 +75,7 @@ function ContingenceSection() {
                             <ContingenceFSE />
                         </Tab>
                     </Tabs>
-                </div>
-            </div>
+               </DivGlobal>
         </Layout>
     )
 }

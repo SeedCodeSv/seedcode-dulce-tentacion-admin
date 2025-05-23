@@ -1,9 +1,15 @@
 import {
+  Button,
   Drawer,
   DrawerBody,
   DrawerContent,
   DrawerFooter,
   Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Select,
   SelectItem,
   useDisclosure,
@@ -11,24 +17,23 @@ import {
 } from '@heroui/react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
+import { TriangleAlert, X } from 'lucide-react';
 import { toast } from 'sonner';
-import { X } from 'lucide-react';
 
 import Pagination from '../global/Pagination';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
-import { Colors } from '@/types/themes.types';
-import ButtonUi from '@/themes/ui/button-ui';
 import { useBranchProductStore } from '@/store/branch_product.store';
-import { BranchProductRecipe } from '@/types/products.types';
+import { BranchProductRecipe, ProductAndRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
-import { useAlert } from '@/lib/alert';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useDebounce } from '@/hooks/useDebounce';
 import EmptyBox from '@/assets/empty-box.png';
-import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
-
-
+import { useProductsStore } from '@/store/products.store';
+import { useProductionOrderStore } from '@/store/production-order.store';
+import { useBranchesStore } from '@/store/branches.store';
+import { Label } from 'recharts';
+import RegisterProduct from './registerProduct';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -39,6 +44,7 @@ type DisclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   modalProducts: DisclosureProps;
   selectedProducts: ProductRecipe[];
+  moveSelectedBranch: Selection;
   setSelectedProducts: Dispatch<SetStateAction<ProductRecipe[]>>;
   selectedBranch: Selection;
   setSelectedBranch: Dispatch<SetStateAction<Selection>>;
@@ -49,91 +55,96 @@ interface Props {
 function SelectProduct({
   modalProducts,
   selectedProducts,
-  setSelectedProducts,
   selectedBranch,
   selectedTypeProduct,
+  moveSelectedBranch,
+  setSelectedProducts,
   setSelectedTypeProduct,
 }: Props) {
-  const { branchProductRecipe, branchProductRecipePaginated, getBranchProductsRecipe } = useBranchProductStore();
+  const { getBranchProductsRecipe } = useBranchProductStore();
+  const { handleVerifyProduct, errors } = useProductionOrderStore();
+  const modalProduct = useDisclosure();
+  const createProduct = useDisclosure()
+  const {getBranchById} = useBranchesStore()
+  const [productToCreate, setProductToCreate] = useState<ProductAndRecipe | null>(null);
 
-  const { show, close } = useAlert();
+  const {
+    productsAndRecipe,
+    productsAndRecipePagination,
+    getPaginatedProductsAndRecipe,
+  } = useProductsStore();
 
-  const hasProductInArray = (id: number) => {
-    return selectedProducts.some((p) => p.id === id);
-  };
-
-  const isMovil = useIsMobileOrTablet()
-
-  const handleAddProductRecipe = (product: BranchProductRecipe) => {
-    const productFind = selectedProducts.findIndex((sp) => sp.id === product.id);
+  const handleAddProductRecipe = (recipe: BranchProductRecipe) => {
+    const productFind = selectedProducts.findIndex((sp) => sp.id === recipe.id);
 
     if (productFind !== -1) {
       const products = [...selectedProducts];
 
       products.splice(productFind, 1);
       setSelectedProducts(products);
-      toast.warning(`Se elimino ${product.product.name} con éxito`, { position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
+      toast.warning(`Se elimino ${recipe.product.name} con éxito`);
     } else {
       const products = [...selectedProducts];
 
       products.push({
-        ...product,
+        ...recipe,
         quantity: 1,
       });
+
       setSelectedProducts(products);
-      toast.success(`Se agrego ${product.product.name} con éxito`, { position: isMovil ? 'bottom-right' : 'top-center', duration: 1000 });
+      toast.success(`Se agrego ${recipe.product.name} con éxito`);
+      modalProducts.onClose()
     }
   };
 
-  const handleVerifyProduct = (product: BranchProductRecipe) => {
-    const productFind = selectedProducts.findIndex((sp) => sp.id === product.id);
-
-    if (product.recipeBook?.maxProduction === 0 && productFind === -1) {
-      show({
-        type: 'error',
-        title: 'La cantidad de producción es 0',
-        message: 'El stock de la receta no cumple con las condiciones de producción',
-        isAutoClose: true,
-        buttonOptions: (
-          <>
-            <ButtonUi
-              theme={Colors.Success}
-              onPress={() => {
-                handleAddProductRecipe(product);
-                close();
-              }}
-            >
-              Agregar de todas formas
-            </ButtonUi>
-            <ButtonUi theme={Colors.Error} onPress={close}>
-              Cerrar
-            </ButtonUi>
-          </>
-        ),
-      });
-    } else {
-      handleAddProductRecipe(product);
-    }
+  const hasProductInArray = (id: number) => {
+    return selectedProducts.some((p) => p.id === id);
   };
 
   const { theme, context } = useContext(ThemeContext);
   const [searchParams, setSearchParams] = useState({
     name: '',
-  })
+  });
 
-  const dbounceName = useDebounce(searchParams.name, 300)
+  const dbounceName = useDebounce(searchParams.name, 300);
 
   useEffect(() => {
-    getBranchProductsRecipe(
-      Number(new Set(selectedBranch).values().next().value),
+    const typeProduct = new Set(selectedTypeProduct).values().next().value;
+
+    getPaginatedProductsAndRecipe(
       1,
       10,
-      '',
+      0,
+      0,
       String(dbounceName),
       '',
-      String(new Set(selectedTypeProduct).values().next().value ?? '')
+      1,
+      typeProduct ? String(typeProduct) : ''
     );
-  }, [dbounceName])
+  }, [dbounceName, selectedTypeProduct]);
+
+  const OnVerifyProduct = async (recipe: ProductAndRecipe) => {
+    createProduct.onClose()
+    const res = await handleVerifyProduct({
+      branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
+      branchDepartureId: Number(new Set(selectedBranch).values().next().value),
+      productId: recipe.id,
+      recipeBook: recipe.recipeBook?.productRecipeBookDetails?.map((detail) => ({
+        productId: Number(detail.productIdReference)
+      })) ?? [],
+    });
+
+    if (!res.ok && res.message?.includes("No se encontró el producto")) {
+      getBranchById(Number(new Set(moveSelectedBranch).values().next().value))
+      setProductToCreate(recipe,); 
+      modalProduct.onOpen(); 
+
+      return
+    }
+
+   await handleAddProductRecipe({...res.branchProduct})
+  }
+
 
   return (
     <>
@@ -161,7 +172,7 @@ function SelectProduct({
                   onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })}
                 />
                 <Select
-                  className='dark:text-white'
+                  className="dark:text-white"
                   classNames={{ label: 'font-semibold' }}
                   label="Tipo de producto"
                   labelPlacement="outside"
@@ -172,62 +183,73 @@ function SelectProduct({
                   onSelectionChange={setSelectedTypeProduct}
                 >
                   {typesProduct.map((typ) => (
-                    <SelectItem key={typ} className='dark:text-white'>{typ}</SelectItem>
+                    <SelectItem key={typ} className="dark:text-white">
+                      {typ}
+                    </SelectItem>
                   ))}
                 </Select>
                 <Select
-                  className='dark:text-white'
+                  className="dark:text-white"
                   classNames={{ label: 'font-semibold' }}
                   label="Categoría"
                   labelPlacement="outside"
                   placeholder="Seleccione la sucursal"
                   variant="bordered"
                 >
-                  <SelectItem key={'1'} className='dark:text-white'>Sucursal 1</SelectItem>
+                  <SelectItem key={'1'} className="dark:text-white">
+                    Sucursal 1
+                  </SelectItem>
                 </Select>
                 <Select
-                  className='dark:text-white'
+                  className="dark:text-white"
                   classNames={{ label: 'font-semibold' }}
                   label="Sub-categoría"
                   labelPlacement="outside"
                   placeholder="Seleccione la sucursal"
                   variant="bordered"
                 >
-                  <SelectItem key={'1'} className='dark:text-white'>Sucursal 1</SelectItem>
+                  <SelectItem key={'1'} className="dark:text-white">
+                    Sucursal 1
+                  </SelectItem>
                 </Select>
               </ResponsiveFilterWrapper>
 
               <div className="h-full overflow-y-auto flex flex-col">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2 2xl:grid-cols-5">
-                  {branchProductRecipe.map((recipe) => (
+                  {productsAndRecipe.map((recipe) => (
                     <button
                       key={recipe.id}
                       className={classNames(
                         !recipe.recipeBook && ' opacity-50 cursor-not-allowed',
-                        hasProductInArray(recipe.id) &&
-                        ' border-green-500 shadow shadow-green-50',
+                        hasProductInArray(recipe.id) && ' border-green-500 shadow shadow-green-50',
                         'flex flex-col items-start w-full border shadow rounded-[12px] p-3 cursor-pointer'
                       )}
                       style={{
-                        backgroundColor: context === 'dark' ? theme.colors[context].table.background : theme.colors[context].table.textColor,
-                        color: context === 'dark' ? theme.colors[context].table.textColor : theme.colors[context].table.background,
+                        backgroundColor:
+                          context === 'dark'
+                            ? theme.colors[context].table.background
+                            : theme.colors[context].table.textColor,
+                        color:
+                          context === 'dark'
+                            ? theme.colors[context].table.textColor
+                            : theme.colors[context].table.background,
                       }}
                       onClick={() => {
                         if (recipe.recipeBook) {
-                          handleVerifyProduct(recipe);
+                          OnVerifyProduct(recipe)
                         } else {
                           toast.error('Este producto no cuenta con receta disponible');
                         }
                       }}
                     >
                       <div className="w-full flex flex-col items-start ">
-                        <p className="font-semibold ">{recipe.product.name}</p>
-                        <p className="text-xs">
+                        <p className="font-semibold ">{recipe.name}</p>
+                        {/* <p className="text-xs">
                           Cantidad maxima:{' '}
                           {recipe.recipeBook
                             ? recipe.recipeBook.maxProduction
                             : 'No hay receta disponible'}
-                        </p>
+                        </p> */}
                         <p className="text-xs font-semibold py-2">Receta: </p>
                         <div className="w-full grid grid-cols-1 place-content-start">
                           {recipe.recipeBook ? (
@@ -235,7 +257,7 @@ function SelectProduct({
                               <ul className="grid grid-cols-2 gap-3 w-full place-items-start">
                                 {recipe.recipeBook.productRecipeBookDetails.map((rb) => (
                                   <li key={rb.id} className="text-xs">
-                                    • {rb.branchProduct.product.name}
+                                    • {rb.product.name}
                                   </li>
                                 ))}
                               </ul>
@@ -249,40 +271,71 @@ function SelectProduct({
                       </div>
                     </button>
                   ))}
-                  {branchProductRecipe.length === 0 &&
-                   <div className="flex flex-col justify-center items-center w-full h-full py-10 col-span-5">
+                  {productsAndRecipe.length === 0 && (
+                    <div className="flex flex-col justify-center items-center w-full h-full py-10 col-span-5">
                       <img alt="NO DATA" className="w-40" src={EmptyBox} />
                       <p className="text-lg font-semibold mt-3 dark:text-white">
                         No se encontraron resultados
                       </p>
                     </div>
-                  }
+                  )}
                 </div>
               </div>
             </div>
           </DrawerBody>
           <DrawerFooter>
             <Pagination
-              currentPage={branchProductRecipePaginated.currentPag}
-              nextPage={branchProductRecipePaginated.nextPag}
-              previousPage={branchProductRecipePaginated.prevPag}
-              totalItems={branchProductRecipePaginated.total}
-              totalPages={branchProductRecipePaginated.totalPag}
+              currentPage={productsAndRecipePagination.currentPag}
+              nextPage={productsAndRecipePagination.nextPag}
+              previousPage={productsAndRecipePagination.prevPag}
+              totalItems={productsAndRecipePagination.total}
+              totalPages={productsAndRecipePagination.totalPag}
               onPageChange={(page) => {
-                getBranchProductsRecipe(
-                  Number(new Set(selectedBranch).values().next().value),
+                getPaginatedProductsAndRecipe(
                   page,
                   10,
-                  '',
+                  0,
+                  0,
                   String(dbounceName),
                   '',
+                  1,
                   String(new Set(selectedTypeProduct).values().next().value ?? '')
                 );
               }}
             />
           </DrawerFooter>
         </DrawerContent>
-      </Drawer >
+      </Drawer>
+      {modalProduct.isOpen && productToCreate && (
+        <Modal {...modalProduct} className='border-2 rounded-lg border-yellow-600' size={createProduct.isOpen ? '2xl' :'md'}>
+          {!createProduct.isOpen ? (
+            <ModalContent>
+              <ModalHeader className='flex gap-4'><TriangleAlert className='text-yellow-600' />Producto no encontrado</ModalHeader>
+              <ModalBody>
+                <p>El producto <strong>{productToCreate.name}</strong> no existe en la sucursal destino.</p>
+                <p>¿Deseas crearlo?</p>
+                {/* Puedes mostrar detalles del producto, receta, etc. */}
+              </ModalBody>
+              <ModalFooter>
+                <Button variant="light" onPress={() => modalProduct.onClose()}>Cancelar</Button>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    createProduct.onOpen()
+                  }}
+                >
+                  Crear Producto
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+            ) : (
+           <RegisterProduct close={() => {
+            modalProduct.onClose()
+            createProduct.onClose()}} productToCreate={productToCreate}/>
+          )}
+        </Modal>
+      )}
+
     </>
   );
 }

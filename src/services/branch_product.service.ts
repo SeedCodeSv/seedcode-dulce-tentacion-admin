@@ -73,7 +73,7 @@ export const get_branches = () => {
 
   return axios.get<IGetBranchesList>(
     API_URL +
-    `/branches/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
+      `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

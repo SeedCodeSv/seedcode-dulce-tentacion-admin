@@ -29,15 +29,23 @@ import { Colors } from '@/types/themes.types';
 import { useCategoriesStore } from '@/store/categories.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useProductsStore } from '@/store/products.store';
+import { preventLetters } from '@/utils';
 
-type ProductOrder = Product & { quantity: number; extraUniMedida: string };
+type ProductOrder = Product & { quantity: number; performanceQuantity: string; cost: number };
 
 interface Props {
   selectedProducts: ProductOrder[];
   setSelectedProducts: Dispatch<SetStateAction<ProductOrder[]>>;
+  performance: string;
+  setPerformance: Dispatch<SetStateAction<string>>;
 }
 
-function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
+function GeneralProductInfo({
+  selectedProducts,
+  setSelectedProducts,
+  performance,
+  setPerformance,
+}: Props) {
   const formik = useFormikContext<ProductPayloadForm>();
 
   const typeSearch = ['NOMBRE', 'CODIGO'];
@@ -131,7 +139,16 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
     const checkIfExist = list_suppliers.findIndex((lsP) => lsP.id === prd.id);
 
     if (checkIfExist === -1) {
-      list_suppliers.push({ ...prd, quantity: 1, extraUniMedida: prd.uniMedida });
+      const quantity = 1;
+      const performanceQuantity = quantity / (Number(performance || 1) || 1);
+      const cost = Number(prd.costoUnitario) / quantity;
+
+      list_suppliers.push({
+        ...prd,
+        performanceQuantity: performanceQuantity.toFixed(4),
+        cost,
+        quantity: quantity,
+      });
     } else {
       list_suppliers.splice(checkIfExist, 1);
     }
@@ -322,7 +339,23 @@ function GeneralProductInfo({ selectedProducts, setSelectedProducts }: Props) {
             </ButtonUi>
           )}
         </div>
+        {includeReceipt && (
+          <div className="pt-5">
+            <Input
+              className="dark:text-white font-semibold max-w-72"
+              classNames={{ label: 'font-semibold' }}
+              label="Rendimiento"
+              labelPlacement="outside"
+              placeholder="Ingresa la receta de preparación"
+              value={performance}
+              variant="bordered"
+              onKeyDown={preventLetters}
+              onValueChange={(value) => setPerformance(value)}
+            />
+          </div>
+        )}
         <RecipeBookProduct
+          performance={performance}
           selectedProducts={selectedProducts}
           setSelectedProducts={setSelectedProducts}
         />

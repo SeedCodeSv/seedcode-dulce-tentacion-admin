@@ -17,6 +17,7 @@ import { get_correlatives } from '../services/correlatives.service';
 
 import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 const CushCatsBigZ = () => {
   const { actions } = useViewsStore();
@@ -276,8 +277,7 @@ const CushCatsBigZ = () => {
 
   return (
     <Layout title="Corte Gran Z">
-      <div className=" w-full h-full p-10">
-        <div className="w-full h-full border-white border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal>
           <div className="flex flex-col justify-between w-full gap-5 flex-row lg:gap-0">
             <div className="flex flex-col items-center p-4">
               <div className="grid grid-cols-1 md:grid-cols-4  gap-4 w-full">
@@ -530,8 +530,8 @@ const CushCatsBigZ = () => {
               </div>
             </div>
           </div>
-        </div>
-      </div>
+        </DivGlobal>
+      
     </Layout>
   );
 };

@@ -3,10 +3,12 @@ import { Notebook } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Employee } from '@/types/employees.types';
-import logo from '@/assets/dulce-logo.png';
-import TooltipGlobal from '@/components/global/TooltipGlobal';
+import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { getElSalvadorDateTimeText } from '@/utils/dates';
+import { useConfigurationStore } from '@/store/perzonalitation.store';
+import { convertImageToBase64 } from '@/utils/utils';
 
 interface Props {
   employee: Employee;
@@ -14,68 +16,39 @@ interface Props {
 }
 
 function ProofSalary({ employee, actions }: Props) {
-  const convertImageToBase64 = (url: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
 
-      img.crossOrigin = 'Anonymous';
-      img.src = url;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-
-        ctx?.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
-
-        resolve(dataURL);
-      };
-      img.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
+  const { personalization } = useConfigurationStore();
 
   const generatePDF = async () => {
-    // const doc = new jsPDF();
     const doc = new jsPDF({
-      format: 'letter', // Establece el tamaño de la página en formato carta
+      format: 'letter',
     });
 
     try {
-      // Convertir el logo a base64
+      const logo = personalization && personalization[0]?.logo ? personalization[0].logo : DEFAULT_LOGO;
+
       const logoBase64 = await convertImageToBase64(logo);
 
-      // Agregar logo al PDF
-      const imgWidth = 40; // Ancho del logo
-      const imgHeight = 20; // Alto del logo
-      const imgX = 15; // Posición X (margen izquierdo)
-      const imgY = 10; // Posición Y (margen superior)
+      const imgWidth = 25;
+      const imgHeight = 25;
+      const imgX = 15;
+      const imgY = 10;
 
-      // Añadir la imagen del logo
       doc.addImage(logoBase64, 'PNG', imgX, imgY, imgWidth, imgHeight);
     } catch (error) {
       toast.error('Error al agregar el logo');
     }
 
-    // Ajusta el tamaño del texto
-    doc.setFontSize(11); // Cambia el tamaño de la fuente a un valor más pequeño
+    doc.setFontSize(11);
 
-    // Mueve la fecha de emisión hacia la parte superior derecha
-    doc.text('08 de septiembre de 2024', 180, 20, { align: 'right' });
+    doc.text(getElSalvadorDateTimeText().fecEmi, 180, 20, { align: 'right' });
 
-    // Título del documento
     doc.setFontSize(18);
     doc.text('CONSTANCIA DE TRABAJO', 105, 40, { align: 'center' });
 
-    // Información de ubicación y fecha
     doc.setFontSize(12);
     doc.text('San Salvador, El Salvador', 105, 50, { align: 'center' });
-    // doc.text('Fecha de emisión: 08 de septiembre de 2024', 105, 60, { align: 'center' });
 
-    // Espacio para margen izquierdo
     const marginLeft = 20;
     const maxLineWidth = 170;
 
@@ -87,21 +60,17 @@ function ProofSalary({ employee, actions }: Props) {
 
     const paragraph3 = `Actualmente, el(la) señor(a) ${employeeFullName} devenga un salario mensual de $${employee.salary} (dólares estadounidenses). Esta constancia se extiende a petición del interesado para los fines que estime convenientes.`;
 
-    // Función para dividir el texto en líneas, simulando justificación
     const splitText = (text: string, lineWidth: number) => doc.splitTextToSize(text, lineWidth);
 
-    // Agregar los párrafos justificados
     doc.setFontSize(12);
     doc.text(splitText(paragraph1, maxLineWidth), marginLeft, 70);
     doc.text(splitText(paragraph2, maxLineWidth), marginLeft, 100);
     doc.text(splitText(paragraph3, maxLineWidth), marginLeft, 130);
 
-    // Firma centrada del empleador
     doc.text('__________________________', 105, 170, { align: 'center' });
     doc.text('Firma del Empleador', 105, 180, { align: 'center' });
 
-    // Información de contacto centrada al final del documento
-    doc.setFontSize(10); // Ajusta el tamaño del texto
+    doc.setFontSize(10);
     doc.text(`Dirección: Calle Falsa 123, San Salvador, El Salvador`, 105, 260, {
       align: 'center',
     });
@@ -110,27 +79,26 @@ function ProofSalary({ employee, actions }: Props) {
     });
     doc.text(`Correo: ${employee.branch.transmitter?.correo}`, 105, 270, { align: 'center' });
 
-    // Abrir el PDF en una nueva pestaña
     const pdfBlobUrl = doc.output('bloburl');
 
-    window.open(pdfBlobUrl, '_blank'); // Abrir en nueva pestaña
+    window.open(pdfBlobUrl, '_blank');
   };
 
   return (
     <>
       {actions.includes('Constancia de Trabajo') && employee.isActive && (
-        <TooltipGlobal text="Generar Constancia de Trabajo">
-          <ButtonUi
-            isIconOnly
-            className="border border-white"
-            theme={Colors.Warning}
-            onClick={() => {
-              generatePDF();
-            }}
-          >
-            <Notebook size={20} />
-          </ButtonUi>
-        </TooltipGlobal>
+        <ButtonUi
+          isIconOnly
+          showTooltip
+          className="border border-white"
+          theme={Colors.Warning}
+          tooltipText='Generar Constancia de Trabajo'
+          onPress={() => {
+            generatePDF();
+          }}
+        >
+          <Notebook size={20} />
+        </ButtonUi>
       )}
     </>
   );

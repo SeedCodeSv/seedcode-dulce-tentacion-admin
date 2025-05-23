@@ -35,6 +35,7 @@ import FullPageLayout from '@/components/global/FullOverflowLayout';
 import ResendEmail from '@/components/reporters/ResendEmail';
 import LoadingTable from '@/components/global/LoadingTable';
 import { TableComponent } from '@/themes/ui/table-ui';
+import DivGlobal from '@/themes/ui/div-global';
 
 
 function Home() {
@@ -216,7 +217,7 @@ function Home() {
 
   return (
     <Layout title="Inicio">
-      <div className="w-full h-full flex flex-col p-5 bg-white dark:bg-gray-800">
+      <DivGlobal>
         <div className="grid w-full gap-5 mt-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
           <Charts />
         </div>
@@ -349,7 +350,7 @@ function Home() {
             )}
           </div>
         </FullPageLayout>
-      </div>
+      </DivGlobal>
     </Layout>
   );
 }

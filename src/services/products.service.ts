@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   GetBranchProductRecipe,
   GetBranchProductRecipeSupplier,
+  GetProductAndRecipe,
   GetProductDetail,
   GetProductRecipeBook,
   IGetProductsPaginated,
@@ -12,6 +13,9 @@ import {
 } from '../types/products.types';
 import { API_URL } from '../utils/constants';
 import { get_token } from '../storage/localStorage';
+
+import { BasicResponse } from '@/types/global.types';
+import { IPayloadBranchProduct } from '@/types/branch_products.types';
 
 export const get_products = (
   page = 1,
@@ -27,6 +31,29 @@ export const get_products = (
   return axios.get<IGetProductsPaginated>(
     API_URL +
     `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+
+export const get_products_and_recipe = (
+  page = 1,
+  limit = 5,
+  category = 0,
+  subCategory = 0,
+  name = '',
+  code = '',
+  active = 1,
+  typeProduct = ''
+) => {
+  const token = get_token() ?? '';
+
+  return axios.get<GetProductAndRecipe>(
+    API_URL +
+      `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -136,7 +163,9 @@ export const get_branch_product_recipe = (
   );
 };
 
-
+export const create_branch_product = (payload: IPayloadBranchProduct) =>{
+  return axios.post<BasicResponse>(API_URL + '/branch-products/add-branch-product', payload)
+}
 export const get_branch_product_recipe_supplier = (
   id: number,
   branchProductId = 0,

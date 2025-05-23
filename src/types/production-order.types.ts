@@ -1,5 +1,6 @@
 import { BranchProduct } from './branch_products.types';
 import { IPagination } from './global.types';
+import { BranchProductRecipe, Product } from './products.types';
 
 export interface GetProductionOrders extends IPagination {
   productionOrders: ProductionOrder[];
@@ -202,3 +203,32 @@ export interface ProductStatus {
   canFulfill: boolean;
   ingredients: Record<number, IngredientStatus>;
 }
+
+export interface IPayloadVerifyProducts {
+  branchDestinationId: number;
+  branchDepartureId:   number;
+  productId:           number;
+  recipeBook:          RecipeBook[];
+}
+
+export interface RecipeBook {
+  productId: number;
+}
+
+export interface ResponseVerifyProduct {
+  ok:     boolean;
+  data:   Datum[];
+  branchProduct: BranchProductRecipe 
+  status: number;
+  message?: string
+}
+
+export interface Datum {
+  product:       Product;
+  branchProduct: BranchProduct | null;
+}
+
+export interface IError {
+nameProduct: string
+}
+

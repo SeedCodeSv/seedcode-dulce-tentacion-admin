@@ -17,5 +17,5 @@ export interface Correlatives {
 export interface IGetCorrelatives {
   ok: boolean;
   status: number;
-  correlatives: Correlatives[];
+  pointOfSales: Correlatives[];
 }

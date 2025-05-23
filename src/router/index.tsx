@@ -15,6 +15,7 @@ import PurchaseOrderForm from '@/components/list_purchase/PurchaseOrderForm';
 import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
 import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
+import ActionRol from '@/pages/ActionRol';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -44,7 +45,7 @@ const Shopping = lazy(() => import('../pages/shopping'));
 const CreateShopping = lazy(() => import('../components/shopping/create-shopping-json'));
 const CFFBookIVA = lazy(() => import('../pages/iva/CFFBookIVA'));
 const FEBookIVA = lazy(() => import('../pages/iva/FEBookIVA'));
-const CreateTheme = lazy(() => import('../components/configuration/CreateTheme'));
+// const CreateTheme = lazy(() => import('../components/configuration/CreateTheme'));
 const AddClientContributor = lazy(() => import('../components/clients/AddClientContributor'));
 const AddClientNormal = lazy(() => import('../components/clients/AddClientNormal'));
 const AddNormalSupplier = lazy(() => import('../components/supplier/AddNormalSupplier'));
@@ -82,7 +83,6 @@ const Error404 = lazy(() => import('../pages/Error404'));
 const Product = lazy(() => import('../pages/Product'));
 const NoteReferal = lazy(() => import('../pages/ReferalNote'));
 const AddReferalNote = lazy(() => import('../shopping-branch-product/pages/ShippingBranchProdut'));
-const ActionRol = lazy(() => import('../pages/ActionRol'));
 const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
@@ -151,7 +151,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route element={<KardexPage />} path="/kardex-inventory" />
+      <Route element={<AnimatedRoute> {handleCheckPermission('Kardex') ? <KardexPage /> : <Home/> }</AnimatedRoute>} path="/kardex-inventory" />
       <Route
         element={
           <AnimatedRoute>
@@ -308,7 +308,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
             {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
           </AnimatedRoute>
         }
-        path="/sales-by-product"
+        path="/reports/sales-by-product"
       />
       <Route
         element={
@@ -478,14 +478,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="*"
       />
-      <Route
+      {/* <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Configuración') ? <CreateTheme /> : <Home />}
           </AnimatedRoute>
         }
         path="/add-theme"
-      />
+      /> */}
       <Route
         element={
           <AnimatedRoute>
@@ -517,14 +517,6 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/sales"
-      />
-      <Route
-        element={
-          <AnimatedRoute>
-            {handleCheckPermission('Ventas Ticket') ? <TicketSales /> : <Home />}
-          </AnimatedRoute>
-        }
-        path="/sales-ticket"
       />
       <Route
         element={

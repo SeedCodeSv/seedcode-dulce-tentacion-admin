@@ -1,30 +1,21 @@
 import {
-  Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Switch,
+  Modal,
+  ModalContent,
+  ModalBody,
+  ModalHeader,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import {
-  EditIcon,
-  User,
-  Table as ITable,
-  CreditCard,
-  RefreshCcw,
-  SearchIcon,
-  Trash,
-} from 'lucide-react';
-import classNames from 'classnames';
+import { EditIcon, Filter, RefreshCcw, Trash } from 'lucide-react';
 
 import AddButton from '../global/AddButton';
 import { limit_options } from '../../utils/constants';
-import HeadlessModal from '../global/HeadlessModal';
 import { ISubCategory } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import TooltipGlobal from '../global/TooltipGlobal';
@@ -34,14 +25,15 @@ import LoadingTable from '../global/LoadingTable';
 
 import AddSubCategory from './add-sub-category';
 import CardSubCategory from './card-sub-category';
+import { SearchSubCategoryProduct, Filters } from './search-sub-category-products';
 
-import useWindowSize from '@/hooks/useWindowSize';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-
+import TdGlobal from '@/themes/ui/td-global';
+import DisplayView from '@/themes/ui/display-view';
 
 interface PProps {
   actions: string[];
@@ -68,50 +60,65 @@ function ListSubCategory({ actions }: PProps) {
   const handleSearch = (name: string | undefined) => {
     getSubCategoriesPaginated(1, limit, name ?? search);
   };
-  const { windowSize } = useWindowSize();
-  const [view, setView] = useState<'table' | 'grid' | 'list'>(
-    windowSize.width < 768 ? 'grid' : 'table'
-  );
+  const [view, setView] = useState<'table' | 'grid'>('table');
   const handleActivate = (id: number) => {
     activateSubCategories(id).then(() => {
       getSubCategoriesPaginated(1, limit, search, isActive ? 1 : 0);
     });
   };
 
+  const dislosureFilters = useDisclosure();
+
   return (
     <DivGlobal className="flex flex-col h-full overflow-y-auto ">
-      <div className="w-full flex justify-between">
-        <div className="flex gap-5">
-          <Input
-            isClearable
-            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
+      <div className="hidden md:flex">
+        <Filters
+          active={isActive}
+          handleSearch={handleSearch}
+          search={search}
+          setActive={setActive}
+          setSearch={setSearch}
+        />
+      </div>
+      <SearchSubCategoryProduct
+        active={isActive}
+        disclosure={dislosureFilters}
+        handleSearch={handleSearch}
+        search={search}
+        setActive={setActive}
+        setSearch={setSearch}
+      />
+      <div className="flex w-full mt-3 flex-row justify-between">
+        <div className="w-44">
+          <Select
+            className="w-44 dark:text-white"
             classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
+              label: 'font-semibold',
             }}
-            label="Nombre"
+            defaultSelectedKeys={'5'}
+            label="Cantidad a mostrar"
             labelPlacement="outside"
-            placeholder="Escribe para buscar..."
-            startContent={<User />}
-            value={search}
+            value={limit}
             variant="bordered"
-            onChange={(e) => setSearch(e.target.value)}
-            onClear={() => {
-              setSearch('');
-              handleSearch('');
+            onChange={(e) => {
+              setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
             }}
-          />
-          <div className="flex items-end">
-            <ButtonUi
-              startContent={<SearchIcon className="w-10" />}
-              theme={Colors.Primary}
-              onPress={() => handleSearch(undefined)}
-            >
-              Buscar
+          >
+            {limit_options.map((option) => (
+              <SelectItem key={option} className="dark:text-white">
+                {option}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+
+        <div className="flex gap-10 items-end">
+          <DisplayView setView={setView} view={view} />
+          <div className="flex md:hidden">
+            <ButtonUi isIconOnly theme={Colors.Info} onPress={dislosureFilters.onOpen}>
+              <Filter />
             </ButtonUi>
           </div>
-        </div>
-        <div className="flex gap-5 mt-6">
           {actions.includes('Agregar') && (
             <AddButton
               onClick={() => {
@@ -123,70 +130,10 @@ function ListSubCategory({ actions }: PProps) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-        <div className="flex justify-start order-2 lg:order-1">
-          <div className="xl:mt-10">
-            <Switch
-              classNames={{
-                thumb: classNames(isActive ? 'bg-blue-500' : 'bg-gray-400'),
-                wrapper: classNames(isActive ? '!bg-blue-300' : 'bg-gray-200'),
-              }}
-              isSelected={isActive}
-              onValueChange={(isActive) => setActive(isActive)}
-            >
-              <span className="text-sm sm:text-base whitespace-nowrap dark:text-white">
-                Mostrar {isActive ? 'inactivos' : 'activos'}
-              </span>
-            </Switch>
-          </div>
-        </div>
-        <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
-          <div className="w-44">
-            <span className="font-semibold text-sm  dark:text-white">Mostrar</span>
-            <Select
-              className="w-44 dark:text-white border border-white rounded-xl"
-              classNames={{
-                label: 'font-semibold',
-              }}
-              defaultSelectedKeys={'5'}
-              labelPlacement="outside"
-              value={limit}
-              variant="bordered"
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '8'));
-              }}
-            >
-              {limit_options.map((option) => (
-                <SelectItem key={option} className="dark:text-white">
-                  {option}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
-
-          <ButtonGroup className="mt-4 xl:flex hidden border border-white rounded-xl">
-            <ButtonUi
-              isIconOnly
-              theme={view === 'table' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('table')}
-            >
-              <ITable />
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={view === 'grid' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('grid')}
-            >
-              <CreditCard />
-            </ButtonUi>
-          </ButtonGroup>
-        </div>
-      </div>
-
-      {(view === 'grid' || view === 'list') && (
+      {view === 'grid' && (
         <CardSubCategory
+          DeletePopover={DeletePopUp}
           actions={actions}
-          deletePopover={DeletePopUp}
           handleActive={handleActivate}
           handleEdit={(item) => {
             setSelectedCategory(item);
@@ -196,9 +143,7 @@ function ListSubCategory({ actions }: PProps) {
       )}
       {view === 'table' && (
         <>
-          <TableComponent
-            headers={["Nº", "Nombre", "Categoría", 'Acciones']}
-          >
+          <TableComponent headers={['Nº', 'Nombre', 'Categoría', 'Acciones']}>
             {loading_sub_categories ? (
               <tr>
                 <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
@@ -210,18 +155,12 @@ function ListSubCategory({ actions }: PProps) {
                 {sub_categories_paginated.SubCategories.length > 0 ? (
                   <>
                     {sub_categories_paginated.SubCategories.map((categories, key) => (
-                      <tr key={key} className="border-b border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {categories.id}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                          {categories.name}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {categories.categoryProduct.name}
-                        </td>
+                      <tr key={key}>
+                        <TdGlobal className="p-3">{categories.id}</TdGlobal>
+                        <TdGlobal className="p-3">{categories.name}</TdGlobal>
+                        <TdGlobal className="p-3">{categories.categoryProduct.name}</TdGlobal>
 
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <TdGlobal className="p-3">
                           <div className="flex w-full gap-5">
                             {categories.isActive && actions.includes('Editar') && (
                               <ButtonUi
@@ -254,7 +193,7 @@ function ListSubCategory({ actions }: PProps) {
                               </>
                             )}
                           </div>
-                        </td>
+                        </TdGlobal>
                       </tr>
                     ))}
                   </>
@@ -285,14 +224,16 @@ function ListSubCategory({ actions }: PProps) {
           </div>
         </>
       )}
-      <HeadlessModal
-        isOpen={modalAdd.isOpen}
-        size="w-[350px] md:w-[500px]"
-        title={selectedCategory ? 'Editar sub categoría' : 'Nueva Sub-categoría'}
-        onClose={modalAdd.onClose}
-      >
-        <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
-      </HeadlessModal>
+      <Modal {...modalAdd}>
+        <ModalContent>
+          <ModalHeader className="dark:text-white">
+            {selectedCategory ? 'Editar sub categoría' : 'Nueva Sub-categoría'}
+          </ModalHeader>
+          <ModalBody>
+            <AddSubCategory closeModal={modalAdd.onClose} subCategory={selectedCategory} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </DivGlobal>
   );
 }

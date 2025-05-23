@@ -1,4 +1,4 @@
-import { Correlatives } from '@/types/correlatives.types';
+import { Correlatives } from "@/types/correlatives/correlatives_types";
 
 export interface IMobileViewProps {
   layout: 'grid' | 'list';

@@ -1,11 +1,9 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
 import { Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { IPropsSearchEmployee } from '../types/mobile-view.types';
 
-import { global_styles } from '@/styles/global.styles';
-import TooltipGlobal from '@/components/global/TooltipGlobal';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { useBranchesStore } from '@/store/branches.store';
 import { useEmployeeStore } from '@/store/employee.store';
@@ -34,17 +32,16 @@ function SearchEmployee(props: IPropsSearchEmployee) {
   return (
     <div className="flex items-center gap-5">
       <div className="block md:hidden">
-        <TooltipGlobal color="primary" text="Buscar por filtros">
-          <Button
-            isIconOnly
-            className="border border-white rounded-xl"
-            style={global_styles().thirdStyle}
-            type="button"
-            onClick={() => setOpenVaul(true)}
-          >
-            <Filter />
-          </Button>
-        </TooltipGlobal>
+
+        <ButtonUi
+          isIconOnly
+          showTooltip
+          theme={Colors.Info}
+          tooltipText="Buscar por filtros"
+          onPress={() => setOpenVaul(true)}
+        >
+          <Filter />
+        </ButtonUi>
         <BottomDrawer
           open={openVaul}
           title="Filtros disponibles"
@@ -73,9 +70,8 @@ function SearchEmployee(props: IPropsSearchEmployee) {
 
                 getEmployeesPaginated(
                   Number(
-                    user?.correlative?.branch.transmitterId ??
-                      user?.pointOfSale?.branch.transmitterId ??
-                      0
+                    user?.pointOfSale?.branch.transmitterId ??
+                    0
                   ),
                   1,
                   5,
@@ -213,14 +209,13 @@ function SearchEmployee(props: IPropsSearchEmployee) {
             </Autocomplete>
 
             <ButtonUi
-             className="mb-10 font-semibold"
+              className="mb-10 font-semibold"
               theme={Colors.Primary}
               onPress={() => {
                 getEmployeesPaginated(
                   Number(
-                    user?.correlative?.branch.transmitterId ??
-                      user?.pointOfSale?.branch.transmitterId ??
-                      0
+                    user?.pointOfSale?.branch.transmitterId ??
+                    0
                   ),
                   1,
                   5,

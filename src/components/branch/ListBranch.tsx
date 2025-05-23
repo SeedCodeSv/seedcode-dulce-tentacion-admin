@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
   Button,
-  ButtonGroup,
   Input,
   Popover,
   PopoverContent,
@@ -17,8 +16,6 @@ import {
   PhoneIcon,
   User,
   MapPinIcon,
-  Table as ITable,
-  CreditCard,
   RefreshCcw,
   Store,
   Trash,
@@ -32,7 +29,7 @@ import Pagination from '../global/Pagination';
 import { limit_options, messages } from '../../utils/constants';
 import { Branches } from '../../types/branches.types';
 import HeadlessModal from '../global/HeadlessModal';
-import SmPagination from '../global/SmPagination';
+import RenderViewButton from '../global/render-view-button';
 
 import AddBranch from './AddBranch';
 import TableBranch from './TableBranch';
@@ -46,6 +43,7 @@ import useWindowSize from '@/hooks/useWindowSize';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
+import DivGlobal from '@/themes/ui/div-global';
 
 function ListBranch({ actions }: ArrayAction) {
   const { getBranchesPaginated, branches_paginated, disableBranch } = useBranchesStore();
@@ -100,8 +98,7 @@ function ListBranch({ actions }: ArrayAction) {
       {BranchId >= 1 ? (
         <ListBranchProduct id={BranchId} onclick={() => setBranchId(0)} />
       ) : (
-        <div className=" w-full h-full bg-white dark:bg-gray-900">
-          <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+        <DivGlobal className="flex flex-col h-full overflow-y-auto">
             <div className="flex justify-between items-end ">
               <SearchBranch
                 addressBranch={setAddress}
@@ -197,7 +194,7 @@ function ListBranch({ actions }: ArrayAction) {
                   </span>
                 </Switch>
               </div>
-              <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+              <div className="flex gap-10 w-full justify-between items-end lg:justify-end order-1 lg:order-2">
                 <div>
                   <span className="dark:text-white font-semibold text-sm">Mostrar</span>
                   <Select
@@ -220,22 +217,7 @@ function ListBranch({ actions }: ArrayAction) {
                     ))}
                   </Select>
                 </div>
-                <ButtonGroup className="mt-4">
-                  <ButtonUi
-                    isIconOnly
-                    theme={view === 'table' ? Colors.Primary : Colors.Default}
-                    onPress={() => setView('table')}
-                  >
-                    <ITable />
-                  </ButtonUi>
-                  <ButtonUi
-                    isIconOnly
-                    theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                    onPress={() => setView('grid')}
-                  >
-                    <CreditCard />
-                  </ButtonUi>
-                </ButtonGroup>
+                 <RenderViewButton setView={setView} view={view} />
               </div>
             </div>
 
@@ -248,7 +230,9 @@ function ListBranch({ actions }: ArrayAction) {
                         <>
                           <ButtonUi
                             isIconOnly
+                            showTooltip
                             theme={Colors.Success}
+                            tooltipText='Editar'
                             onPress={() => {
                               handleEdit(item);
                             }}
@@ -260,7 +244,9 @@ function ListBranch({ actions }: ArrayAction) {
                       {actions.includes('Ver Productos') && item.isActive && (
                         <ButtonUi
                           isIconOnly
+                          showTooltip
                           theme={Colors.Primary}
+                          tooltipText='Ver Productos'
                           onPress={() => {
                             setBranchId(item.id);
                             modalBranchProduct.onOpen();
@@ -274,7 +260,9 @@ function ListBranch({ actions }: ArrayAction) {
                       )}
                         <ButtonUi
                           isIconOnly
+                          showTooltip
                           theme={Colors.Primary}
+                          tooltipText='Agregar punto de venta'
                           onPress={() => {
                             handlePointOfSales(item.id);
                           }}
@@ -314,7 +302,7 @@ function ListBranch({ actions }: ArrayAction) {
             )}
             {branches_paginated.totalPag > 1 && (
               <>
-                <div className="hidden w-full mt-5 md:flex">
+                <div className="w-full mt-5">
                   <Pagination
                     currentPage={branches_paginated.currentPag}
                     nextPage={branches_paginated.nextPag}
@@ -325,35 +313,9 @@ function ListBranch({ actions }: ArrayAction) {
                     }}
                   />
                 </div>
-                <div className="flex w-full md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-900 z-20 shadow-lg p-3">
-                  <SmPagination
-                    currentPage={branches_paginated.currentPag}
-                    handleNext={() => {
-                      getBranchesPaginated(
-                        branches_paginated.nextPag,
-                        limit,
-                        name,
-                        phone,
-                        address,
-                        active
-                      );
-                    }}
-                    handlePrev={() => {
-                      getBranchesPaginated(
-                        branches_paginated.prevPag,
-                        limit,
-                        name,
-                        phone,
-                        address,
-                        active
-                      );
-                    }}
-                    totalPages={branches_paginated.totalPag}
-                  />
-                </div>
               </>
             )}
-          </div>
+          
           <HeadlessModal
             isOpen={modalAdd.isOpen}
             size="w-[90vw] md:w-[600px]"
@@ -373,7 +335,7 @@ function ListBranch({ actions }: ArrayAction) {
           >
             <AddPointOfSales branchId={selectedBranchId} onClose={modalAddPointOfSales.onClose} />
           </HeadlessModal>
-        </div>
+       </DivGlobal>
       )}
     </>
   );

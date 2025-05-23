@@ -1,7 +1,7 @@
 import { ISubCategory } from '../../../types/sub_categories.types';
 
 export interface MobileViewProps {
-  deletePopover: ({ subcategory }: { subcategory: ISubCategory }) => JSX.Element;
+  DeletePopover: ({ subcategory }: { subcategory: ISubCategory }) => JSX.Element;
   handleEdit: (subcategory: ISubCategory) => void;
   actions: string[];
   handleActive: (id: number) => void;

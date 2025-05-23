@@ -2,12 +2,14 @@ import axios from 'axios';
 
 import { API_URL } from '../utils/constants';
 import {
+  GetBranchResponse,
   IBranchPayload,
   IGetBranchProductList,
   IGetBranchesList,
   IGetBranchesPaginated,
 } from '../types/branches.types';
 import { get_token, get_user } from '../storage/localStorage';
+
 
 export const get_branches_pagination = (
   page: number,
@@ -23,7 +25,7 @@ export const get_branches_pagination = (
   return axios.get<IGetBranchesPaginated>(
     API_URL +
       '/branches/list-paginated/' +
-      `${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
+      `${user?.pointOfSale?.branch.transmitterId ?? 0}` +
       '?page=' +
       page +
       '&limit=' +
@@ -50,7 +52,7 @@ export const get_branches_list = () => {
 
   return axios.get<IGetBranchesList>(
     API_URL +
-      `/branches/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
+      `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -126,3 +128,7 @@ export const get_branch_products = (
 export const save_active_branch = (id: number, state: boolean) => {
   return axios.patch<{ ok: boolean }>(API_URL + '/branches/activate/' + id, (state = !state));
 };
+
+export const get_branch_by_id = (id: number) =>{
+    return axios.get<GetBranchResponse>(API_URL + `/branches/${id}`);
+}

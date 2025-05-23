@@ -14,6 +14,7 @@ import Layout from '@/layout/Layout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useAuthStore } from '@/store/auth.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 function UpdateAccountCatalogs() {
   const { id } = useParams<{ id: string }>();
@@ -83,7 +84,6 @@ function UpdateAccountCatalogs() {
           item: values.item,
           transmitterId: Number(
             user?.pointOfSale?.branch.transmitter.id ??
-              user?.correlative?.branch.transmitter.id ??
               0
           ),
         };
@@ -126,8 +126,7 @@ function UpdateAccountCatalogs() {
     <>
       <Layout title="Catálogos de Cuentas">
         <>
-          <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-            <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+          <DivGlobal>
               <div className="">
                 <Button
                   className="bg-transparent dark:text-white flex"
@@ -312,8 +311,7 @@ function UpdateAccountCatalogs() {
                   </>
                 </form>
               </div>
-            </div>
-          </div>
+           </DivGlobal>
         </>
       </Layout>
     </>

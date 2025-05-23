@@ -20,3 +20,10 @@ export interface IPagination {
   status: number;
   ok: boolean;
 }
+
+
+export interface BasicResponse{
+  ok: boolean;
+  message: string;
+  status: number
+}

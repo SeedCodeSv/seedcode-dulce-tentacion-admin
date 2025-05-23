@@ -26,6 +26,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import { get_user } from '@/storage/localStorage';
+import DivGlobal from '@/themes/ui/div-global';
 
 function ShoppingBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -49,11 +50,11 @@ function ShoppingBookIVA() {
 
   useEffect(() => {
     onGetShoppingByMonth(
-      Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id),
+      Number(transmiter?.pointOfSale?.branch.transmitter.id),
       monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
       yearSelected
     );
-    getExcludedSubjectByMonth(Number(transmiter?.pointOfSale?.branch.transmitter.id || transmiter?.correlative?.branch.transmitter.id), monthSelected, yearSelected);
+    getExcludedSubjectByMonth(Number(transmiter?.pointOfSale?.branch.transmitter.id ), monthSelected, yearSelected);
   }, [monthSelected, yearSelected]);
 
   const formatData = useMemo(() => {
@@ -341,7 +342,7 @@ function ShoppingBookIVA() {
   return (
     <Layout title="IVA de Compras">
       <>
-        <div className="w-full h-full flex flex-col overflow-y-auto p-5 bg-white dark:bg-gray-800">
+        <DivGlobal>
           <div className="w-full flex pb-5 mt-10">
             <Link className=" dark:text-white flex" to="/">
               <ArrowLeft /> Regresar
@@ -484,7 +485,7 @@ function ShoppingBookIVA() {
                       </>
                     ) : (
                       <>
-                        <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                        <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                           <img alt="" className="w-44 mt-10" src={NO_DATA} />
                           <p className="mt-5 dark:text-white text-gray-600 text-xl">
                             No se encontraron resultados
@@ -497,7 +498,7 @@ function ShoppingBookIVA() {
               </div>
             </div>
           </div>
-        </div>
+        </DivGlobal>
         <FullPageLayout show={showFullLayout.isOpen}>
           <div
             className={classNames(

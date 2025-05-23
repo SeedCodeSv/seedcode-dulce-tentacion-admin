@@ -2,7 +2,6 @@ import {
   Input,
   Button,
   useDisclosure,
-  ButtonGroup,
   Select,
   SelectItem,
   Popover,
@@ -11,15 +10,7 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import {
-  EditIcon,
-  User,
-  Table as ITable,
-  CreditCard,
-  RefreshCcw,
-  SearchIcon,
-  Trash,
-} from 'lucide-react';
+import { EditIcon, User, RefreshCcw, SearchIcon, Trash } from 'lucide-react';
 import classNames from 'classnames';
 
 import { useCategoriesStore } from '../../store/categories.store';
@@ -38,6 +29,8 @@ import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
+import DisplayView from '@/themes/ui/display-view';
+import TdGlobal from '@/themes/ui/td-global';
 interface PProps {
   actions: string[];
 }
@@ -58,7 +51,7 @@ function ListCategories({ actions }: PProps) {
     getPaginatedCategories(1, limit, name ?? search);
   };
   const modalAdd = useDisclosure();
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const [view, setView] = useState<'table' | 'grid'>('table');
   const handleEdit = (item: CategoryProduct) => {
     setSelectedCategory({
       id: item.id,
@@ -78,7 +71,7 @@ function ListCategories({ actions }: PProps) {
         <div className="flex gap-5">
           <Input
             isClearable
-            className="w-full xl:w-96 dark:text-white border border-white rounded-xl"
+            className="w-full xl:w-96 dark:text-white"
             classNames={{
               label: 'font-semibold text-gray-700',
               inputWrapper: 'pr-0',
@@ -118,8 +111,8 @@ function ListCategories({ actions }: PProps) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-        <div className="flex justify-start order-2 lg:order-1">
+      <div className="flex mt-3 flex-row justify-between items-end gap-10">
+        <div className="flex justify-start">
           <div className="xl:mt-10">
             <Switch
               classNames={{
@@ -135,11 +128,10 @@ function ListCategories({ actions }: PProps) {
             </Switch>
           </div>
         </div>
-        <div className="flex gap-10 w-full justify-between items-center lg:justify-end order-1 lg:order-2">
+        <div className="flex gap-10 w-full justify-between items-end lg:justify-end">
           <div className="w-[150px]">
-            <span className="  font-semibold text-white text-sm">Mostrar</span>
             <Select
-              className="max-w-44 dark:text-white border border-white rounded-xl "
+              className="max-w-44 dark:text-white"
               classNames={{
                 label: 'font-semibold',
               }}
@@ -160,26 +152,11 @@ function ListCategories({ actions }: PProps) {
             </Select>
           </div>
 
-          <ButtonGroup className="mt-4">
-            <ButtonUi
-              isIconOnly
-              theme={view === 'table' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('table')}
-            >
-              <ITable />
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={view === 'grid' ? Colors.Primary : Colors.Default}
-              onPress={() => setView('grid')}
-            >
-              <CreditCard />
-            </ButtonUi>
-          </ButtonGroup>
+          <DisplayView setView={setView} view={view} />
         </div>
       </div>
 
-      {(view === 'grid' || view === 'list') && (
+      {view === 'grid' && (
         <CardCategory
           actions={actions}
           deletePopover={DeletePopUp}
@@ -189,13 +166,11 @@ function ListCategories({ actions }: PProps) {
       )}
       {view === 'table' && (
         <>
-          <TableComponent
-            headers={["Nº", "Nombre", 'Acciones']}
-          >
+          <TableComponent headers={['Nº', 'Nombre', 'Acciones']}>
             {loading_categories ? (
               <tr>
                 <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                  <LoadingTable/>
+                  <LoadingTable />
                 </td>
               </tr>
             ) : (
@@ -203,14 +178,10 @@ function ListCategories({ actions }: PProps) {
                 {paginated_categories.categoryProducts.length > 0 ? (
                   <>
                     {paginated_categories.categoryProducts.map((cat) => (
-                      <tr key={cat.id} className="border-b border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {cat.id}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                          {cat.name}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      <tr key={cat.id}>
+                        <TdGlobal className="p-3">{cat.id}</TdGlobal>
+                        <TdGlobal className="p-3">{cat.name}</TdGlobal>
+                        <TdGlobal className="p-3">
                           <div className="flex gap-6">
                             {cat.isActive && actions.includes('Editar') && (
                               <ButtonUi
@@ -239,7 +210,7 @@ function ListCategories({ actions }: PProps) {
                               </>
                             )}
                           </div>
-                        </td>
+                        </TdGlobal>
                       </tr>
                     ))}
                   </>

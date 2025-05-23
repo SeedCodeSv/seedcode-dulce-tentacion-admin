@@ -1,8 +1,11 @@
 import { IPagination } from '@/types/global.types';
 import {
+  IError,
+  IPayloadVerifyProducts,
   ProductionOrder,
   ProductionOrderDetails,
   ProductionOrderDetailsVerify,
+  ResponseVerifyProduct,
 } from '@/types/production-order.types';
 
 export interface ProductionOrderStore {
@@ -13,6 +16,7 @@ export interface ProductionOrderStore {
   productionOrder: ProductionOrderDetails | null;
   productionOrderDetail: ProductionOrderDetailsVerify | null;
   loadingProductionOrderDetail: boolean;
+  errors: IError[]
   getProductionsOrderDetail: (id: number) => void;
   getProductionsOrder: (id: number) => void;
   getProductionsOrders: (
@@ -25,4 +29,5 @@ export interface ProductionOrderStore {
     employeeId: number,
     productionOrderTypeId: number
   ) => void;
+  handleVerifyProduct:(payload: IPayloadVerifyProducts) => Promise<ResponseVerifyProduct>
 }

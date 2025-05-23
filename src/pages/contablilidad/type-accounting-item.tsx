@@ -13,6 +13,7 @@ import ThGlobal from '@/themes/ui/th-global';
 import { Colors } from '@/types/themes.types';
 import { TypeOfAccount } from '@/types/type-of-account.types';
 import { limit_options } from '@/utils/constants';
+import DivGlobal from '@/themes/ui/div-global';
 
 function TypeAccountingItem() {
   const { getTypeOfAccounts, type_of_account, loading, type_of_account_pagination } =
@@ -44,8 +45,7 @@ function TypeAccountingItem() {
   return (
     <Layout title="Tipos de Partida">
       <>
-        <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-5 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <DivGlobal>
             <div className="flex gap-3 md:gap-10 items-end">
               <Input
                 className="w-full"
@@ -153,8 +153,7 @@ function TypeAccountingItem() {
                 </div>
               </>
             )}
-          </div>
-        </div>
+          </DivGlobal>
         {selectedType && (
           <UpdateTypeAccounting
             isOpen={updateModal.isOpen}

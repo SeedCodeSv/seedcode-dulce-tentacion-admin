@@ -13,6 +13,7 @@ import { formatCurrency } from '@/utils/dte';
 import { global_styles } from '@/styles/global.styles';
 import { months } from '@/utils/constants';
 import { useAuthStore } from '@/store/auth.store';
+import DivGlobal from "@/themes/ui/div-global";
 
 function AnexoCcfe() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -28,11 +29,11 @@ function AnexoCcfe() {
 
   useEffect(() => {
     onGetIvaAnnexesCcf(
-      Number(user?.correlative?.branch.transmitterId),
+      Number(user?.pointOfSale?.branch.transmitterId),
       monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
       yearSelected
     );
-  }, [user?.correlative?.branch.transmitterId, monthSelected, yearSelected]);
+  }, [user?.pointOfSale?.branch.transmitterId, monthSelected, yearSelected]);
 
   const exportAnnexes = async () => {
     const blob = await export_annexes_iva_ccfe(annexes_iva_ccfe);
@@ -57,8 +58,7 @@ function AnexoCcfe() {
 
   return (
     <Layout title="Anexo CCFE">
-      <div className=" w-full h-full flex flex-col p-6 bg-gray-50 dark:bg-gray-900">
-        <div className="w-full flex flex-col h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+      <DivGlobal>
           <div className="w-full flex justify-between gap-5">
             <Select
               className="w-44"
@@ -174,7 +174,7 @@ function AnexoCcfe() {
                     </>
                   ) : (
                     <>
-                      <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
+                      <div className="w-full h-full flex p-10 flex-col justify-center items-center">
                         <img alt="" className="w-44 mt-10" src={NO_DATA} />
                         <p className="mt-5 dark:text-white text-gray-600 text-xl">
                           No se encontraron resultados
@@ -186,8 +186,7 @@ function AnexoCcfe() {
               )}
             </>
           </div>
-        </div>
-      </div>
+       </DivGlobal>
     </Layout>
   );
 }

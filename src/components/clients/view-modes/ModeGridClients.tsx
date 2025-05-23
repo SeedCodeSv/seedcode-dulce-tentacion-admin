@@ -13,7 +13,7 @@ function ModeGridClients(props: PropsCustomersModes) {
   const navigate = useNavigate();
 
   return (
-    <div className="grid dark:bg-gray-900 pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
+    <div className="grid pb-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
       {props.customers.map((c, index) => (
         <Card key={index}>
           <CardHeader>{c.nombre}</CardHeader>

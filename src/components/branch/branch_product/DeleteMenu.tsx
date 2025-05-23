@@ -44,7 +44,6 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
 
         }
     };
-    const style = useThemeColors({ name: Colors.Error });
 
     return (
         <>
@@ -56,11 +55,13 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
                     backdrop="blur"
                 >
                     <PopoverTrigger>
-                        <Button isIconOnly style={style} onPress={() => {
+                        <ButtonUi isIconOnly theme={Colors.Error}
+                            tooltipText="Eliminar Menu"
+                            showTooltip
 
-                        }} >
+                        >
                             <Trash />
-                        </Button>
+                        </ButtonUi>
                     </PopoverTrigger>
                     <PopoverContent>
                         <div className="flex flex-col items-center justify-center w-full p-5">

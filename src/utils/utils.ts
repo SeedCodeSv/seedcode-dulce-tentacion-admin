@@ -347,8 +347,19 @@ export const typesInventoryMovement = [
     const g = (bigint >> 8) & 255;
     const b = bigint & 255;
 
-    return [r, g, b];
+     return [r, g, b] as [number, number, number];
   };
+
+export const hexToARGB = (hex: string) => {
+  hex = hex.replace(/^#/, '');
+
+  if (hex.length === 3) {
+    hex = hex.split('').map(c => c + c).join('');
+  }
+
+  return `FF${hex.toUpperCase()}`;
+};
+
 
   export const TypesVentas=[
   {label:"TODOS", value:''},
@@ -367,3 +378,26 @@ export const estadosV = [
   { label: 'INVALIDADO', value: 'INVALIDADO' }
 ]
 
+ export const convertImageToBase64 = (url: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+
+      img.crossOrigin = 'Anonymous';
+      img.src = url;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+
+        ctx?.drawImage(img, 0, 0);
+        const dataURL = canvas.toDataURL('image/png');
+
+        resolve(dataURL);
+      };
+      img.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };

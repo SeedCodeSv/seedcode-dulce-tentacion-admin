@@ -11,6 +11,7 @@ import {
   get_promotions_products_list,
   get_product_recipe_book,
   get_product_by_id,
+  get_products_and_recipe,
 } from '../services/products.service';
 import { messages } from '../utils/constants';
 import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-item.service';
@@ -35,6 +36,17 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   productsDetails: null,
   loadingProductsDetails: false,
   loadingRecipeBook: false,
+  productsAndRecipe: [],
+  productsAndRecipeLoading: false,
+  productsAndRecipePagination: {
+    total: 0,
+    totalPag: 0,
+    currentPag: 0,
+    nextPag: 0,
+    prevPag: 0,
+    status: 404,
+    ok: false,
+  },
   getProductsDetails(id) {
     get_product_by_id(id)
       .then(({ data }) => {
@@ -70,6 +82,41 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
             status: 404,
             ok: false,
           },
+        });
+      });
+  },
+  getPaginatedProductsAndRecipe: (
+    page,
+    limit,
+    category,
+    subCategory,
+    name,
+    code,
+    active = 1,
+    typeProduct
+  ) => {
+    set({ productsAndRecipeLoading: true });
+    get_products_and_recipe(page, limit, category, subCategory, name, code, active, typeProduct)
+      .then((products) =>
+        set({
+          productsAndRecipe: products.data.products,
+          productsAndRecipeLoading: false,
+          productsAndRecipePagination: products.data,
+        })
+      )
+      .catch(() => {
+        set({
+          productsAndRecipeLoading: false,
+          productsAndRecipePagination: {
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+          productsAndRecipe: [],	
         });
       });
   },

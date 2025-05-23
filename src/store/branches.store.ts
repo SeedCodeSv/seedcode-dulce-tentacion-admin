@@ -10,10 +10,12 @@ import {
   disable_branch,
   get_branch_products,
   save_active_branch,
+  get_branch_by_id,
 } from '../services/branches.service';
 import { messages } from '../utils/constants';
 
 import { IBranchStore } from './types/branch.store';
+import { Branches } from '@/types/branches.types';
 
 
 export const useBranchesStore = create<IBranchStore>((set, get) => ({
@@ -40,7 +42,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
   branch_list: [],
   limit: 5,
   loading: false,
-  
+  branch: {} as Branches,
   active: 1 as 1 | 0,
   branch_products_list: [],
   loading_branch_product: false,
@@ -174,4 +176,12 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
       }
     });
   },
+  getBranchById(id) {
+    get_branch_by_id(id).then(({data}) => {
+      set({branch: data.branch})
+    }).
+    catch(() => {
+       set({branch: {} as Branches})
+    })
+  }
 }));

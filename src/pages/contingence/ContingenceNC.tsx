@@ -441,7 +441,7 @@ function ContingenceNC() {
   };
 
   return (
-    <div className="w-full shadow p-8">
+    <div className="w-full shadow p-4">
       {loading && (
         <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
           <Spinner className="w-24 h-24 animate-spin" />
