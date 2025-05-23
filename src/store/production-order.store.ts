@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 
 import { ProductionOrderStore } from './types/production-order.store.types';
 
@@ -11,9 +10,8 @@ import {
   verify_products_orders,
 } from '@/services/production-order.service';
 import { BasicResponse } from '@/types/global.types';
-import { IError, ResponseVerifyProduct } from '@/types/production-order.types';
+import { IError, RecipeBook, ResponseVerifyProduct } from '@/types/production-order.types';
 import { BranchProduct } from '@/types/branch_products.types';
-import { BranchProductRecipe } from '@/types/products.types';
 
 export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
   productionOrders: [],
@@ -32,6 +30,7 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
   productionOrderDetail: null,
   loadingProductionOrderDetail: false,
   errors: [],
+  verified_product: {} as ResponseVerifyProduct,
   getProductionsOrderDetail(id) {
     set({ loadingProductionOrderDetail: true });
     get_verify_production_order(id)
@@ -99,45 +98,67 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
         });
       });
   },
- handleVerifyProduct(payload): Promise<ResponseVerifyProduct> {
-  return verify_products_orders(payload)
-    .then(({ data }) => {
-      let errorss: IError[] = [];
+  handleVerifyProduct(payload): Promise<ResponseVerifyProduct> {
+    return verify_products_orders(payload)
+      .then(({ data }) => {
+        const errors: IError[] = [];
 
-      // data es tipo Datum[]
-      data.data.forEach((item) => {
-        if (item.branchProduct === null) {
-          errorss.push({ nameProduct: item.product.name });
+        if (data.ok) {
+          set({ verified_product: data })
         }
+
+        data.recipeBook.productRecipeBookDetails.forEach((item) => {
+          const quantity = Number(item.quantity);
+          const stock = Number(item.branchProduct?.stock ?? 0);
+
+          if (!item.branchProduct) {
+            errors.push({
+              nameProduct: item.product.name,
+              exist: false,
+              description: 'No existe en la Sucursal de Partida',
+            });
+          } else if (stock <= quantity) {
+            errors.push({
+              nameProduct: item.product.name,
+              exist: true,
+              description: 'No tiene suficiente stock',
+            });
+          }
+        });
+
+        set({ errors });
+
+        if (errors.length > 0) {
+          return {
+            ok: false,
+            recipeBook: data.recipeBook,
+            branchProduct: data.branchProduct,
+            status: 400,
+            errors
+          };
+        }
+
+        return {
+          ok: true,
+          recipeBook: data.recipeBook,
+          branchProduct: data.branchProduct,
+          status: 200,
+        };
+      })
+      .catch((error: AxiosError<BasicResponse>) => {
+        const rawMessage = error.response?.data?.message;
+        const message = rawMessage
+          ? rawMessage.replace('CustomHttpException: ', '')
+          : 'Ocurrió un error inesperado';
+
+        return {
+          ok: false,
+          recipeBook: {} as RecipeBook,
+          branchProduct: {} as BranchProduct,
+          status: error.response?.status ?? 500,
+          message,
+        };
       });
+  }
 
-      // Setea errores después del bucle, no dentro
-      set({ errors: errorss });
-
-      errorss.forEach((item) => {
-        toast.info(`No existe ${item.nameProduct} en Sucursal de Partida`);
-      });
-
-      return {
-        ok: true,
-        data: data.data,       
-        branchProduct: data.branchProduct,   
-        status: 200,          
-      };
-    })
-    .catch((error: AxiosError<BasicResponse>) => {
-      const rawMessage = error.response?.data?.message;
-      const message = rawMessage
-        ? rawMessage.replace('CustomHttpException: ', '')
-        : 'Ocurrió un error inesperado';
-
-      return {
-        ok: false,
-        data: [],
-        branchProduct: {} as BranchProductRecipe,
-        status: error.response?.status ?? 500,
-        message,
-      };
-    });
-}
 }));

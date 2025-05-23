@@ -1,6 +1,6 @@
 import { BranchProduct } from './branch_products.types';
 import { IPagination } from './global.types';
-import { BranchProductRecipe, Product } from './products.types';
+import { Product } from './products.types';
 
 export interface GetProductionOrders extends IPagination {
   productionOrders: ProductionOrder[];
@@ -208,27 +208,45 @@ export interface IPayloadVerifyProducts {
   branchDestinationId: number;
   branchDepartureId:   number;
   productId:           number;
-  recipeBook:          RecipeBook[];
+  recipeBook?:          RecipeBookProductsID[];
 }
 
-export interface RecipeBook {
+export interface RecipeBookProductsID {
   productId: number;
 }
 
 export interface ResponseVerifyProduct {
   ok:     boolean;
-  data:   Datum[];
-  branchProduct: BranchProductRecipe 
+  recipeBook:   RecipeBook;
+  branchProduct: BranchProduct 
   status: number;
   message?: string
-}
-
-export interface Datum {
-  product:       Product;
-  branchProduct: BranchProduct | null;
+  errors?: IError[]
 }
 
 export interface IError {
 nameProduct: string
+description: string;
+exist: boolean
 }
+
+export interface RecipeBook {
+  id:                       number;
+  isActive:                 boolean;
+  performance:              number;
+  cost:                     string;
+  productRecipeBookDetails: ProductRecipeBookDetail[];
+  productId:                number;
+}
+
+export interface ProductRecipeBookDetail {
+  id:                     number;
+  quantity:               string;
+  productIdReference:     number;
+  quantityPerPerformance: string;
+  product:                Product;
+  productRecipeBookId:    number;
+  branchProduct?:          BranchProduct;
+}
+
 

@@ -82,7 +82,7 @@ export default function RegisterProduct({ close, productToCreate }: Props) {
             {!warning ? (
                 <>
                     <ModalBody className="flex flex-col gap-4">
-                        <div className='grid grid-cols-3 gap-4 text-[15px]'>
+                        <div className='rounded-lg p-3 shadow border flex flex-col gap-2 text-[15px]'>
                             <p>Nombre: <strong>{productToCreate.name}</strong></p>
                             <p>Sucursal: <strong>{branch.name}</strong></p>
                         </div>

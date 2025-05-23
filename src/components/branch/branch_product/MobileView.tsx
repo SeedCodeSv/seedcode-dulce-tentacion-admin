@@ -1,4 +1,3 @@
-import { DataView } from 'primereact/dataview';
 import { classNames } from 'primereact/utils';
 import { Truck, ShoppingBag, Barcode, FileSpreadsheet } from 'lucide-react';
 

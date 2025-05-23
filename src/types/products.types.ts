@@ -14,6 +14,7 @@ export interface Product {
   unidaDeMedida: string;
   subCategoryId: number;
   subCategory: SubCategory;
+  productType: string,
   recipeBook:  RecipeBook ;
 }
 
