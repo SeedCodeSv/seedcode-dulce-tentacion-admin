@@ -633,7 +633,7 @@ function Annulation06({ id }: Props) {
         <>
           <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigation(-1) }}>
             <ModalContent>
-              <ModalHeader className='dark:text-white'>Anular nota de remision</ModalHeader>
+              <ModalHeader className='dark:text-white'>Anular nota de débito</ModalHeader>
               <ModalBody>
                 <Input
                   classNames={{

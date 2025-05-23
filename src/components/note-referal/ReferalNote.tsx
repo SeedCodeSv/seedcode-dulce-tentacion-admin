@@ -33,7 +33,7 @@ const GenerateSaleByNote = ({ setCustomer }: Props) => {
 
   useEffect(() => {
     user?.transmitterId &&
-      onGetReferalNotes(user?.transmitterId, 1, 10, '2025-03-01', '2025-03-31');
+      onGetReferalNotes(user?.transmitterId, 1, 10, '2025-03-01', '2025-03-31','');
   }, []);
 
 

@@ -58,17 +58,17 @@ function ListSuppliers({ actions }: ArrayAction) {
   );
 
   useEffect(() => {
-    getSupplierPagination(1, limit, search, email, tipeSupplier, active ? 1 : 0);
+    getSupplierPagination(1, limit, search, email, tipeSupplier,'', active ? 1 : 0);
     store.supplier_type = tipeSupplier;
   }, [limit, tipeSupplier, active]);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getSupplierPagination(page, limit, searchParam ?? search, searchParam ?? email, tipeSupplier);
+    getSupplierPagination(page, limit, searchParam ?? search, searchParam ?? email, tipeSupplier, '',active ? 1 : 0);
   };
 
   const handleActivate = (id: number) => {
     activateSupplier(id).then(() => {
-      getSupplierPagination(page, limit, search, email, tipeSupplier, active ? 1 : 0);
+      getSupplierPagination(page, limit, search, email,'', tipeSupplier, active ? 1 : 0);
     });
   };
 
@@ -394,7 +394,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                   previousPage={supplier_pagination.prevPag}
                   totalPages={supplier_pagination.totalPag}
                   onPageChange={(page) => {
-                    getSupplierPagination(page, limit, search, email, tipeSupplier);
+                    getSupplierPagination(page, limit, search, email, tipeSupplier, '',active ? 1 : 0);
                   }}
                 />
               </div>
@@ -408,7 +408,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                       limit,
                       search,
                       email,
-                      tipeSupplier
+                      tipeSupplier, '',active ? 1 : 0
                     );
                   }}
                   handlePrev={() => {
@@ -418,7 +418,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                       limit,
                       search,
                       email,
-                      tipeSupplier
+                      tipeSupplier,'',active ? 1 : 0
                     );
                   }}
                   totalPages={supplier_pagination.totalPag}

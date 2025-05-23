@@ -15,6 +15,7 @@ import { initialValues, validationSchema } from '@/components/add-product/valida
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
+import { toast } from 'sonner';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
 type ProductOrderReceipt = Product & { quantity: number; extraUniMedida: string };
@@ -51,7 +52,14 @@ function AddProduct() {
         })),
       };
 
-      axios.post(API_URL + '/branch-products', valuesToSend).then(() => {});
+      axios.post(API_URL + '/branch-products', valuesToSend).then(() => {
+        toast.success('Se guardo exitosamente')
+        navigate('/products')
+        window.location.reload()
+      }).catch(() => {
+        toast.error('No se proceso la solicitud')
+
+      })
     },
   });
 

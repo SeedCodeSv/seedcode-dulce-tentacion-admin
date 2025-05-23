@@ -366,3 +366,4 @@ export const estadosV = [
   { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
   { label: 'INVALIDADO', value: 'INVALIDADO' }
 ]
+

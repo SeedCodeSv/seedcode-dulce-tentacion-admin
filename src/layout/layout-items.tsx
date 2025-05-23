@@ -87,6 +87,7 @@ export const LayoutItems = (props: Props) => {
 
   const linksProductManagement = [
     { viewName: 'Productos', to: '/products', icon: Barcode, label: 'Productos' },
+    ,
     {
       viewName: 'Categorias de Productos',
       to: '/categories',
@@ -120,20 +121,27 @@ export const LayoutItems = (props: Props) => {
     {
       viewName: 'Ajuste de Inventario',
       to: '/inventary-adjustment',
-      icon: FileCog ,
+      icon: FileCog,
       label: 'Ajuste de Inventario',
     },
     {
       viewName: 'Ordenes de Compra',
       to: '/purchase-orders',
-      icon: ShoppingBasket ,
+      icon: ShoppingBasket,
       label: 'Ordenes de Compra',
     },
-     { viewName: 'Notas de remisión',
+    {
+      viewName: 'Notas de remisión',
       to: '/note-referal',
-      icon: FaChartLine ,
+      icon: FaChartLine,
       label: 'Ver Notas de remisión',
     },
+    { viewName: 'Control de existencias', 
+      to: '/MWSC',
+       icon: Barcode, 
+       label: 'Control de existencias' 
+      }
+
   ];
 
   const linkAdministration = [
@@ -220,15 +228,22 @@ export const LayoutItems = (props: Props) => {
     {
       viewName: 'Movimientos',
       to: '/movement',
-      icon: ArrowDownUp ,
+      icon: ArrowDownUp,
       label: 'Movimientos',
     },
-     {
+    {
       viewName: 'Kardex',
       to: '/kardex-inventory',
       icon: List,
       label: 'Kardex',
     },
+    {
+      viewName: 'Ver invalidaciones',
+      to: '/list-invalidations',
+      icon: List,
+      label: 'Ver invalidaciones',
+    },
+
 
   ];
 
@@ -403,6 +418,7 @@ export const LayoutItems = (props: Props) => {
                     'subCategories',
                     'orders',
                     'compras',
+                    'MWSC'
                   ]) && openGroup === 'gestion-productos'
                 }
                 isOpen={openGroup === 'gestion-productos'}
@@ -421,6 +437,8 @@ export const LayoutItems = (props: Props) => {
                           'subCategories',
                           'orders',
                           'compras',
+                          'MWSC'
+
                         ])
                           ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
                           : theme.colors[context].menu.background,

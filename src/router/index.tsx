@@ -67,6 +67,9 @@ const AddAccountCatalogs = lazy(() => import('../components/account-catalogs/add
 const UpdateAccountCatalogs = lazy(
   () => import('../components/account-catalogs/update-account-catalog')
 );
+const Innvalidations = lazy(() => import('../pages/Innvalidations'))
+const CreateBranchProduct = lazy(() => import('../pages/create-branch-product'))
+const MWSC = lazy(() => import('../pages/MultipleWarehouseStockControl'))
 const TicketSales = lazy(() => import('../pages/ticket-sales'));
 const EditTransmitterInfo = lazy(() => import('../pages/edit-transmitter-info'));
 const Home = lazy(() => import('../pages/home'));
@@ -661,54 +664,78 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/verificar-faltantes"
       />
-       <Route
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />}
-            </AnimatedRoute>
-          }
-          path="/inventary-adjustment"
-         />
       <Route
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Movimientos') ? <Movements /> : <Home />}
-            </AnimatedRoute>
-          }
-          path="/movement"
-        /> 
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/inventary-adjustment"
+      />
       <Route
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrders /> : <Home />}
-            </AnimatedRoute>
-          }
-          path="/purchase-orders"
-        />
-        <Route
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compra') ? <AddPurchaseOrders /> : <Home />}
-            </AnimatedRoute>
-          }
-          path="/add-purchase-order"
-        />
-          <Route
-          element={
-            <AnimatedRoute>
-              <UpdatePurchaseDetail />
-            </AnimatedRoute>
-          }
-          path="/update-purchase-detail/:purchaseId"
-         />
-        <Route
-          element={
-            <AnimatedRoute>
-              {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrderForm /> : <Home />}
-            </AnimatedRoute>
-          }
-          path="/add-product-purchase-order"
-        />
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Movimientos') ? <Movements /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/movement"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrders /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/purchase-orders"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de Compra') ? <AddPurchaseOrders /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/add-purchase-order"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            <UpdatePurchaseDetail />
+          </AnimatedRoute>
+        }
+        path="/update-purchase-detail/:purchaseId"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de Compra') ? <PurchaseOrderForm /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/add-product-purchase-order"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ver invalidaciones') ? <Innvalidations /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/list-invalidations"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Control de existencias') ? <MWSC /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/MWSC"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Productos') ? <CreateBranchProduct  /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/create-branch-product/:id"
+      />
     </>
   );
 

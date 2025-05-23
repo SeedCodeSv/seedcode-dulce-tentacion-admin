@@ -5,7 +5,7 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { EditIcon, RefreshCcw, Book } from 'lucide-react';
+import { EditIcon, RefreshCcw, Book, BookDown, ShoppingBag } from 'lucide-react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 
@@ -191,12 +191,12 @@ function ListProducts({ actions }: Props) {
         {view === 'table' && (
           <>
             <TableComponent
-              headers={["Nº", "Nombre", "Código", "Sub categoría",'Acciones']}
+              headers={["Nº", "Nombre", "Código", "Sub categoría", 'Acciones']}
             >
               {loading_products ? (
                 <tr>
                   <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                    <LoadingTable/>
+                    <LoadingTable />
                   </td>
                 </tr>
               ) : (
@@ -242,6 +242,18 @@ function ListProducts({ actions }: Props) {
                                   onPress={() => handleOpenModalRecipe(product.id)}
                                 >
                                   <Book size={20} />
+                                </ButtonUi>
+                              )}
+                              {actions.includes('Asignar a productos') && (
+                                <ButtonUi
+                                  isIconOnly
+                                  showTooltip
+                                  className="border border-white"
+                                  theme={Colors.Info}
+                                  tooltipText="Asignar a productos"
+                                  onPress={() => navigate(`/create-branch-product/${product.id}`)}
+                                >
+                                  <ShoppingBag size={20} />
                                 </ButtonUi>
                               )}
                               <>

@@ -48,7 +48,6 @@ function ShippingProductBranchSelected(props: Props) {
     OnMinusProductSelected,
     OnChangeQuantityManual,
     OnUpdateCosteManual,
-    OnUpdatePriceManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
@@ -167,7 +166,6 @@ function ShippingProductBranchSelected(props: Props) {
                     'Nombre',
                     'Categoria',
                     'Costo Unitario',
-                    'Precio',
                     'Cantidad',
                     'Acciones',
                   ].map((column) => (
@@ -217,7 +215,7 @@ function ShippingProductBranchSelected(props: Props) {
                         }}
                       />
                     </td>
-                    <td className="px-6 py-4 dark:text-white">
+                    {/* <td className="px-6 py-4 dark:text-white">
                       <Input
                         value={item.price!.toString()}
                         variant="bordered"
@@ -225,7 +223,7 @@ function ShippingProductBranchSelected(props: Props) {
                           OnUpdatePriceManual(item.id, String(e.currentTarget.value));
                         }}
                       />
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 dark:text-white">
                       <Input
                         value={item.quantity!.toString()}

@@ -43,8 +43,6 @@ function ListSales() {
 
   const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
     useSalesStore();
-
-  // const modalVerify = useDisclosure()
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -241,42 +239,42 @@ function ListSales() {
                                       >
                                         {notes.debits > 0 ? (
                                           <ListboxItem
-                                            key="show-debit-note"
                                             classNames={{ base: 'font-semibold' }}
-                                            color="primary"
                                             variant="flat"
+                                            color="primary"
+                                            key="show-debit-note"
                                           >
                                             Ver notas de débito
                                           </ListboxItem>
-                                        ) : (
+                                        ) : notes.credits > 0 ? (
                                           <ListboxItem
-                                            key="debit-note"
                                             classNames={{ base: 'font-semibold' }}
-                                            color="danger"
                                             variant="flat"
-                                          >
-                                            Nota de débito
-                                          </ListboxItem>
-                                        )}
-
-                                        {notes.credits > 0 ? (
-                                          <ListboxItem
-                                            key="show-credit-note"
-                                            classNames={{ base: 'font-semibold' }}
                                             color="primary"
-                                            variant="flat"
+                                            key="show-credit-note"
                                           >
                                             Ver notas de crédito
                                           </ListboxItem>
                                         ) : (
-                                          <ListboxItem
-                                            key="credit-note"
-                                            classNames={{ base: 'font-semibold' }}
-                                            color="danger"
-                                            variant="flat"
-                                          >
-                                            Nota de crédito
-                                          </ListboxItem>
+                                          <>
+                                            <ListboxItem
+                                              classNames={{ base: 'font-semibold' }}
+                                              variant="flat"
+                                              color="danger"
+                                              key="debit-note"
+                                            >
+                                              Nota de débito
+                                            </ListboxItem>
+
+                                            <ListboxItem
+                                              classNames={{ base: 'font-semibold' }}
+                                              variant="flat"
+                                              color="danger"
+                                              key="credit-note"
+                                            >
+                                              Nota de crédito
+                                            </ListboxItem>
+                                          </>
                                         )}
                                       </Listbox>
                                     </>

@@ -51,8 +51,8 @@ function List() {
   const modalComplete = useDisclosure()
 
   useEffect(() => {
-    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate);
-  }, [startDate, endDate, limit]);
+    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state);
+  }, [startDate, endDate, limit, state]);
 
   const styles = useGlobalStyles();
 
@@ -129,7 +129,8 @@ function List() {
             >
               {estadosV.map((e) => (
                 <SelectItem key={e.value}
-                  className="dark:text-white"                >{e.label}</SelectItem>
+                  className="dark:text-white"
+                >{e.label}</SelectItem>
               ))}
             </Select>
 
@@ -221,7 +222,7 @@ function List() {
                                       return 'danger';
                                     case 'CONTINGENCIA':
                                       return 'warning';
-                                       case 'PENDIENTE':
+                                    case 'PENDIENTE':
                                       return 'primary';
                                     default:
                                       return 'default';
@@ -318,7 +319,7 @@ function List() {
                   previousPage={pagination_referal_notes.prevPag}
                   totalPages={pagination_referal_notes.totalPag}
                   onPageChange={(page) => {
-                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate);
+                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state);
                   }}
                 />
               </div>
@@ -331,7 +332,8 @@ function List() {
                       pagination_referal_notes.nextPag,
                       10,
                       startDate,
-                      endDate
+                      endDate,
+                      state
                     );
                   }}
                   handlePrev={() => {
@@ -340,7 +342,8 @@ function List() {
                       pagination_referal_notes.prevPag,
                       10,
                       startDate,
-                      endDate
+                      endDate,
+                      state
                     );
                   }}
                   totalPages={pagination_referal_notes.totalPag}
@@ -380,7 +383,7 @@ function List() {
           <CompleteNoteModal
             note={selectedNote}
             reload={() => {
-              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate)
+              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state)
             }}
             visibled={modalComplete}
             onClose={() => {
@@ -393,7 +396,7 @@ function List() {
         item={items}
         modalInvalidate={modalInvalidate}
         reload={() => {
-          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate)
+          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state)
         }}
       />
     </>

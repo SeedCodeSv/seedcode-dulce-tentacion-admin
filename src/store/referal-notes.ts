@@ -25,9 +25,9 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
   json_referal_note_copy: undefined,
   json_referal_note: undefined,
   recentReferalNote: [],
-  onGetReferalNotes: (id, page, limit, startDate, endDate) => {
+  onGetReferalNotes: (id, page, limit, startDate, endDate, state) => {
     set({ loading: true });
-    get_referal_notes(id, page, limit, startDate, endDate)
+    get_referal_notes(id, page, limit, startDate, endDate, state)
       .then(({ data }) => {
         if (data.referalNotes.length > 0) {
           set({

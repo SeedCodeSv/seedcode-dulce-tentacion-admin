@@ -615,13 +615,13 @@ function Invalidation05({ id }: Props) {
               animationData: EMPTY_BOX,
             }}
           /> */}
-            <p className="mt-3 text-xl font-normal">No se encontró la nota de débito solicitada</p>
+            <p className="mt-3 text-xl font-normal">No se encontró la nota de crédito solicitada</p>
           </div>
         )}
       </>) : (<>
         <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigation(-1) }}>
           <ModalContent>
-            <ModalHeader className='dark:text-white'>Anular nota de remision</ModalHeader>
+            <ModalHeader className='dark:text-white'>Anular nota de crédito</ModalHeader>
             <ModalBody>
               <Input
                 classNames={{
