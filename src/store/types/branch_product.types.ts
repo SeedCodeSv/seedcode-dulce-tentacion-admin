@@ -9,7 +9,7 @@ import {
 
 import { Branches } from '@/types/branches.types';
 import { IGetBranchProductOrderPaginated } from '@/types/branch_product_order.types';
-import { BranchProductRecipe } from '@/types/products.types';
+import { BranchProductRecipe, BranchProductRecipeSupplier, UpdateBranchProductOrder } from '@/types/products.types';
 import { IPagination } from '@/types/global.types';
 import { FC_CuerpoDocumentoItems } from '@/types/svf_dte/fc.types';
 
@@ -23,6 +23,7 @@ export interface IBranchProductStore {
   branches_list: Branches[];
   branch_product_order_paginated_loading: boolean;
   branchProductRecipe: BranchProductRecipe[];
+  branchProductRecipeSupplier: BranchProductRecipeSupplier[];
   loadingBranchProductRecipe: boolean;
   branchProductRecipePaginated: IPagination;
   getBranchProductsRecipe: (
@@ -41,6 +42,16 @@ export interface IBranchProductStore {
     code?: string,
     page?: number,
     limit?: number
+  ) => void;
+  getBranchProductRecipeSupplier: (
+    id: number,
+    branchProductId: number,
+    page: number,
+    limit: number,
+    category: string,
+    name?: string,
+    code?: string,
+    typeProduct?: string
   ) => void;
   getPaginatedBranchProducts: (
     branchId: number,
@@ -74,4 +85,5 @@ export interface IBranchProductStore {
   getProductByCode: (transmitter_id: number, code: string) => void;
   getBranchesList: () => void;
   onAddProductsByList: (id: number, cuerpoDescuento: FC_CuerpoDocumentoItems[]) => void;
+  patchBranchProduct: (id: number, payload: UpdateBranchProductOrder) => Promise<boolean>
 }

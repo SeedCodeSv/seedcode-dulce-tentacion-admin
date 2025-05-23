@@ -14,7 +14,8 @@ export interface ReferalNoteStore {
     page: number,
     limit: number,
     startDate: string,
-    endDate: string
+    endDate: string,
+    state:string
   ) => void;
   completeReferalNote: (id: number, payload:PayloadReferel) => Promise<boolean>;
   getJsonReferelNote: (path: string) => void

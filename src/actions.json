@@ -7,7 +7,8 @@
         "Agregar",
         "Editar",
         "Eliminar",
-        "Activar"
+        "Activar",
+        "Asignar a productos"
       ]
     },
     {
@@ -137,7 +138,8 @@
         "Editar",
         "Eliminar",
         "Ver Productos",
-        "Activar Sucursal"
+        "Activar Sucursal",
+        "Editar menu"
       ]
     },
     {
@@ -376,7 +378,18 @@
         "Completar",
         "Ver comprobante"
       ]
+    },
+    {
+      "view": "Ver invalidaciones",
+      "actions": [
+        "Mostrar"
+      ]
+    },
+    {
+      "view": "Control de existencias",
+      "actions": [
+        "Mostrar"
+      ]
     }
-   
   ]
 }

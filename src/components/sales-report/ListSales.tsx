@@ -43,8 +43,6 @@ function ListSales() {
 
   const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
     useSalesStore();
-
-  // const modalVerify = useDisclosure()
   const navigation = useNavigate();
 
   useEffect(() => {

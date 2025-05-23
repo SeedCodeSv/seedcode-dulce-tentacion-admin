@@ -6,12 +6,13 @@ import {
   get_branch_product_orders,
   get_branches,
   get_product_by_code,
+  update_branch_product,
 } from '../services/branch_product.service';
 import { groupBySupplier } from '../utils/filters';
 
 import { IBranchProductStore } from './types/branch_product.types';
 
-import { get_branch_product_recipe } from '@/services/products.service';
+import { get_branch_product_recipe, get_branch_product_recipe_supplier } from '@/services/products.service';
 import { generate_uuid } from '@/utils/random/random';
 import { calc_iva } from '@/utils/money';
 
@@ -27,6 +28,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
     status: 200,
     ok: true,
   },
+  branchProductRecipeSupplier: [],
   cart_products: [],
   branch_product_order: [],
   order_branch_products: [],
@@ -87,6 +89,39 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         });
       });
   },
+  getBranchProductRecipeSupplier(id, branchProductId, page, limit, category, product, code, typeProduct) {
+    get_branch_product_recipe_supplier(id,branchProductId, page, limit, category, product, code, typeProduct)
+      .then(({ data }) => {
+        set({
+          branchProductRecipeSupplier: data.data,
+          branchProductRecipePaginated: {
+            total: data.total,
+            totalPag: data.totalPag,
+            currentPag: data.currentPag,
+            nextPag: data.nextPag,
+            prevPag: data.prevPag,
+            status: data.status,
+            ok: data.ok,
+          },
+          loadingBranchProductRecipe: false,
+        });
+      })
+      .catch(() => {
+        set({
+          branchProductRecipeSupplier: [],
+          branchProductRecipePaginated: {
+            total: 0,
+            totalPag: 0,
+            currentPag: 0,
+            nextPag: 0,
+            prevPag: 0,
+            status: 404,
+            ok: false,
+          },
+          loadingBranchProductRecipe: false,
+        });
+      });
+  },
   addProductOrder(product) {
     const products = get().order_branch_products;
     const existProduct = products.find((cp) => cp.id === product.id);
@@ -103,7 +138,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
           },
         ],
       });
-      toast.success('Se agrego el producto a la orden',{position: 'top-center'});
+      toast.success('Se agrego el producto a la orden', { position: 'top-center' });
     }
 
     set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
@@ -261,7 +296,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
             quantity: 1,
             base_price: Number(product.price),
             discount: 0,
-            total: 0, 
+            total: 0,
             porcentaje: 0,
           },
         ],
@@ -331,7 +366,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
         set((state) => ({ ...state, branches_list: [] }));
       });
   },
- async onAddProductsByList(id, CuerpoDocumento) {
+  async onAddProductsByList(id, CuerpoDocumento) {
     set({ cart_products: [] });
 
     get().onAddProductsByList(id, CuerpoDocumento);
@@ -366,4 +401,15 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
 
     set({ cart_products: products });
   },
+  patchBranchProduct(id, payload) {
+    return update_branch_product(id, payload).then(() => {
+      toast.success('Se actualizo con exito')
+
+      return true
+    }).catch(() => {
+      toast.error('No se proceso la solicitud')
+
+      return false
+    })
+  }
 }));

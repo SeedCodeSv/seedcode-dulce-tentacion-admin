@@ -175,7 +175,7 @@ function ListBranch({ actions }: ArrayAction) {
                   type="button"
                   onPress={() => handleSearch()}
                 >
-                  Buscar
+                  Buscar 
                 </ButtonUi>
               </div>
             </div>

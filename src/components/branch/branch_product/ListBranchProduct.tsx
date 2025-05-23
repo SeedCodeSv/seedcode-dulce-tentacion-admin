@@ -6,9 +6,10 @@ import {
   SelectItem,
   Autocomplete,
   AutocompleteItem,
-  ButtonGroup
+  ButtonGroup,
+  useDisclosure
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable} from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare } from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
 import { CategoryProduct } from '../../../types/categories.types';
@@ -18,6 +19,9 @@ import SmPagination from '../../global/SmPagination';
 import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
 
 import MobileView from './MobileView';
+import UpdateBranchProduct from './UpdateBranchProduct';
+import MenuUpdate from './MenuUpdate';
+import DeletePopUp from './DeleteMenu';
 
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
@@ -27,6 +31,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
+import { IGetBranchProduct } from '@/types/branches.types';
 interface Props {
   id: number;
   onclick: () => void;
@@ -47,7 +52,11 @@ export default function ListBranchProduct({ id, onclick }: Props) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
 
   const [openVaul, setOpenVaul] = useState(false);
-  //   const modalAdd = useDisclosure();
+  const [selectedBranch, setSelectedBranch] = useState<IGetBranchProduct>();
+  const vaul = useDisclosure();
+  const library = useDisclosure()
+  const [modalVisible, setModalVisible] = useState<'main' | 'product' | 'menu'>('main')
+
   const changePage = () => {
     getBranchProducts(id, page, limit, name, category, code);
   };
@@ -55,13 +64,26 @@ export default function ListBranchProduct({ id, onclick }: Props) {
   useEffect(() => {
     getBranchProducts(id, page, limit, name, category, code);
   }, [id, limit]);
+
   useEffect(() => {
     getListCategories();
   }, []);
 
+  const handleEdit = async (item: IGetBranchProduct) => {
+    if (!item) {
+
+      return
+    }
+    setSelectedBranch(item);
+    vaul.onOpen();
+
+  };
+
+
   return (
     <>
-     <DivGlobal>
+      {modalVisible === 'main' && (
+        <DivGlobal>
           <button className="mb-4  w-24 cursor-pointer flex" onClick={onclick}>
             <ArrowLeft className="dark:text-white mr-2" />
             <p className="dark:text-white">Regresar</p>
@@ -81,7 +103,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                 labelPlacement="outside"
                 name="searchName"
                 placeholder="Buscar por nombre..."
-                startContent={<Search className='dark:text-white'/>}
+                startContent={<Search className='dark:text-white' />}
                 value={name}
                 variant="bordered"
                 onChange={(e) => setName(e.target.value)}
@@ -161,7 +183,7 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                   className="w-44"
                   classNames={{
                     label: 'font-semibold',
-                    selectorIcon:'dark:text-white'
+                    selectorIcon: 'dark:text-white'
                   }}
                   label="Mostrar"
                   labelPlacement="outside"
@@ -281,71 +303,98 @@ export default function ListBranchProduct({ id, onclick }: Props) {
           {view === 'table' && (
             <>
               <TableComponent
-                         headers={["Nº", "Nombre", "Codigo", "Precio",'Stock','Reservado']}
-                       >
-                    {loading_branch_product ? (
+                headers={["Nº", "Nombre", "Codigo", "Precio", 'Stock', 'Reservado', 'Acciones']}
+              >
+                {loading_branch_product ? (
+                  <tr>
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
+                      <div className="flex flex-col items-center justify-center w-full h-64">
+                        <div className="loader" />
+                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {branch_products_list.length > 0 ? (
+                      <>
+                        {branch_products_list.map((cat, index) => (
+                          <tr key={index} className="border-b border-slate-200">
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {cat.id}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
+                              {cat.product.name}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {cat.product.code}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {formatCurrency(Number(cat.price))}
+                            </td>
+                            <td className="p-3 text-sm text-green-500 dark:text-green-300">
+                              {cat.stock}
+                            </td>
+                            <td className="p-3 text-sm text-red-500 dark:text-red-300">
+                              {cat.reserved}
+                            </td>
+                            <td className='flex flex-row gap-2'>
+
+                              <ButtonUi
+                                isIconOnly
+                                showTooltip
+                                className="flex font-semibold border border-white cursor-pointer"
+                                theme={Colors.Primary}
+                                tooltipText='Editar producto'
+                                type="button"
+                                onPress={() => {
+                                  handleEdit(cat)
+                                  setModalVisible('product')
+                                }}
+                              >
+                                <Pencil />
+                              </ButtonUi>
+
+                              <ButtonUi
+                                isIconOnly
+                                showTooltip
+                                className="flex font-semibold border border-white cursor-pointer"
+                                theme={Colors.Success}
+                                tooltipText='Editar Menu'
+                                type="button"
+                                onPress={() => {
+                                  library.onOpen()
+                                  handleEdit(cat)
+                                  setModalVisible('menu')
+                                }}
+                              >
+                                <LibrarySquare />
+                              </ButtonUi>
+
+                              {/* {actions.includes('Eliminar') && ( */}
+                              <>{cat.isActive && <DeletePopUp branchId={cat?.branchId ?? 0}
+                                branchProductId={cat?.id ?? 0}
+                                productName={cat?.product?.name ?? 'N/A'}
+                              />}</>
+                              {/* )} */}
+
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
                       <tr>
-                        <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                          <div className="flex flex-col items-center justify-center w-full h-64">
-                            <div className="loader" />
-                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                        <td colSpan={5}>
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
+                            <p className="mt-3 text-xl">No se encontraron resultados</p>
                           </div>
                         </td>
                       </tr>
-                    ) : (
-                      <>
-                        {branch_products_list.length > 0 ? (
-                          <>
-                            {branch_products_list.map((cat, index) => (
-                              <tr key={index} className="border-b border-slate-200">
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {cat.id}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
-                                  {cat.product.name}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {cat.product.code}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatCurrency(Number(cat.price))}
-                                </td>
-                                <td className="p-3 text-sm text-green-500 dark:text-green-300">
-                                  {cat.stock}
-                                </td>
-                                <td className="p-3 text-sm text-red-500 dark:text-red-300">
-                                  {cat.reserved}
-                                </td>
-                                {/* <td>
-                                  <ButtonUi
-                                    isIconOnly
-                                    className="flex font-semibold border border-white cursor-pointer"
-                                    theme={Colors.Info}
-                                    type="button"
-                                    onPress={() => {modalDetails.onOpen();
-                                    }}
-                                    // tooltipText='Detalles'
-                                    // showTooltip
-                                  >
-                                     <NotepadText />
-                                  </ButtonUi>
-                                </td> */}
-                              </tr>
-                            ))}
-                          </>
-                        ) : (
-                          <tr>
-                            <td colSpan={5}>
-                              <div className="flex flex-col items-center justify-center w-full">
-                                <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                                <p className="mt-3 text-xl">No se encontraron resultados</p>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </>
                     )}
-                  </TableComponent>
+                  </>
+                )}
+              </TableComponent>
             </>
           )}
           {(view === 'grid' || view === 'list') && <MobileView layout={'grid'} />}
@@ -396,6 +445,35 @@ export default function ListBranchProduct({ id, onclick }: Props) {
             </>
           )}
         </DivGlobal>
+
+      )}
+
+      {modalVisible === 'product' &&
+        vaul.isOpen && (
+          <UpdateBranchProduct
+            branch_products={selectedBranch}
+            reloadData={changePage}
+            onClose={() => {
+              vaul.onClose
+              setModalVisible('main')
+              setSelectedBranch(undefined)
+            }
+            }
+
+          />
+        )
+      }
+      {modalVisible === 'menu' && library.isOpen &&
+        <MenuUpdate
+          branch_products={selectedBranch}
+          reloadData={changePage}
+          onClose={() => {
+            library.onClose
+            setModalVisible('main')
+            setSelectedBranch(undefined)
+
+          }}
+        />}
     </>
   );
 }
