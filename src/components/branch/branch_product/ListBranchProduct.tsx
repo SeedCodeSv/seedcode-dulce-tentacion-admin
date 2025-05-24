@@ -35,8 +35,9 @@ import { IGetBranchProduct } from '@/types/branches.types';
 interface Props {
   id: number;
   onclick: () => void;
+  actions: string[]
 }
-export default function ListBranchProduct({ id, onclick }: Props) {
+export default function ListBranchProduct({ id, onclick, actions }: Props) {
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -79,6 +80,10 @@ export default function ListBranchProduct({ id, onclick }: Props) {
 
   };
 
+  const handleRefresh = () => {
+    getBranchProducts(id, page, limit, name, category, code);
+
+  }
 
   return (
     <>
@@ -339,45 +344,57 @@ export default function ListBranchProduct({ id, onclick }: Props) {
                               {cat.reserved}
                             </td>
                             <td className='flex flex-row gap-2'>
+                              {actions.includes('Editar producto') && (
+                                <ButtonUi
+                                  isIconOnly
+                                  showTooltip
+                                  className="flex font-semibold border border-white cursor-pointer"
+                                  theme={Colors.Primary}
+                                  tooltipText='Editar producto'
+                                  type="button"
+                                  onPress={() => {
+                                    handleEdit(cat)
+                                    setModalVisible('product')
+                                  }}
+                                >
+                                  <Pencil />
+                                </ButtonUi>
+                              )}
 
-                              <ButtonUi
-                                isIconOnly
-                                showTooltip
-                                className="flex font-semibold border border-white cursor-pointer"
-                                theme={Colors.Primary}
-                                tooltipText='Editar producto'
-                                type="button"
-                                onPress={() => {
-                                  handleEdit(cat)
-                                  setModalVisible('product')
-                                }}
-                              >
-                                <Pencil />
-                              </ButtonUi>
+                              {cat.hasActiveMenu && (
+                                <>
+                                  {actions.includes('Editar Menu') && (
+                                    <ButtonUi
+                                      isIconOnly
+                                      showTooltip
+                                      className="flex font-semibold border border-white cursor-pointer"
+                                      theme={Colors.Success}
+                                      tooltipText='Editar Menu'
+                                      type="button"
+                                      onPress={() => {
+                                        library.onOpen()
+                                        handleEdit(cat)
+                                        setModalVisible('menu')
+                                      }}
+                                    >
+                                      <LibrarySquare />
+                                    </ButtonUi>
+                                  )}
 
-                              <ButtonUi
-                                isIconOnly
-                                showTooltip
-                                className="flex font-semibold border border-white cursor-pointer"
-                                theme={Colors.Success}
-                                tooltipText='Editar Menu'
-                                type="button"
-                                onPress={() => {
-                                  library.onOpen()
-                                  handleEdit(cat)
-                                  setModalVisible('menu')
-                                }}
-                              >
-                                <LibrarySquare />
-                              </ButtonUi>
+                                  {actions.includes('Eliminar Menu') && (
+                                    <>{cat.isActive && <DeletePopUp
+                                      branchId={cat?.branchId ?? 0}
+                                      branchProductId={cat?.id ?? 0}
+                                      productName={cat?.product?.name ?? 'N/A'}
+                                      reload={() => {
+                                        handleRefresh()
+                                      }}
+                                    />}</>
+                                  )}
 
-                              {/* {actions.includes('Eliminar') && ( */}
-                              <>{cat.isActive && <DeletePopUp branchId={cat?.branchId ?? 0}
-                                branchProductId={cat?.id ?? 0}
-                                productName={cat?.product?.name ?? 'N/A'}
-                              />}</>
-                              {/* )} */}
+                                </>
 
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -397,7 +414,15 @@ export default function ListBranchProduct({ id, onclick }: Props) {
               </TableComponent>
             </>
           )}
-          {(view === 'grid' || view === 'list') && <MobileView layout={'grid'} />}
+          {(view === 'grid' || view === 'list')
+            && <MobileView
+              actions={actions}
+              handleEdit={handleEdit}
+              layout={'grid'}
+              library={library}
+              reload={handleRefresh}
+              setModalVisible={setModalVisible}
+            />}
 
           {branch_product_Paginated.totalPag > 1 && (
             <>

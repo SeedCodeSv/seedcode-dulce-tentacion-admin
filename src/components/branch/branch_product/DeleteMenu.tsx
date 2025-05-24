@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
+import { Button, Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";
@@ -6,14 +6,16 @@ import { Trash } from "lucide-react";
 import { useMenuStore } from "@/store/menu.store";
 import { Colors } from "@/types/themes.types";
 import ButtonUi from "@/themes/ui/button-ui";
+import useThemeColors from "@/themes/use-theme-colors";
 
 interface Props {
     branchProductId: number;
     branchId: number
     productName: string
+    reload: () => void
 }
 
-const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
+const DeletePopUp = ({ branchProductId, branchId, productName, reload }: Props) => {
     const deleteDisclosure = useDisclosure();
     const { DeleteMenu, getMenuByBranchProduct, menu } = useMenuStore()
     const [view, setView] = useState<'button' | ''>('button')
@@ -34,6 +36,7 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
                 if (res) {
                     toast.success('Se elimino correctamente');
                     deleteDisclosure.onClose();
+                    reload()
                 } else {
                     toast.error('No se logro realizar la peticion');
                 }
@@ -43,6 +46,8 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
 
         }
     };
+
+    const style = useThemeColors({ name: Colors.Error });
 
     return (
         <>
@@ -54,13 +59,13 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
                     backdrop="blur"
                 >
                     <PopoverTrigger>
-                        <ButtonUi isIconOnly showTooltip
-                            theme={Colors.Error}
-                            tooltipText="Eliminar Menu"
+                        <Button
+                            isIconOnly
+                            style={style}
 
                         >
                             <Trash />
-                        </ButtonUi>
+                        </Button>
                     </PopoverTrigger>
                     <PopoverContent>
                         <div className="flex flex-col items-center justify-center w-full p-5">

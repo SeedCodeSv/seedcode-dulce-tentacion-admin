@@ -96,7 +96,7 @@ function ListBranch({ actions }: ArrayAction) {
   return (
     <>
       {BranchId >= 1 ? (
-        <ListBranchProduct id={BranchId} onclick={() => setBranchId(0)} />
+        <ListBranchProduct actions={actions} id={BranchId} onclick={() => setBranchId(0)  } />
       ) : (
         <DivGlobal className="flex flex-col h-full overflow-y-auto">
             <div className="flex justify-between items-end ">

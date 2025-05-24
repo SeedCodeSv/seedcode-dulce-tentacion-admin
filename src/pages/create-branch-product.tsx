@@ -18,6 +18,12 @@ import { API_URL } from '@/utils/constants';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
 
+interface ProductOrde {
+    productId: number,
+    quantity: number,
+    uniMedidaExtra: string
+}
+
 function AddBranchProduct() {
     const { id } = useParams<{ id: string }>();
     const { getBranchesList } = useBranchesStore();
@@ -34,11 +40,20 @@ function AddBranchProduct() {
 
     const formik = useFormik<ProductPayloadFormTwo>({
         initialValues,
-
         onSubmit(values) {
+            const value = selectedProducts.map((i) => {
+                const data: ProductOrde = {
+                    productId: i.id,
+                    quantity: i.quantity,
+                    uniMedidaExtra: i.uniMedidaExtra
+                }
+
+                return data
+            })
+
             const valuesToSend = {
                 ...values,
-                products: [],
+                products: value,
                 receipt: []
             };
 
@@ -70,7 +85,7 @@ function AddBranchProduct() {
                     }}
                 >
                     <FormikProvider value={formik}>
-                    
+
                         <BranchProductInfo />
                         <MenuProductInfo
                             selectedProducts={selectedProducts}

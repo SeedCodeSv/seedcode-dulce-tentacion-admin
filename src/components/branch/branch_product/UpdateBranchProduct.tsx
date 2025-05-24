@@ -120,6 +120,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
     };
 
     useEffect(() => {
+
         if (branchProductRecipeSupplier.length > 0) {
             const product = branchProductRecipeSupplier[0];
 
