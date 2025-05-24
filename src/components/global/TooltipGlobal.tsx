@@ -1,6 +1,5 @@
 import { Tooltip } from "@heroui/react";
 
-import { global_styles } from "@/styles/global.styles";
 interface Props {
   children: JSX.Element;
   text: string;
