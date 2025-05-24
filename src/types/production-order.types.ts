@@ -135,7 +135,7 @@ export interface ProductionOrderDetailsVerify {
   destinationBranch: DestinationBranch
   receptionBranch: ReceptionBranch
   employee: Employee
-  productionOrderType: ProductionOrderType
+  // productionOrderType: ProductionOrderType
   productionOrderTypeId: number
   employeeOrderId: number
   receptionBranchId: number
@@ -225,6 +225,7 @@ export interface ResponseVerifyProduct {
 }
 
 export interface IError {
+productId: number;
 nameProduct: string
 description: string;
 exist: boolean

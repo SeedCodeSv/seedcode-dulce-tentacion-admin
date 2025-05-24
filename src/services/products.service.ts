@@ -164,7 +164,7 @@ export const get_branch_product_recipe = (
 };
 
 export const create_branch_product = (payload: IPayloadBranchProduct) =>{
-  return axios.post<BasicResponse>(API_URL + '/branch-products/add-branch-product', payload)
+  return axios.post<BasicResponse>(API_URL + '/branch-products/add/branch-product', payload)
 }
 export const get_branch_product_recipe_supplier = (
   id: number,

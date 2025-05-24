@@ -22,6 +22,7 @@ import { toast } from 'sonner';
 
 import Pagination from '../global/Pagination';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
+import TooltipGlobal from '../global/TooltipGlobal';
 
 import RegisterProduct from './registerProduct';
 
@@ -142,7 +143,6 @@ function SelectProduct({
     if (!res.ok && res.errors && selectedProducts[0]?.branchProduct.id !== res.branchProduct.id) {
       modalProducts.onClose();
       getBranchById(Number(new Set(selectedBranch).values().next().value))
-      setProductToCreate(res.recipeBook.productRecipeBookDetails[0].product);
       modalError.onOpen();
 
       return
@@ -320,7 +320,6 @@ function SelectProduct({
               <ModalBody>
                 <p>El producto <strong>{productToCreate.name}</strong> no existe en la sucursal destino.</p>
                 <p>¿Deseas crearlo?</p>
-                {/* Puedes mostrar detalles del producto, receta, etc. */}
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={() => modalProduct.onClose()}>Cancelar</Button>
@@ -348,22 +347,35 @@ function SelectProduct({
             <TriangleAlert className='text-orange-500' size={26} /> Advertencia
           </ModalHeader>
           <ModalBody>
-    {errors && errors.length > 0 && errors.map((item, index) => (
-      <span key={index} className="flex items-center gap-2 text-gray-700">
-        {item.exist === false ? (
-          <Store className="text-red-500" size={20} onClick={() => {
-            modalError.onClose()
-            modalProduct.onOpen();
-            createProduct.onOpen()
-          }} />
-        ) : (
-          <PackageX className="text-yellow-500" size={20} />
-        )}
-        <p className="font-semibold">{item.nameProduct}</p> - {item.description}
-      </span>
-    ))}
-    <strong>¡Advertencia: algunos datos podrían faltar y afectar los cálculos si decides continuar!</strong>
-  </ModalBody>
+            {errors && errors.length > 0 && errors.map((item, index) => (
+              <span key={index} className="flex items-center gap-2 text-gray-700">
+                {item.exist === false ? (
+                  <TooltipGlobal text='Agregar'>
+                    <Store
+                      className="text-red-500 cursor-pointer"
+                      size={20}
+                      onClick={() => {
+                        const product = verified_product.recipeBook.productRecipeBookDetails.find(
+                          (prd) => prd.product.id === item.productId
+                        );
+
+                        if (product) {
+                          setProductToCreate(product.product);
+                          modalError.onClose();
+                          modalProduct.onOpen();
+                          createProduct.onOpen();
+                        }
+                      }}
+                    />
+                  </TooltipGlobal>
+                ) : (
+                  <PackageX className="text-yellow-500" size={20} />
+                )}
+                <p className="font-semibold">{item.nameProduct}</p> - {item.description}
+              </span>
+            ))}
+            <strong>¡Advertencia: algunos datos podrían faltar y afectar los cálculos si decides continuar!</strong>
+          </ModalBody>
           <ModalFooter className='flex w-full justify-start items-start'>
             <ButtonUi
               theme={Colors.Info}
@@ -374,10 +386,18 @@ function SelectProduct({
             >
               Cancelar Producción
             </ButtonUi>
+            {errors.some((item) => item.exist === false)}
             <ButtonUi
               theme={Colors.Success}
               onPress={async () =>
+              {
+                if(errors.some((item) => item.exist === false)){
+                  toast.error("Algunos productos no existen en la sucursal de origen. Verifica tu selección o créalos antes de continuar usando el botón junto a cada producto en la lista.",{duration: 7000} )
+                
+                  return
+                }
                 await handleAddProductRecipe(verified_product)
+              }
               }
             >
               Continuar de todas formas

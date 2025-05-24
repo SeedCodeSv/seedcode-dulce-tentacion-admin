@@ -13,7 +13,6 @@ const OrderHeader: React.FC<OrderHeaderProps> = ({ order }) => {
           <h2 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
             Orden de Producción #{order.id}
           </h2>
-          <p className="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-300">{order.productionOrderType.name}</p>
         </div>
         <div className="flex items-center">
           <span

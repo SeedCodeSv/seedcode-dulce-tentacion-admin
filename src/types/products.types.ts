@@ -16,7 +16,7 @@ export interface Product {
   subCategoryId: number;
   subCategory: SubCategory;
   productType: string,
-  recipeBook:  RecipeBook ;
+  recipeBook?:  RecipeBook ;
 }
 
 export interface Verify_Code {
@@ -398,21 +398,6 @@ export interface ProductSupplier {
   branchProductId: number
   supplierId: number
 }
-export interface Product {
-  id: number
-  name: string
-  description: string
-  tipoItem: string
-  tipoDeItem: string
-  uniMedida: string
-  unidaDeMedida: string
-  code: string
-  isActive: boolean
-  subCategoryId: number
-  subCategory: SubCategory
-}
-
-
 
 export interface RecipeBook {
   id: number

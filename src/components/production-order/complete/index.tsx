@@ -161,7 +161,6 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
               <div className=" md:py-8 md:px-4">
                 <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
                   <OrderHeader
-                    category={productionOrderDetail.productionOrderType.name}
                     orderNumber={productionOrderDetail.id.toString()}
                     status={productionOrderDetail.statusOrder}
                   />
