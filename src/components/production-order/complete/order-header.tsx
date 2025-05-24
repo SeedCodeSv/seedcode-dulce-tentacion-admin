@@ -4,7 +4,7 @@ import { Tag } from './ui/tag';
 
 interface OrderHeaderProps {
   orderNumber: string;
-  category: string;
+  category?: string;
   status: string;
 }
 

@@ -113,12 +113,14 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
 
           if (!item.branchProduct) {
             errors.push({
+              productId: item.product.id,
               nameProduct: item.product.name,
               exist: false,
               description: 'No existe en la Sucursal de Partida',
             });
           } else if (stock <= quantity) {
             errors.push({
+              productId: item.product.id,
               nameProduct: item.product.name,
               exist: true,
               description: 'No tiene suficiente stock',

@@ -28,6 +28,8 @@ import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { preventLetters } from '@/utils';
 import { ResponseVerifyProduct } from '@/types/production-order.types';
+import { useProductionOrderStore } from '@/store/production-order.store';
+import { useAlert } from '@/lib/alert';
 
 type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
@@ -36,6 +38,7 @@ type ProductRecipe = ResponseVerifyProduct & {
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
   const isMovil = useIsMobileOrTablet();
+  const { show, close } = useAlert()
 
   const [selectedBranch, setSelectedBranch] = useState<Selection>(new Set([]));
   const [moveSelectedBranch, setMoveSelectedBranch] = useState<Selection>(new Set([]));
@@ -55,8 +58,10 @@ function AddProductionOrder() {
     new Set([typesProduct[0]])
   );
   const [selectedProducts, setSelectedProducts] = useState<ProductRecipe[]>([]);
+  const modalProducts = useDisclosure();
 
   const { getBranchProductsRecipe } = useBranchProductStore();
+  const { errors } = useProductionOrderStore();
 
   useEffect(() => {
     const selectedBranchS = new Set(moveSelectedBranch);
@@ -75,58 +80,96 @@ function AddProductionOrder() {
     }
   }, [selectedBranch, selectedTypeProduct]);
 
-  const modalProducts = useDisclosure();
+  const validateSelection = (value: unknown, message: string) => {
+    if (!value) {
+      toast.error(message, { position: isMovil ? 'bottom-right' : 'top-center' });
 
-  const handleSaveOrder = () => {
-    const branch = new Set(selectedBranch).values().next().value;
-
-    if (!branch) {
-      toast.error('Debe seleccionar una sucursal', { position: 'top-center' });
-
-      return;
+      return false;
     }
 
-    const employee = new Set(selectedEmployee).values().next().value;
+    return true;
+  };
 
-    if (!employee) {
-      toast.error('Debe seleccionar un empleado', { position: 'top-center' });
-
-      return;
-    }
-
+  const validateHasProducts = () => {
     if (selectedProducts.length === 0) {
       toast.error('Debe agregar al menos un producto', {
         position: isMovil ? 'bottom-right' : 'top-center',
         duration: 1000,
       });
 
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  const validateErrors = () => {
+    if (errors && errors.length > 0) {
+      const hasStockIssues = errors.some((item) => item.exist === true);
+
+      if (hasStockIssues) {
+        show({
+          type: 'warning',
+          message:
+            'Algunos insumos no tienen stock suficiente. ¿Deseas continuar de todas formas?',
+          buttonOptions: (
+            <>
+              <ButtonUi theme={Colors.Info} onPress={close}>Cancelar</ButtonUi>
+              <ButtonUi theme={Colors.Primary} onPress={() => {
+                sendProductionOrder('["algunos insumos no tienen suficiente stock"]')
+                close()
+              }
+              }  >Sí, continuar</ButtonUi>
+            </>
+          ),
+        });
+
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+
+  const handleSaveOrder = () => {
+    const branch = new Set(selectedBranch).values().next().value;
+    const employee = new Set(selectedEmployee).values().next().value;
     const destinationBranch = new Set(moveSelectedBranch).values().next().value;
 
-    if (!destinationBranch) {
-      toast.error('Debe seleccionar una sucursal de destino', {
-        position: isMovil ? 'bottom-right' : 'top-center',
-        duration: 1000,
-      });
-
+    if (
+      !validateSelection(branch, 'Debe seleccionar una sucursal') ||
+      !validateSelection(employee, 'Debe seleccionar un empleado') ||
+      !validateHasProducts() ||
+      !validateSelection(destinationBranch, 'Debe seleccionar una sucursal de destino') ||
+      !validateErrors()
+    ) {
       return;
     }
 
+    sendProductionOrder()
+  };
+
+  const sendProductionOrder = (moreInformation = '[]') => {
+    const branch = new Set(selectedBranch).values().next().value;
+    const employee = new Set(selectedEmployee).values().next().value;
+    const destinationBranch = new Set(moveSelectedBranch).values().next().value;
+
     const payload = {
+      branchProductId: selectedProducts[0].branchProduct.id,
       receptionBranch: Number(branch),
       destinationBranch: Number(destinationBranch),
       employee: Number(employee),
-      productionOrderType: 0,
-      products: selectedProducts.map((p) => ({
-        branchProductId: p.branchProduct.id,
-        productId: p.branchProduct.product.id,
-        recipeId: p.recipeBook?.id ?? 0,
-        quantity: +p.quantity,
+      producedQuantity: Number(selectedProducts[0].recipeBook.performance),
+      products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
+        observations: '',
+        branchProductId: p.branchProduct?.id,
+        branchProductName: p.branchProduct?.product.name,
+        quantity: +p.quantityPerPerformance,
+        totalCost: (Number(p.branchProduct?.costoUnitario) * Number(p.quantityPerPerformance)).toFixed(4),
       })),
       observation,
-      moreInformation: '[]',
+      moreInformation,
     };
 
     axios
@@ -146,6 +189,8 @@ function AddProductionOrder() {
       });
   };
 
+
+
   const handleChangePerformance = (index: number, performance: string) => {
     const products = [...selectedProducts];
 
@@ -155,7 +200,6 @@ function AddProductionOrder() {
 
       });
     }
-
 
     products[index].recipeBook['performance'] = performance as unknown as number;
 
@@ -262,6 +306,7 @@ function AddProductionOrder() {
           selectionMode="single"
           variant="bordered"
           onSelectionChange={setSelectedEmployee}
+        // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
         >
           {employee_list.map((e) => (
             <SelectItem
@@ -309,7 +354,7 @@ function AddProductionOrder() {
               </div>
               <ButtonUi
                 isIconOnly
-                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0  }
+                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
                 theme={Colors.Success}
                 onPress={modalProducts.onOpen}
               >
@@ -334,41 +379,37 @@ function AddProductionOrder() {
                   </div>
                 </div>
 
-                  {selectedProducts[0].recipeBook && (
-                    <>
-                      <TableComponent
-                        className=' hidden md:flex flex-col'
-                        headers={[
-                          'Producto',
-                          'Código',
-                          'Cant. por rendimiento',
-                          'Cant. por unidad',
-                          'Cant. Total',
-                          'Costo unitario',
-                        ]}
-                      >
-                        {selectedProducts[0].recipeBook?.productRecipeBookDetails?.map((r) => (
-                          <tr key={r.id}>
-                            <td className="p-3">{r.product?.name}</td>
-                            <td className="p-3">{r.product.code}</td>
-                            <td className="p-3">{r.quantityPerPerformance}</td>
-                            <td className="p-3">{r.quantity}</td>
-                             <td className="p-3">
-                              {(Number(selectedProducts[0].recipeBook.performance) * Number(r.quantity)).toFixed(
-                                4
-                              )}
-                            </td>
-                            <td className="p-3">
-                              {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
-                                4
-                              )}
-                            </td>
-                            
-                          </tr>
-                        ))}
-                      </TableComponent>
-                    </>
-                  )}
+                {selectedProducts[0].recipeBook && (
+                  <>
+                    <TableComponent
+                      className=' hidden md:flex flex-col'
+                      headers={[
+                        'Producto',
+                        'Código',
+                        'Cant. por unidad',
+                        'Costo unitario',
+                        'Cant. Total',
+                        'Costo Total'
+                      ]}
+                    >
+                      {selectedProducts[0].recipeBook?.productRecipeBookDetails?.map((r) => (
+                        <tr key={r.id}>
+                          <td className="p-3">{r.product?.name}</td>
+                          <td className="p-3">{r.product.code}</td>
+                          <td className="p-3">{r.quantity}</td>
+                          <td className="p-3">{r.branchProduct?.costoUnitario}
+                          </td>
+                          <td className="p-3">{r.quantityPerPerformance}</td>
+                          <td className="p-3">
+                            {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
+                              4
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </TableComponent>
+                  </>
+                )}
                 <div className="h-full overflow-y-auto flex md:hidden" />
               </>
             )}

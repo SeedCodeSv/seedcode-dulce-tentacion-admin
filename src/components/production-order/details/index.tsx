@@ -29,11 +29,9 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
     destinationBranch,
     receptionBranch,
     employee,
-    productionOrderType,
     details,
   } = productionOrder;
 
-  // Parse moreInformation from JSON string to array
   const historyItems = moreInformation ? JSON.parse(moreInformation) : [];
 
   const getStatusMessage = (status: string) => {
@@ -83,9 +81,7 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
       {/* Header Section */}
       <div className="lg:p-6 border-b">
         <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="text-gray-600 uppercase dark:text-white">{productionOrderType.name}</p>
-          </div>
+          <div />
           <StatusBadge status={statusOrder} />
         </div>
       </div>
