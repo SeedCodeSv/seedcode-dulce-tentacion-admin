@@ -15,7 +15,8 @@ export interface Product {
   unidaDeMedida: string;
   subCategoryId: number;
   subCategory: SubCategory;
-  recipeBook: RecipeBook;
+  productType: string,
+  recipeBook:  RecipeBook ;
 }
 
 export interface Verify_Code {

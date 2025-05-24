@@ -28,7 +28,7 @@ export const ResponsiveFilterWrapper = ({
   showApplyButton = true,
   showSearchButton = true,
   classLg,
-  classButtonLg
+  classButtonLg,
 }: Props) => {
 
   const isMobile = useIsMobileOrTablet();
@@ -75,7 +75,6 @@ export const ResponsiveFilterWrapper = ({
         {withButton && showSearchButton &&
           <ButtonUi
             className={`px-5 font-semibold ${classButtonLg}`}
-            
             theme={Colors.Info}
             onPress={onApply}
           >

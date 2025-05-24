@@ -1,4 +1,4 @@
-import {  Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
+import { Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";
