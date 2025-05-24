@@ -12,7 +12,6 @@ import {
 } from '@/services/production-order.service';
 import { BasicResponse } from '@/types/global.types';
 import { IError, ResponseVerifyProduct } from '@/types/production-order.types';
-import { BranchProduct } from '@/types/branch_products.types';
 import { BranchProductRecipe } from '@/types/products.types';
 
 export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({

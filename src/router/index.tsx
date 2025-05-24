@@ -71,7 +71,6 @@ const UpdateAccountCatalogs = lazy(
 const Innvalidations = lazy(() => import('../pages/Innvalidations'))
 const CreateBranchProduct = lazy(() => import('../pages/create-branch-product'))
 const MWSC = lazy(() => import('../pages/MultipleWarehouseStockControl'))
-const TicketSales = lazy(() => import('../pages/ticket-sales'));
 const EditTransmitterInfo = lazy(() => import('../pages/edit-transmitter-info'));
 const Home = lazy(() => import('../pages/home'));
 const ProductsCategories = lazy(() => import('../pages/ProductsCategories'));

@@ -1,10 +1,9 @@
-import { Button, Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
+import {  Popover, PopoverContent, PopoverTrigger, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash } from "lucide-react";
 
 import { useMenuStore } from "@/store/menu.store";
-import useThemeColors from "@/themes/use-theme-colors";
 import { Colors } from "@/types/themes.types";
 import ButtonUi from "@/themes/ui/button-ui";
 
@@ -55,9 +54,9 @@ const DeletePopUp = ({ branchProductId, branchId, productName }: Props) => {
                     backdrop="blur"
                 >
                     <PopoverTrigger>
-                        <ButtonUi isIconOnly theme={Colors.Error}
+                        <ButtonUi isIconOnly showTooltip
+                            theme={Colors.Error}
                             tooltipText="Eliminar Menu"
-                            showTooltip
 
                         >
                             <Trash />

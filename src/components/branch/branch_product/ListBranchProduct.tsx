@@ -21,6 +21,7 @@ import SearchBranchProduct from '../search_branch_product/SearchBranchProduct';
 import MobileView from './MobileView';
 import UpdateBranchProduct from './UpdateBranchProduct';
 import MenuUpdate from './MenuUpdate';
+import DeletePopUp from './DeleteMenu';
 
 import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
@@ -31,7 +32,6 @@ import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { IGetBranchProduct } from '@/types/branches.types';
-import DeletePopUp from './DeleteMenu';
 interface Props {
   id: number;
   onclick: () => void;

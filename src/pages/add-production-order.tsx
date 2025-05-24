@@ -167,7 +167,7 @@ function AddProductionOrder() {
   const navigation = useNavigate();
 
   const calcMp = (index: number) => {
-    const product = selectedProducts[index];
+     selectedProducts[index];
     const total = 0
 
     // const total = product.product.recipeBook.productRecipeBookDetails.reduce(

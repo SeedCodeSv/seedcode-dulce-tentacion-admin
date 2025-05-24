@@ -23,7 +23,8 @@ import { toast } from 'sonner';
 import Pagination from '../global/Pagination';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
-import { useBranchProductStore } from '@/store/branch_product.store';
+import RegisterProduct from './registerProduct';
+
 import { BranchProductRecipe, ProductAndRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { ThemeContext } from '@/hooks/useTheme';
@@ -32,8 +33,6 @@ import EmptyBox from '@/assets/empty-box.png';
 import { useProductsStore } from '@/store/products.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import { useBranchesStore } from '@/store/branches.store';
-import { Label } from 'recharts';
-import RegisterProduct from './registerProduct';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -61,8 +60,7 @@ function SelectProduct({
   setSelectedProducts,
   setSelectedTypeProduct,
 }: Props) {
-  const { getBranchProductsRecipe } = useBranchProductStore();
-  const { handleVerifyProduct, errors } = useProductionOrderStore();
+  const { handleVerifyProduct } = useProductionOrderStore();
   const modalProduct = useDisclosure();
   const createProduct = useDisclosure()
   const {getBranchById} = useBranchesStore()
