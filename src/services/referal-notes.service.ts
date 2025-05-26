@@ -8,7 +8,8 @@ export const get_referal_notes = (
   page: number,
   limit: number,
   startDate: string,
-  endDate: string, type: string
+  endDate: string, 
+  type: string
 ) => {
   const params = new URLSearchParams({
     startDate: startDate,

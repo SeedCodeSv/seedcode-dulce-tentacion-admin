@@ -31,10 +31,10 @@ function List() {
   const { roleActions, returnActionsByView } = usePermission();
 
   const actions = useMemo(() => returnActionsByView('Notas de remisión'), [roleActions]);
-  const [state, setState] = useState('')
+  const [state, setState] = useState({ label: 'TODOS', value: '' })
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [limit, setLimit] = useState<number>(10)
+  const [limit, setLimit] = useState(10)
   const { referalNotes, loading, onGetReferalNotes, pagination_referal_notes } = useReferalNote();
   const { user } = useAuthStore();
   const { theme, context } = useContext(ThemeContext)
@@ -51,8 +51,8 @@ function List() {
   const modalComplete = useDisclosure()
 
   useEffect(() => {
-    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state);
-  }, [startDate, endDate, limit, state]);
+    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state.value);
+  }, [startDate, endDate, limit, state.value]);
 
   const styles = useGlobalStyles();
 
@@ -99,22 +99,23 @@ function List() {
               onChange={(e) => setEndDate(e.target.value)}
             />
             <Select
-              // className="w-44"
-              classNames={{ label: 'text-sm font-semibold dark:text-white' }}
-              defaultSelectedKeys={[limit.toString()]}
-              label="Cantidad a mostrar"
+              classNames={{
+                label: 'font-semibold',
+                selectorIcon: 'dark:text-white'
+              }}
+              label="Mostrar"
               labelPlacement="outside"
-              placeholder="Selecciona una cantidad"
-              value={state}
+              placeholder="Mostrar"
+              value={limit}
               variant="bordered"
-              onChange={(e) => setLimit(+e.target.value)}
+              onChange={(e) => {
+                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              }}
             >
-              {limit_options.map((e) => (
-                <SelectItem key={e}
-                  className="dark:text-white"
-                >
-
-                  {e}</SelectItem>
+              {limit_options.map((limit) => (
+                <SelectItem key={limit} className="dark:text-white">
+                  {limit}
+                </SelectItem>
               ))}
             </Select>
             <Select
@@ -123,17 +124,16 @@ function List() {
               label="Mostrar por estado"
               labelPlacement="outside"
               placeholder="Selecciona un estado"
-              value={state}
+              value={state.label}
               variant="bordered"
-              onChange={(e) => setState(e.target.value)}
+              onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
             >
               {estadosV.map((e) => (
-                <SelectItem key={e.value}
-                  className="dark:text-white"
-                >{e.label}</SelectItem>
+                <SelectItem key={e.value} className="dark:text-white">
+                  {e.label}
+                </SelectItem>
               ))}
             </Select>
-
             <div />
             <Button
               isIconOnly
@@ -319,7 +319,7 @@ function List() {
                   previousPage={pagination_referal_notes.prevPag}
                   totalPages={pagination_referal_notes.totalPag}
                   onPageChange={(page) => {
-                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state);
+                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value);
                   }}
                 />
               </div>
@@ -333,7 +333,7 @@ function List() {
                       10,
                       startDate,
                       endDate,
-                      state
+                      state.value
                     );
                   }}
                   handlePrev={() => {
@@ -343,7 +343,7 @@ function List() {
                       10,
                       startDate,
                       endDate,
-                      state
+                      state.value
                     );
                   }}
                   totalPages={pagination_referal_notes.totalPag}
@@ -383,7 +383,7 @@ function List() {
           <CompleteNoteModal
             note={selectedNote}
             reload={() => {
-              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state)
+              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state.value)
             }}
             visibled={modalComplete}
             onClose={() => {
@@ -396,7 +396,7 @@ function List() {
         item={items}
         modalInvalidate={modalInvalidate}
         reload={() => {
-          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state)
+          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state.value)
         }}
       />
     </>

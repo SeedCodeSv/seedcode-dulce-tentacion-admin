@@ -338,7 +338,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                               {formatCurrency(Number(cat.price))}
                             </td>
                             <td className="p-3 text-sm text-green-500 dark:text-green-300">
-                              {cat.stock}
+                              { Number(cat.stock).toFixed(2)}
                             </td>
                             <td className="p-3 text-sm text-red-500 dark:text-red-300">
                               {cat.reserved}

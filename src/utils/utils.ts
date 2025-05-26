@@ -294,7 +294,7 @@ export function formatMoney(amount: number): string {
   return Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
-export const formatPercentage= (per:number) => {
+export const formatPercentage = (per: number) => {
   return `${per.toFixed(2)}%`;
 }
 
@@ -332,23 +332,23 @@ export const typesInventoryMovement = [
   },
 ];
 
- export const hexToRgb = (hex: string) => {
-    hex = hex.replace(/^#/, '');
+export const hexToRgb = (hex: string) => {
+  hex = hex.replace(/^#/, '');
 
-    if (hex.length === 3) {
-      hex = hex
-        .split('')
-        .map((char) => char + char)
-        .join('');
-    }
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((char) => char + char)
+      .join('');
+  }
 
-    const bigint = parseInt(hex, 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
 
-     return [r, g, b] as [number, number, number];
-  };
+  return [r, g, b] as [number, number, number];
+};
 
 export const hexToARGB = (hex: string) => {
   hex = hex.replace(/^#/, '');
@@ -361,43 +361,45 @@ export const hexToARGB = (hex: string) => {
 };
 
 
-  export const TypesVentas=[
-  {label:"TODOS", value:''},
-  {label:'Notas de Remisión', value:'04'},
-  {label:"Factura Comercial", value:'01'},
-  {label:'Factura Credito Fiscal', value:'03'},
-  {label:'Sujeto Excluido', value:'14'},
-  {label:'Nota de Credito', value:'05'},
-  {label:'Nota de Debito', value:'06'}
-  
+export const TypesVentas = [
+  { label: "TODOS", value: '' },
+  { label: 'NOTAS DE REMISION', value: '04' },
+  { label: "FACTURA COMERCIAL", value: '01' },
+  { label: 'FACTURA CREDITO FISCAL', value: '03' },
+  { label: 'SUJETO EXCLUIDO', value: '14' },
+  { label: 'NOTA DE CREDITO', value: '05' },
+  { label: 'NOTA DE DEBITO', value: '06' }
+
 ]
 
 export const estadosV = [
+  { label: 'TODOS', value: '' },
   { label: 'PROCESADO', value: 'PROCESADO' },
+  { label: 'PENDIENTE', value: 'PENDIENTE' },
   { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
   { label: 'INVALIDADO', value: 'INVALIDADO' }
 ]
 
- export const convertImageToBase64 = (url: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
+export const convertImageToBase64 = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
 
-      img.crossOrigin = 'Anonymous';
-      img.src = url;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
+    img.crossOrigin = 'Anonymous';
+    img.src = url;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
 
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
 
-        ctx?.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
+      ctx?.drawImage(img, 0, 0);
+      const dataURL = canvas.toDataURL('image/png');
 
-        resolve(dataURL);
-      };
-      img.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
+      resolve(dataURL);
+    };
+    img.onerror = (error) => {
+      reject(error);
+    };
+  });
+};

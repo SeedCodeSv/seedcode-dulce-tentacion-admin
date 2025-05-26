@@ -9,6 +9,6 @@ export const annulations = (payload: Annulations) => {
 }
 
 
-export const get_list_invalidations = (page: number, limit: number, startDate: string, endDate: string) => {
-    return axios.get<IGetInnvalidations>(`${API_URL}/innvalidations?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`)
+export const get_list_invalidations = (page: number, limit: number, startDate: string, endDate: string, type: string) => {
+    return axios.get<IGetInnvalidations>(`${API_URL}/innvalidations?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&typeDte=${type}`)
 }

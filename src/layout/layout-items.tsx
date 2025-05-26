@@ -134,7 +134,7 @@ export const LayoutItems = (props: Props) => {
       viewName: 'Notas de remisión',
       to: '/note-referal',
       icon: FaChartLine,
-      label: 'Ver Notas de remisión',
+      label: 'Notas de remisión',
     },
     { viewName: 'Control de existencias', 
       to: '/MWSC',

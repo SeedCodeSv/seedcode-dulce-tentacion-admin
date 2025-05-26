@@ -132,7 +132,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
 
                 setInitialValues({
                     name: product?.product?.name ?? '',
-                    stock: product?.stock || 0,
+                    stock: Number(product.stock) || 0,
                     price: Number(product?.price) || 0,
                     priceA: product?.priceA || '',
                     priceB: product?.priceB || '',
@@ -144,7 +144,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
                     uniMedida: product?.product?.uniMedida || '',
                     unidaDeMedida: product?.product?.unidaDeMedida || '',
                     code: product.product?.code || '',
-                    costoUnitario: product?.costoUnitario || '',
+                    costoUnitario: Number(product?.costoUnitario).toFixed(2) || '',
                     subCategoryId: product!.product!.subCategory?.id ?? "0",
                     suppliers: valu || [],
                 });

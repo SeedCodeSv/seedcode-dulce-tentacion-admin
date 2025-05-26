@@ -71,7 +71,7 @@ function MenuUpdate({ branch_products, onClose, reloadData }: Props) {
     }
 
     useEffect(() => {
-        getMenuByBranchProduct(branch_products?.id ?? 0, user?.branchId ?? 0)
+        getMenuByBranchProduct(branch_products?.id ?? 0, branch_products?.branchId ?? 0)
     }, [branch_products?.id, user?.branchId])
 
     useEffect(() => {
