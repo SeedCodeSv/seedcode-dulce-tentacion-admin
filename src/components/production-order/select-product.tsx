@@ -23,7 +23,8 @@ import { toast } from 'sonner';
 import Pagination from '../global/Pagination';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
-import { useBranchProductStore } from '@/store/branch_product.store';
+import RegisterProduct from './registerProduct';
+
 import { BranchProductRecipe, ProductAndRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { ThemeContext } from '@/hooks/useTheme';
@@ -32,8 +33,6 @@ import EmptyBox from '@/assets/empty-box.png';
 import { useProductsStore } from '@/store/products.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import { useBranchesStore } from '@/store/branches.store';
-import { Label } from 'recharts';
-import RegisterProduct from './registerProduct';
 
 type ProductRecipe = BranchProductRecipe & {
   quantity: number;
@@ -61,18 +60,14 @@ function SelectProduct({
   setSelectedProducts,
   setSelectedTypeProduct,
 }: Props) {
-  const { getBranchProductsRecipe } = useBranchProductStore();
-  const { handleVerifyProduct, errors } = useProductionOrderStore();
+  const { handleVerifyProduct } = useProductionOrderStore();
   const modalProduct = useDisclosure();
-  const createProduct = useDisclosure()
-  const {getBranchById} = useBranchesStore()
+  const createProduct = useDisclosure();
+  const { getBranchById } = useBranchesStore();
   const [productToCreate, setProductToCreate] = useState<ProductAndRecipe | null>(null);
 
-  const {
-    productsAndRecipe,
-    productsAndRecipePagination,
-    getPaginatedProductsAndRecipe,
-  } = useProductsStore();
+  const { productsAndRecipe, productsAndRecipePagination, getPaginatedProductsAndRecipe } =
+    useProductsStore();
 
   const handleAddProductRecipe = (recipe: BranchProductRecipe) => {
     const productFind = selectedProducts.findIndex((sp) => sp.id === recipe.id);
@@ -93,7 +88,7 @@ function SelectProduct({
 
       setSelectedProducts(products);
       toast.success(`Se agrego ${recipe.product.name} con éxito`);
-      modalProducts.onClose()
+      modalProducts.onClose();
     }
   };
 
@@ -124,27 +119,27 @@ function SelectProduct({
   }, [dbounceName, selectedTypeProduct]);
 
   const OnVerifyProduct = async (recipe: ProductAndRecipe) => {
-    createProduct.onClose()
+    createProduct.onClose();
     const res = await handleVerifyProduct({
       branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
       branchDepartureId: Number(new Set(selectedBranch).values().next().value),
       productId: recipe.id,
-      recipeBook: recipe.recipeBook?.productRecipeBookDetails?.map((detail) => ({
-        productId: Number(detail.productIdReference)
-      })) ?? [],
+      recipeBook:
+        recipe.recipeBook?.productRecipeBookDetails?.map((detail) => ({
+          productId: Number(detail.productIdReference),
+        })) ?? [],
     });
 
-    if (!res.ok && res.message?.includes("No se encontró el producto")) {
-      getBranchById(Number(new Set(moveSelectedBranch).values().next().value))
-      setProductToCreate(recipe,); 
-      modalProduct.onOpen(); 
+    if (!res.ok && res.message?.includes('No se encontró el producto')) {
+      getBranchById(Number(new Set(moveSelectedBranch).values().next().value));
+      setProductToCreate(recipe);
+      modalProduct.onOpen();
 
-      return
+      return;
     }
 
-   await handleAddProductRecipe({...res.branchProduct})
-  }
-
+    await handleAddProductRecipe({ ...res.branchProduct });
+  };
 
   return (
     <>
@@ -236,7 +231,7 @@ function SelectProduct({
                       }}
                       onClick={() => {
                         if (recipe.recipeBook) {
-                          OnVerifyProduct(recipe)
+                          OnVerifyProduct(recipe);
                         } else {
                           toast.error('Este producto no cuenta con receta disponible');
                         }
@@ -307,35 +302,50 @@ function SelectProduct({
         </DrawerContent>
       </Drawer>
       {modalProduct.isOpen && productToCreate && (
-        <Modal {...modalProduct} className='border-2 rounded-lg border-yellow-600' size={createProduct.isOpen ? '2xl' :'md'}>
+        <Modal
+          {...modalProduct}
+          className="border-2 rounded-lg border-yellow-600"
+          size={createProduct.isOpen ? '2xl' : 'md'}
+        >
           {!createProduct.isOpen ? (
             <ModalContent>
-              <ModalHeader className='flex gap-4'><TriangleAlert className='text-yellow-600' />Producto no encontrado</ModalHeader>
+              <ModalHeader className="flex gap-4">
+                <TriangleAlert className="text-yellow-600" />
+                Producto no encontrado
+              </ModalHeader>
               <ModalBody>
-                <p>El producto <strong>{productToCreate.name}</strong> no existe en la sucursal destino.</p>
+                <p>
+                  El producto <strong>{productToCreate.name}</strong> no existe en la sucursal
+                  destino.
+                </p>
                 <p>¿Deseas crearlo?</p>
                 {/* Puedes mostrar detalles del producto, receta, etc. */}
               </ModalBody>
               <ModalFooter>
-                <Button variant="light" onPress={() => modalProduct.onClose()}>Cancelar</Button>
+                <Button variant="light" onPress={() => modalProduct.onClose()}>
+                  Cancelar
+                </Button>
                 <Button
                   color="primary"
                   onPress={() => {
-                    createProduct.onOpen()
+                    createProduct.onOpen();
                   }}
                 >
                   Crear Producto
                 </Button>
               </ModalFooter>
             </ModalContent>
-            ) : (
-           <RegisterProduct close={() => {
-            modalProduct.onClose()
-            createProduct.onClose()}} productToCreate={productToCreate}/>
+          ) : (
+            <RegisterProduct
+              close={() => {
+                modalProduct.onClose();
+                createProduct.onClose();
+              }}
+              productToCreate={productToCreate}
+            />
           )}
         </Modal>
       )}
-
     </>
   );
 }

@@ -15,4 +15,6 @@ export interface GridProps extends IMobileViewProps {
 export interface IPropsSearchUser {
   nameUser: (name: string) => void;
   nameRol: (name: string) => void;
+  active: boolean;
+  setActive: (active: boolean) => void;
 }
