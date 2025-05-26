@@ -3,22 +3,19 @@ import { ChevronDown, ChevronUp, Check, AlertTriangle, Clock, XCircle } from 'lu
 
 import { convertToShortNames } from '../utils';
 
-import { ProductionOrderDetail } from './types';
+import { ProductionOrder } from './types';
+
 
 interface ProductCardProps {
-  detail: ProductionOrderDetail;
-  orderStatus: string;
+  productionOrder: ProductionOrder
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const ProductCard: React.FC<ProductCardProps> = ({ productionOrder}) => {
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
-  const { products, quantity, producedQuantity, damagedQuantity, productRecipe } = detail;
-  const recipeDetails = productRecipe?.recipe?.recipeDetails || [];
 
   const getStatusInfo = (status: string) => {
     switch (status.toLowerCase()) {
@@ -60,7 +57,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
     }
   };
 
-  const statusInfo = getStatusInfo(orderStatus);
+  const statusInfo = getStatusInfo(productionOrder.statusOrder);
 
   return (
     <div className="border rounded-lg mb-4 overflow-hidden transition-all duration-300">
@@ -74,11 +71,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
         <div className="flex-1">
           <div className="flex items-center">
             <div className="flex-1 ">
-              <h3 className="text-lg font-medium">{products.name}</h3>
+              <h3 className="text-lg font-medium">{productionOrder.branchProduct.product.name}</h3>
               <div className="text-sm text-gray-500 flex items-center gap-2 dark:text-gray-200/70">
-                <span className="text-gray-600 dark:text-gray-300">{products.code}</span>
+                <span className="text-gray-600 dark:text-gray-300">{productionOrder.branchProduct.product.code}</span>
                 <span>•</span>
-                <span>{products.unidaDeMedida}</span>
+                <span>{productionOrder.branchProduct.product.unidaDeMedida}</span>
               </div>
             </div>
             <div
@@ -92,24 +89,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-300">Cantidad</p>
               <p className="font-medium">
-                {quantity} {products.unidaDeMedida}
+                {productionOrder.quantity} {productionOrder.branchProduct.product.unidaDeMedida}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-300">Producidos</p>
               <p className="font-medium">
-                {producedQuantity} {products.unidaDeMedida}
+                {productionOrder.producedQuantity} {productionOrder.branchProduct.product.unidaDeMedida}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-300">Dañados</p>
               <p className="font-medium text-red-600">
-                {damagedQuantity} {products.unidaDeMedida}
+                {productionOrder.damagedQuantity} {productionOrder.branchProduct.product.unidaDeMedida}
               </p>
             </div>
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-300">Estado</p>
-              <p className={`font-medium ${statusInfo.textColor}`}>{orderStatus}</p>
+              <p className={`font-medium ${statusInfo.textColor}`}>{productionOrder.statusOrder}</p>
             </div>
           </div>
         </div>
@@ -120,9 +117,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
         <div className="p-4 pt-0 border-t bg-gray-50 transition-all duration-300 ease-in-out dark:bg-gray-800/50">
           <h4 className="font-medium text-gray-700 mb-2 mt-4 dark:text-gray-300">Receta</h4>
           <div className="bg-white rounded-lg border">
-            {recipeDetails.length > 0 ? (
+            {productionOrder.details.length > 0 ? (
               <div className="divide-y">
-                {recipeDetails.map((item) => (
+                {productionOrder.details.map((item) => (
                   <div key={item.id} className="p-3 flex justify-between dark:bg-gray-900">
                     <div>
                       <p className="font-medium">{item.branchProduct.product.name}</p>
@@ -130,7 +127,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
                     </div>
                     <div className="text-right">
                       <p className="font-medium">
-                        {item.quantity} {convertToShortNames(item.extraUniMedida)}
+                        {item.quantity}{' '}
+                        {convertToShortNames(item.branchProduct.product.uniMedida)}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-200/70">
                         Stock: {item.branchProduct.stock}{' '}
@@ -142,7 +140,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ detail, orderStatus }) => {
               </div>
             ) : (
               <p className="p-4 text-gray-500 italic">No hay información de receta disponible</p>
-            )}
+            )} 
           </div>
         </div>
       )}

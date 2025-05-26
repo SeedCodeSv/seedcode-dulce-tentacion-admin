@@ -40,7 +40,7 @@ function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
 
   const [employeeCode, setEmployeeCode] = useState('');
 
-  const { canFulfillAll } = checkOrderFulfillment(productionOrderDetail?.details || []);
+  const { canFulfillAll } = checkOrderFulfillment(productionOrderDetail || null);
 
   const modalConfirmation = useDisclosure();
   const [loading, setLoading] = useState(false);

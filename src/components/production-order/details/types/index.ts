@@ -80,14 +80,13 @@ export interface ProductionOrderDetail {
   id: number;
   quantity: number;
   observations: string;
-  producedQuantity: number;
   damagedQuantity: number;
   missingQuantity: number;
   damagedReason: string;
-  products: Product;
   productionOrderId: number;
-  productId: number;
-  productRecipe: ProductWithRecipe;
+  unitaryCost:string,
+  totalCost: string,
+  branchProduct: BranchProduct
 }
 
 export interface ProductionOrderType {
@@ -105,6 +104,7 @@ export interface ProductionOrder {
   time: string;
   endDate: string;
   endTime: string;
+  quantity: number;
   producedQuantity: number;
   damagedQuantity: number;
   missingQuantity: number;
@@ -117,6 +117,7 @@ export interface ProductionOrder {
   employeeOrderId: number;
   receptionBranchId: number;
   destinationBranchId: number;
+  branchProduct: BranchProduct;
   details: ProductionOrderDetail[];
 }
 

@@ -24,7 +24,7 @@ import ProductsList from './products-list';
 import CompletionNotes from './completion-notes';
 
 import { useProductionOrderStore } from '@/store/production-order.store';
-import { Detail } from '@/types/production-order.types';
+import { Detail, ProductionOrderDetailsVerify } from '@/types/production-order.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { get_employee_by_code } from '@/services/employess.service';
@@ -37,12 +37,8 @@ type DevolutionProduct = {
   unidadDeMedida: string;
 };
 type Product = Detail & {
-  producedQuantity: number;
   damagedQuantity: number;
   expectedQuantity: number;
-  damagedReason: string;
-  hasDevolution: boolean;
-  devolutionProducts: DevolutionProduct[];
 };
 
 type disclosureProps = ReturnType<typeof useDisclosure>;
@@ -53,12 +49,18 @@ interface Props {
   reload:() => void
 }
 
+type ProductionOrder = ProductionOrderDetailsVerify & {
+hasDevolution: boolean
+devolutionProducts?: DevolutionProduct[];
+};
+
 const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
   const [notes, setNotes] = useState<string>('');
   const [employeeCode, setEmployeeCode] = useState('');
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [order, setOrder] = useState<ProductionOrder>()
 
   const modalConfirmation = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -72,14 +74,16 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
       setProducts(
         productionOrderDetail.details.map((detail) => ({
           ...detail,
-          producedQuantity: detail.quantity,
           damagedQuantity: 0,
-          expectedQuantity: detail.quantity,
-          hasDevolution: false,
-          devolutionProducts: [],
-          damagedReason: '',
+          expectedQuantity:Number(detail.quantity),
         }))
       );
+
+      setOrder({
+        ...productionOrderDetail,
+        producedQuantity: productionOrderDetail.quantity,
+        hasDevolution: false}
+      )
     }
   }, [productionOrderDetail]);
 
@@ -102,16 +106,13 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
         }
 
         const payload = {
-          products: products.map((product) => ({
-            id: product.id,
-            producedQuantity: product.producedQuantity,
-            damagedQuantity: product.damagedQuantity,
-            missingQuantity: product.expectedQuantity - product.producedQuantity,
-            damagedReason: product.damagedReason,
-            devolutionProducts: product.hasDevolution ? product.devolutionProducts : [],
-          })),
+          damagedQuantity: order?.damagedQuantity,
+          damagedReason: order?.damagedReason,
+          producedQuantity:order?.producedQuantity,
+          branchProductId: order?.branchProduct.product.id,
           notes,
           employee: employee.id,
+          devolutionProducts: order?.hasDevolution ? order.devolutionProducts : [],
         };
 
         axios
@@ -137,9 +138,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
     window.print();
   };
 
-  const allProductsComplete = products.every(
-    (product) => product.producedQuantity > 0 || product.damagedQuantity > 0
-  );
+  const allProductsComplete = order && order?.producedQuantity > 0 || order && order?.damagedQuantity > 0
+
 
   const employeeName = useMemo(() => {
     if (productionOrderDetail) {
@@ -157,7 +157,7 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
             <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Finalizar orden de producción</h1>
           </DrawerHeader>
           <DrawerBody className='px-4'>
-            {productionOrderDetail && (
+            {productionOrderDetail && order && (
               <div className=" md:py-8 md:px-4">
                 <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
                   <OrderHeader
@@ -175,7 +175,9 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
                     receptionBranch={productionOrderDetail?.receptionBranch.name || ''}
                   />
                   <ProductsList
+                    order={order}
                     products={products}
+                    onOrderProductUpdate={(updateOrder) =>setOrder(updateOrder)}
                     onProductUpdate={(updatedProducts) => {
                       setProducts(updatedProducts);
                     }}
