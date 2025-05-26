@@ -54,7 +54,7 @@ function ProductionOrders() {
   const modalVerifyOrder = useDisclosure();
   const modalCompleteOrder = useDisclosure();
 
-  const [startDate, setStartDate] = useState(formatDate());
+  const [startDate, setStartDate] = useState('2025-05-23');
   const [endDate, setEndDate] = useState(formatDate());
 
   const { productionOrders, getProductionsOrders, paginationProductionOrders } =
@@ -352,7 +352,6 @@ function ProductionOrders() {
         onReload={() => {
           setPage(1)
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
-
         }} />
         <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
         reload={() => {

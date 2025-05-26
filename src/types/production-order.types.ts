@@ -135,6 +135,12 @@ export interface ProductionOrderDetailsVerify {
   destinationBranch: DestinationBranch
   receptionBranch: ReceptionBranch
   employee: Employee
+  branchProduct: BranchProduct
+  quantity: number
+  producedQuantity: number
+  damagedQuantity: number
+  damagedReason: string
+  totalCost: string
   // productionOrderType: ProductionOrderType
   productionOrderTypeId: number
   employeeOrderId: number
@@ -144,13 +150,16 @@ export interface ProductionOrderDetailsVerify {
 }
 
 export interface Detail {
-  id: number
-  quantity: number
-  observations: string
-  products: Products
-  productionOrderId: number
-  productId: number
-  productRecipe: ProductRecipe
+ id: number;
+  quantity: string;
+  observations: string;
+  damagedQuantity: number;
+  missingQuantity: number;
+  damagedReason: string;
+  productionOrderId: number;
+  unitaryCost:string,
+  totalCost: string,
+  branchProduct: BranchProduct
 }
 
 export interface ProductRecipe {

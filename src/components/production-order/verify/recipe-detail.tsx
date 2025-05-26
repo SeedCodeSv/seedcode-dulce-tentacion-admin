@@ -1,17 +1,17 @@
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
 
-import { convertToShortNames, convertUnit } from '../utils';
+import { convertToShortNames } from '../utils';
 
-import { ProductStatus, Recipe } from '@/types/production-order.types';
+import { Detail, ProductStatus } from '@/types/production-order.types';
 
 interface RecipeDetailProps {
-  recipe: Recipe;
+  recipe: Detail[];
   orderQuantity: number;
   status: ProductStatus;
 }
 
 const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, status }) => {
-  if (!recipe || !recipe.recipeDetails || recipe.recipeDetails.length === 0) {
+  if (!recipe || recipe.length === 0) {
     return (
       <div className="px-4 py-5 sm:px-6">
         <p className="text-sm text-gray-500 italic">No hay detalles de receta disponibles</p>
@@ -38,8 +38,8 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {recipe.recipeDetails.map((ingredient) => {
-              const ingredientStatus = status.ingredients[ingredient.productIdReference];
+            {recipe.map((ingredient) => {
+              const ingredientStatus = status.ingredients[ingredient.branchProduct.productId];
 
               return (
                 <tr key={ingredient.id} className="hover:bg-gray-50 dark:bg-gray-800">
@@ -47,7 +47,9 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
                     {ingredient.branchProduct.product.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
-                    {ingredient.quantity} {convertToShortNames(ingredient.extraUniMedida)} (
+                    {(Number(ingredient.quantity) / orderQuantity).toFixed(4)}{' '}
+                    
+                    {/* {convertToShortNames(ingredient.extraUniMedida)} (
                     {convertUnit(
                       Number(ingredient.quantity),
                       ingredient.extraUniMedida,
@@ -55,11 +57,11 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
                     ).toFixed(2) +
                       ' ' +
                       convertToShortNames(ingredient.branchProduct.product.uniMedida)}
-                    )
+                    ) */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
-                    {(Number(ingredient.quantity) * orderQuantity).toFixed(2)}{' '}
-                    {convertToShortNames(ingredient.extraUniMedida)} (
+                    {ingredient.quantity}
+                    {/* {convertToShortNames(ingredient.extraUniMedida)} (
                     {convertUnit(
                       Number(ingredient.quantity) * orderQuantity,
                       ingredient.extraUniMedida,
@@ -67,7 +69,7 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
                     ).toFixed(2) +
                       ' ' +
                       convertToShortNames(ingredient.branchProduct.product.uniMedida)}
-                    )
+                    ) */}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-200">
                     {ingredientStatus ? ingredientStatus.availableStock : 'Desconocido'}{' '}

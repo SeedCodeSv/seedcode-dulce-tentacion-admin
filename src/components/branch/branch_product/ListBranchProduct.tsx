@@ -23,7 +23,6 @@ import UpdateBranchProduct from './UpdateBranchProduct';
 import MenuUpdate from './MenuUpdate';
 import DeletePopUp from './DeleteMenu';
 
-import NO_DATA from '@/assets/svg/no_data.svg';
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
 import { limit_options } from '@/utils/constants';
@@ -32,6 +31,8 @@ import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { IGetBranchProduct } from '@/types/branches.types';
+import LoadingTable from '@/components/global/LoadingTable';
+import EmptyTable from '@/components/global/EmptyTable';
 interface Props {
   id: number;
   onclick: () => void;
@@ -312,11 +313,8 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
               >
                 {loading_branch_product ? (
                   <tr>
-                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                      <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader" />
-                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                      </div>
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
+                      <LoadingTable/>
                     </td>
                   </tr>
                 ) : (
@@ -401,11 +399,8 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                       </>
                     ) : (
                       <tr>
-                        <td colSpan={5}>
-                          <div className="flex flex-col items-center justify-center w-full">
-                            <img alt="X" className="w-32 h-32" src={NO_DATA} />
-                            <p className="mt-3 text-xl">No se encontraron resultados</p>
-                          </div>
+                        <td colSpan={7}>
+                          <EmptyTable/>
                         </td>
                       </tr>
                     )}

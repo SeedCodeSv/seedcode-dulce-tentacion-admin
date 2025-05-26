@@ -160,7 +160,11 @@ function AddProductionOrder() {
       receptionBranch: Number(branch),
       destinationBranch: Number(destinationBranch),
       employee: Number(employee),
-      producedQuantity: Number(selectedProducts[0].recipeBook.performance),
+      quantity: Number(selectedProducts[0].recipeBook.performance),
+      observation,
+      moreInformation,
+      totalCost: totalCost(0),
+      costPrime: calcCostoPrimo(0).toFixed(2),
       products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
         observations: '',
         branchProductId: p.branchProduct?.id,
@@ -168,8 +172,7 @@ function AddProductionOrder() {
         quantity: +p.quantityPerPerformance,
         totalCost: (Number(p.branchProduct?.costoUnitario) * Number(p.quantityPerPerformance)).toFixed(4),
       })),
-      observation,
-      moreInformation,
+      
     };
 
     axios
@@ -179,7 +182,7 @@ function AddProductionOrder() {
           position: isMovil ? 'bottom-right' : 'top-center',
           duration: 1000,
         });
-        navigate('/production-orders');
+      navigate('/production-orders');
       })
       .catch(() => {
         toast.error('Error al crear la orden de producción', {
@@ -220,6 +223,20 @@ function AddProductionOrder() {
     return total;
   };
 
+  const calcMod = (index: number) => {
+    if (selectedProducts.length === 0) {
+      return '0';
+    }
+
+    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
+      return '0';
+    }
+
+    const performance = selectedProducts[index].recipeBook?.performance;
+
+    return (Number(mod) * Number(performance))?.toFixed(2);
+  };
+
   const [mod, setMod] = useState('0');
 
   const calcCostoPrimo = (index: number) => {
@@ -229,11 +246,11 @@ function AddProductionOrder() {
       return 0;
     }
 
-    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
+    if (calcMod(0) === '0' || calcMod(0) === undefined || mod === null || isNaN(Number(calcMod(0)))) {
       return 0;
     }
 
-    return mp + Number(mod);
+    return mp + Number(calcMod(0));
   };
 
   const [costCif, setCostCif] = useState('0');
@@ -436,6 +453,40 @@ function AddProductionOrder() {
                     value={selectedProducts.length > 0 ? calcMp(0)?.toFixed(2) : '0'}
                     variant="bordered"
                   />
+                  <div className="flex gap-1 items-end col-span-2">
+                   <Input
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="VALOR"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={mod}
+                      variant="bordered"
+                      onKeyDown={preventLetters}
+                      onValueChange={(e) => setMod(e)}
+                    />
+                    <span className="font-semibold text-3xl">*</span>
+                     <Input
+                      readOnly
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="RENDIMIENTO"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={
+                        selectedProducts.length > 0
+                          ? String(selectedProducts[0].recipeBook?.performance)
+                          : '0'
+                      }
+                      variant="bordered"
+                    />
+                    <span className="font-semibold text-3xl">=</span>
                   <Input
                     classNames={{
                       label: 'font-semibold text-[10px]',
@@ -445,10 +496,9 @@ function AddProductionOrder() {
                     labelPlacement="outside"
                     placeholder="0.00"
                     size="sm"
-                    value={mod}
+                    value={calcMod(0)}
                     variant="bordered"
                     onKeyDown={preventLetters}
-                    onValueChange={(e) => setMod(e)}
                   />
                   <Input
                     classNames={{
@@ -462,6 +512,7 @@ function AddProductionOrder() {
                     value={selectedProducts.length > 0 ? calcCostoPrimo(0).toFixed(2) : '0'}
                     variant="bordered"
                   />
+                  </div>
                   <div className="flex gap-1 items-end col-span-2">
                     <Input
                       classNames={{
