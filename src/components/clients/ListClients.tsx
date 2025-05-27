@@ -14,7 +14,6 @@ import Lottie from 'lottie-react';
 import { useCustomerStore } from '../../store/customers.store';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
-import TooltipGlobal from '../global/TooltipGlobal';
 import AddButton from '../global/AddButton';
 import RenderViewButton from '../global/render-view-button';
 import LoadingTable from '../global/LoadingTable';
@@ -317,19 +316,19 @@ const ListClients = ({ actions }: Props) => {
                                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                   <div className="flex w-full gap-5">
                                     {customer.isActive && actions.includes('Editar') && (
-                                      <TooltipGlobal text="Editar">
-                                        <ButtonUi
-                                          isIconOnly
-                                          theme={Colors.Primary}
-                                          onPress={() =>
-                                            navigate(
-                                              `/add-customer/${customer.id}/${customer.esContribuyente ? 'tribute' : 'normal'}`
-                                            )
-                                          }
-                                        >
-                                          <EditIcon size={20} />
-                                        </ButtonUi>
-                                      </TooltipGlobal>
+                                      <ButtonUi
+                                        isIconOnly
+                                        showTooltip
+                                        theme={Colors.Primary}
+                                        tooltipText='Editar'
+                                        onPress={() =>
+                                          navigate(
+                                            `/add-customer/${customer.id}/${customer.esContribuyente ? 'tribute' : 'normal'}`
+                                          )
+                                        }
+                                      >
+                                        <EditIcon size={20} />
+                                      </ButtonUi>
                                     )}
                                     {actions.includes('Eliminar') && (
                                       <>
@@ -342,34 +341,34 @@ const ListClients = ({ actions }: Props) => {
                                       actions.includes('Cambiar Tipo de Cliente') && (
                                         <>
                                           {customer.esContribuyente === false && (
-                                            <TooltipGlobal text="Cambiar tipo de Cliente">
-                                              <ButtonUi
-                                                isIconOnly
-                                                theme={Colors.Primary}
-                                                onPress={() =>
-                                                  navigate(
-                                                    `/add-customer/${customer.id}/tribute`
-                                                  )
-                                                }
-                                              >
-                                                <Repeat size={20} />
-                                              </ButtonUi>
-                                            </TooltipGlobal>
+                                            <ButtonUi
+                                              isIconOnly
+                                              showTooltip
+                                              theme={Colors.Primary}
+                                              tooltipText='Cambiar tipo de Cliente'
+                                              onPress={() =>
+                                                navigate(
+                                                  `/add-customer/${customer.id}/tribute`
+                                                )
+                                              }
+                                            >
+                                              <Repeat size={20} />
+                                            </ButtonUi>
                                           )}
                                         </>
                                       )}
                                     {customer.isActive === false && (
                                       <>
                                         {actions.includes('Activar Cliente') && (
-                                          <TooltipGlobal text="Activar">
-                                            <ButtonUi
-                                              isIconOnly
-                                              theme={Colors.Primary}
-                                              onPress={() => handleActivate(customer.id)}
-                                            >
-                                              <RefreshCcw />
-                                            </ButtonUi>
-                                          </TooltipGlobal>
+                                          <ButtonUi
+                                            isIconOnly
+                                            showTooltip
+                                            theme={Colors.Primary}
+                                            tooltipText='Activar'
+                                            onPress={() => handleActivate(customer.id)}
+                                          >
+                                            <RefreshCcw />
+                                          </ButtonUi>
                                         )}
                                       </>
                                     )}

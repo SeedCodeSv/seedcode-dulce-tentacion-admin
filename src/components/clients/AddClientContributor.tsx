@@ -85,30 +85,25 @@ function AddClientContributor() {
       .required('**Este campo solo permite números sin guiones**')
       .matches(/^[0-9]{8}$/, '**El telefono no es valido**'),
     tipoDocumento: yup.string().required('**Tipo de documento es requerido**'),
-    numDocumento: yup
+   numDocumento: yup
       .string()
-      .required('**Número de documento es requerido, no debe tener guiones**')
-      .test('noSelectedTypeDocument', 'Debe seleccionar un tipo de documento', function () {
+      .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
         const { tipoDocumento } = this.parent;
 
         return tipoDocumento !== '' ? true : false;
       })
-      .test(
-        'validar-documento',
-        'Número de documento no válido, no debe tener guiones',
-        function (value) {
-          const { tipoDocumento } = this.parent;
+      .test('validar-documento', '**Número de documento no válido**', function (value) {
+        const { tipoDocumento } = this.parent;
 
-          if (tipoDocumento === '13') {
-            return /^([0-9]{9})$/.test(value);
-          }
-          if (tipoDocumento === '36') {
-            return value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value);
-          }
-
-          return true; // Si tipoDocumento no es relevante para validación, se considera válido
+        if (tipoDocumento === '13') {
+          return /^([0-9]{9})$/.test(value!);
         }
-      ),
+        if (tipoDocumento === '36') {
+          return value!.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value!);
+        }
+
+        return true; // Si tipoDocumento no es relevante para validación, se considera válido
+      }),
     nit: yup
       .string()
       .required('**El NIT es requerido **')
@@ -186,7 +181,7 @@ function AddClientContributor() {
   };
 
   return (
-    <div className="dark:bg-gray-900">
+    <div className="">
       {loading ? (
         <strong>Cargando...</strong>
       ) : (

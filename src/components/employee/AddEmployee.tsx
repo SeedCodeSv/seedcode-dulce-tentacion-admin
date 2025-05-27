@@ -24,6 +24,7 @@ import { Departamento } from '@/types/billing/cat-012-departamento.types';
 import ButtonUi from '@/themes/ui/button-ui';
 3;
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
 
 function AddEmployee() {
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
@@ -182,15 +183,16 @@ function AddEmployee() {
 
   return (
     <Layout title="Agregar Empleado">
-      <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
-        <div className="w-full h-full border-white border p-2 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
+     <DivGlobal>
+      <div className='w-full'>
           <Button
             className=" bg-transparent dark:text-white text-black"
-            onClick={() => navigate('/employees')}
+            onPress={() => navigate('/employees')}
           >
             <ArrowLeft className="dark:text-white text-black" />
             Regresar
           </Button>
+          </div>
           <div className="overflow-y-auto dark:text-white mt-0">
             <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
               <Formik
@@ -918,8 +920,7 @@ function AddEmployee() {
               </Formik>
             </div>
           </div>
-        </div>
-      </div>
+        </DivGlobal>
     </Layout>
   );
 }

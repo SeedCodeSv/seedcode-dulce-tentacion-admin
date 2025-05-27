@@ -66,28 +66,25 @@ const AddClientNormal = () => {
     nombre: yup.string().required('**El nombre es requerido**'),
     correo: yup.string().required('**El correo es requerido**').email('**El correo es invalido**'),
     tipoDocumento: yup.string(),
-    numDocumento: yup
+   numDocumento: yup
       .string()
-      .notRequired()
       .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
         const { tipoDocumento } = this.parent;
 
-        return tipoDocumento !== '';
+        return tipoDocumento !== '' ? true : false;
       })
-      .test('validar-documento', '**Número de documento no válido, no debe contener guiones**', function (value) {
+      .test('validar-documento', '**Número de documento no válido**', function (value) {
         const { tipoDocumento } = this.parent;
 
         if (tipoDocumento === '13') {
-          return /^([0-9]{9})$/.test(value || '');
+          return /^([0-9]{9})$/.test(value!);
         }
-
         if (tipoDocumento === '36') {
-          return value ? value.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value) : false;
+          return value!.length >= 9 && /^([0-9]{9}|[0-9]{14})$/.test(value!);
         }
 
-        return true;
+        return true; // Si tipoDocumento no es relevante para validación, se considera válido
       }),
-
     departamento: yup.string().required('**Debes seleccionar el departamento**'),
     municipio: yup.string().required('**Debes seleccionar el municipio**'),
     complemento: yup.string(),
@@ -140,7 +137,7 @@ const AddClientNormal = () => {
   return (
     <>
       {actions.includes('Agregar') ? (
-        <div className=" dark:bg-gray-900">
+        <div className="">
           {loading ? (
             <strong>Cargando...</strong>
           ) : (
@@ -148,6 +145,7 @@ const AddClientNormal = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={(values) => onSubmit(values)}
+              
             >
               {({
                 values,

@@ -10,6 +10,7 @@ import Layout from '../layout/Layout';
 
 import { useCustomerStore } from '@/store/customers.store';
 import GlobalLoading from '@/components/global/GlobalLoading';
+import DivGlobal from "@/themes/ui/div-global";
 
 function AddCustomer() {
   const [selected, setSelected] = useState<string | undefined>('normal');
@@ -30,8 +31,8 @@ function AddCustomer() {
     <Layout title={type == '0' ? 'Agregar cliente' : 'Actualizar cliente'}>
       <>
         <GlobalLoading show={loading_save} />
-        <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full p-5 mt-3 overflow-y-auto custom-scrollbar bg-white shadow rounded-xl dark:bg-gray-900">
+        <DivGlobal>
+          <div className="w-full">
             <Button className="bg-transparent" onClick={() => navigate('/clients')}>
               <ArrowLeft />
               <p className="">Regresar</p>
@@ -75,8 +76,8 @@ function AddCustomer() {
                 </Tab>
               )}
             </Tabs> */}
-          </div>
-        </div>
+            </div>
+          </DivGlobal>
       </>
     </Layout>
   );
