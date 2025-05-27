@@ -13,7 +13,6 @@ import SalesChartPeriod from './Period/SalesChartPeriod';
 import { formatCurrency } from '@/utils/dte';
 import { limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
-import { useCorrelativesStore } from '@/store/correlatives.store';
 import { Branches } from '@/types/branches.types';
 import { correlativesTypes } from '@/types/correlatives/correlatives_data.types';
 import { usePointOfSales } from '@/store/point-of-sales.store';
@@ -31,7 +30,6 @@ function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
   const typeSales = service.get017FormaDePago();
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { get_correlativesByBranch, list_correlatives } = useCorrelativesStore();
 
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
@@ -39,7 +37,6 @@ function VentasPorPeriodo() {
   const [pointOfSale, setPointOfSale] = useState('');
 
   const [limit, setLimit] = useState(Number(limit_options[0]));
-  const [code, setCode] = useState('');
 
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
 
@@ -47,7 +44,6 @@ function VentasPorPeriodo() {
 
   useEffect(() => {
     if (selectedBranch) {
-      get_correlativesByBranch(Number(selectedBranch?.id));
       getPointOfSales(Number(selectedBranch?.id));
     }
   }, [selectedBranch]);
@@ -74,7 +70,7 @@ function VentasPorPeriodo() {
       searchParam ?? endDate,
       searchParam ?? typePayment,
       searchParam ?? selectedBranch?.name,
-      searchParam ?? code,
+      '',
       searchParam ?? filter.typeVoucher,
       pointOfSale ?? ''
     );
@@ -85,12 +81,13 @@ function VentasPorPeriodo() {
   return (
     <Layout title="Ventas por Periodo">
       <DivGlobal className="flex flex-col h-full overflow-y-auto">
-        <ResponsiveFilterWrapper showSearchButton={false}
+        <ResponsiveFilterWrapper
+          showSearchButton={false}
           onApply={() => {
-          handleSearch(undefined);
-        }}
+            handleSearch(undefined);
+          }}
         >
-          <div className="lg:grid w-full flex flex-col grid-cols-1 gap-2 lg:gap-4 lg:grid-cols-4">
+          <div className="lg:grid w-full flex flex-col grid-cols-1 gap-2 lg:gap-4 lg:grid-cols-4 items-end">
             <Input
               className="w-full dark:text-white"
               classNames={{ label: 'font-semibold' }}
@@ -160,122 +157,94 @@ function VentasPorPeriodo() {
                 </SelectItem>
               ))}
             </Select>
-            <div className="w-full">
-              <Autocomplete
-                className="dark:text-white font-semibold text-sm"
-                classNames={{
-                  base: 'text-gray-500 text-sm',
-                }}
-                label="Tipo de Voucher"
-                labelPlacement="outside"
-                placeholder="Selecciona el Tipo de Factura"
-                variant="bordered"
-                onSelectionChange={(e) => {
-                  const selectCorrelativeType = correlativesTypes.find(
-                    (dep) => dep.value === new Set([e]).values().next().value
-                  );
 
-                  setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
-                }}
-              >
-                {correlativesTypes
-                  .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
-                  .map((dep) => (
-                    <AutocompleteItem key={dep.value} className="dark:text-white">
-                      {dep.value + ' - ' + dep.label}
-                    </AutocompleteItem>
-                  ))}
-              </Autocomplete>
-            </div>
+            <Autocomplete
+              className="dark:text-white font-semibold text-sm"
+              classNames={{
+                base: 'text-gray-500 text-sm',
+              }}
+              label="Tipo de Voucher"
+              labelPlacement="outside"
+              placeholder="Selecciona el Tipo de Factura"
+              variant="bordered"
+              onSelectionChange={(e) => {
+                const selectCorrelativeType = correlativesTypes.find(
+                  (dep) => dep.value === new Set([e]).values().next().value
+                );
 
+                setFilter({ ...filter, typeVoucher: selectCorrelativeType?.value || '' });
+              }}
+            >
+              {correlativesTypes
+                .filter((dep) => ['F', 'CCF', 'T'].includes(dep.value)) // Filtra solo "F", "CCF", "T"
+                .map((dep) => (
+                  <AutocompleteItem key={dep.value} className="dark:text-white">
+                    {dep.value + ' - ' + dep.label}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
             <Select
               className="w-full dark:text-white"
               classNames={{ label: 'font-semibold' }}
-              label="Correlativo"
+              defaultSelectedKeys={limit_options[0]}
+              label="Punto de venta"
               labelPlacement="outside"
-              placeholder="Selecciona la correlativo"
+              placeholder="Selecciona un punto de venta"
+              value={limit_options[0]}
               variant="bordered"
               onSelectionChange={(key) => {
                 if (key) {
-                  const corr = new Set(key).values().next().value;
+                  const point_of_sale = new Set(key).values().next().value;
 
-                  setCode(corr as string);
+                  setPointOfSale(point_of_sale as string);
                 }
               }}
             >
-              {list_correlatives
-                .filter((corr) => corr.typeVoucher === 'T') // Filtrar por tipoVoucher "T"
-                .map((corr) => (
-                  <SelectItem key={corr.code} className="dark:text-white">
-                    {corr.code}
+              {point_of_sales
+                .filter((point) => point.typeVoucher === 'FE')
+                .map((point) => (
+                  <SelectItem
+                    key={point.code}
+                    className="dark:text-white"
+                    textValue={point.typeVoucher + ' - ' + point.code}
+                  >
+                    {point.typeVoucher + ' - ' + point.code}
                   </SelectItem>
                 ))}
             </Select>
+            <Select
+              className="w-full dark:text-white"
+              classNames={{ label: 'font-semibold' }}
+              defaultSelectedKeys={limit_options[0]}
+              label="Límite"
+              labelPlacement="outside"
+              value={limit_options[0]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const limit = new Set(key).values().next().value;
 
-            <div className="col-span-2 grid grid-cols-2 lg:grid-cols-3 items-end w-full gap-4">
-              <Select
-                className="w-full dark:text-white"
-                classNames={{ label: 'font-semibold' }}
-                defaultSelectedKeys={limit_options[0]}
-                label="Punto de venta"
-                labelPlacement="outside"
-                placeholder="Selecciona un punto de venta"
-                value={limit_options[0]}
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const point_of_sale = new Set(key).values().next().value;
-
-                    setPointOfSale(point_of_sale as string);
-                  }
-                }}
-              >
-                {point_of_sales
-                  .filter((point) => point.typeVoucher === 'FE')
-                  .map((point) => (
-                    <SelectItem
-                      key={point.code}
-                      className="dark:text-white"
-                      textValue={point.typeVoucher + ' - ' + point.code}
-                    >
-                      {point.typeVoucher + ' - ' + point.code}
-                    </SelectItem>
-                  ))}
-              </Select>
-              <Select
-                className="w-full dark:text-white"
-                classNames={{ label: 'font-semibold' }}
-                defaultSelectedKeys={limit_options[0]}
-                label="Límite"
-                labelPlacement="outside"
-                value={limit_options[0]}
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const limit = new Set(key).values().next().value;
-
-                    setLimit(limit as number);
-                  }
-                }}
-              >
-                {limit_options.map((limit) => (
-                  <SelectItem key={limit} className="dark:text-white" textValue={limit}>
-                    {limit}
-                  </SelectItem>
-                ))}
-              </Select>
-                <ButtonUi
-                  className="hidden font-semibold lg:flex"
-                  color="primary"
-                  endContent={<SearchIcon size={15} />}
-                  theme={Colors.Info}
-                  onPress={() => {
-                    handleSearch(undefined);
-                  }}
-                >
-                  Buscar
-                </ButtonUi>
-            </div>
+                  setLimit(limit as number);
+                }
+              }}
+            >
+              {limit_options.map((limit) => (
+                <SelectItem key={limit} className="dark:text-white" textValue={limit}>
+                  {limit}
+                </SelectItem>
+              ))}
+            </Select>
+            <ButtonUi
+              className="hidden font-semibold lg:flex"
+              color="primary"
+              endContent={<SearchIcon size={15} />}
+              theme={Colors.Info}
+              onPress={() => {
+                handleSearch(undefined);
+              }}
+            >
+              Buscar
+            </ButtonUi>
           </div>
         </ResponsiveFilterWrapper>
         <div className="flex flex-col w-full gap-10 pt-10 md:flex-row">
@@ -314,17 +283,14 @@ function VentasPorPeriodo() {
           </div>
         </div>
 
-        <TableComponent
-          headers={['No.Fecha', 'Total en Ventas', 'No. de ventas']}>
+        <TableComponent headers={['No.Fecha', 'Total en Ventas', 'No. de ventas']}>
           {sales_by_period?.sales.map((sale, index) => (
             <tr key={index} className="border-b border-slate-200">
               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.date}</td>
               <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                 {formatCurrency(+sale.totalSales)}
               </td>
-              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                {sale.salesCount}
-              </td>
+              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.salesCount}</td>
             </tr>
           ))}
         </TableComponent>

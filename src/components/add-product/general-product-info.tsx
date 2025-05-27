@@ -399,6 +399,11 @@ function GeneralProductInfo({
                 type="text"
                 value={name}
                 variant="bordered"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch(1);
+                  }
+                }}
                 onValueChange={setName}
               />
               <ButtonUi theme={Colors.Primary} onPress={() => handleSearch(1)}>
