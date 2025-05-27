@@ -7,9 +7,11 @@ import {
   DrawerFooter,
   DrawerHeader,
   Input,
+  Switch,
 } from '@heroui/react';
 import { Filter, Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import classNames from 'classnames';
 
 import { IPropsSearchUser } from '../types/mobile-view.types';
 
@@ -114,6 +116,20 @@ function SearchUser(props: IPropsSearchUser) {
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
+              </div>
+              <div className="flex  justify-start items-end">
+                <Switch
+                  classNames={{
+                    thumb: classNames(props.active ? 'bg-blue-500' : 'bg-gray-400'),
+                    wrapper: classNames(props.active ? '!bg-blue-300' : 'bg-gray-200'),
+                  }}
+                  isSelected={props.active}
+                  onValueChange={(active) => props.setActive(active)}
+                >
+                  <span className="text-sm sm:text-base whitespace-nowrap">
+                    Mostrar {props.active ? 'inactivos' : 'activos'}
+                  </span>
+                </Switch>
               </div>
             </DrawerBody>
             <DrawerFooter>

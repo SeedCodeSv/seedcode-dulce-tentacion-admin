@@ -71,11 +71,8 @@ function SelectProduct({
   const [productToCreate, setProductToCreate] = useState<ProductAndRecipe | null>(null);
   const modalError = useDisclosure();
 
-  const {
-    productsAndRecipe,
-    productsAndRecipePagination,
-    getPaginatedProductsAndRecipe,
-  } = useProductsStore();
+  const { productsAndRecipe, productsAndRecipePagination, getPaginatedProductsAndRecipe } =
+    useProductsStore();
 
   const handleAddProductRecipe = async (recipe: ResponseVerifyProduct): Promise<void> => {
 
@@ -127,7 +124,7 @@ function SelectProduct({
       setSelectedProducts([]);
       toast.warning(`Se eliminó ${recipe.name} con éxito`);
 
-      return
+      return;
     }
 
     const res = await handleVerifyProduct({
@@ -246,7 +243,7 @@ function SelectProduct({
                       }}
                       onClick={() => {
                         if (recipe.recipeBook) {
-                          OnVerifyProduct(recipe)
+                          OnVerifyProduct(recipe);
                         } else {
                           toast.error('Este producto no cuenta con receta disponible');
                         }
@@ -320,17 +317,25 @@ function SelectProduct({
         <Modal {...modalProduct} className='border-2 rounded-lg border-yellow-600' size={createProduct.isOpen ? '2xl' : 'md'}>
           {!createProduct.isOpen ? (
             <ModalContent>
-              <ModalHeader className='flex gap-4'><TriangleAlert className='text-yellow-600' />Producto no encontrado</ModalHeader>
+              <ModalHeader className="flex gap-4">
+                <TriangleAlert className="text-yellow-600" />
+                Producto no encontrado
+              </ModalHeader>
               <ModalBody>
-                <p>El producto <strong>{productToCreate.name}</strong> no existe en la sucursal destino.</p>
+                <p>
+                  El producto <strong>{productToCreate.name}</strong> no existe en la sucursal
+                  destino.
+                </p>
                 <p>¿Deseas crearlo?</p>
               </ModalBody>
               <ModalFooter>
-                <Button variant="light" onPress={() => modalProduct.onClose()}>Cancelar</Button>
+                <Button variant="light" onPress={() => modalProduct.onClose()}>
+                  Cancelar
+                </Button>
                 <Button
                   color="primary"
                   onPress={() => {
-                    createProduct.onOpen()
+                    createProduct.onOpen();
                   }}
                 >
                   Crear Producto
