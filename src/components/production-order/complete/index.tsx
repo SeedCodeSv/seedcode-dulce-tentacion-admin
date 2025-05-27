@@ -16,7 +16,7 @@ import {
   ModalFooter,
 } from '@heroui/react';
 import { toast } from 'sonner';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import OrderHeader from './order-header';
 import OrderDetails from './order-details';
@@ -29,6 +29,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { get_employee_by_code } from '@/services/employess.service';
 import { API_URL } from '@/utils/constants';
+import { GetEmployeeByCode } from '@/types/employees.types';
 type DevolutionProduct = {
   id: number;
   name: string;
@@ -46,21 +47,21 @@ type disclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   disclosure: disclosureProps;
-  reload:() => void
+  reload: () => void;
 }
 
 type ProductionOrder = ProductionOrderDetailsVerify & {
-hasDevolution: boolean
-devolutionProducts?: DevolutionProduct[];
+  hasDevolution: boolean;
+  devolutionProducts?: DevolutionProduct[];
 };
 
-const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
+const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload }) => {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
   const [notes, setNotes] = useState<string>('');
   const [employeeCode, setEmployeeCode] = useState('');
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [order, setOrder] = useState<ProductionOrder>()
+  const [order, setOrder] = useState<ProductionOrder>();
 
   const modalConfirmation = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -75,15 +76,15 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
         productionOrderDetail.details.map((detail) => ({
           ...detail,
           damagedQuantity: 0,
-          expectedQuantity:Number(detail.quantity),
+          expectedQuantity: Number(detail.quantity),
         }))
       );
 
       setOrder({
         ...productionOrderDetail,
         producedQuantity: productionOrderDetail.quantity,
-        hasDevolution: false}
-      )
+        hasDevolution: false,
+      });
     }
   }, [productionOrderDetail]);
 
@@ -108,8 +109,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
         const payload = {
           damagedQuantity: order?.damagedQuantity,
           damagedReason: order?.damagedReason,
-          producedQuantity:order?.producedQuantity,
-          branchProductId: order?.branchProduct.product.id,
+          producedQuantity: order?.producedQuantity,
+          productId: order?.branchProduct.product.id,
           notes,
           employee: employee.id,
           devolutionProducts: order?.hasDevolution ? order.devolutionProducts : [],
@@ -121,15 +122,20 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
             toast.success('Orden de producción finalizada');
             setLoading(false);
             modalConfirmation.onClose();
-            disclosure.onClose()
-            reload()
+            disclosure.onClose();
+            reload();
           })
           .catch(() => {
             setLoading(false);
           });
       })
-      .catch(() => {
-        toast.error('Código incorrecto o no encontrado');
+      .catch((error: AxiosError<GetEmployeeByCode>) => {
+        modalConfirmation.onClose();
+        if (!error.response?.data.employee) {
+          toast.error(`Empleado no encontrado`);
+        } else {
+          toast.error('Error desconocido');
+        }
         setLoading(false);
       });
   };
@@ -138,8 +144,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
     window.print();
   };
 
-  const allProductsComplete = order && order?.producedQuantity > 0 || order && order?.damagedQuantity > 0
-
+  const allProductsComplete =
+    (order && order?.producedQuantity > 0) || (order && order?.damagedQuantity > 0);
 
   const employeeName = useMemo(() => {
     if (productionOrderDetail) {
@@ -151,12 +157,14 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
 
   return (
     <>
-      <Drawer className='dark:bg-gray-900' {...disclosure} scrollBehavior="inside" size="full">
+      <Drawer className="dark:bg-gray-900" {...disclosure} scrollBehavior="inside" size="full">
         <DrawerContent>
           <DrawerHeader>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Finalizar orden de producción</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">
+              Finalizar orden de producción
+            </h1>
           </DrawerHeader>
-          <DrawerBody className='px-4'>
+          <DrawerBody className="px-4">
             {productionOrderDetail && order && (
               <div className=" md:py-8 md:px-4">
                 <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
@@ -177,7 +185,7 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
                   <ProductsList
                     order={order}
                     products={products}
-                    onOrderProductUpdate={(updateOrder) =>setOrder(updateOrder)}
+                    onOrderProductUpdate={(updateOrder) => setOrder(updateOrder)}
                     onProductUpdate={(updatedProducts) => {
                       setProducts(updatedProducts);
                     }}
@@ -197,7 +205,9 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
                 </ButtonUi>
               </div>
               <div className="flex space-x-4">
-                <ButtonUi theme={Colors.Warning} onPress={disclosure.onClose}>Cancelar</ButtonUi>
+                <ButtonUi theme={Colors.Warning} onPress={disclosure.onClose}>
+                  Cancelar
+                </ButtonUi>
                 <ButtonUi
                   disabled={!allProductsComplete}
                   theme={Colors.Success}
@@ -211,7 +221,11 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Modal {...modalConfirmation} className='dark:bg-gray-900 dark:text-gray-100' isDismissable={false}>
+      <Modal
+        {...modalConfirmation}
+        className="dark:bg-gray-900 dark:text-gray-100"
+        isDismissable={false}
+      >
         <ModalContent>
           <ModalHeader>Confirmar orden de producción</ModalHeader>
           <ModalBody>

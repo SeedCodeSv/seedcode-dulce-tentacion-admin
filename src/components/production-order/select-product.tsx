@@ -78,12 +78,7 @@ function SelectProduct({
   } = useProductsStore();
 
   const handleAddProductRecipe = async (recipe: ResponseVerifyProduct): Promise<void> => {
-    const productFind = selectedProducts.find((sp) => sp.branchProduct.id === recipe.branchProduct.id);
 
-    if (productFind) {
-      setSelectedProducts([]);
-      toast.warning(`Se eliminó ${recipe.branchProduct.product.name} con éxito`);
-    } else {
       setSelectedProducts([
         {
           ...recipe,
@@ -93,7 +88,7 @@ function SelectProduct({
       toast.success(`Se agregó ${recipe.branchProduct?.product?.name} con éxito`);
       modalError.onClose()
       modalProducts.onClose();
-    }
+  
   };
 
 
@@ -126,6 +121,15 @@ function SelectProduct({
 
   const OnVerifyProduct = async (recipe: ProductAndRecipe) => {
     createProduct.onClose()
+      const productFind = selectedProducts.find((sp) => sp.branchProduct.product.id === recipe.id);
+
+    if (productFind) {
+      setSelectedProducts([]);
+      toast.warning(`Se eliminó ${recipe.name} con éxito`);
+
+      return
+    }
+
     const res = await handleVerifyProduct({
       branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
       branchDepartureId: Number(new Set(selectedBranch).values().next().value),
