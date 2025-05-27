@@ -55,6 +55,7 @@ const AddSubCategory = (props: Props) => {
 
         if (data.ok === true) {
           helpers.setSubmitting(false);
+          props.closeModal();
         }
       }
     } catch (error) {
