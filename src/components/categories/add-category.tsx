@@ -1,4 +1,4 @@
-import { Input, ModalContent, Modal, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
+import { Input, ModalContent, Modal, ModalBody, ModalFooter, ModalHeader, Checkbox } from '@heroui/react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useState } from 'react';
@@ -14,6 +14,7 @@ interface Props {
   category?: {
     id: number;
     name: string;
+    showSale: boolean
   };
 }
 
@@ -23,19 +24,20 @@ const AddCategory = (props: Props) => {
   });
 
   const { postCategories, patchCategory } = useCategoriesStore();
+  // const [showSale, setShowSale] = useState(true)
 
   const [loading, setLoading] = useState(false);
-  const handleSave = async ({ name }: { name: string }) => {
+  const handleSave = async ({ name, showSale }: { name: string; showSale: boolean }) => {
     setLoading(true);
     if (props.category) {
-      const data = await patchCategory(name, props.category.id);
+      const data = await patchCategory(name, showSale, props.category.id);
 
       if (data.ok === true) {
         props.closeModal();
         setLoading(false);
       }
     } else {
-      const data = await postCategories(name);
+      const data = await postCategories(name, showSale);
 
       if (data.ok === true) {
         props.closeModal();
@@ -49,14 +51,14 @@ const AddCategory = (props: Props) => {
       <ModalContent>
         <ModalHeader>{props.category ? 'Editar' : 'Agregar'} categoría</ModalHeader>
         <Formik
-          initialValues={{ name: props.category?.name ?? '' }}
+          initialValues={{ name: props.category?.name ?? '', showSale: props.category?.showSale ?? true }}
           validationSchema={validationSchema}
           onSubmit={handleSave}
         >
           {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
             <>
               <ModalBody>
-                <div className="flex flex-col w-full dark:text-white">
+                <div className="flex flex-col gap-4 w-full dark:text-white">
                   <Input
                     className="dark:text-white"
                     classNames={{
@@ -73,6 +75,15 @@ const AddCategory = (props: Props) => {
                     onBlur={handleBlur('name')}
                     onChange={handleChange('name')}
                   />
+                  <Checkbox
+                    isSelected={values.showSale}
+                    onValueChange={(val) => {
+                      handleChange({ target: { name: 'showSale', value: val } });
+                    }}
+                  >
+                    Incluir la categoría en la pantalla de ventas
+                  </Checkbox>
+
                 </div>
               </ModalBody>
               <ModalFooter>

@@ -66,8 +66,8 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
         });
       });
   },
-  postCategories(name): Promise<{ ok: boolean }> {
-    return create_category({ name })
+  postCategories(name, showSale): Promise<{ ok: boolean }> {
+    return create_category({ name, showSale })
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);
@@ -80,8 +80,8 @@ export const useCategoriesStore = create<ICategoriesStore>((set, get) => ({
         return { ok: false };
       });
   },
-  patchCategory(name, id): Promise<{ ok: boolean }> {
-    return update_category({ name }, id)
+  patchCategory(name,showSale, id): Promise<{ ok: boolean }> {
+    return update_category({ name, showSale }, id)
       .then(() => {
         get().getPaginatedCategories(1, get().limit_filter, '');
         toast.success(messages.success);

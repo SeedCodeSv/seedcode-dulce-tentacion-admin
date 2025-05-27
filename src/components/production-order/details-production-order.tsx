@@ -11,9 +11,10 @@ type DisclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   modalMoreInformation: DisclosureProps;
+  onClose: () => void
 }
 
-function DetailsProductionOrder({ id, modalMoreInformation }: Props) {
+function DetailsProductionOrder({ id, modalMoreInformation, onClose }: Props) {
   const { productionOrderDetail, getProductionsOrderDetail, loadingProductionOrder } =
     useProductionOrderStore();
 
@@ -22,7 +23,7 @@ function DetailsProductionOrder({ id, modalMoreInformation }: Props) {
   }, [id]);
 
   return (
-    <Modal {...modalMoreInformation} className='dark:bg-gray-900' scrollBehavior="inside" size="full" >
+    <Modal {...modalMoreInformation} className='dark:bg-gray-900' scrollBehavior="inside" size="full" onClose={onClose} >
       <ModalContent>
         <ModalHeader>Orden de Producción #{id}</ModalHeader>
         <ModalBody>

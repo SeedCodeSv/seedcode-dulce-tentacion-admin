@@ -157,8 +157,8 @@ function AddProductionOrder() {
 
     const payload = {
       branchProductId: selectedProducts[0].branchProduct.id,
-      receptionBranch: Number(destinationBranch),
-      destinationBranch: Number(branch),
+      receptionBranch: Number(branch),
+      destinationBranch: Number(destinationBranch),
       employee: Number(employee),
       quantity: Number(selectedProducts[0].recipeBook.performance),
       observation,

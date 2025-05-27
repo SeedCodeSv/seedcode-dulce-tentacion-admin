@@ -32,7 +32,7 @@ export const get_products_categories_list = () => {
   });
 };
 
-export const create_category = ({ name }: { name: string }) => {
+export const create_category = ({ name, showSale }: { name: string; showSale: boolean }) => {
   const token = get_token() ?? '';
 
   // const user = get_user();
@@ -40,6 +40,7 @@ export const create_category = ({ name }: { name: string }) => {
     API_URL + '/category-products',
     {
       name,
+      showSale
     },
     {
       headers: {
@@ -49,13 +50,14 @@ export const create_category = ({ name }: { name: string }) => {
   );
 };
 
-export const update_category = ({ name }: { name: string }, id: number) => {
+export const update_category = ({ name, showSale }: { name: string; showSale:boolean }, id: number) => {
   const token = get_token() ?? '';
 
   return axios.patch<{ ok: boolean }>(
     API_URL + '/category-products/' + id,
     {
       name,
+      showSale
     },
     {
       headers: {

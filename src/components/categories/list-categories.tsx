@@ -38,7 +38,7 @@ function ListCategories({ actions }: PProps) {
   const { paginated_categories, getPaginatedCategories, activateCategory, loading_categories } =
     useCategoriesStore();
   const [selectedCategory, setSelectedCategory] = useState<
-    { id: number; name: string } | undefined
+    { id: number; name: string; showSale: boolean } | undefined
   >();
   const [search, setSearch] = useState('');
   const [limit, setLimit] = useState(5);
@@ -56,6 +56,7 @@ function ListCategories({ actions }: PProps) {
     setSelectedCategory({
       id: item.id,
       name: item.name,
+      showSale: item.showSale
     });
     modalAdd.onOpen();
   };
