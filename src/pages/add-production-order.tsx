@@ -35,6 +35,8 @@ type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
 
+type TypeSearch = 'MP' | 'RENDIMIENTO';
+
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
   const isMovil = useIsMobileOrTablet();
@@ -47,6 +49,11 @@ function AddProductionOrder() {
   const [observation, setObservation] = useState('');
 
   const modalRecipe = useDisclosure();
+  const typeSearch = ['RENDIMIENTO', 'MP'];
+
+  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>(
+    'RENDIMIENTO'
+  );
 
   const { getEmployeesList, employee_list } = useEmployeeStore();
 
@@ -165,7 +172,7 @@ function AddProductionOrder() {
       moreInformation,
       totalCost: totalCost(0),
       costPrime: calcCostoPrimo(0).toFixed(2),
-      costRawMaterial: calcMp(0) ,
+      costRawMaterial: calcMp(0),
       indirectManufacturingCost: calcCif(0),
       costDirectLabor: calcMod(0),
       products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
@@ -237,7 +244,9 @@ function AddProductionOrder() {
 
     const performance = selectedProducts[index].recipeBook?.performance;
 
-    return (Number(mod) * Number(performance))?.toFixed(2);
+    const base = selectedTypeSearch === 'MP' ? calcMp(index) : performance;
+
+    return (Number(mod) * base).toFixed(2);
   };
 
   const [mod, setMod] = useState('0');
@@ -282,7 +291,7 @@ function AddProductionOrder() {
 
     return (Number(cif) + Number(mod))?.toFixed(2);
   };
-  
+
   return (
     <Layout title="Nueva Orden de Producción">
       <>
@@ -294,84 +303,84 @@ function AddProductionOrder() {
         <DivGlobal>
           <div className="flex justify-between items-end w-full">
             <div className="flex flex-row-reverse w-full justify-between xl:flex-col gap-5">
-                <ResponsiveFilterWrapper withButton={false}>
-              <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
-                <Select
-                  className="dark:text-white"
-                  classNames={{ label: 'font-semibold' }}
-                  label="Extraer producto de"
-                  placeholder="Selecciona la sucursal de origen"
-                  selectedKeys={selectedBranch}
-                  variant="bordered"
-                  onSelectionChange={setSelectedBranch}
-                >
-                  {branch_list.map((b) => (
-                    <SelectItem key={b.id} className="dark:text-white">
-                      {b.name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  className="dark:text-white"
-                  classNames={{ label: 'font-semibold' }}
-                  label="Mover producto a"
-                  placeholder="Seleccione la sucursal de destino"
-                  selectedKeys={moveSelectedBranch}
-                  selectionMode="single"
-                  variant="bordered"
-                  onSelectionChange={setMoveSelectedBranch}
-                >
-                  {branch_list.map((b) => (
-                    <SelectItem key={b.id} className="dark:text-white">
-                      {b.name}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Select
-                  className="dark:text-white"
-                  classNames={{ label: 'font-semibold' }}
-                  label="Encargado"
-                  placeholder="Selecciona el encargado de la orden"
-                  selectedKeys={selectedEmployee}
-                  selectionMode="single"
-                  variant="bordered"
-                  onSelectionChange={setSelectedEmployee}
-                // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
-                >
-                  {employee_list.map((e) => (
-                    <SelectItem
-                      key={e.id}
-                      className="dark:text-white"
-                      textValue={
-                        e.firstName + ' ' + e.secondName + ' ' + e.firstLastName + ' ' + e.secondLastName
-                      }
-                    >
-                      {e.firstName ?? '-'} {e.secondName ?? '-'} {e.firstLastName ?? '-'}{' '}
-                      {e.secondLastName ?? '-'}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  className="dark:text-white"
-                  classNames={{ label: 'font-semibold' }}
-                  label="Observaciones"
-                  placeholder="Observaciones"
-                  value={observation}
-                  variant="bordered"
-                  onChange={(e) => setObservation(e.target.value)}
-                />
-              </div>
-            </ResponsiveFilterWrapper>
+              <ResponsiveFilterWrapper withButton={false}>
+                <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
+                  <Select
+                    className="dark:text-white"
+                    classNames={{ label: 'font-semibold' }}
+                    label="Extraer producto de"
+                    placeholder="Selecciona la sucursal de origen"
+                    selectedKeys={selectedBranch}
+                    variant="bordered"
+                    onSelectionChange={setSelectedBranch}
+                  >
+                    {branch_list.map((b) => (
+                      <SelectItem key={b.id} className="dark:text-white">
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    className="dark:text-white"
+                    classNames={{ label: 'font-semibold' }}
+                    label="Mover producto a"
+                    placeholder="Seleccione la sucursal de destino"
+                    selectedKeys={moveSelectedBranch}
+                    selectionMode="single"
+                    variant="bordered"
+                    onSelectionChange={setMoveSelectedBranch}
+                  >
+                    {branch_list.map((b) => (
+                      <SelectItem key={b.id} className="dark:text-white">
+                        {b.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Select
+                    className="dark:text-white"
+                    classNames={{ label: 'font-semibold' }}
+                    label="Encargado"
+                    placeholder="Selecciona el encargado de la orden"
+                    selectedKeys={selectedEmployee}
+                    selectionMode="single"
+                    variant="bordered"
+                    onSelectionChange={setSelectedEmployee}
+                  // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
+                  >
+                    {employee_list.map((e) => (
+                      <SelectItem
+                        key={e.id}
+                        className="dark:text-white"
+                        textValue={
+                          e.firstName + ' ' + e.secondName + ' ' + e.firstLastName + ' ' + e.secondLastName
+                        }
+                      >
+                        {e.firstName ?? '-'} {e.secondName ?? '-'} {e.firstLastName ?? '-'}{' '}
+                        {e.secondLastName ?? '-'}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                  <Input
+                    className="dark:text-white"
+                    classNames={{ label: 'font-semibold' }}
+                    label="Observaciones"
+                    placeholder="Observaciones"
+                    value={observation}
+                    variant="bordered"
+                    onChange={(e) => setObservation(e.target.value)}
+                  />
+                </div>
+              </ResponsiveFilterWrapper>
               <div className="w-full flex justify-between">
-              <p className="text-sm font-semibold hiiden xl:flex">Productos</p>
-              <ButtonUi
-                isIconOnly
-                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
-                theme={Colors.Success}
-                onPress={modalProducts.onOpen}
-              >
-                <Plus />
-              </ButtonUi>
+                <p className="text-sm font-semibold hiiden xl:flex">Productos</p>
+                <ButtonUi
+                  isIconOnly
+                  isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
+                  theme={Colors.Success}
+                  onPress={modalProducts.onOpen}
+                >
+                  <Plus />
+                </ButtonUi>
               </div>
             </div>
           </div>
@@ -427,9 +436,10 @@ function AddProductionOrder() {
               </>
             )}
           </div>
-          <Accordion defaultExpandedKeys={['costs']} variant="splitted">
+          <Accordion defaultExpandedKeys={['costs']} variant="splitted" >
             <AccordionItem
               key="costs"
+              className='dark:bg-gray-800'
               indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
               startContent={<DollarSign className="text-green-700 dark:text-slate-200" size={25} />}
               title={<p className="font-semibold">Costos</p>}
@@ -471,14 +481,31 @@ function AddProductionOrder() {
                         label: 'font-semibold text-[10px]',
                         input: 'text-xs',
                       }}
-                      label="RENDIMIENTO"
+                      endContent={
+                        <select
+                          className="outline-none border-0 flex items-end bg-transparent text-default-400 text-small"
+                          id="currency"
+                          name="currency"
+                          onChange={(e) => {
+                            setSelectedTypeSearch(e.currentTarget.value as TypeSearch);
+                          }}
+                        >
+                          {typeSearch.map((tpS) => (
+                            <option key={tpS} value={tpS}>
+                              {tpS}
+                            </option>
+                          ))}
+                        </select>
+                      }
                       labelPlacement="outside"
                       placeholder="0.00"
                       size="sm"
                       value={
-                        selectedProducts.length > 0
-                          ? String(selectedProducts[0].recipeBook?.performance)
-                          : '0'
+                        selectedProducts.length === 0
+                          ? ''
+                          : selectedTypeSearch === 'MP'
+                            ? calcMp(0).toFixed(2)
+                            : String(selectedProducts[0].recipeBook?.performance ?? '')
                       }
                       variant="bordered"
                     />

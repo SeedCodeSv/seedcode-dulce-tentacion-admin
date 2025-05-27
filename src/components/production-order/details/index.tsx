@@ -2,10 +2,10 @@ import React from 'react';
 import { Truck, Calendar, FileText, ArrowRight, ClipboardList } from 'lucide-react';
 
 import { ProductionOrder } from './types';
-import StatusBadge from './status-badge';
 import InfoField from './info-field';
 import TimelineItem from './timeline-item';
 import ProductCard from './products-card';
+import FooterDetailOrder from './footer-detail-order';
 
 import { formatDateToddLLLyyyy } from '@/utils/dates';
 
@@ -28,7 +28,7 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
     finalNotes,
     destinationBranch,
     receptionBranch,
-    employee, 
+    employee,
   } = productionOrder;
 
   const historyItems = moreInformation ? JSON.parse(moreInformation) : [];
@@ -77,14 +77,6 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
 
   return (
     <div className="dark:text-white">
-      {/* Header Section */}
-      <div className="lg:p-6 border-b">
-        <div className="flex justify-between items-start mb-2">
-          <div />
-          <StatusBadge status={statusOrder} />
-        </div>
-      </div>
-
       {/* Main Content */}
       <div className="lg:p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -178,11 +170,9 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
             <div className={`w-2 h-2 ${statusInfo.dotColor} rounded-full mr-2`} />
             <p className={statusInfo.textColor}>{statusInfo.message}</p>
           </div>
-
-          {/* {details.map((detail) => ( */}
-            <ProductCard productionOrder={productionOrder}/>
-          {/* ))} */}
+          <ProductCard productionOrder={productionOrder} />
         </div>
+        <FooterDetailOrder order={productionOrder} />
       </div>
     </div>
   );

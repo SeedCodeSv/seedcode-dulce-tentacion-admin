@@ -99,7 +99,7 @@ function AddProduct() {
               setSelectedProducts={setSelectedProducts}
             />
             <div className="w-full flex justify-end py-6 gap-5">
-              <ButtonUi className="px-10" theme={Colors.Default}>
+              <ButtonUi className="px-10" theme={Colors.Default} onPress={() => navigate(-1)}>
                 Cancelar
               </ButtonUi>
               <ButtonUi className="px-10" theme={Colors.Primary} type="submit">

@@ -111,7 +111,7 @@ const ProductsList: React.FC<ProductsListProps> = ({ products, order, onOrderPro
   };
 
   return (
-    <div className="mb-8">
+    <div className="mb-8 px-4 xl:px-0">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Producto</h2>
       </div>

@@ -30,6 +30,7 @@ import { useCategoriesStore } from '@/store/categories.store';
 import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useProductsStore } from '@/store/products.store';
 import { preventLetters } from '@/utils';
+import { typesProduct } from '@/utils/constants';
 
 type ProductOrder = Product & { quantity: number; performanceQuantity: string; cost: number };
 
@@ -308,7 +309,7 @@ function GeneralProductInfo({
         </Select>
         <Input
           isRequired
-          className="col-span-2"
+          className="col-span"
           classNames={{ label: 'font-semibold' }}
           label="Descripción"
           labelPlacement="outside"
@@ -318,6 +319,22 @@ function GeneralProductInfo({
           errorMessage={formik.errors.description}
           isInvalid={!!formik.errors.description && !!formik.touched.description}
         />
+        <Select
+          classNames={{ label: 'font-semibold' }}
+          label="Tipo de producto"
+          labelPlacement="outside"
+          placeholder="Selecciona el tipo de producto"
+          variant="bordered"
+          {...formik.getFieldProps('productType')}
+          defaultSelectedKeys={[formik.values.productType]}
+          onSelectionChange={(key) => {
+            formik.setFieldValue('productType', key);
+          }}
+        >
+          {typesProduct.map((typ) => (
+            <SelectItem key={typ}>{typ}</SelectItem>
+          ))}
+        </Select>
       </div>
 
       <div className="mt-5">

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import ProductionOrderDetails from './details';
 import { ProductionOrder } from './details/types';
+import StatusBadge from './details/status-badge';
 
 import { useProductionOrderStore } from '@/store/production-order.store';
 
@@ -25,7 +26,12 @@ function DetailsProductionOrder({ id, modalMoreInformation, onClose }: Props) {
   return (
     <Modal {...modalMoreInformation} className='dark:bg-gray-900' scrollBehavior="inside" size="full" onClose={onClose} >
       <ModalContent>
-        <ModalHeader>Orden de Producción #{id}</ModalHeader>
+        <ModalHeader className='w-full flex justify-between px-12 py-6'>
+          Orden de Producción #{id}
+          {productionOrderDetail &&
+            <StatusBadge status={productionOrderDetail.statusOrder} />
+          }
+          </ModalHeader>
         <ModalBody>
           {!loadingProductionOrder && productionOrderDetail && (
             <ProductionOrderDetails

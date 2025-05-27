@@ -118,6 +118,11 @@ export interface ProductionOrder {
   receptionBranchId: number;
   destinationBranchId: number;
   branchProduct: BranchProduct;
+  costRawMaterial: number;
+  costDirectLabor: number;
+  costPrime: number;
+  indirectManufacturingCost: number
+  totalCost: number
   details: ProductionOrderDetail[];
 }
 

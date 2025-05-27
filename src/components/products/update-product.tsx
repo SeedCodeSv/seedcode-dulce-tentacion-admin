@@ -73,6 +73,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
             toast.success('Se guardo el producto');
           }
           formikHelpers.setSubmitting(false);
+          onCloseModal()
         })
         .catch(() => {
           formik.setSubmitting(false);
@@ -100,12 +101,11 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     <>
       <Modal isDismissable={false} isOpen={isOpen} size="2xl" onClose={onCloseModal}>
         <ModalContent>
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <ModalHeader className="dark:text-white">Editar Producto</ModalHeader>
             <ModalBody>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <div>
-                  <div className="pt-2">
                     <Input
                       className="dark:text-white"
                       classNames={{
@@ -120,7 +120,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                       errorMessage={formik.errors.name}
                       isInvalid={!!formik.errors.name && !!formik.touched.name}
                     />
-                  </div>
+                 
                   <div className="mt-2">
                     <Textarea
                       className="dark:text-white"

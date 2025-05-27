@@ -163,6 +163,7 @@ export interface ProductPayloadForm {
   tipoItem: string;
   uniMedida: string;
   unidaDeMedida: string;
+  productType: string;
   branch: number[];
   menu: {
     addToMenu: boolean;

@@ -1,6 +1,7 @@
 import * as yup from 'yup';
 
 import { ProductPayloadForm } from '@/types/products.types';
+import { typesProduct } from '@/utils/constants';
 
 export const initialValues: ProductPayloadForm = {
   name: '',
@@ -20,6 +21,7 @@ export const initialValues: ProductPayloadForm = {
   stock: 1,
   suppliers: [],
   minimumStock: 1,
+  productType: typesProduct[0],
   menu: {
     noDeadline: false,
     addToMenu: false,
