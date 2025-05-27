@@ -149,7 +149,7 @@ function ShippingProductBranchSelected(props: Props) {
                   className="dark:text-wite"
                   color="primary"
                   isDisabled={responsibleEmployee === undefined}
-                  onClick={() => setIsModalOpen(true)}
+                  onPress={() => setIsModalOpen(true)}
                 >
                   <MoveLeft />
                   Guardar
@@ -492,14 +492,15 @@ function ShippingProductBranchSelected(props: Props) {
             </div>
           </ModalBody>
           <ModalFooter className="flex justify-between items-end">
-            <Button
+            <ButtonUi
               className="px-10"
-              style={global_styles().dangerStyles}
-              variant="light"
-              onClick={() => setIsModalOpen(false)}
+              // style={global_styles().dangerStyles}
+              // variant="light"
+              theme={Colors.Error}
+              onPress={() => setIsModalOpen(false)}
             >
               Cancelar
-            </Button>
+            </ButtonUi>
             <GenerateAShippingNote
               branch={props.branchData}
               branchLlegada={branchData}

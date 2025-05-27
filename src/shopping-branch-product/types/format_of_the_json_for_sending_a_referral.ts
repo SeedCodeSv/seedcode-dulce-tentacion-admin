@@ -118,10 +118,10 @@ export const generateEmployeeReceptor = (transmitter: ITransmitter) => {
     descActividad: transmitter.descActividad,
     direccion: transmitter
       ? {
-          departamento: transmitter.direccion.departamento,
-          municipio: transmitter.direccion.municipio,
-          complemento: transmitter.direccion.complemento,
-        }
+        departamento: transmitter.direccion.departamento,
+        municipio: transmitter.direccion.municipio,
+        complemento: transmitter.direccion.complemento,
+      }
       : null,
     telefono: transmitter.telefono,
     correo: transmitter.correo,
@@ -137,9 +137,8 @@ export const generateUrlJson = (
   typeDte: string,
   fecEmi: string
 ) => {
-  return `NOTAS-REMISION/${
-    name
-  }/${new Date().getFullYear()}/NOTAS-REMISION/${typeDte}/${fecEmi}/${generation}/${generation}.${format}`;
+  return `NOTAS-REMISION/${name
+    }/${new Date().getFullYear()}/NOTAS-REMISION/${typeDte}/${fecEmi}/${generation}/${generation}.${format}`;
 };
 export const generate_emisor = (
   transmitter: ITransmitter,
@@ -156,10 +155,10 @@ export const generate_emisor = (
     tipoEstablecimiento: correlative.tipoEstablecimiento,
     direccion: transmitter
       ? ({
-          departamento: transmitter.direccion.departamento,
-          municipio: transmitter.direccion.municipio,
-          complemento: transmitter.direccion.complemento,
-        } as Direccion)
+        departamento: transmitter.direccion.departamento,
+        municipio: transmitter.direccion.municipio,
+        complemento: transmitter.direccion.complemento,
+      } as Direccion)
       : branch.address,
     telefono: transmitter.telefono,
     correo: transmitter.correo,
@@ -240,13 +239,13 @@ export const make_cuerpo_documento = (products_cart: BranchProduct[]): CuerpoDoc
       codigo: cp.product.code,
       codTributo: null,
       descripcion: cp.product.name,
-      precioUni: Number(costeUnit.toFixed(2)),
+      precioUni: Number(costeUnit.toFixed(4)),
       montoDescu: 0,
       ventaNoSuj: 0,
       ventaExenta: 0,
       ventaGravada: Number((cantidad * Number(cp.costoUnitario)).toFixed(2)),
       tributos: null,
-   
+
     };
   });
 };
