@@ -386,12 +386,7 @@
       "actions": [
         "Mostrar"
       ]
-    },
-    {
-      "view": "Control de existencias",
-      "actions": [
-        "Mostrar"
-      ]
     }
+    
   ]
 }

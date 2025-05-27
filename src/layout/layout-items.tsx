@@ -86,8 +86,13 @@ export const LayoutItems = (props: Props) => {
   const { pathname } = location;
 
   const linksProductManagement = [
-    { viewName: 'Productos', to: '/products', icon: Barcode, label: 'Productos' },
-    ,
+    {
+      viewName: 'Productos',
+      to: '/products',
+      icon: Barcode,
+      label: 'Productos'
+    },
+
     {
       viewName: 'Categorias de Productos',
       to: '/categories',
@@ -135,14 +140,17 @@ export const LayoutItems = (props: Props) => {
       to: '/note-referal',
       icon: FaChartLine,
       label: 'Notas de remisión',
-    },
-    { viewName: 'Control de existencias', 
-      to: '/MWSC',
-       icon: Barcode, 
-       label: 'Control de existencias' 
-      }
+    }
 
+    // ,
+    // { viewName: 'Control de existencias', 
+    //   to: '/MWSC',
+    //    icon: Barcode, 
+    //    label: 'Control de existencias' 
+    //   }
   ];
+
+
 
   const linkAdministration = [
     {
