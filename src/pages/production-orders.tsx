@@ -45,7 +45,7 @@ interface ExtendedSelection extends Set<Key> {
 }
 
 function ProductionOrders() {
-  const { productionOrderTypes, onGetProductionOrderTypes } = useProductionOrderTypeStore();
+  const { onGetProductionOrderTypes } = useProductionOrderTypeStore();
 
   const navigation = useNavigate();
 
@@ -60,7 +60,7 @@ function ProductionOrders() {
   const { productionOrders, getProductionsOrders, paginationProductionOrders } =
     useProductionOrderStore();
   const [selectedStatus, setSelectedStatus] = useState<Selection>(new Set([]));
-  const [selectedType, setSelectedType] = useState<Selection>(new Set([]));
+  const [selectedType] = useState<Selection>(new Set([]));
   const [page,setPage] = useState(1)
 
   useEffect(() => {
@@ -179,20 +179,6 @@ function ProductionOrders() {
           >
             {productionOrderStatus.map((status) => (
               <SelectItem key={status} className='dark:text-white'>{status}</SelectItem>
-            ))}
-          </Select>
-          <Select
-            className='dark:text-white'
-            classNames={{ label: 'font-semibold' }}
-            label="Tipo de orden"
-            labelPlacement="outside"
-            placeholder="Seleccione un tipo de orden"
-            selectedKeys={selectedType}
-            variant="bordered"
-            onSelectionChange={setSelectedType}
-          >
-            {productionOrderTypes.map((type) => (
-              <SelectItem key={type.id} className='dark:text-white'>{type.name}</SelectItem>
             ))}
           </Select>
           </ResponsiveFilterWrapper>
@@ -346,17 +332,22 @@ function ProductionOrders() {
           <DetailsProductionOrder
             id={selectedOrderId}
             modalMoreInformation={modalMoreInformation}
+            onClose={()=>{
+              setSelectedOrderId(0)
+            }}
           />
         )}
         <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} 
         onReload={() => {
           setPage(1)
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+          setSelectedOrderId(0)
         }} />
         <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
         reload={() => {
           setPage(1);
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+          setSelectedOrderId(0)
         }}/>
       </DivGlobal>
     </Layout>

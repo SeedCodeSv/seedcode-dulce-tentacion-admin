@@ -23,6 +23,7 @@ export interface CategoryProduct {
   id: number;
   name: string;
   isActive: boolean;
+  showSale: boolean;
   transmitter: Transmitter;
   transmitterId: number;
 }

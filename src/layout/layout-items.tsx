@@ -112,12 +112,6 @@ export const LayoutItems = (props: Props) => {
       label: 'Ordenes de producción',
     },
     {
-      viewName: 'Tipos de ordenes de producción',
-      to: '/production-order-types',
-      icon: ListOrdered,
-      label: 'Tipos de Ordenes de producción',
-    },
-    {
       viewName: 'Compras',
       to: '/shopping',
       icon: ShoppingBag,

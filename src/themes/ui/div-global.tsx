@@ -11,7 +11,7 @@ function DivGlobal({ children }: Props) {
 
   return (
     <div
-      className="pt-9 w-full h-full flex flex-col overflow-y-auto p-5 XL:p-8"
+      className="pt-9 w-full h-full flex flex-col overflow-y-auto p-5 xl:p-8"
       style={{ background: theme.colors[context].background }}
     >
       {children}
