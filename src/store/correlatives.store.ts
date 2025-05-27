@@ -12,11 +12,14 @@ export const useCorrelativesStore = create<ICorrelativesStore>((set) => ({
     get_correlatives(id)
       .then(({ data }) => {
         set({
-            list_correlatives: data.correlatives,
+          list_correlatives: data.pointOfSales,
         });
       })
       .catch(() => {
         toast.error(messages.error);
+        set({
+          list_correlatives: [],
+        });
       });
   },
 }));

@@ -61,7 +61,7 @@ function RecipeBook({ productId, onOpenChange, isOpen }: Props) {
                     </p>
                     <p className="text-sm">
                       <span className="font-semibold">Unidad de medida:</span>{' '}
-                      {FormatNameUnit(detail.extraUniMedida)}
+                      {FormatNameUnit(detail.product.uniMedida)}
                     </p>
                   </div>
                 );

@@ -11,7 +11,7 @@ import {
   Select,
   SelectItem,
 } from '@heroui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import { useFormik } from 'formik';
@@ -39,6 +39,8 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
 
   const { list_categories, getListCategories } = useCategoriesStore();
   const { patchProducts } = useProductsStore();
+
+  const [categorySelected, setCategorySelected] = useState('');
 
   useEffect(() => {
     getListCategories();
@@ -71,6 +73,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
         .then((res) => {
           if (res.ok) {
             toast.success('Se guardo el producto');
+            onCloseModal();
           }
           formikHelpers.setSubmitting(false);
           onCloseModal()
@@ -94,6 +97,8 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
         uniMedida: product?.uniMedida || '',
         code: product?.code || '',
       });
+
+      setCategorySelected(product?.subCategory.categoryProduct.id.toString() || '');
     }
   }, [product]);
 
@@ -101,7 +106,12 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     <>
       <Modal isDismissable={false} isOpen={isOpen} size="2xl" onClose={onCloseModal}>
         <ModalContent>
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              formik.handleSubmit(e);
+            }}
+          >
             <ModalHeader className="dark:text-white">Editar Producto</ModalHeader>
             <ModalBody>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -139,16 +149,16 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                     <Autocomplete
                       className="dark:text-white"
                       classNames={{ base: 'font-semibold text-sm' }}
-                      defaultInputValue={product?.subCategory?.categoryProduct.name || ''}
                       label="Categoría producto"
                       labelPlacement="outside"
                       placeholder="Selecciona la categoría"
-                      value={product?.subCategory?.categoryProduct.name || ''}
+                      selectedKey={categorySelected}
                       variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
                           const categorySelected = key.toString();
 
+                          setCategorySelected(categorySelected);
                           getSubcategories(Number(categorySelected));
                         }
                       }}
@@ -161,22 +171,22 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                     </Autocomplete>
                   </div>
                   <div className="mt-2">
-                    <Autocomplete
+                    <Select
                       className="dark:text-white"
                       classNames={{ base: 'font-semibold text-sm' }}
-                      defaultInputValue={product?.subCategory.name || ''}
                       label="Sub-categoría"
                       labelPlacement="outside"
-                      name="subCategoryId"
                       placeholder="Selecciona la sub-categoría"
+                      selectedKeys={[formik.values.subCategoryId.toString()]}
                       variant="bordered"
+                      {...formik.getFieldProps('subCategoryId')}
                     >
                       {subcategories?.map((sub) => (
-                        <AutocompleteItem key={sub.id} className="dark:text-white">
+                        <SelectItem key={sub.id} className="dark:text-white">
                           {sub.name}
-                        </AutocompleteItem>
+                        </SelectItem>
                       ))}
-                    </Autocomplete>
+                    </Select>
                   </div>
                 </div>
                 <div>
