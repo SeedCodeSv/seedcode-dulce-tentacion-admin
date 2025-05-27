@@ -288,6 +288,7 @@ function ListPurchasesOrders({ actions }: Props) {
                                           <>
                                             {actions.includes('Editar') && (
                                               <Button
+                                                isDisabled
                                                 isIconOnly
                                                 style={styles.secondaryStyle}
                                                 onPress={() => openModal(product.id)}
