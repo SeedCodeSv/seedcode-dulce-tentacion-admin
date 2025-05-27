@@ -54,7 +54,7 @@ function ProductionOrders() {
   const modalVerifyOrder = useDisclosure();
   const modalCompleteOrder = useDisclosure();
 
-  const [startDate, setStartDate] = useState('2025-05-23');
+  const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
 
   const { productionOrders, getProductionsOrders, paginationProductionOrders } =
