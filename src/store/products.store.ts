@@ -155,8 +155,8 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   patchProducts(payload, id): Promise<{ ok: boolean }> {
     return update_products(payload, id)
       .then(() => {
-        get().getPaginatedProducts(1, 5, 0, 0, '', '');
         toast.success(messages.success);
+        get().getPaginatedProducts(1, 5, 0, 0, '', '');
 
         return { ok: true };
       })
