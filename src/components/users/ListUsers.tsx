@@ -174,7 +174,7 @@ function ListUsers({ actions }: Props) {
           </div>
 
           <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
-            <div className="flex  justify-start items-end">
+            <div className="hidden md:flex  justify-start items-end">
               <Switch
                 classNames={{
                   thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
@@ -188,7 +188,7 @@ function ListUsers({ actions }: Props) {
                 </span>
               </Switch>
             </div>
-            <div className="flex gap-10 w-full justify-between items-center">
+            <div className="flex gap-10 w-full justify-between items-end">
               <div className="w-44">
                 <Select
                   className="w-44 dark:text-white"
@@ -216,8 +216,10 @@ function ListUsers({ actions }: Props) {
               <div className="flex gap-5 items-end">
                 <DisplayView setView={setView} view={view} />
                 <SearchUser
+                  active={active}
                   nameRol={(rol) => setRol(rol)}
                   nameUser={(userName) => setUserName(userName)}
+                  setActive={setActive}
                 />
                 {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
               </div>
@@ -245,7 +247,7 @@ function ListUsers({ actions }: Props) {
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
                     <ThGlobal className="text-left p-3">No.</ThGlobal>
-                    <ThGlobal className="text-left p-3">Nombre de usuario</ThGlobal>
+                    <ThGlobal className="text-left p-3">Usuario</ThGlobal>
                     <ThGlobal className="text-left p-3">Rol</ThGlobal>
                     <ThGlobal className="text-left p-3">Acciones</ThGlobal>
                   </tr>
@@ -381,14 +383,15 @@ function ListUsers({ actions }: Props) {
             </ModalBody>
           </ModalContent>
         </Modal>
-        <HeadlessModal
-          isOpen={modalChangePassword.isOpen}
-          size="w-[350px] md:w-[550px]"
-          title="Actualizar contraseña"
-          onClose={modalChangePassword.onClose}
-        >
-          <UpdatePassword closeModal={modalChangePassword.onClose} id={selectId} />
-        </HeadlessModal>
+        <Modal {...modalChangePassword}>
+          <ModalContent>
+            <ModalHeader>Modificar contraseña</ModalHeader>
+            <ModalBody>
+              <UpdatePassword closeModal={modalChangePassword.onClose} id={selectId} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+
         <HeadlessModal
           isOpen={modalUpdate.isOpen}
           size="w-[350px] md:w-[550px]"
