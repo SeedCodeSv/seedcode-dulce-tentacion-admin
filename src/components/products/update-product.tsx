@@ -45,7 +45,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
   useEffect(() => {
     getListCategories();
     getSubcategories(product?.subCategory.categoryPorudctId || 0);
-  }, [getListCategories]);
+  }, [getListCategories, product?.subCategory.categoryPorudctId]);
 
   const formik = useFormik({
     initialValues: {
@@ -116,21 +116,21 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
             <ModalBody>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <div>
-                    <Input
-                      className="dark:text-white"
-                      classNames={{
-                        label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
-                      }}
-                      defaultValue={product?.name}
-                      label="Nombre"
-                      labelPlacement="outside"
-                      placeholder="Ingresa el nombre"
-                      variant="bordered"
-                      {...formik.getFieldProps('name')}
-                      errorMessage={formik.errors.name}
-                      isInvalid={!!formik.errors.name && !!formik.touched.name}
-                    />
-                 
+                  <Input
+                    className="dark:text-white"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
+                    }}
+                    defaultValue={product?.name}
+                    label="Nombre"
+                    labelPlacement="outside"
+                    placeholder="Ingresa el nombre"
+                    variant="bordered"
+                    {...formik.getFieldProps('name')}
+                    errorMessage={formik.errors.name}
+                    isInvalid={!!formik.errors.name && !!formik.touched.name}
+                  />
+
                   <div className="mt-2">
                     <Textarea
                       className="dark:text-white"
@@ -170,24 +170,24 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                       ))}
                     </Autocomplete>
                   </div>
-                  <div className="mt-2">
-                    <Select
-                      className="dark:text-white"
-                      classNames={{ base: 'font-semibold text-sm' }}
-                      label="Sub-categoría"
-                      labelPlacement="outside"
-                      placeholder="Selecciona la sub-categoría"
-                      selectedKeys={[formik.values.subCategoryId.toString()]}
-                      variant="bordered"
-                      {...formik.getFieldProps('subCategoryId')}
-                    >
-                      {subcategories?.map((sub) => (
-                        <SelectItem key={sub.id} className="dark:text-white">
-                          {sub.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
+
+                  <Select
+                    className="dark:text-white pt-3"
+                    classNames={{ base: 'font-semibold text-sm' }}
+                    label="Sub-categoría"
+                    labelPlacement="outside"
+                    placeholder="Selecciona la sub-categoría"
+                    selectedKeys={[formik.values.subCategoryId.toString()]}
+                    variant="bordered"
+                    {...formik.getFieldProps('subCategoryId')}
+                  >
+                    {subcategories?.map((sub) => (
+                      <SelectItem key={sub.id} className="dark:text-white">
+                        {sub.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+
                 </div>
                 <div>
                   <div className="mt-2">
