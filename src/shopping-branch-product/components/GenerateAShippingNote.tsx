@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Button } from '@heroui/react';
 
 import { IPropCustomer } from '../types/notes_of_remision.types';
 import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
@@ -14,7 +13,6 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
 import { useAuthStore } from '@/store/auth.store';
 import { ambiente } from '@/utils/constants';
-import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 
