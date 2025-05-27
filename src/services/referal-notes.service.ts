@@ -8,13 +8,15 @@ export const get_referal_notes = (
   page: number,
   limit: number,
   startDate: string,
-  endDate: string
+  endDate: string, 
+  type: string
 ) => {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
     page: page.toString(),
     limit: limit.toString(),
+    type: type
   });
 
   return axios.get<IGetReferalNotes>(
@@ -22,7 +24,7 @@ export const get_referal_notes = (
   );
 };
 
-export const complete_referal_note = async (id: number, payload:PayloadReferel) => {
+export const complete_referal_note = async (id: number, payload: PayloadReferel) => {
   return (await axios.post<{ ok: boolean }>(API_URL + `/referal-note/receive/${id}`, payload)).data;
 };
 

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import {
   GetBranchProductRecipe,
+  GetBranchProductRecipeSupplier,
   GetProductAndRecipe,
   GetProductDetail,
   GetProductRecipeBook,
@@ -29,7 +30,7 @@ export const get_products = (
 
   return axios.get<IGetProductsPaginated>(
     API_URL +
-      `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
+    `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -163,5 +164,36 @@ export const get_branch_product_recipe = (
 };
 
 export const create_branch_product = (payload: IPayloadBranchProduct) =>{
-  return axios.post<BasicResponse>(API_URL + '/branch-products/add-branch-product', payload)
+  return axios.post<BasicResponse>(API_URL + '/branch-products/add/branch-product', payload)
 }
+export const get_branch_product_recipe_supplier = (
+  id: number,
+  branchProductId = 0,
+  page = 1,
+  limit = 5,
+  category = '',
+  name = '',
+  code = '',
+  typeProduct = ''
+) => {
+  const token = get_token() ?? '';
+
+  const params = new URLSearchParams();
+
+  params.append('branchProductId', branchProductId.toString());
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('category', category);
+  params.append('name', name);
+  params.append('code', code);
+  params.append('typeProduct', typeProduct);
+
+  return axios.get<GetBranchProductRecipeSupplier>(
+    API_URL + `/branch-products/get-products-and-recipe-supplier/${id}?${params.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};

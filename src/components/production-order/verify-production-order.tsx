@@ -10,7 +10,7 @@ import {
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { Info } from 'lucide-react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
 
 import ProductionOrderView from './verify/production-order-view';
@@ -22,13 +22,14 @@ import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
 import { getElSalvadorDateTime } from '@/utils/dates';
 import { get_employee_by_code } from '@/services/employess.service';
+import { GetEmployeeByCode } from '@/types/employees.types';
 
 type DisclosureProps = ReturnType<typeof useDisclosure>;
 
 interface Props {
   id: number;
   disclosure: DisclosureProps;
-  onReload: ()=> void
+  onReload: () => void;
 }
 
 function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
@@ -40,7 +41,7 @@ function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
 
   const [employeeCode, setEmployeeCode] = useState('');
 
-  const { canFulfillAll } = checkOrderFulfillment(productionOrderDetail?.details || []);
+  const { canFulfillAll } = checkOrderFulfillment(productionOrderDetail || null);
 
   const modalConfirmation = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -52,52 +53,61 @@ function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
       return;
     }
     setLoading(true);
-    get_employee_by_code(employeeCode).then((res) => {
-      const employee = res.data.employee;
+    get_employee_by_code(employeeCode)
+      .then((res) => {
+        const employee = res.data.employee;
 
-      if (!employee) {
-        toast.error('Empleado no encontrado');
+        const name =
+          employee.id +
+          ' - ' +
+          employee.firstName +
+          ' ' +
+          employee.secondName +
+          ' ' +
+          employee.firstLastName +
+          ' ' +
+          employee.secondLastName;
+
+        axios
+          .patch(API_URL + `/production-orders/start/${id}`, {
+            reason: getElSalvadorDateTime().fecEmi + ' - ' + getElSalvadorDateTime().horEmi,
+            responsibleName: name,
+          })
+          .then(() => {
+            toast.success('Orden de producción confirmada');
+            modalConfirmation.onClose();
+            disclosure.onClose();
+            setLoading(false);
+            onReload();
+          })
+          .catch(() => {
+            modalConfirmation.onClose();
+            disclosure.onClose();
+            setLoading(false);
+          });
+      })
+      .catch((error: AxiosError<GetEmployeeByCode>) => {
+        modalConfirmation.onClose();
+        if (!error.response?.data.employee) {
+          toast.error(`Empleado no encontrado`);
+        } else {
+          toast.error('Error desconocido');
+        }
         setLoading(false);
-
-        return;
-      }
-
-      const name =
-        employee.id +
-        ' - ' +
-        employee.firstName +
-        ' ' +
-        employee.secondName +
-        ' ' +
-        employee.firstLastName +
-        ' ' +
-        employee.secondLastName;
-
-      axios
-        .patch(API_URL + `/production-orders/start/${id}`, {
-          reason: getElSalvadorDateTime().fecEmi + ' - ' + getElSalvadorDateTime().horEmi,
-          responsibleName: name,
-        })
-        .then(() => {
-          toast.success('Orden de producción confirmada');
-          modalConfirmation.onClose();
-          disclosure.onClose();
-          setLoading(false);
-          onReload()
-        })
-        .catch(() => {
-          modalConfirmation.onClose();
-          disclosure.onClose();
-          setLoading(false);
-        });
-    });
+      });
   };
 
   return (
     <>
-      <Modal {...disclosure} className='dark:bg-gray-900' isDismissable={false} scrollBehavior="inside" size="full" >
+      <Modal
+        {...disclosure}
+        className="dark:bg-gray-900"
+        isDismissable={false}
+        scrollBehavior="inside"
+        size="full"
+      >
         <ModalContent>
-          <ModalHeader className='dark:text-white'>Confirmar orden de producción</ModalHeader>
+          <ModalHeader className="dark:text-white">Confirmar orden de producción</ModalHeader>
           <ModalBody>
             {productionOrderDetail && (
               <ProductionOrderView productionOrder={productionOrderDetail!} />
@@ -118,7 +128,11 @@ function VerifyProductionOrder({ id, disclosure, onReload }: Props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <Modal className='dark:bg-gray-900 dark:text-gray-100' {...modalConfirmation} isDismissable={false}>
+      <Modal
+        className="dark:bg-gray-900 dark:text-gray-100"
+        {...modalConfirmation}
+        isDismissable={false}
+      >
         <ModalContent>
           <ModalHeader>Confirmar orden de producción</ModalHeader>
           <ModalBody>

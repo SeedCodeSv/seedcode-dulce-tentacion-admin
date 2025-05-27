@@ -28,12 +28,9 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
     finalNotes,
     destinationBranch,
     receptionBranch,
-    employee,
-    productionOrderType,
-    details,
+    employee, 
   } = productionOrder;
 
-  // Parse moreInformation from JSON string to array
   const historyItems = moreInformation ? JSON.parse(moreInformation) : [];
 
   const getStatusMessage = (status: string) => {
@@ -83,9 +80,7 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
       {/* Header Section */}
       <div className="lg:p-6 border-b">
         <div className="flex justify-between items-start mb-2">
-          <div>
-            <p className="text-gray-600 uppercase dark:text-white">{productionOrderType.name}</p>
-          </div>
+          <div />
           <StatusBadge status={statusOrder} />
         </div>
       </div>
@@ -178,15 +173,15 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
 
         {/* Products Section */}
         <div className="mt-8 border-t pt-6">
-          <h2 className="text-xl font-bold mb-4">Productos ({details.length})</h2>
+          <h2 className="text-xl font-bold mb-4">Producto</h2>
           <div className={`${statusInfo.bgColor} px-4 py-2 rounded-lg mb-4 flex items-center`}>
             <div className={`w-2 h-2 ${statusInfo.dotColor} rounded-full mr-2`} />
             <p className={statusInfo.textColor}>{statusInfo.message}</p>
           </div>
 
-          {details.map((detail) => (
-            <ProductCard key={detail.id} detail={detail} orderStatus={statusOrder} />
-          ))}
+          {/* {details.map((detail) => ( */}
+            <ProductCard productionOrder={productionOrder}/>
+          {/* ))} */}
         </div>
       </div>
     </div>

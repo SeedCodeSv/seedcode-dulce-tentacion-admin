@@ -16,7 +16,7 @@ import {
   ModalFooter,
 } from '@heroui/react';
 import { toast } from 'sonner';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import OrderHeader from './order-header';
 import OrderDetails from './order-details';
@@ -24,11 +24,12 @@ import ProductsList from './products-list';
 import CompletionNotes from './completion-notes';
 
 import { useProductionOrderStore } from '@/store/production-order.store';
-import { Detail } from '@/types/production-order.types';
+import { Detail, ProductionOrderDetailsVerify } from '@/types/production-order.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { get_employee_by_code } from '@/services/employess.service';
 import { API_URL } from '@/utils/constants';
+import { GetEmployeeByCode } from '@/types/employees.types';
 type DevolutionProduct = {
   id: number;
   name: string;
@@ -37,12 +38,8 @@ type DevolutionProduct = {
   unidadDeMedida: string;
 };
 type Product = Detail & {
-  producedQuantity: number;
   damagedQuantity: number;
   expectedQuantity: number;
-  damagedReason: string;
-  hasDevolution: boolean;
-  devolutionProducts: DevolutionProduct[];
 };
 
 type disclosureProps = ReturnType<typeof useDisclosure>;
@@ -50,15 +47,21 @@ type disclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   id: number;
   disclosure: disclosureProps;
-  reload:() => void
+  reload: () => void;
 }
 
-const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
+type ProductionOrder = ProductionOrderDetailsVerify & {
+  hasDevolution: boolean;
+  devolutionProducts?: DevolutionProduct[];
+};
+
+const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload }) => {
   const { productionOrderDetail, getProductionsOrderDetail } = useProductionOrderStore();
   const [notes, setNotes] = useState<string>('');
   const [employeeCode, setEmployeeCode] = useState('');
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [order, setOrder] = useState<ProductionOrder>();
 
   const modalConfirmation = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -72,14 +75,16 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
       setProducts(
         productionOrderDetail.details.map((detail) => ({
           ...detail,
-          producedQuantity: detail.quantity,
           damagedQuantity: 0,
-          expectedQuantity: detail.quantity,
-          hasDevolution: false,
-          devolutionProducts: [],
-          damagedReason: '',
+          expectedQuantity: Number(detail.quantity),
         }))
       );
+
+      setOrder({
+        ...productionOrderDetail,
+        producedQuantity: productionOrderDetail.quantity,
+        hasDevolution: false,
+      });
     }
   }, [productionOrderDetail]);
 
@@ -102,16 +107,13 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
         }
 
         const payload = {
-          products: products.map((product) => ({
-            id: product.id,
-            producedQuantity: product.producedQuantity,
-            damagedQuantity: product.damagedQuantity,
-            missingQuantity: product.expectedQuantity - product.producedQuantity,
-            damagedReason: product.damagedReason,
-            devolutionProducts: product.hasDevolution ? product.devolutionProducts : [],
-          })),
+          damagedQuantity: order?.damagedQuantity,
+          damagedReason: order?.damagedReason,
+          producedQuantity: order?.producedQuantity,
+          productId: order?.branchProduct.product.id,
           notes,
           employee: employee.id,
+          devolutionProducts: order?.hasDevolution ? order.devolutionProducts : [],
         };
 
         axios
@@ -120,15 +122,20 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
             toast.success('Orden de producción finalizada');
             setLoading(false);
             modalConfirmation.onClose();
-            disclosure.onClose()
-            reload()
+            disclosure.onClose();
+            reload();
           })
           .catch(() => {
             setLoading(false);
           });
       })
-      .catch(() => {
-        toast.error('Código incorrecto o no encontrado');
+      .catch((error: AxiosError<GetEmployeeByCode>) => {
+        modalConfirmation.onClose();
+        if (!error.response?.data.employee) {
+          toast.error(`Empleado no encontrado`);
+        } else {
+          toast.error('Error desconocido');
+        }
         setLoading(false);
       });
   };
@@ -137,9 +144,8 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
     window.print();
   };
 
-  const allProductsComplete = products.every(
-    (product) => product.producedQuantity > 0 || product.damagedQuantity > 0
-  );
+  const allProductsComplete =
+    (order && order?.producedQuantity > 0) || (order && order?.damagedQuantity > 0);
 
   const employeeName = useMemo(() => {
     if (productionOrderDetail) {
@@ -151,17 +157,18 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
 
   return (
     <>
-      <Drawer className='dark:bg-gray-900' {...disclosure} scrollBehavior="inside" size="full">
+      <Drawer className="dark:bg-gray-900" {...disclosure} scrollBehavior="inside" size="full">
         <DrawerContent>
           <DrawerHeader>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">Finalizar orden de producción</h1>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-300">
+              Finalizar orden de producción
+            </h1>
           </DrawerHeader>
-          <DrawerBody className='px-4'>
-            {productionOrderDetail && (
+          <DrawerBody className="px-4">
+            {productionOrderDetail && order && (
               <div className=" md:py-8 md:px-4">
                 <div className="bg-white dark:bg-gray-800/50 rounded-lg shadow md:p-6 mb-6 print:shadow-none">
                   <OrderHeader
-                    category={productionOrderDetail.productionOrderType.name}
                     orderNumber={productionOrderDetail.id.toString()}
                     status={productionOrderDetail.statusOrder}
                   />
@@ -176,7 +183,9 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
                     receptionBranch={productionOrderDetail?.receptionBranch.name || ''}
                   />
                   <ProductsList
+                    order={order}
                     products={products}
+                    onOrderProductUpdate={(updateOrder) => setOrder(updateOrder)}
                     onProductUpdate={(updatedProducts) => {
                       setProducts(updatedProducts);
                     }}
@@ -196,7 +205,9 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
                 </ButtonUi>
               </div>
               <div className="flex space-x-4">
-                <ButtonUi theme={Colors.Warning} onPress={disclosure.onClose}>Cancelar</ButtonUi>
+                <ButtonUi theme={Colors.Warning} onPress={disclosure.onClose}>
+                  Cancelar
+                </ButtonUi>
                 <ButtonUi
                   disabled={!allProductsComplete}
                   theme={Colors.Success}
@@ -210,7 +221,11 @@ const CompleteOrder: React.FC<Props> = ({ id, disclosure, reload}) => {
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
-      <Modal {...modalConfirmation} className='dark:bg-gray-900 dark:text-gray-100' isDismissable={false}>
+      <Modal
+        {...modalConfirmation}
+        className="dark:bg-gray-900 dark:text-gray-100"
+        isDismissable={false}
+      >
         <ModalContent>
           <ModalHeader>Confirmar orden de producción</ModalHeader>
           <ModalBody>

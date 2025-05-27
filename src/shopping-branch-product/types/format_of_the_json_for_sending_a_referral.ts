@@ -13,7 +13,7 @@ import { formatearNumero } from '@/utils/make-dte';
 
 const total = (productsCarts: BranchProduct[]) => {
   const total = productsCarts
-    .map((cp) => Number(cp.quantity) * Number(cp.price))
+    .map((cp) => Number(cp.quantity) * Number(cp.costoUnitario))
     .reduce((a, b) => a + b, 0);
 
   return total;
@@ -223,11 +223,11 @@ export const make_cuerpo_documento = (products_cart: BranchProduct[]): CuerpoDoc
   return products_cart.map((cp, index) => {
     const prices = [Number(cp.price), Number(cp.priceA), Number(cp.priceB), Number(cp.priceC)];
 
-    const price = prices.includes(Number(cp.price))
-      ? Number(cp.price)
-      : Number(cp.price) === Number(prices[0])
+    const costeUnit = prices.includes(Number(cp.costoUnitario))
+      ? Number(cp.costoUnitario)
+      : Number(cp.costoUnitario) === Number(prices[0])
         ? Number(prices[1])
-        : Number(cp.price);
+        : Number(cp.costoUnitario);
 
     const cantidad = cp.quantity ?? 0;
 
@@ -240,11 +240,11 @@ export const make_cuerpo_documento = (products_cart: BranchProduct[]): CuerpoDoc
       codigo: cp.product.code,
       codTributo: null,
       descripcion: cp.product.name,
-      precioUni: Number(price.toFixed(2)),
+      precioUni: Number(costeUnit.toFixed(2)),
       montoDescu: 0,
       ventaNoSuj: 0,
       ventaExenta: 0,
-      ventaGravada: Number((cantidad * Number(cp.price)).toFixed(2)),
+      ventaGravada: Number((cantidad * Number(cp.costoUnitario)).toFixed(2)),
       tributos: null,
    
     };

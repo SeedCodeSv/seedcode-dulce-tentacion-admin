@@ -17,7 +17,7 @@ export function SigningProcess({
     <Modal backdrop="blur" isOpen={isOpen} size="lg" onClose={onClose}>
       <ModalContent>
         <ModalHeader>
-          <h2 className="text-xl font-bold text-gray-800">Proceso de firma digital</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-white">Proceso de firma digital</h2>
         </ModalHeader>
         <ModalBody>
           <motion.div animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 20 }}>

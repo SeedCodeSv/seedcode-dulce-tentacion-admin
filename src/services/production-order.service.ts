@@ -36,7 +36,7 @@ export const get_verify_production_order = (id: number) => {
 };
 
 export const verify_products_orders = (payload: IPayloadVerifyProducts) => {
-  return axios.post<ResponseVerifyProduct>(API_URL + '/branch-products/verify-recipe-product' , payload )
+  return axios.post<ResponseVerifyProduct>(API_URL + '/branch-products/verify-recipe/branch-product' , payload )
 
 }
 

@@ -41,7 +41,7 @@ import UpdateEmployee from './update-employee';
 import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
-import ContractPdf from './ContractPDF'
+import ContractPdf from './../employee/employees-pdfs/pdfContract';
 
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';

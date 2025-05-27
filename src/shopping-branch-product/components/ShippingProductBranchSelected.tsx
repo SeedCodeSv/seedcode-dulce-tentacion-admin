@@ -29,6 +29,8 @@ import { usePointOfSales } from '@/store/point-of-sales.store';
 import { useCustomerStore } from '@/store/customers.store';
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Props {
   branchData: Branches;
@@ -48,7 +50,6 @@ function ShippingProductBranchSelected(props: Props) {
     OnMinusProductSelected,
     OnChangeQuantityManual,
     OnUpdateCosteManual,
-    OnUpdatePriceManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
@@ -167,7 +168,6 @@ function ShippingProductBranchSelected(props: Props) {
                     'Nombre',
                     'Categoria',
                     'Costo Unitario',
-                    'Precio',
                     'Cantidad',
                     'Acciones',
                   ].map((column) => (
@@ -207,22 +207,13 @@ function ShippingProductBranchSelected(props: Props) {
                     <td className="px-6 py-4 dark:text-white">
                       {item.product?.subCategory?.categoryProduct?.name}
                     </td>
-                   
+
                     <td className="px-6 py-4 dark:text-white">
                       <Input
-                        value={item.costoUnitario!.toString()}
+                        value={Number(item.costoUnitario)!.toString()}
                         variant="bordered"
                         onChange={(e) => {
                           OnUpdateCosteManual(item.id, String(e.currentTarget.value));
-                        }}
-                      />
-                    </td>
-                    <td className="px-6 py-4 dark:text-white">
-                      <Input
-                        value={item.price!.toString()}
-                        variant="bordered"
-                        onChange={(e) => {
-                          OnUpdatePriceManual(item.id, String(e.currentTarget.value));
                         }}
                       />
                     </td>
@@ -240,27 +231,27 @@ function ShippingProductBranchSelected(props: Props) {
                     </td>
                     <td className="px-6 py-4 dark:text-white ">
                       <div className="flex gap-4">
-                        <Button
+                        <ButtonUi
                           isIconOnly
-                          style={{ backgroundColor: global_styles().darkStyle.backgroundColor }}
-                          onClick={() => OnPlusProductSelected(item.id)}
+                          theme={Colors.Success}
+                          onPress={() => OnPlusProductSelected(item.id)}
                         >
-                          <Plus style={{ color: global_styles().darkStyle.color }} />
-                        </Button>
-                        <Button
+                          <Plus />
+                        </ButtonUi>
+                        <ButtonUi
                           isIconOnly
-                          style={{ backgroundColor: global_styles().warningStyles.backgroundColor }}
-                          onClick={() => OnMinusProductSelected(item.id)}
+                          theme={Colors.Primary}
+                          onPress={() => OnMinusProductSelected(item.id)}
                         >
-                          <Minus style={{ color: global_styles().warningStyles.color }} />
-                        </Button>
-                        <Button
+                          <Minus />
+                        </ButtonUi>
+                        <ButtonUi
                           isIconOnly
-                          style={{ backgroundColor: global_styles().dangerStyles.backgroundColor }}
-                          onClick={() => OnClearProductSelected(item.id)}
+                          theme={Colors.Error}
+                          onPress={() => OnClearProductSelected(item.id)}
                         >
-                          <Trash style={{ color: global_styles().dangerStyles.color }} />
-                        </Button>
+                          <Trash />
+                        </ButtonUi>
                       </div>
                     </td>
                   </motion.tr>

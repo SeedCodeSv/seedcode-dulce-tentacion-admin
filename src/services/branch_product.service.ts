@@ -9,6 +9,7 @@ import { API_URL } from '../utils/constants';
 import { get_token, get_user } from '../storage/localStorage';
 
 import { IGetBranchesList } from '@/types/branches.types';
+import { UpdateBranchProductOrder } from '@/types/products.types';
 
 export const get_branch_product = (id: number, page = 1, limit = 5, name = '', code = '') => {
   const token = get_token() ?? '';
@@ -80,3 +81,9 @@ export const get_branches = () => {
     }
   );
 };
+
+
+export const update_branch_product = (id: number, payload: UpdateBranchProductOrder) => {
+  return axios.patch<{ ok: boolean, message: string }>(`${API_URL}/branch-products/${id}`, payload)
+
+}

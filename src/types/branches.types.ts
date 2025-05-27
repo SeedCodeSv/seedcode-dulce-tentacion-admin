@@ -9,7 +9,7 @@ export interface Branches {
   codEstableMH: string;
   tipoEstablecimiento: string;
   isActive: boolean;
-  transmitter? :Transmitter
+  transmitter?: Transmitter
 }
 
 export interface IGetBranchesPaginated {
@@ -52,6 +52,7 @@ export interface IGetBranchProduct {
   product: Product;
   productId: number;
   isActive: boolean;
+  hasActiveMenu: boolean
 }
 export interface IGetBranchProductList {
   branchProducts: IGetBranchProduct[];
@@ -65,10 +66,10 @@ export interface IGetBranchProductList {
 }
 
 export interface GetBranchResponse {
-  ok:      boolean;
+  ok: boolean;
   message: string;
-  branch:  Branches;
-  status:  number;
+  branch: Branches;
+  status: number;
 }
 
 

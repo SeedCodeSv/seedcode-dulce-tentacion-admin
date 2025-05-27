@@ -150,8 +150,8 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                             <p className="text-xs py-2 dark:text-white">{item?.product?.subCategory?.name}</p>
                           </div>
                           <div className="flex row gap-2">
-                            <p className="text-xs font-semibold py-2 dark:text-white">Precio: </p>
-                            <p className="text-xs py-2 dark:text-white">${item?.price ?? 'N/A'}</p>
+                            <p className="text-xs font-semibold py-2 dark:text-white">Costo Unitario: </p>
+                            <p className="text-xs py-2 dark:text-white">${Number(item?.costoUnitario).toFixed(2)?? 'N/A'}</p>
                           </div>
                           <div className="flex row gap-2">
                             <p className="text-xs font-semibold py-2 dark:text-white">Codigo: </p>

@@ -18,9 +18,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useBranchesStore } from '@/store/branches.store';
 import { useBranchProductStore } from '@/store/branch_product.store';
-import { BranchProductRecipe } from '@/types/products.types';
 import { useEmployeeStore } from '@/store/employee.store';
-import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
 import SelectProduct from '@/components/production-order/select-product';
 import { API_URL, typesProduct } from '@/utils/constants';
 import RecipeBook from '@/components/production-order/product-recipe';
@@ -29,15 +27,18 @@ import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { preventLetters } from '@/utils';
+import { ResponseVerifyProduct } from '@/types/production-order.types';
+import { useProductionOrderStore } from '@/store/production-order.store';
+import { useAlert } from '@/lib/alert';
 
-type ProductRecipe = BranchProductRecipe & {
+type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
 
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { onGetProductionOrderTypes } = useProductionOrderTypeStore();
   const isMovil = useIsMobileOrTablet();
+  const { show, close } = useAlert()
 
   const [selectedBranch, setSelectedBranch] = useState<Selection>(new Set([]));
   const [moveSelectedBranch, setMoveSelectedBranch] = useState<Selection>(new Set([]));
@@ -52,14 +53,15 @@ function AddProductionOrder() {
   useEffect(() => {
     getBranchesList();
     getEmployeesList();
-    onGetProductionOrderTypes();
   }, []);
   const [selectedTypeProduct, setSelectedTypeProduct] = useState<Selection>(
     new Set([typesProduct[0]])
   );
   const [selectedProducts, setSelectedProducts] = useState<ProductRecipe[]>([]);
+  const modalProducts = useDisclosure();
 
   const { getBranchProductsRecipe } = useBranchProductStore();
+  const { errors } = useProductionOrderStore();
 
   useEffect(() => {
     const selectedBranchS = new Set(moveSelectedBranch);
@@ -78,59 +80,99 @@ function AddProductionOrder() {
     }
   }, [selectedBranch, selectedTypeProduct]);
 
-  const modalProducts = useDisclosure();
+  const validateSelection = (value: unknown, message: string) => {
+    if (!value) {
+      toast.error(message, { position: isMovil ? 'bottom-right' : 'top-center' });
 
-  const handleSaveOrder = () => {
-    const branch = new Set(selectedBranch).values().next().value;
-
-    if (!branch) {
-      toast.error('Debe seleccionar una sucursal', { position: 'top-center' });
-
-      return;
+      return false;
     }
 
-    const employee = new Set(selectedEmployee).values().next().value;
+    return true;
+  };
 
-    if (!employee) {
-      toast.error('Debe seleccionar un empleado', { position: 'top-center' });
-
-      return;
-    }
-
+  const validateHasProducts = () => {
     if (selectedProducts.length === 0) {
       toast.error('Debe agregar al menos un producto', {
         position: isMovil ? 'bottom-right' : 'top-center',
         duration: 1000,
       });
 
-      return;
+      return false;
     }
 
+    return true;
+  };
+
+  const validateErrors = () => {
+    if (errors && errors.length > 0) {
+      const hasStockIssues = errors.some((item) => item.exist === true);
+
+      if (hasStockIssues) {
+        show({
+          type: 'warning',
+          message:
+            'Algunos insumos no tienen stock suficiente. ¿Deseas continuar de todas formas?',
+          buttonOptions: (
+            <>
+              <ButtonUi theme={Colors.Info} onPress={close}>Cancelar</ButtonUi>
+              <ButtonUi theme={Colors.Primary} onPress={() => {
+                sendProductionOrder('["algunos insumos no tienen suficiente stock"]')
+                close()
+              }
+              }  >Sí, continuar</ButtonUi>
+            </>
+          ),
+        });
+
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+
+  const handleSaveOrder = () => {
+    const branch = new Set(selectedBranch).values().next().value;
+    const employee = new Set(selectedEmployee).values().next().value;
     const destinationBranch = new Set(moveSelectedBranch).values().next().value;
 
-    if (!destinationBranch) {
-      toast.error('Debe seleccionar una sucursal de destino', {
-        position: isMovil ? 'bottom-right' : 'top-center',
-        duration: 1000,
-      });
-
+    if (
+      !validateSelection(branch, 'Debe seleccionar una sucursal') ||
+      !validateSelection(employee, 'Debe seleccionar un empleado') ||
+      !validateHasProducts() ||
+      !validateSelection(destinationBranch, 'Debe seleccionar una sucursal de destino') ||
+      !validateErrors()
+    ) {
       return;
     }
 
+    sendProductionOrder()
+  };
+
+  const sendProductionOrder = (moreInformation = '[]') => {
+    const branch = new Set(selectedBranch).values().next().value;
+    const employee = new Set(selectedEmployee).values().next().value;
+    const destinationBranch = new Set(moveSelectedBranch).values().next().value;
 
     const payload = {
-      receptionBranch: Number(branch),
-      destinationBranch: Number(destinationBranch),
+      branchProductId: selectedProducts[0].branchProduct.id,
+      receptionBranch: Number(destinationBranch),
+      destinationBranch: Number(branch),
       employee: Number(employee),
-      productionOrderType: 0,
-      products: selectedProducts.map((p) => ({
-        branchProductId: p.id,
-        productId: p.product.id,
-        recipeId: p.product.recipeBook?.id ?? 0,
-        quantity: +p.quantity,
-      })),
+      quantity: Number(selectedProducts[0].recipeBook.performance),
       observation,
-      moreInformation: '[]',
+      moreInformation,
+      totalCost: totalCost(0),
+      costPrime: calcCostoPrimo(0).toFixed(2),
+      products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
+        observations: '',
+        branchProductId: p.branchProduct?.id,
+        branchProductName: p.branchProduct?.product.name,
+        quantity: +p.quantityPerPerformance,
+        totalCost: (Number(p.branchProduct?.costoUnitario) * Number(p.quantityPerPerformance)).toFixed(4),
+      })),
+      
     };
 
     axios
@@ -140,7 +182,7 @@ function AddProductionOrder() {
           position: isMovil ? 'bottom-right' : 'top-center',
           duration: 1000,
         });
-        navigate('/production-orders');
+      navigate('/production-orders');
       })
       .catch(() => {
         toast.error('Error al crear la orden de producción', {
@@ -150,33 +192,49 @@ function AddProductionOrder() {
       });
   };
 
+
+
   const handleChangePerformance = (index: number, performance: string) => {
     const products = [...selectedProducts];
 
     if (Number(performance) > 0) {
-      products[index].product.recipeBook.productRecipeBookDetails.forEach((detail) => {
-        detail.quantityPerPerformance = (Number(performance) * Number(detail.quantity)).toFixed(4);
+      products[index].recipeBook?.productRecipeBookDetails.forEach((detail) => {
+        detail.quantityPerPerformance = (Number(performance) * Number(detail?.quantity)).toFixed(4);
+
       });
     }
 
-    products[index].product.recipeBook['performance'] = performance as unknown as number;
+    products[index].recipeBook['performance'] = performance as unknown as number;
 
     setSelectedProducts(products);
   };
 
   const navigation = useNavigate();
 
-  const calcMp = (_: number) => {
-    // const product = selectedProducts[index];
-    const total = 0
+  const calcMp = (index: number) => {
+    const product = selectedProducts[index];
 
-    // const total = product.product.recipeBook.productRecipeBookDetails.reduce(
-    //   (acc, detail) =>
-    //     acc + Number(detail.branchProduct.costoUnitario) * Number(detail.quantityPerPerformance),
-    //   0
-    // );
+    const total = product.recipeBook?.productRecipeBookDetails?.reduce(
+      (acc, detail) =>
+        acc + Number(detail.branchProduct?.costoUnitario) * Number(detail.quantityPerPerformance),
+      0
+    );
 
     return total;
+  };
+
+  const calcMod = (index: number) => {
+    if (selectedProducts.length === 0) {
+      return '0';
+    }
+
+    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
+      return '0';
+    }
+
+    const performance = selectedProducts[index].recipeBook?.performance;
+
+    return (Number(mod) * Number(performance))?.toFixed(2);
   };
 
   const [mod, setMod] = useState('0');
@@ -188,11 +246,11 @@ function AddProductionOrder() {
       return 0;
     }
 
-    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
+    if (calcMod(0) === '0' || calcMod(0) === undefined || mod === null || isNaN(Number(calcMod(0)))) {
       return 0;
     }
 
-    return mp + Number(mod);
+    return mp + Number(calcMod(0));
   };
 
   const [costCif, setCostCif] = useState('0');
@@ -206,9 +264,9 @@ function AddProductionOrder() {
       return '0';
     }
 
-    const performance = selectedProducts[index].product.recipeBook.performance;
+    const performance = selectedProducts[index].recipeBook?.performance;
 
-    return (Number(costCif) * Number(performance)).toFixed(2);
+    return (Number(costCif) * Number(performance))?.toFixed(2);
   };
 
   const totalCost = (index: number) => {
@@ -219,19 +277,18 @@ function AddProductionOrder() {
     const cif = calcCif(index);
     const mod = calcCostoPrimo(index);
 
-    return (Number(cif) + Number(mod)).toFixed(2);
+    return (Number(cif) + Number(mod))?.toFixed(2);
   };
 
   const Filters = () => (
     <ResponsiveFilterWrapper withButton={false}>
-      <div className="w-full grid grid-cols-4 gap-5">
+      <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
         <Select
           className="dark:text-white"
           classNames={{ label: 'font-semibold' }}
           label="Extraer producto de"
           placeholder="Selecciona la sucursal de origen"
           selectedKeys={selectedBranch}
-          selectionMode="single"
           variant="bordered"
           onSelectionChange={setSelectedBranch}
         >
@@ -266,6 +323,7 @@ function AddProductionOrder() {
           selectionMode="single"
           variant="bordered"
           onSelectionChange={setSelectedEmployee}
+        // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
         >
           {employee_list.map((e) => (
             <SelectItem
@@ -313,7 +371,7 @@ function AddProductionOrder() {
               </div>
               <ButtonUi
                 isIconOnly
-                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0  }
+                isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
                 theme={Colors.Success}
                 onPress={modalProducts.onOpen}
               >
@@ -325,12 +383,12 @@ function AddProductionOrder() {
             {selectedProducts.length > 0 && (
               <>
                 <div className="grid grid-cols-2 lg:grid-cols-2">
-                  <p>PROCESO: {selectedProducts[0].product.name}</p>
+                  <p>PROCESO: {selectedProducts[0].branchProduct?.product?.name}</p>
                   <div className="flex gap-5 items-center">
                     <p>PRODUCCIÓN: </p>
                     <Input
                       className="max-w-32"
-                      value={String(selectedProducts[0].product.recipeBook.performance)}
+                      value={String(selectedProducts[0].recipeBook?.performance)}
                       variant="bordered"
                       onKeyDown={preventLetters}
                       onValueChange={(e) => handleChangePerformance(0, e)}
@@ -338,42 +396,37 @@ function AddProductionOrder() {
                   </div>
                 </div>
 
-                <div className="h-full overflow-y-auto hidden md:flex flex-col ">
-                  {selectedProducts[0].product.recipeBook && (
-                    <>
-                      <TableComponent
-                        headers={[
-                          'Producto',
-                          'Código',
-                          'Cant. por rendimiento',
-                          'Cant. por unidad',
-                          'Costo unitario',
-                          'Costo total',
-                        ]}
-                      >
-                        {selectedProducts[0].product.recipeBook.productRecipeBookDetails.map((r) => (
-                          <tr key={r.id}>
-                            <td className="p-3">{r.product.name}</td>
-                            <td className="p-3">{r.product.code}</td>
-                            <td className="p-3">{Number(r.quantityPerPerformance).toFixed(2)}</td>
-                            <td className="p-3">{r.quantity}</td>
-                            {/* <td className="p-3">
-                              {(Number(r.product.costoUnitario) * Number(r.quantity)).toFixed(
-                                4
-                              )}
-                            </td> */}
-                            {/* <td className="p-3">
-                              {(
-                                Number(r.costoUnitario) *
-                                Number(r.quantityPerPerformance)
-                              ).toFixed(4)}
-                            </td> */}
-                          </tr>
-                        ))}
-                      </TableComponent>
-                    </>
-                  )}
-                </div>
+                {selectedProducts[0].recipeBook && (
+                  <>
+                    <TableComponent
+                      className=' hidden md:flex flex-col'
+                      headers={[
+                        'Producto',
+                        'Código',
+                        'Cant. por unidad',
+                        'Costo unitario',
+                        'Cant. Total',
+                        'Costo Total'
+                      ]}
+                    >
+                      {selectedProducts[0].recipeBook?.productRecipeBookDetails?.map((r) => (
+                        <tr key={r.id}>
+                          <td className="p-3">{r.product?.name}</td>
+                          <td className="p-3">{r.product.code}</td>
+                          <td className="p-3">{r.quantity}</td>
+                          <td className="p-3">{r.branchProduct?.costoUnitario}
+                          </td>
+                          <td className="p-3">{r.quantityPerPerformance}</td>
+                          <td className="p-3">
+                            {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
+                              4
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </TableComponent>
+                  </>
+                )}
                 <div className="h-full overflow-y-auto flex md:hidden" />
               </>
             )}
@@ -397,9 +450,43 @@ function AddProductionOrder() {
                     labelPlacement="outside"
                     placeholder="0.00"
                     size="sm"
-                    value={selectedProducts.length > 0 ? calcMp(0).toFixed(2) : '0'}
+                    value={selectedProducts.length > 0 ? calcMp(0)?.toFixed(2) : '0'}
                     variant="bordered"
                   />
+                  <div className="flex gap-1 items-end col-span-2">
+                   <Input
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="VALOR"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={mod}
+                      variant="bordered"
+                      onKeyDown={preventLetters}
+                      onValueChange={(e) => setMod(e)}
+                    />
+                    <span className="font-semibold text-3xl">*</span>
+                     <Input
+                      readOnly
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="RENDIMIENTO"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={
+                        selectedProducts.length > 0
+                          ? String(selectedProducts[0].recipeBook?.performance)
+                          : '0'
+                      }
+                      variant="bordered"
+                    />
+                    <span className="font-semibold text-3xl">=</span>
                   <Input
                     classNames={{
                       label: 'font-semibold text-[10px]',
@@ -409,9 +496,9 @@ function AddProductionOrder() {
                     labelPlacement="outside"
                     placeholder="0.00"
                     size="sm"
-                    value={mod}
+                    value={calcMod(0)}
                     variant="bordered"
-                    onValueChange={(e) => setMod(e)}
+                    onKeyDown={preventLetters}
                   />
                   <Input
                     classNames={{
@@ -425,6 +512,7 @@ function AddProductionOrder() {
                     value={selectedProducts.length > 0 ? calcCostoPrimo(0).toFixed(2) : '0'}
                     variant="bordered"
                   />
+                  </div>
                   <div className="flex gap-1 items-end col-span-2">
                     <Input
                       classNames={{
@@ -437,6 +525,7 @@ function AddProductionOrder() {
                       size="sm"
                       value={costCif}
                       variant="bordered"
+                      onKeyDown={preventLetters}
                       onValueChange={(e) => setCostCif(e)}
                     />
                     <span className="font-semibold text-3xl">*</span>
@@ -452,7 +541,7 @@ function AddProductionOrder() {
                       size="sm"
                       value={
                         selectedProducts.length > 0
-                          ? String(selectedProducts[0].product.recipeBook.performance)
+                          ? String(selectedProducts[0].recipeBook?.performance)
                           : '0'
                       }
                       variant="bordered"
@@ -491,7 +580,7 @@ function AddProductionOrder() {
           </Accordion>
 
           <div className="flex justify-between md:justify-end gap-0 md:gap-4 items-end mt-3">
-            <ButtonUi theme={Colors.Warning}>Limpiar todo</ButtonUi>
+            <ButtonUi theme={Colors.Warning} onPress={() => setSelectedProducts([])}>Limpiar todo</ButtonUi>
             <ButtonUi theme={Colors.Error} onPress={() => navigation('/production-orders')}>
               Cancelar
             </ButtonUi>

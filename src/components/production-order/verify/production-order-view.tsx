@@ -13,7 +13,7 @@ const ProductionOrderView: React.FC<ProductionOrderViewProps> = ({ productionOrd
   return (
     <div className="space-y-6 animate-fadeIn ">
       <OrderHeader order={productionOrder} />
-      <ProductList details={productionOrder.details} />
+      <ProductList order={productionOrder}/>
     </div>
   );
 };

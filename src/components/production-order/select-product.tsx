@@ -17,15 +17,16 @@ import {
 } from '@heroui/react';
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { TriangleAlert, X } from 'lucide-react';
+import { PackageX, Store, TriangleAlert, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Pagination from '../global/Pagination';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
+import TooltipGlobal from '../global/TooltipGlobal';
 
 import RegisterProduct from './registerProduct';
 
-import { BranchProductRecipe, ProductAndRecipe } from '@/types/products.types';
+import { ProductAndRecipe } from '@/types/products.types';
 import { typesProduct } from '@/utils/constants';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -33,8 +34,11 @@ import EmptyBox from '@/assets/empty-box.png';
 import { useProductsStore } from '@/store/products.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import { useBranchesStore } from '@/store/branches.store';
+import { ResponseVerifyProduct } from '@/types/production-order.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
-type ProductRecipe = BranchProductRecipe & {
+type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
 
@@ -43,8 +47,8 @@ type DisclosureProps = ReturnType<typeof useDisclosure>;
 interface Props {
   modalProducts: DisclosureProps;
   selectedProducts: ProductRecipe[];
-  moveSelectedBranch: Selection;
   setSelectedProducts: Dispatch<SetStateAction<ProductRecipe[]>>;
+  moveSelectedBranch: Selection;
   selectedBranch: Selection;
   setSelectedBranch: Dispatch<SetStateAction<Selection>>;
   selectedTypeProduct: Selection;
@@ -60,40 +64,34 @@ function SelectProduct({
   setSelectedProducts,
   setSelectedTypeProduct,
 }: Props) {
-  const { handleVerifyProduct } = useProductionOrderStore();
+  const { handleVerifyProduct, errors, verified_product } = useProductionOrderStore();
   const modalProduct = useDisclosure();
-  const createProduct = useDisclosure();
-  const { getBranchById } = useBranchesStore();
+  const createProduct = useDisclosure()
+  const { getBranchById } = useBranchesStore()
   const [productToCreate, setProductToCreate] = useState<ProductAndRecipe | null>(null);
+  const modalError = useDisclosure();
 
   const { productsAndRecipe, productsAndRecipePagination, getPaginatedProductsAndRecipe } =
     useProductsStore();
 
-  const handleAddProductRecipe = (recipe: BranchProductRecipe) => {
-    const productFind = selectedProducts.findIndex((sp) => sp.id === recipe.id);
+  const handleAddProductRecipe = async (recipe: ResponseVerifyProduct): Promise<void> => {
 
-    if (productFind !== -1) {
-      const products = [...selectedProducts];
-
-      products.splice(productFind, 1);
-      setSelectedProducts(products);
-      toast.warning(`Se elimino ${recipe.product.name} con éxito`);
-    } else {
-      const products = [...selectedProducts];
-
-      products.push({
-        ...recipe,
-        quantity: 1,
-      });
-
-      setSelectedProducts(products);
-      toast.success(`Se agrego ${recipe.product.name} con éxito`);
+      setSelectedProducts([
+        {
+          ...recipe,
+          quantity: 1,
+        },
+      ]);
+      toast.success(`Se agregó ${recipe.branchProduct?.product?.name} con éxito`);
+      modalError.onClose()
       modalProducts.onClose();
-    }
+  
   };
 
+
+
   const hasProductInArray = (id: number) => {
-    return selectedProducts.some((p) => p.id === id);
+    return selectedProducts.some((p) => p?.branchProduct?.productId === id);
   };
 
   const { theme, context } = useContext(ThemeContext);
@@ -119,27 +117,41 @@ function SelectProduct({
   }, [dbounceName, selectedTypeProduct]);
 
   const OnVerifyProduct = async (recipe: ProductAndRecipe) => {
-    createProduct.onClose();
-    const res = await handleVerifyProduct({
-      branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
-      branchDepartureId: Number(new Set(selectedBranch).values().next().value),
-      productId: recipe.id,
-      recipeBook:
-        recipe.recipeBook?.productRecipeBookDetails?.map((detail) => ({
-          productId: Number(detail.productIdReference),
-        })) ?? [],
-    });
+    createProduct.onClose()
+      const productFind = selectedProducts.find((sp) => sp.branchProduct.product.id === recipe.id);
 
-    if (!res.ok && res.message?.includes('No se encontró el producto')) {
-      getBranchById(Number(new Set(moveSelectedBranch).values().next().value));
-      setProductToCreate(recipe);
-      modalProduct.onOpen();
+    if (productFind) {
+      setSelectedProducts([]);
+      toast.warning(`Se eliminó ${recipe.name} con éxito`);
 
       return;
     }
 
-    await handleAddProductRecipe({ ...res.branchProduct });
-  };
+    const res = await handleVerifyProduct({
+      branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
+      branchDepartureId: Number(new Set(selectedBranch).values().next().value),
+      productId: recipe.id,
+    });
+
+    if (!res.ok && res.message?.includes("No se encontró el producto")) {
+      getBranchById(Number(new Set(moveSelectedBranch).values().next().value))
+      setProductToCreate(recipe,);
+      modalProduct.onOpen();
+
+      return
+    }
+
+    if (!res.ok && res.errors && selectedProducts[0]?.branchProduct.id !== res.branchProduct.id) {
+      modalProducts.onClose();
+      getBranchById(Number(new Set(selectedBranch).values().next().value))
+      modalError.onOpen();
+
+      return
+    }
+
+    await handleAddProductRecipe(res)
+  }
+
 
   return (
     <>
@@ -302,11 +314,7 @@ function SelectProduct({
         </DrawerContent>
       </Drawer>
       {modalProduct.isOpen && productToCreate && (
-        <Modal
-          {...modalProduct}
-          className="border-2 rounded-lg border-yellow-600"
-          size={createProduct.isOpen ? '2xl' : 'md'}
-        >
+        <Modal {...modalProduct} className='border-2 rounded-lg border-yellow-600' size={createProduct.isOpen ? '2xl' : 'md'}>
           {!createProduct.isOpen ? (
             <ModalContent>
               <ModalHeader className="flex gap-4">
@@ -319,7 +327,6 @@ function SelectProduct({
                   destino.
                 </p>
                 <p>¿Deseas crearlo?</p>
-                {/* Puedes mostrar detalles del producto, receta, etc. */}
               </ModalBody>
               <ModalFooter>
                 <Button variant="light" onPress={() => modalProduct.onClose()}>
@@ -336,16 +343,77 @@ function SelectProduct({
               </ModalFooter>
             </ModalContent>
           ) : (
-            <RegisterProduct
-              close={() => {
-                modalProduct.onClose();
-                createProduct.onClose();
-              }}
-              productToCreate={productToCreate}
-            />
+            <RegisterProduct close={() => {
+              modalProduct.onClose()
+              createProduct.onClose()
+            }} productToCreate={productToCreate} />
           )}
         </Modal>
       )}
+      <Modal {...modalError}>
+        <ModalContent>
+          <ModalHeader className='flex gap-2'>
+            <TriangleAlert className='text-orange-500' size={26} /> Advertencia
+          </ModalHeader>
+          <ModalBody>
+            {errors && errors.length > 0 && errors.map((item, index) => (
+              <span key={index} className="flex items-center gap-2 text-gray-700">
+                {item.exist === false ? (
+                  <TooltipGlobal text='Agregar'>
+                    <Store
+                      className="text-red-500 cursor-pointer"
+                      size={20}
+                      onClick={() => {
+                        const product = verified_product.recipeBook.productRecipeBookDetails.find(
+                          (prd) => prd.product.id === item.productId
+                        );
+
+                        if (product) {
+                          setProductToCreate(product.product);
+                          modalError.onClose();
+                          modalProduct.onOpen();
+                          createProduct.onOpen();
+                        }
+                      }}
+                    />
+                  </TooltipGlobal>
+                ) : (
+                  <PackageX className="text-yellow-500" size={20} />
+                )}
+                <p className="font-semibold">{item.nameProduct}</p> - {item.description}
+              </span>
+            ))}
+            <strong>¡Advertencia: algunos datos podrían faltar y afectar los cálculos si decides continuar!</strong>
+          </ModalBody>
+          <ModalFooter className='flex w-full justify-start items-start'>
+            <ButtonUi
+              theme={Colors.Info}
+              onPress={() => {
+                modalError.onClose()
+                modalProducts.onClose()
+              }}
+            >
+              Cancelar Producción
+            </ButtonUi>
+            {errors.some((item) => item.exist === false)}
+            <ButtonUi
+              theme={Colors.Success}
+              onPress={async () =>
+              {
+                if(errors.some((item) => item.exist === false)){
+                  toast.error("Algunos productos no existen en la sucursal de origen. Verifica tu selección o créalos antes de continuar usando el botón junto a cada producto en la lista.",{duration: 7000} )
+                
+                  return
+                }
+                await handleAddProductRecipe(verified_product)
+              }
+              }
+            >
+              Continuar de todas formas
+            </ButtonUi>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   );
 }

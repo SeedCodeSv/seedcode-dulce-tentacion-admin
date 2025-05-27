@@ -127,7 +127,7 @@ function ProductionOrders() {
           .then(() => {
             toast.success('Orden cancelada exitosamente');
             modalCancelOrder.onClose();
-            getProductionsOrders(1, 10, startDate, endDate, 0, '', 0, 0);
+            getProductionsOrders(1, 5, startDate, endDate, 0, '', 0, 0);
             setLoadingCancel(false);
           })
           .catch(() => {
@@ -352,7 +352,6 @@ function ProductionOrders() {
         onReload={() => {
           setPage(1)
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
-
         }} />
         <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
         reload={() => {

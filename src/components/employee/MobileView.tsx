@@ -6,7 +6,7 @@ import { useEmployeeStore } from '../../store/employee.store';
 import { IMobileView } from './types/mobile-view.types';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
-import ContractPDF from './ContractPDF';
+import ContractPDF from './../employee/employees-pdfs/pdfContract';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';

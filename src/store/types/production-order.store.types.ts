@@ -16,7 +16,8 @@ export interface ProductionOrderStore {
   productionOrder: ProductionOrderDetails | null;
   productionOrderDetail: ProductionOrderDetailsVerify | null;
   loadingProductionOrderDetail: boolean;
-  errors: IError[]
+  errors: IError[];
+  verified_product: ResponseVerifyProduct;
   getProductionsOrderDetail: (id: number) => void;
   getProductionsOrder: (id: number) => void;
   getProductionsOrders: (

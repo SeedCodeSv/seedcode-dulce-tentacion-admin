@@ -4,10 +4,10 @@ import {
  FileText,
 } from 'lucide-react';
 
-import { Employee } from '../../types/employees.types'
 
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
+import { Employee } from '@/types/employees.types';
 
 function ContractPDF ({employee}: {employee: Employee}) {
 
