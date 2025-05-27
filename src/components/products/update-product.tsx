@@ -71,11 +71,11 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     onSubmit(values, formikHelpers) {
       patchProducts(values, product?.id ?? 0)
         .then((res) => {
-          formikHelpers.setSubmitting(false);
           if (res.ok) {
             toast.success('Se guardo el producto');
             onCloseModal();
           }
+          formikHelpers.setSubmitting(false);
         })
         .catch(() => {
           formik.setSubmitting(false);

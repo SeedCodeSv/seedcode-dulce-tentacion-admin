@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Button } from '@heroui/react';
 
 import { IPropCustomer } from '../types/notes_of_remision.types';
 import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
@@ -14,7 +13,8 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
 import { useAuthStore } from '@/store/auth.store';
 import { ambiente } from '@/utils/constants';
-import { global_styles } from '@/styles/global.styles';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 
 
@@ -28,7 +28,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
     observation,
     branch,
     branchLlegada,
-    
+
   } = props;
 
   const { gettransmitter, transmitter } = useTransmitterStore();
@@ -109,7 +109,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
           props.setTitleString('Error al firmar el documento 44444');
           props.setErrors(['Error al firmar el documento 44444']);
 
-        
+
 
         });
     } catch (error) {
@@ -118,15 +118,16 @@ function GenerateAShippingNote(props: IPropCustomer) {
 
   return (
     <div>
-      <Button
+      <ButtonUi
         className="w-full px-10"
         isDisabled={pointOfSaleId === 0}
-        style={global_styles().darkStyle}
-        variant="light"
-        onClick={generateJson}
+        // variant="light"
+
+        theme={Colors.Success} 
+        onPress={generateJson}
       >
         Guardar
-      </Button>
+      </ButtonUi>
     </div>
   );
 }

@@ -141,12 +141,11 @@ function GeneralProductInfo({
     if (checkIfExist === -1) {
       const quantity = 1;
       const performanceQuantity = quantity / (Number(performance || 1) || 1);
-      const cost = Number(prd.costoUnitario) / quantity;
 
       list_suppliers.push({
         ...prd,
         performanceQuantity: performanceQuantity.toFixed(4),
-        cost,
+        cost: 0,
         quantity: quantity,
       });
     } else {

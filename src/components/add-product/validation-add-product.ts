@@ -4,7 +4,7 @@ import { ProductPayloadForm } from '@/types/products.types';
 
 export const initialValues: ProductPayloadForm = {
   name: '',
-  description: '',
+  description: 'n/a',
   price: '3.75',
   priceA: 2,
   priceB: 2,
