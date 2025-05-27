@@ -165,6 +165,9 @@ function AddProductionOrder() {
       moreInformation,
       totalCost: totalCost(0),
       costPrime: calcCostoPrimo(0).toFixed(2),
+      costRawMaterial: calcMp(0) ,
+      indirectManufacturingCost: calcCif(0),
+      costDirectLabor: calcMod(0),
       products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
         observations: '',
         branchProductId: p.branchProduct?.id,
@@ -172,7 +175,7 @@ function AddProductionOrder() {
         quantity: +p.quantityPerPerformance,
         totalCost: (Number(p.branchProduct?.costoUnitario) * Number(p.quantityPerPerformance)).toFixed(4),
       })),
-      
+
     };
 
     axios
@@ -182,7 +185,7 @@ function AddProductionOrder() {
           position: isMovil ? 'bottom-right' : 'top-center',
           duration: 1000,
         });
-      navigate('/production-orders');
+        navigate('/production-orders');
       })
       .catch(() => {
         toast.error('Error al crear la orden de producción', {
@@ -279,78 +282,7 @@ function AddProductionOrder() {
 
     return (Number(cif) + Number(mod))?.toFixed(2);
   };
-
-  const Filters = () => (
-    <ResponsiveFilterWrapper withButton={false}>
-      <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
-        <Select
-          className="dark:text-white"
-          classNames={{ label: 'font-semibold' }}
-          label="Extraer producto de"
-          placeholder="Selecciona la sucursal de origen"
-          selectedKeys={selectedBranch}
-          variant="bordered"
-          onSelectionChange={setSelectedBranch}
-        >
-          {branch_list.map((b) => (
-            <SelectItem key={b.id} className="dark:text-white">
-              {b.name}
-            </SelectItem>
-          ))}
-        </Select>
-        <Select
-          className="dark:text-white"
-          classNames={{ label: 'font-semibold' }}
-          label="Mover producto a"
-          placeholder="Seleccione la sucursal de destino"
-          selectedKeys={moveSelectedBranch}
-          selectionMode="single"
-          variant="bordered"
-          onSelectionChange={setMoveSelectedBranch}
-        >
-          {branch_list.map((b) => (
-            <SelectItem key={b.id} className="dark:text-white">
-              {b.name}
-            </SelectItem>
-          ))}
-        </Select>
-        <Select
-          className="dark:text-white"
-          classNames={{ label: 'font-semibold' }}
-          label="Encargado"
-          placeholder="Selecciona el encargado de la orden"
-          selectedKeys={selectedEmployee}
-          selectionMode="single"
-          variant="bordered"
-          onSelectionChange={setSelectedEmployee}
-        // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
-        >
-          {employee_list.map((e) => (
-            <SelectItem
-              key={e.id}
-              className="dark:text-white"
-              textValue={
-                e.firstName + ' ' + e.secondName + ' ' + e.firstLastName + ' ' + e.secondLastName
-              }
-            >
-              {e.firstName ?? '-'} {e.secondName ?? '-'} {e.firstLastName ?? '-'}{' '}
-              {e.secondLastName ?? '-'}
-            </SelectItem>
-          ))}
-        </Select>
-        <Input
-          className="dark:text-white"
-          classNames={{ label: 'font-semibold' }}
-          label="Observaciones"
-          placeholder="Observaciones"
-          value={observation}
-          variant="bordered"
-          onChange={(e) => setObservation(e.target.value)}
-        />
-      </div>
-    </ResponsiveFilterWrapper>
-  );
-
+  
   return (
     <Layout title="Nueva Orden de Producción">
       <>
@@ -359,16 +291,79 @@ function AddProductionOrder() {
           productId={0}
           onOpenChange={modalRecipe.onOpenChange}
         />
-        <DivGlobal className=" w-full h-full flex flex-col overflow-y-auto p-5 lg:p-8">
-          <div className="hidden xl:flex">
-            <Filters />
-          </div>
-          <div className="flex justify-between items-end w-full my-4">
-            <p className="text-sm font-semibold">Productos</p>
-            <div className="flex  gap-5">
-              <div className="flex xl:hidden">
-                <Filters />
+        <DivGlobal>
+          <div className="flex justify-between items-end w-full">
+            <div className="flex flex-row-reverse w-full justify-between xl:flex-col gap-5">
+                <ResponsiveFilterWrapper withButton={false}>
+              <div className="w-full grid grid-cols-1 lg:grid-cols-4 gap-5">
+                <Select
+                  className="dark:text-white"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Extraer producto de"
+                  placeholder="Selecciona la sucursal de origen"
+                  selectedKeys={selectedBranch}
+                  variant="bordered"
+                  onSelectionChange={setSelectedBranch}
+                >
+                  {branch_list.map((b) => (
+                    <SelectItem key={b.id} className="dark:text-white">
+                      {b.name}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Select
+                  className="dark:text-white"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Mover producto a"
+                  placeholder="Seleccione la sucursal de destino"
+                  selectedKeys={moveSelectedBranch}
+                  selectionMode="single"
+                  variant="bordered"
+                  onSelectionChange={setMoveSelectedBranch}
+                >
+                  {branch_list.map((b) => (
+                    <SelectItem key={b.id} className="dark:text-white">
+                      {b.name}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Select
+                  className="dark:text-white"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Encargado"
+                  placeholder="Selecciona el encargado de la orden"
+                  selectedKeys={selectedEmployee}
+                  selectionMode="single"
+                  variant="bordered"
+                  onSelectionChange={setSelectedEmployee}
+                // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
+                >
+                  {employee_list.map((e) => (
+                    <SelectItem
+                      key={e.id}
+                      className="dark:text-white"
+                      textValue={
+                        e.firstName + ' ' + e.secondName + ' ' + e.firstLastName + ' ' + e.secondLastName
+                      }
+                    >
+                      {e.firstName ?? '-'} {e.secondName ?? '-'} {e.firstLastName ?? '-'}{' '}
+                      {e.secondLastName ?? '-'}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Input
+                  className="dark:text-white"
+                  classNames={{ label: 'font-semibold' }}
+                  label="Observaciones"
+                  placeholder="Observaciones"
+                  value={observation}
+                  variant="bordered"
+                  onChange={(e) => setObservation(e.target.value)}
+                />
               </div>
+            </ResponsiveFilterWrapper>
+              <div className="w-full flex justify-between">
+              <p className="text-sm font-semibold hiiden xl:flex">Productos</p>
               <ButtonUi
                 isIconOnly
                 isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
@@ -377,6 +372,7 @@ function AddProductionOrder() {
               >
                 <Plus />
               </ButtonUi>
+              </div>
             </div>
           </div>
           <div className="w-full h-full overflow-y-auto flex flex-col">
@@ -454,7 +450,7 @@ function AddProductionOrder() {
                     variant="bordered"
                   />
                   <div className="flex gap-1 items-end col-span-2">
-                   <Input
+                    <Input
                       classNames={{
                         label: 'font-semibold text-[10px]',
                         input: 'text-xs',
@@ -469,7 +465,7 @@ function AddProductionOrder() {
                       onValueChange={(e) => setMod(e)}
                     />
                     <span className="font-semibold text-3xl">*</span>
-                     <Input
+                    <Input
                       readOnly
                       classNames={{
                         label: 'font-semibold text-[10px]',
@@ -487,31 +483,31 @@ function AddProductionOrder() {
                       variant="bordered"
                     />
                     <span className="font-semibold text-3xl">=</span>
-                  <Input
-                    classNames={{
-                      label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
-                    }}
-                    label="MOD"
-                    labelPlacement="outside"
-                    placeholder="0.00"
-                    size="sm"
-                    value={calcMod(0)}
-                    variant="bordered"
-                    onKeyDown={preventLetters}
-                  />
-                  <Input
-                    classNames={{
-                      label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
-                    }}
-                    label="COSTO PRIMO"
-                    labelPlacement="outside"
-                    placeholder="0.00"
-                    size="sm"
-                    value={selectedProducts.length > 0 ? calcCostoPrimo(0).toFixed(2) : '0'}
-                    variant="bordered"
-                  />
+                    <Input
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="MOD"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={calcMod(0)}
+                      variant="bordered"
+                      onKeyDown={preventLetters}
+                    />
+                    <Input
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="COSTO PRIMO"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={selectedProducts.length > 0 ? calcCostoPrimo(0).toFixed(2) : '0'}
+                      variant="bordered"
+                    />
                   </div>
                   <div className="flex gap-1 items-end col-span-2">
                     <Input

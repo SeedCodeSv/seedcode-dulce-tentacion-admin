@@ -263,11 +263,11 @@ const PurchaseOrderForm = () => {
                                 className={`px-10 mt-3 ${isProductSelected ? 'bg-green-500' : 'bg-[#f4a261]'
                                   }`}
                                 onPress={() => {
-                                  if (!isProductSelected && branch_product.suppliers.length > 1) {
+                                  if (!isProductSelected && branch_product?.suppliers?.length > 1) {
                                     setBranchProduct(branch_product)
                                     modalSelect.onOpen()
                                   } else {
-                                    handleProductClick(branch_product.suppliers[0])
+                                    handleProductClick(branch_product?.suppliers[0])
                                   }
                                 }
                                 }
@@ -334,18 +334,18 @@ const PurchaseOrderForm = () => {
             <div className="flex flex-col overflow-y-auto h-full w-full gap-3 pb-4">
               {branchProduct && branchProduct.suppliers?.map((sup) =>
 
-                <div key={sup.id} className={classNames(
-                  supplierSelected?.id === sup.id
+                <div key={sup?.id} className={classNames(
+                  supplierSelected?.id === sup?.id
                     ? 'shadow-green-100 dark:shadow-gray-500 border-green-400 dark:border-gray-800 bg-green-50 dark:bg-gray-950'
                     : '',
                   'shadow border dark:border-gray-600 w-full flex flex-col justify-start rounded-[12px] p-4'
                 )}>
                   <div className="flex justify-between gap-5 w-full">
                     {/* <Truck/> */}
-                    <p className="text-sm font-semibold dark:text-white">{sup.nombre}</p>
+                    <p className="text-sm font-semibold dark:text-white">{sup?.nombre}</p>
                     <Checkbox
-                      checked={supplierSelected?.id === sup.id}
-                      isSelected={supplierSelected?.id === sup.id}
+                      checked={supplierSelected?.id === sup?.id}
+                      isSelected={supplierSelected?.id === sup?.id}
                       onValueChange={() => {
                         setSupplierSelected(sup);
                       }}
