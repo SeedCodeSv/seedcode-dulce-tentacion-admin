@@ -332,17 +332,22 @@ function ProductionOrders() {
           <DetailsProductionOrder
             id={selectedOrderId}
             modalMoreInformation={modalMoreInformation}
+            onClose={()=>{
+              setSelectedOrderId(0)
+            }}
           />
         )}
         <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} 
         onReload={() => {
           setPage(1)
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+          setSelectedOrderId(0)
         }} />
         <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
         reload={() => {
           setPage(1);
           getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+          setSelectedOrderId(0)
         }}/>
       </DivGlobal>
     </Layout>
