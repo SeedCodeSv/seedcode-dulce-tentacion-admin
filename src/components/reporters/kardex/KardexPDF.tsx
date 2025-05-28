@@ -110,17 +110,6 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
             cellPadding: 1,
           },
           margin: { top: 10, left: 50, right: 50 },
-          // didDrawPage: ({ table, doc, cursor }) => {
-          //   if (!table) return;
-
-          //   const endY = cursor?.y;
-          //   const marginX = 47;
-          //   const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
-
-          //   doc.setDrawColor('#b3b8bd');
-          //   doc.setLineWidth(0.2);
-          //   doc.roundedRect(marginX, 5, tableWidth + marginX , endY! - 5, 3, 3);
-          // },
         });
 
       };

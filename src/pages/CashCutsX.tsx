@@ -60,13 +60,12 @@ const CashCutsX = () => {
   const calculateIVA = (total: number) => total / 1.13;
 
   const totalGeneral = useMemo(() => {
-    const totalTicket = Number(data?.Ticket?.total ?? 0);
     const totalFactura = Number(data?.Factura?.total ?? 0);
     const totalCreditoFiscal = Number(data?.CreditoFiscal?.total ?? 0);
     const totalDevolucionNC = Number(data?.DevolucionNC?.total ?? 0);
     const totalDevolucionT = Number(data?.DevolucionT?.total ?? 0);
 
-    return totalTicket + totalFactura + totalCreditoFiscal + totalDevolucionNC + totalDevolucionT;
+    return totalFactura + totalCreditoFiscal + totalDevolucionNC + totalDevolucionT;
   }, [data]);
 
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -138,24 +137,6 @@ const CashCutsX = () => {
            <span>
            PUNTO DE VENTA: ${codeSelected ? codeSelected : 'GENERAL'}
         </span>
-          <br />
-          <span>------------------------------------</span><br />
-          <span>------------------------------------</span<br />
-          <div className="w-full">
-            <span>VENTAS CON TICKET</span><br />
-            <span>N. INICIAL: ${data?.Ticket?.inicio}</span><br />
-            <span>N. FINAL: ${data?.Ticket?.fin}</span><br />
-            <span>
-              GRAVADAS: ${formatCurrency(
-                Number(data?.Ticket.total ?? 0) - calculateIVA(data?.Ticket?.total || 0)
-              )}
-            </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.Ticket?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span><br />
-            <span>EXENTAS: $0.00</span><br />
-            <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.Ticket?.total))}</span>
-          </div>
           <br />
           <span>------------------------------------</span><br />
           <span>------------------------------------</span<br />
@@ -271,56 +252,6 @@ const CashCutsX = () => {
       },
       {
         descripcion: '==============================================',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'VENTAS CON TICKET',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. INICIAL: ${data?.Ticket.inicio}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. FINAL: ${data?.Ticket.fin}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.Ticket.total) - Number(data?.Ticket.total) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.Ticket.total) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.Ticket.total),
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO-SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.Ticket.total,
-      },
-      {
-        descripcion: '',
         cantidad: 0,
         total: 0,
       },
@@ -747,40 +678,8 @@ const CashCutsX = () => {
                   <h1 className="text-black dark:text-white">
                     ---------------------------------------------------------------------
                   </h1>
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">DEVOLUCIONES CON TICKET</h1>
-                    <h1 className="text-black dark:text-white">
-                      N. INICIAL: {data?.DevolucionT?.inicio}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      N. FINAL: {data?.DevolucionT?.fin}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(Number(data?.DevolucionT?.total) / 1.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA:{' '}
-                      {formatCurrency(
-                        Number(data?.DevolucionT?.total) - Number(data?.DevolucionT?.total) / 1.13
-                      )}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB_TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(Number(data?.DevolucionT?.total.toFixed(2)))}
-                    </h1>
-                  </div>
-                  <br />
                   <br />
                   {(() => {
-                    const ivaTicket =
-                      Number(data?.Ticket?.total) - Number(data?.Ticket?.total) / 1.13;
                     const ivaFactura = Number(data?.Factura?.total) - Number(data?.Factura?.total) / 1.13;
                     const ivaCreditoFiscal =
                       Number(data?.CreditoFiscal?.total) - Number(data?.CreditoFiscal?.total) / 1.13;
@@ -790,7 +689,7 @@ const CashCutsX = () => {
                       Number(data?.DevolucionT?.total) - Number(data?.DevolucionT?.total) / 1.13;
 
                     const totalIVA =
-                      ivaTicket + ivaFactura + ivaCreditoFiscal + ivaDevolucionNC + ivaDevolucionT;
+                      ivaFactura + ivaCreditoFiscal + ivaDevolucionNC + ivaDevolucionT;
 
                     return (
                       <>

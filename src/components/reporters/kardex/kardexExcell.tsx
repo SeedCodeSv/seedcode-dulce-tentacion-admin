@@ -13,10 +13,10 @@ import { hexToARGB } from "@/utils/utils";
 
 
 export default function KardexExportExcell({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) {
-      const styles = useGlobalStyles();
+    const styles = useGlobalStyles();
 
-   const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
-const fontColor = hexToARGB(styles.darkStyle.color);
+    const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
+    const fontColor = hexToARGB(styles.darkStyle.color);
 
 
     const exportToExcel = async () => {
@@ -25,7 +25,7 @@ const fontColor = hexToARGB(styles.darkStyle.color);
 
         const DATE = getElSalvadorDateTime().fecEmi
         const time = getElSalvadorDateTime().horEmi
- 
+
         const extraInfo = [
             [`${transmitter.nombre}`],
             [`${transmitter.nombreComercial}`],
