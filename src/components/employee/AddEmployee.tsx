@@ -1,6 +1,5 @@
 import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import * as yup from 'yup';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -17,14 +16,15 @@ import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
 
 import { SetFieldValue } from './types/employee.types';
+import { validationEmployeeSchema } from './validation-employee';
 
 import { Branch } from '@/types/auth.types';
 import { Municipio } from '@/types/billing/cat-013-municipio.types';
 import { Departamento } from '@/types/billing/cat-012-departamento.types';
 import ButtonUi from '@/themes/ui/button-ui';
-3;
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
+
 
 function AddEmployee() {
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
@@ -35,46 +35,6 @@ function AddEmployee() {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
-
-  const validationSchema = yup.object().shape({
-    firstName: yup.string().required('**Primer nombre es requerido**'),
-    secondName: yup.string().required('**Segundo nombre es requerido**'),
-    firstLastName: yup.string().required('**Primer apellido es requerido**'),
-    secondLastName: yup.string().required('**Segundo apellido es requerido**'),
-    bankAccount: yup.string().required('**Número de cuenta es requerido**'),
-    dui: yup
-      .string()
-      .required('**Número de DUI es requerido**')
-      .matches(/^\d{9}$/, '**Formato de DUI incorrecto**'),
-    nit: yup
-      .string()
-      .notRequired()
-      .matches(/^[0-9]{14}$/, '**Formato de NIT incorrecto**'),
-    afp: yup.string().notRequired(),
-    phone: yup.string().required('**Número de telefono es requerido**'),
-    age: yup.string().required('**Edad es requerida**'),
-    salary: yup.string().required('**Salario es requerido**'),
-    dateOfBirth: yup.string().required('**Fecha de nacimiento es requerida**'),
-    dateOfEntry: yup.string().required('**Fecha de ingreso es requerida**'),
-    code: yup.string().required('**Campo requerido**'),
-    responsibleContact: yup.string().required('**Contacto responsable es requerido**'),
-    studyLevelId: yup
-      .number()
-      .required('**Nivel de estudios es requerido**')
-      .min(1, '**Nivel de estudios es requerido**'),
-    statusId: yup.number().required('**Estatus es requerido**').min(1, '**Estatus es requerido**'),
-    contractTypeId: yup
-      .number()
-      .required('**Tipo de contrato es requerido**')
-      .min(1, '**Tipo de contrato es requerido**'),
-    chargeId: yup.number().required('**Cargo es requerido**').min(1, '**Cargo es requerido**'),
-    branchId: yup
-      .number()
-      .required('**Sucursal es requerida**')
-      .min(1, '**Sucursal es requerida**'),
-    department: yup.string().required('El departamento es requerido'),
-    municipality: yup.string().required('El municipio es requerido'),
-  });
 
   useEffect(() => {
     getBranchesList();
@@ -164,19 +124,15 @@ function AddEmployee() {
       return;
     }
 
-    // Tomar las dos primeras letras del primer nombre y primer apellido
     const firstNamePart = firstName.slice(0, 2).toUpperCase();
     const lastNamePart = lastName.slice(0, 2).toUpperCase();
 
-    // Generar 4 números aleatorios
     const randomNumber = Math.floor(1000 + Math.random() * 9000);
 
-    // Generar el código con las dos primeras letras del nombre, apellido y los 4 números aleatorios
     const generatedCode = `${firstNamePart}${lastNamePart}${randomNumber}`;
 
-    // Guardar el código generado
     setCodigoGenerado(generatedCode);
-    setFieldValue('code', generatedCode); // Aquí el tipo 'setFieldValue' es una función que asigna valores.
+    setFieldValue('code', generatedCode);
   };
 
   const navigate = useNavigate();
@@ -197,7 +153,7 @@ function AddEmployee() {
             <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">
               <Formik
                 initialValues={dataCreate}
-                validationSchema={validationSchema}
+                validationSchema={validationEmployeeSchema}
                 onSubmit={createEmployee}
               >
                 {({
@@ -232,11 +188,6 @@ function AddEmployee() {
                             setFirstName(e.target.value);
                           }}
                         />
-                        {/* {errors.firstName && touched.firstName && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.firstName}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -297,11 +248,6 @@ function AddEmployee() {
                           onBlur={handleBlur('secondLastName')}
                           onChange={handleChange('secondLastName')}
                         />
-                        {/* {errors.secondLastName && touched.secondLastName && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.secondLastName}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -321,11 +267,6 @@ function AddEmployee() {
                           onBlur={handleBlur('bankAccount')}
                           onChange={handleChange('bankAccount')}
                         />
-                        {/* {errors.bankAccount && touched.bankAccount && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.bankAccount}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -345,9 +286,6 @@ function AddEmployee() {
                           onBlur={handleBlur('dui')}
                           onChange={handleChange('dui')}
                         />
-                        {/* {errors.dui && touched.dui && (
-                          <span className="text-sm font-semibold text-red-500">{errors.dui}</span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -355,18 +293,17 @@ function AddEmployee() {
                           classNames={{
                             label: 'font-semibold text-sm  text-gray-600',
                           }}
+                          errorMessage={touched.nit && errors.nit}
+                          isInvalid={touched.nit && !!errors.nit}
                           label="NIT"
                           labelPlacement="outside"
                           name="nit"
                           placeholder="Ingresa el número de NIT"
                           value={values.nit}
                           variant="bordered"
-                          onBlur={handleBlur('nit')}
+                           onBlur={handleBlur('nit')}
                           onChange={handleChange('nit')}
                         />
-                        {errors.nit && touched.nit && (
-                          <span className="text-sm font-semibold text-red-500">{errors.nit}</span>
-                        )}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -382,9 +319,6 @@ function AddEmployee() {
                           onBlur={handleBlur('isss')}
                           onChange={handleChange('isss')}
                         />
-                        {/* {errors.isss && touched.isss && (
-                          <span className="text-sm font-semibold text-red-500">{errors.isss}</span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -433,9 +367,9 @@ function AddEmployee() {
                             onPress={() =>
                               generateCode(
                                 setFieldValue,
-                                firstName, // Aquí debes pasar el valor del primer nombre
-                                lastName, // Aquí debes pasar el valor del primer apellido
-                                setCodigoGenerado // Aquí debes pasar la función para generar el código
+                                firstName, 
+                                lastName,
+                                setCodigoGenerado
                               )
                             }
                           >
@@ -463,9 +397,6 @@ function AddEmployee() {
                           onBlur={handleBlur('phone')}
                           onChange={handleChange('phone')}
                         />
-                        {/* {errors.phone && touched.phone && (
-                          <span className="text-sm font-semibold text-red-500">{errors.phone}</span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -486,9 +417,6 @@ function AddEmployee() {
                           onBlur={handleBlur('age')}
                           onChange={handleChange('age')}
                         />
-                        {/* {errors.age && touched.age && (
-                          <span className="text-sm font-semibold text-red-500">{errors.age}</span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -509,11 +437,6 @@ function AddEmployee() {
                           onBlur={handleBlur('salary')}
                           onChange={handleChange('salary')}
                         />
-                        {/* {errors.salary && touched.salary && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.salary}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -533,11 +456,6 @@ function AddEmployee() {
                           onBlur={handleBlur('dateOfBirth')}
                           onChange={handleChange('dateOfBirth')}
                         />
-                        {/* {errors.dateOfBirth && touched.dateOfBirth && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.dateOfBirth}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
@@ -557,31 +475,27 @@ function AddEmployee() {
                           onBlur={handleBlur('dateOfEntry')}
                           onChange={handleChange('dateOfEntry')}
                         />
-                        {/* {errors.dateOfEntry && touched.dateOfEntry && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.dateOfEntry}
-                          </span>
-                        )} */}
+                      
                       </div>
                       <div className="flex flex-col mt-3">
                         <Input
+                          autoComplete="off"
+                          className="dark:text-white font-semibold"
                           classNames={{
-                            label: 'font-semibold text-gray-500 text-sm',
+                            label: 'font-semibold text-sm  text-gray-600',
                           }}
-                          label="Complemento de dirección"
+                          errorMessage={touched.responsibleContact && errors.responsibleContact}
+                          isInvalid={touched.responsibleContact && !!errors.responsibleContact}
+                          label="Contacto Responsable"
                           labelPlacement="outside"
-                          name="complement"
-                          placeholder="Ingresa el complemento de dirección"
-                          value={values.complement}
+                          name="responsibleContact"
+                          placeholder="Ingresa el contacto responsable"
+                          type="text"
+                          value={values.responsibleContact}
                           variant="bordered"
-                          onBlur={handleBlur('complement')}
-                          onChange={handleChange('complement')}
+                          onBlur={handleBlur('responsibleContact')}
+                          onChange={handleChange('responsibleContact')}
                         />
-                        {errors.complement && touched.complement && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.complement}
-                          </span>
-                        )}
                       </div>
 
                       <div className="flex flex-col mt-3">
@@ -611,7 +525,7 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(item)}
                               className="dark:text-white"
-                              onClick={() =>
+                              onPress={() =>
                                 setDataCreate({
                                   ...dataCreate,
                                   studyLevelId: item.id,
@@ -622,11 +536,6 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
-                        {/* {errors.studyLevelId && touched.studyLevelId && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.studyLevelId}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
@@ -655,17 +564,12 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(item)}
                               className="dark:text-white"
-                              onClick={() => setDataCreate({ ...dataCreate, statusId: item.id })}
+                              onPress={() => setDataCreate({ ...dataCreate, statusId: item.id })}
                             >
                               {item.name}
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
-                        {/* {errors.statusId && touched.statusId && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.statusId}
-                          </span>
-                        )} */}
                       </div>
                       <div className="flex flex-col mt-3">
                         <Autocomplete
@@ -694,7 +598,7 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(item)}
                               className="dark:text-white"
-                              onClick={() =>
+                              onPress={() =>
                                 setDataCreate({
                                   ...dataCreate,
                                   contractTypeId: item.id,
@@ -707,29 +611,38 @@ function AddEmployee() {
                         </Autocomplete>
                       </div>
                       <div className="flex flex-col mt-3">
-                        <Input
-                          autoComplete="off"
-                          className="dark:text-white font-semibold"
+                         <Autocomplete
+                          className="dark:text-white"
                           classNames={{
-                            label: 'font-semibold text-sm  text-gray-600',
+                            base: 'font-semibold text-sm',
                           }}
-                          errorMessage={touched.responsibleContact && errors.responsibleContact}
-                          isInvalid={touched.responsibleContact && !!errors.responsibleContact}
-                          label="Contacto Responsable"
+                          errorMessage={touched.branchId && errors.branchId}
+                          isInvalid={touched.branchId && !!errors.branchId}
+                          label="Sucursal"
                           labelPlacement="outside"
-                          name="responsibleContact"
-                          placeholder="Ingresa el contacto responsable"
-                          type="text"
-                          value={values.responsibleContact}
+                          placeholder="Selecciona la sucursal"
+                          value={values.branchId}
                           variant="bordered"
-                          onBlur={handleBlur('responsibleContact')}
-                          onChange={handleChange('responsibleContact')}
-                        />
-                        {/* {errors.responsibleContact && touched.responsibleContact && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.responsibleContact}
-                          </span>
-                        )} */}
+                          onBlur={handleBlur('branchId')}
+                          onChange={handleChange('branchId')}
+                          onSelectionChange={(key) => {
+                            if (key) {
+                              const depSelected = JSON.parse(key as string) as Branch;
+
+                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
+                            }
+                          }}
+                        >
+                          {branch_list.map((bra) => (
+                            <AutocompleteItem
+                              key={JSON.stringify(bra)}
+                              className="dark:text-white"
+                              onPress={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
+                            >
+                              {bra.name}
+                            </AutocompleteItem>
+                          ))}
+                        </Autocomplete>
                       </div>
 
                       <div className="flex flex-col mt-3">
@@ -759,17 +672,12 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(item)}
                               className="dark:text-white"
-                              onClick={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
+                              onPress={() => setDataCreate({ ...dataCreate, chargeId: item.id })}
                             >
                               {item.name}
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
-                        {/* {errors.chargeId && touched.chargeId && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.chargeId}
-                          </span>
-                        )} */}
                       </div>
 
                       <div className="mt-3">
@@ -799,7 +707,7 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(dep)}
                               className="dark:text-white"
-                              onClick={() => {
+                              onPress={() => {
                                 setCodeDepartamento(dep.codigo),
                                   setDataCreate({
                                     ...dataCreate,
@@ -812,11 +720,6 @@ function AddEmployee() {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
-                        {/* {errors.department && touched.department && (
-                          <span className="text-sm font-semibold text-red-500">
-                            {errors.department}
-                          </span>
-                        )} */}
                       </div>
                       <div className="mt-3">
                         <Autocomplete
@@ -843,7 +746,7 @@ function AddEmployee() {
                             <AutocompleteItem
                               key={JSON.stringify(dep)}
                               className="dark:text-white"
-                              onClick={() => {
+                              onPress={() => {
                                 setCodeDepartamento(dep.codigo),
                                   setDataCreate({
                                     ...dataCreate,
@@ -863,38 +766,25 @@ function AddEmployee() {
                         )} */}
                       </div>
                       <div className="mt-3">
-                        <Autocomplete
-                          className="dark:text-white"
+                          <Input
                           classNames={{
-                            base: 'font-semibold text-sm',
+                            label: 'font-semibold text-gray-500 text-sm',
                           }}
-                          errorMessage={touched.branchId && errors.branchId}
-                          isInvalid={touched.branchId && !!errors.branchId}
-                          label="Sucursal"
+                          label="Complemento de dirección"
                           labelPlacement="outside"
-                          placeholder="Selecciona la sucursal"
-                          value={values.branchId}
+                          name="complement"
+                          placeholder="Ingresa el complemento de dirección"
+                          value={values.complement}
                           variant="bordered"
-                          onBlur={handleBlur('branchId')}
-                          onChange={handleChange('branchId')}
-                          onSelectionChange={(key) => {
-                            if (key) {
-                              const depSelected = JSON.parse(key as string) as Branch;
-
-                              handleChange('branchId')(depSelected?.id?.toString() ?? '');
-                            }
-                          }}
-                        >
-                          {branch_list.map((bra) => (
-                            <AutocompleteItem
-                              key={JSON.stringify(bra)}
-                              className="dark:text-white"
-                              onClick={() => setDataCreate({ ...dataCreate, branchId: bra.id })}
-                            >
-                              {bra.name}
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete>
+                          onBlur={handleBlur('complement')}
+                          onChange={handleChange('complement')}
+                        />
+                        {errors.complement && touched.complement && (
+                          <span className="text-sm font-semibold text-red-500">
+                            {errors.complement}
+                          </span>
+                        )}
+                       
                         {/* {errors.branchId && touched.branchId && (
                           <span className="text-sm font-semibold text-red-500">
                             {errors.branchId}

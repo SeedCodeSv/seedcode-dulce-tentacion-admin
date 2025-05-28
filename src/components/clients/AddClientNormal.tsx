@@ -104,7 +104,8 @@ const AddClientNormal = () => {
       patchCustomer(values, Number(id))
         .then((res) => {
           setIsClicked(false);
-          res && navigate('/clients');
+          if(res)
+           navigate('/clients');
           if (button.current) button.current.disabled = false;
         })
         .catch(() => {

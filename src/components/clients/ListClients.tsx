@@ -37,8 +37,7 @@ interface Props {
 }
 
 const ListClients = ({ actions }: Props) => {
-  const { getCustomersPagination, customer_pagination, save_active_customer, loading_customer } =
-    useCustomerStore();
+  const { getCustomersPagination, customer_pagination, save_active_customer, loading_customer } = useCustomerStore();
   const [limit, setLimit] = useState(5);
   const [search, setSearch] = useState('');
   const [email, setEmail] = useState('');
@@ -51,6 +50,7 @@ const ListClients = ({ actions }: Props) => {
   useEffect(() => {
     getBranchesList();
   }, []);
+  
   useEffect(() => {
     getCustomersPagination(1, limit, search, email, branch, tipeCustomer, active ? 1 : 0);
   }, [limit, tipeCustomer, active]);
@@ -91,10 +91,7 @@ const ListClients = ({ actions }: Props) => {
           />
           {actions.includes('Agregar') && (
             <>
-              <>
-                <AddButton onClick={() => navigate('/add-customer/0/0')} />
-              </>
-              {/* <BottomSm /> */}
+              <AddButton onClick={() => navigate('/add-customer/0/0')} />
             </>
           )}
         </div>

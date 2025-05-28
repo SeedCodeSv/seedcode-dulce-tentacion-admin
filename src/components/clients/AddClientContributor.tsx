@@ -45,8 +45,8 @@ function AddClientContributor() {
 
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
-    getCat019CodigoActividadEconomica();
-  }, []);
+    getCat019CodigoActividadEconomica(customer?.descActividad || '');
+  }, [customer?.descActividad]);
 
   useEffect(() => {
     getCat013Municipios(
@@ -85,7 +85,7 @@ function AddClientContributor() {
       .required('**Este campo solo permite números sin guiones**')
       .matches(/^[0-9]{8}$/, '**El telefono no es valido**'),
     tipoDocumento: yup.string().required('**Tipo de documento es requerido**'),
-   numDocumento: yup
+    numDocumento: yup
       .string()
       .test('noSelectedTypeDocument', '**Debe seleccionar un tipo de documento**', function () {
         const { tipoDocumento } = this.parent;
@@ -131,8 +131,6 @@ function AddClientContributor() {
       const values = {
         ...payload,
         esContribuyente: 1,
-        // branchId: Number(user?.correlative.branchId),
-        // transmitterId: Number(user?.transmitterId),
       };
 
       patchCustomer(values, Number(id))
@@ -148,14 +146,13 @@ function AddClientContributor() {
       const values = {
         ...payload,
         esContribuyente: 1,
-        // branchId: Number(user?.correlative.branchId),
-        // transmitterId: Number(user?.transmitterId),
       };
 
       postCustomer(values)
         .then((res) => {
           setIsClicked(false);
-          res && navigate('/clients');
+          if (res)
+            navigate('/clients');
           if (button.current) button.current.disabled = false;
         })
         .catch(() => {
@@ -391,6 +388,7 @@ function AddClientContributor() {
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
+                      defaultSelectedKey={values.codActividad.toString()}
                       errorMessage={errors.codActividad}
                       isInvalid={!!errors.codActividad && touched.codActividad}
                       label="Actividad"
@@ -428,12 +426,12 @@ function AddClientContributor() {
                       classNames={{
                         base: 'font-semibold text-gray-500 text-sm',
                       }}
-                      defaultSelectedKey={customer?.branch?.name}
+                      defaultSelectedKey={customer?.branch?.id.toString()}
                       errorMessage={errors.branchId}
                       isInvalid={!!errors.branchId && !!touched.branchId}
                       label="Sucursal"
                       labelPlacement="outside"
-                      placeholder={customer?.branch?.name ?? 'Selecciona la sucursal'}
+                      placeholder={'Selecciona la sucursal'}
                       value={values.branchId}
                       variant="bordered"
                       onBlur={handleBlur('branchId')}

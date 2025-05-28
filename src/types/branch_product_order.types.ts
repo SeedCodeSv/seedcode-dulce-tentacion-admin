@@ -177,7 +177,7 @@ export interface CategoryProduct {
     branch: Branch
     branchId: number
     productId: number
-    suppliers?: Supplier[]
+    suppliers: Supplier[]
     supplierId: number
   }
   

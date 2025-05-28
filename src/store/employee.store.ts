@@ -87,7 +87,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         const user = get_user();
 
         get().getEmployeesPaginated(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+         user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -115,7 +115,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         const user = get_user();
 
         get().getEmployeesPaginated(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -143,7 +143,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         const user = get_user();
 
         get().getEmployeesPaginated(
-          user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',

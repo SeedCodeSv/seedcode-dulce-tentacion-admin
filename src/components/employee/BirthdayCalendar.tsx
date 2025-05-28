@@ -12,6 +12,7 @@ import Layout from '@/layout/Layout';
 import { useEmployeeStore } from '@/store/employee.store';
 import { MonthsAttendance } from '@/types/employees.types';
 import { useViewsStore } from '@/store/views.store';
+import DivGlobal from '@/themes/ui/div-global';
 
 function BirthdayCalendarMobile() {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
@@ -84,13 +85,12 @@ function BirthdayCalendarMobile() {
   return (
     <Layout title="Calendario de cumpleaños">
       {actionsView.includes('Cumpleaños') ? (
-        <div className="w-full h-full p-4 bg-gray-50 dark:bg-gray-900 transition-all duration-300 ease-in-out">
-          <div className="w-full border border-gray-200 dark:border-gray-700 p-4 bg-white shadow-lg rounded-xl dark:bg-gray-900 flex flex-col justify-between h-full">
+        <DivGlobal>
             <div>
               <div className="flex justify-between items-center mb-3">
                 <Button
                   className="bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
-                  onClick={() => navigate(-1)}
+                  onPress={() => navigate(-1)}
                 >
                   <ArrowLeft className="text-gray-800 dark:text-white" />
                   <p className="ml-2 text-gray-800 dark:text-white text-sm">Regresar</p>
@@ -156,11 +156,10 @@ function BirthdayCalendarMobile() {
                 })}
               </div>
             </div>
-          </div>
           <SlideInModalGlobal open={openModal} setOpen={setOpenModal} title="Empleados" >
             <ParticipantList employee={selectedParticipants} />
           </SlideInModalGlobal>
-        </div>
+          </DivGlobal>
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">

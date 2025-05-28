@@ -28,6 +28,7 @@ import { Branches } from '@/types/branches.types';
 import Layout from '@/layout/Layout';
 import { IBranchProductOrder, Supplier } from '@/types/branch_product_order.types';
 import { useDebounce } from '@/hooks/useDebounce';
+import DivGlobal from '@/themes/ui/div-global';
 
 
 const PurchaseOrderForm = () => {
@@ -85,108 +86,107 @@ const PurchaseOrderForm = () => {
   return (
     <Layout title="Ordenes de Compra">
       <>
-        <div className="w-full h-full p-2 pt-6 md:pl-0 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-5 pt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
-           <div className='w-full flex md:flex-col justify-between'>
+        <DivGlobal>
+          <div className='w-full flex md:flex-col justify-between'>
             <div className="md:w-full flex justify-end md:pb-4 gap-4">
-                <Button
-                  className="px-7 font-semibold"
-                  style={styles.darkStyle}
-                  onPress={() => {
-                    navigate('/add-purchase-order');
+              <Button
+                className="px-7 font-semibold"
+                style={styles.darkStyle}
+                onPress={() => {
+                  navigate('/add-purchase-order');
+                }}
+              >
+                Aceptar
+              </Button>
+            </div>
+            <ResponsiveFilterWrapper
+              withButton={false}
+              onApply={() => handleSearch(undefined)}
+            >
+              <div>
+                <Autocomplete
+                  className="w-full dark:text-white"
+                  classNames={{
+                    base: 'font-semibold text-gray-500 text-sm',
+                  }}
+                  clearButtonProps={{
+                    onClick: () => setBranch(''),
+                  }}
+                  label="Sucursal"
+                  labelPlacement="outside"
+                  placeholder="Selecciona una sucursal"
+                  startContent={<Building2 size={20} />}
+                  variant="bordered"
+                  onSelectionChange={(key) => {
+                    if (key) {
+                      const branchSelected = JSON.parse(key as string) as Branches;
+
+                      setBranch(branchSelected.name);
+                    }
                   }}
                 >
-                  Aceptar
-                </Button>
-            </div>
-              <ResponsiveFilterWrapper
-                withButton={false}
-                onApply={() => handleSearch(undefined)}
-              >
-                <div>
-                  <Autocomplete
-                    className="w-full dark:text-white"
-                    classNames={{
-                      base: 'font-semibold text-gray-500 text-sm',
-                    }}
-                    clearButtonProps={{
-                      onClick: () => setBranch(''),
-                    }}
-                    label="Sucursal"
-                    labelPlacement="outside"
-                    placeholder="Selecciona una sucursal"
-                    startContent={<Building2 size={20} />}
-                    variant="bordered"
-                    onSelectionChange={(key) => {
-                      if (key) {
-                        const branchSelected = JSON.parse(key as string) as Branches;
-
-                        setBranch(branchSelected.name);
-                      }
-                    }}
-                  >
-                    {branch_list.map((bra) => (
-                      <AutocompleteItem
-                        key={JSON.stringify(bra)}
-                        className="dark:text-white"
-                      >
-                        {bra.name}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                </div>
-                <div>
-                  <Autocomplete
-                    className="font-semibold dark:text-white"
-                    clearButtonProps={{
-                      onClick: () => setSupplier(''),
-                    }}
-                    label="Proveedor"
-                    labelPlacement="outside"
-                    placeholder="Selecciona un proveedor"
-                    startContent={<User size={20} />}
-                    variant="bordered"
-                    onInputChange={(e) => setSearchSupplier(e)}
-                    onSelect={(e) => {
-                      setSupplier(e.currentTarget.value);
-                    }}
-                  >
-                    {supplier_list.map((sup) => (
-                      <AutocompleteItem
-                        key={sup.id}
-                        className="dark:text-white"
-                        onPress={() => setSupplier(sup.nombre)}
-                      >
-                        {sup.nombre}
-                      </AutocompleteItem>
-                    ))}
-                  </Autocomplete>
-                </div>
-                <div>
-                  <Input
-                    className="w-full dark:text-white font-semibold"
-                    label="Nombre"
-                    labelPlacement="outside"
-                    placeholder="Escribe el nombre del producto"
-                    startContent={<Search />}
-                    variant="bordered"
-                    onChange={(e) => setProductName(e.target.value)}
-                    onClear={() => setProductName('')}
-                  />
-                </div>
-                <div>
-                  <Input
-                    className="w-full dark:text-white font-semibold"
-                    label="Código"
-                    labelPlacement="outside"
-                    placeholder="Escribe el código del producto"
-                    startContent={<Search />}
-                    variant="bordered"
-                    onChange={(e) => setCode(e.target.value)}
-                    onClear={() => setCode('')}
-                  />
-                </div>
-                  <div>
+                  {branch_list.map((bra) => (
+                    <AutocompleteItem
+                      key={JSON.stringify(bra)}
+                      className="dark:text-white"
+                    >
+                      {bra.name}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
+              <div>
+                <Autocomplete
+                  className="font-semibold dark:text-white"
+                  clearButtonProps={{
+                    onClick: () => setSupplier(''),
+                  }}
+                  label="Proveedor"
+                  labelPlacement="outside"
+                  placeholder="Selecciona un proveedor"
+                  startContent={<User size={20} />}
+                  variant="bordered"
+                  onInputChange={(e) => setSearchSupplier(e)}
+                  onSelect={(e) => {
+                    setSupplier(e.currentTarget.value);
+                  }}
+                >
+                  {supplier_list.map((sup) => (
+                    <AutocompleteItem
+                      key={sup.id}
+                      className="dark:text-white"
+                      onPress={() => setSupplier(sup.nombre)}
+                    >
+                      {sup.nombre}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
+              </div>
+              <div>
+                <Input
+                  className="w-full dark:text-white font-semibold"
+                  label="Nombre"
+                  labelPlacement="outside"
+                  placeholder="Escribe el nombre del producto"
+                  startContent={<Search />}
+                  variant="bordered"
+                  onChange={(e) => setProductName(e.target.value)}
+                  onClear={() => setProductName('')}
+                />
+              </div>
+              <div>
+                <Input
+                  className="w-full dark:text-white font-semibold"
+                  label="Código"
+                  labelPlacement="outside"
+                  placeholder="Escribe el código del producto"
+                  startContent={<Search />}
+                  variant="bordered"
+                  onChange={(e) => setCode(e.target.value)}
+                  onClear={() => setCode('')}
+                />
+              </div>
+              <div>
                 <Select
                   className="w-28 dark:text-white"
                   classNames={{
@@ -208,117 +208,118 @@ const PurchaseOrderForm = () => {
                   ))}
                 </Select>
               </div>
-              </ResponsiveFilterWrapper>
-            </div>
-            <div>
-              {branch_product_order_paginated_loading ? (
-                <>
+            </ResponsiveFilterWrapper>
+          </div>
+          <div>
+            {branch_product_order_paginated_loading ? (
+              <>
+                <div className="flex items-center justify-center h-full">
+                  <tr>
+                    <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
+                      <LoadingTable />
+                    </td>
+                  </tr>
+                </div>
+              </>
+            ) : (
+              <>
+                {branch_product_order_paginated.branchProducts.length > 0 ? (
+                  <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <>
+                      {branch_product_order_paginated.branchProducts.map((branch_product) => {
+                        const isProductSelected = branchProducts.some(
+                          (product) => product.id === branch_product.id
+                        );
+
+                        const handleProductClick = (supplier: Supplier) => {
+                          if (isProductSelected) {
+                            deleteProductOrder(branch_product.id);
+                          } else {
+                            addProductOrder({ ...branch_product, supplier: supplier });
+                          }
+                        };
+
+                        return (
+                          <div
+                            key={branch_product.id}
+                            className="shadow border p-4 rounded-lg dark:border-gray-500"
+                          >
+                            <p className="font-semibold dark:text-white">
+                              {branch_product.product?.name ?? ''}
+                            </p>
+                            <p className="dark:text-white">Stock: {branch_product.stock}</p>
+                            <p className="mt-2 flex gap-3 dark:text-white">
+                              <Truck />{branch_product?.suppliers?.length}
+                            </p>
+                            <p className="mt-2 flex gap-3 dark:text-white">
+                              <ScrollText />
+                              {branch_product.product?.subCategory?.categoryProduct.name ??
+                                ''}
+                            </p>
+                            <p className="mt-2 flex gap-3 dark:text-white">
+                              <DollarSign /> ${branch_product.price}
+                            </p>
+                            <Button
+                              className={`px-10 mt-3 ${isProductSelected ? 'bg-green-500' : 'bg-[#f4a261]'
+                                }`}
+                              onPress={() => {
+                                if (!isProductSelected && branch_product && branch_product.suppliers.length > 1) {
+                                  setBranchProduct(branch_product);
+                                  modalSelect.onOpen();
+                                } else {
+                                  handleProductClick(branch_product?.suppliers[0]);
+                                }
+
+                              }
+                              }
+                            >
+                              <p className="text-white">
+                                {' '}
+                                {isProductSelected ? 'Quitar' : 'Agregar'}
+                              </p>
+                            </Button>
+                          </div>
+                        );
+                      })}
+                    </>
+                  </div>
+                ) : (
                   <div className="flex items-center justify-center h-full">
                     <tr>
-                      <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
-                        <LoadingTable />
+                      <td colSpan={6}>
+                        <EmptyTable />
                       </td>
                     </tr>
                   </div>
-                </>
-              ) : (
-                <>
-                  {branch_product_order_paginated.branchProducts.length > 0 ? (
-                    <div className="w-full mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                      <>
-                        {branch_product_order_paginated.branchProducts.map((branch_product) => {
-                          const isProductSelected = branchProducts.some(
-                            (product) => product.id === branch_product.id
-                          );
-
-                          const handleProductClick = (supplier: Supplier) => {
-                            if (isProductSelected) {
-                              deleteProductOrder(branch_product.id);
-                            } else {
-                              addProductOrder({ ...branch_product, supplier: supplier });
-                            }
-                          };
-
-                          return (
-                            <div
-                              key={branch_product.id}
-                              className="shadow border p-4 rounded-lg dark:border-gray-500"
-                            >
-                              <p className="font-semibold dark:text-white">
-                                {branch_product.product?.name ?? ''}
-                              </p>
-                              <p className="dark:text-white">Stock: {branch_product.stock}</p>
-                              <p className="mt-2 flex gap-3 dark:text-white">
-                                <Truck />{branch_product?.suppliers?.length}
-                              </p>
-                              <p className="mt-2 flex gap-3 dark:text-white">
-                                <ScrollText />
-                                {branch_product.product?.subCategory?.categoryProduct.name ??
-                                  ''}
-                              </p>
-                              <p className="mt-2 flex gap-3 dark:text-white">
-                                <DollarSign /> ${branch_product.price}
-                              </p>
-                              <Button
-                                className={`px-10 mt-3 ${isProductSelected ? 'bg-green-500' : 'bg-[#f4a261]'
-                                  }`}
-                                onPress={() => {
-                                  if (!isProductSelected && branch_product?.suppliers?.length > 1) {
-                                    setBranchProduct(branch_product)
-                                    modalSelect.onOpen()
-                                  } else {
-                                    handleProductClick(branch_product?.suppliers[0])
-                                  }
-                                }
-                                }
-                              >
-                                <p className="text-white">
-                                  {' '}
-                                  {isProductSelected ? 'Quitar' : 'Agregar'}
-                                </p>
-                              </Button>
-                            </div>
-                          );
-                        })}
-                      </>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <tr>
-                        <td colSpan={6}>
-                          <EmptyTable />
-                        </td>
-                      </tr>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-            <>
-              {branch_product_order_paginated.totalPag > 1 && (
-
-                <div className="w-full mt-5">
-                  <Pagination
-                    currentPage={branch_product_order_paginated.currentPag}
-                    nextPage={branch_product_order_paginated.nextPag}
-                    previousPage={branch_product_order_paginated.prevPag}
-                    totalPages={branch_product_order_paginated.totalPag}
-                    onPageChange={(page) => {
-                      getBranchProductOrders(
-                        branch,
-                        supplier,
-                        productName,
-                        code,
-                        page,
-                        limit
-                      );
-                    }}
-                  />
-                </div>
-
-              )}
-            </>
+                )}
+              </>
+            )}
           </div>
+          <>
+            {branch_product_order_paginated.totalPag > 1 && (
+
+              <div className="w-full mt-5">
+                <Pagination
+                  currentPage={branch_product_order_paginated.currentPag}
+                  nextPage={branch_product_order_paginated.nextPag}
+                  previousPage={branch_product_order_paginated.prevPag}
+                  totalPages={branch_product_order_paginated.totalPag}
+                  onPageChange={(page) => {
+                    getBranchProductOrders(
+                      branch,
+                      supplier,
+                      productName,
+                      code,
+                      page,
+                      limit
+                    );
+                  }}
+                />
+              </div>
+
+            )}
+          </>
+
           <ModalGlobal
             isBlurred={true}
             isOpen={modalSelect.isOpen}
@@ -363,7 +364,7 @@ const PurchaseOrderForm = () => {
               >Continuar</Button>
             </div>
           </ModalGlobal>
-        </div>
+        </DivGlobal>
       </>
     </Layout>
   );

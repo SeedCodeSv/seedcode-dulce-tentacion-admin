@@ -8,7 +8,7 @@ export const useStudyLevelStore = create<IStudyLevelStore>((set) => ({
     study_level: [],
     GetStudyLevel() {
         get_study_levels()
-        .then(({ data }) => set({ study_level: data.studyLevels }))
+            .then(({ data }) => set({ study_level: data.studyLevels }))
             .catch(() => {
                 set({ study_level: [] });
             });

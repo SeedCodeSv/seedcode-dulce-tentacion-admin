@@ -19,6 +19,7 @@ import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import { IBranchProductOrderQuantity } from '@/types/branch_products.types';
 import { getElSalvadorDateTime } from '@/utils/dates';
+import DivGlobal from '@/themes/ui/div-global';
 function AddPurchaseOrders() {
   const {
     updateQuantityOrders,
@@ -136,8 +137,7 @@ function AddPurchaseOrders() {
   return (
     <Layout title="Lista de Ordenes de compra">
       {actions.includes('Agregar') ? (
-        <div className="w-full h-full p-4 md:p-6  md:px-4 bg-gray-50 dark:bg-gray-800">
-          <div className="w-full h-full flex flex-col p-5 mt-2 border border-white rounded-xl overflow-y-auto bg-white custom-scrollbar shadow  dark:bg-gray-900 scrollbar-hide">
+        <DivGlobal>
             <div className="w-full flex items-center justify-between">
               <div
                 className="flex items-center cursor-pointer"
@@ -276,8 +276,7 @@ function AddPurchaseOrders() {
                 Guardar
               </Button>
             </div>
-          </div>
-        </div>
+         </DivGlobal>
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent flex justify-center items-center">
