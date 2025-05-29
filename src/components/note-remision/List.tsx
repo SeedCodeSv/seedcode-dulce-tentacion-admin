@@ -244,16 +244,9 @@ function List() {
                                   </Button>
                                 </TooltipGlobal>
                               )}
-                              <TooltipGlobal text="Invalidar">
-                                {item.status.name !== 'PROCESADO' ? (
-                                  <Button
+                              {item?.status.name.includes('PROCESADO') && (
+                                <TooltipGlobal text="Invalidar">
 
-                                    isIconOnly
-                                    style={{ backgroundColor: "gray", color: 'white' }}
-                                  >
-                                    <FileX2 size={25} />
-                                  </Button>
-                                ) : (
                                   <Button
                                     isIconOnly
                                     style={styles.dangerStyles}
@@ -264,9 +257,9 @@ function List() {
                                   >
                                     <FileX2 size={25} />
                                   </Button>
-                                )}
 
-                              </TooltipGlobal>
+                                </TooltipGlobal>
+                              )}
                               {!!item.employee && item.status.name.includes('PENDIENTE') && (
                                 <TooltipGlobal
                                   text={item?.isCompleted ? 'Completado' : 'Completar'}

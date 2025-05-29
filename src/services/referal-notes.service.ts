@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IGetRecenReferal, IGetReferalNotes, PayloadReferel } from '@/types/referal-note.types';
+import { IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -41,3 +41,14 @@ export const get_referal_note_recent = (id: number) => {
 }
 
 
+export const get_list_referal_note =(id:number, page:number, limit:number)=>{
+  return axios.get<IResponseNote>(API_URL + `/referal-note/notes-referals-by-branch/${id}?page=${page}&limit=${limit}`)
+}
+
+export const get_invalidate_note_referaL =(id:number, page:number, limit:number)=>{
+  return axios.get<IResponseNoteInvali>(API_URL + `/referal-note/list-invalidate/${id}?page=${page}&limit=${limit}`)
+}
+
+export const detail_referal_note=(id:number)=>{
+  return axios.get<IResponseDetailNote>(`${API_URL}/referal-note/detail-note/${id}`)
+}

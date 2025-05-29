@@ -324,15 +324,8 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                             ANULAR NOTA DE REMISIÓN
                         </ModalHeader>
                         <ModalBody className="bg-gray-100 dark:bg-gray-800">
-                            <div className="max-h-[80vh] overflow-y-auto pr-2">
+                            <div className="max-h-[90vh] overflow-y-auto pr-2">
                                 <>
-
-                                    {/* {loading && (
-                                        <div className="w-full h-full flex flex-col justify-center items-center">
-                                            <div className="loader" />
-                                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                                        </div>
-                                    )} */}
                                     {loading && (
                                         <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
                                             <FaSpinner className="w-24 h-24 animate-spin" />
