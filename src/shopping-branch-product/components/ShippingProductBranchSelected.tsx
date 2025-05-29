@@ -31,6 +31,7 @@ import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { useSocket } from '@/hooks/useSocket';
 
 interface Props {
   branchData: Branches;
@@ -55,6 +56,7 @@ function ShippingProductBranchSelected(props: Props) {
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const { branch_list, getBranchesList } = useBranchesStore();
   const { point_of_sales, getPointOfSales } = usePointOfSales();
+  const { socket } = useSocket()
 
   useEffect(() => {
     getEmployeesList();
@@ -89,7 +91,8 @@ function ShippingProductBranchSelected(props: Props) {
     getCustomerByBranchId();
   }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const branchIssuingId = branchData?.id ?? 0
+  
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
@@ -515,6 +518,8 @@ function ShippingProductBranchSelected(props: Props) {
               setTitleString={props.setTitleString}
               titleError={props.titleError}
               onOpenChange={props.openModalSteps}
+              socket={socket}
+              branchIssuingId={branchIssuingId}
             />
           </ModalFooter>
         </ModalContent>
