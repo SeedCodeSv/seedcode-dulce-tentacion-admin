@@ -1,8 +1,8 @@
-import { useAuthStore } from "@/store/auth.store";
-import { WS_URL } from "@/utils/constants";
 import { useEffect, useMemo, useState } from "react";
 import { connect } from "socket.io-client";
-import { toast } from "sonner";
+
+import { WS_URL } from "@/utils/constants";
+import { useAuthStore } from "@/store/auth.store";
 
 export const useSocket = () => {
     const {user} =useAuthStore()
@@ -24,7 +24,6 @@ export const useSocket = () => {
 
     if (!isConnected) {
       socket.on("connect", () => {
-        console.log(`🟢 Socket conectado con branchId=${branchId}`);
         setIsConnected(true);
       });}
 

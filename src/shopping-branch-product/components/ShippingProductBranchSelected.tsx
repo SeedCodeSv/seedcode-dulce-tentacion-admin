@@ -506,6 +506,7 @@ function ShippingProductBranchSelected(props: Props) {
             </ButtonUi>
             <GenerateAShippingNote
               branch={props.branchData}
+              branchIssuingId={branchIssuingId}
               branchLlegada={branchData}
               customer={customerData}
               employee={responsibleEmployee as Employee}
@@ -516,10 +517,9 @@ function ShippingProductBranchSelected(props: Props) {
               setCurrentStep={props.setCurrentStep}
               setErrors={props.setErrors}
               setTitleString={props.setTitleString}
+              socket={socket}
               titleError={props.titleError}
               onOpenChange={props.openModalSteps}
-              socket={socket}
-              branchIssuingId={branchIssuingId}
             />
           </ModalFooter>
         </ModalContent>

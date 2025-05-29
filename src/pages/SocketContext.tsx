@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { connect } from 'socket.io-client';
 import { toast } from 'sonner';
 import { NotebookIcon } from 'lucide-react';
