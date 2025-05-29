@@ -41,16 +41,11 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
   const { getEmployeesByBranch, employee_list } = useEmployeeStore()
   const [motivoComplet, setMotivoComplet] = useState('')
   const [editableDetails, setEditableDetails] = useState<EditableDetail[]>([]);
-  const { completeReferalNote, getReferalNoteByBranch,
+  const { completeReferalNote,
     getDetailNote, detailNoteReferal
   } = useReferalNote()
 
 
-  // useEffect(() => {
-  //   if (note?.isCompleted) {
-  //     getEmployeesByBranch(user?.branchId ?? 0)
-  //   }
-  // }, [note?.isCompleted, user?.branchId])
   useEffect(() => {
     if (note?.isCompleted) {
       getEmployeesByBranch(user?.branchId ?? 0)
@@ -200,13 +195,13 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
             <ModalBody>
               <div className='flex grid-cols-2 gap-4'>
                 <Select
+                  classNames={{ label: 'text-sm font-semibold dark:text-white' }}
                   label="Complemento nota de remisión"
                   labelPlacement="outside"
                   placeholder="Selecciona una opcion"
                   value={motivoComplet}
-                  onChange={(e) => setMotivoComplet(e.target.value)}
-                  classNames={{ label: 'text-sm font-semibold dark:text-white' }}
                   variant="bordered"
+                  onChange={(e) => setMotivoComplet(e.target.value)}
                 >
                   {Motivos_Complet.map((e) => (
                     <SelectItem key={e.label}>{e.label}</SelectItem>
