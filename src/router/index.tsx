@@ -15,6 +15,8 @@ import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
 import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
 import ActionRol from '@/pages/ActionRol';
+import { KardexByProductList } from '@/components/reporters/kardex/kardexByProduct/KardexByProductList';
+import KardexComponent from '@/components/reporters/kardex/KardexComponent';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -137,7 +139,11 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route element={<AnimatedRoute> {handleCheckPermission('Kardex') ? <KardexPage /> : <Home/> }</AnimatedRoute>} path="/kardex-inventory" />
+      <Route element={<KardexPage />} path="/kardex">
+          <Route index element={
+            <KardexComponent />} />
+          <Route element={<KardexByProductList />} path="by-product" />
+        </Route>
       <Route
         element={
           <AnimatedRoute>

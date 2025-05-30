@@ -227,11 +227,11 @@ export const LayoutItems = (props: Props) => {
       icon: ArrowDownUp,
       label: 'Movimientos',
     },
-    {
+     {
       viewName: 'Kardex',
-      to: '/kardex-inventory',
-      icon: List,
+      to: '/kardex',
       label: 'Kardex',
+      icon: List,
     },
     {
       viewName: 'Ver invalidaciones',

@@ -27,7 +27,6 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
         const time = getElSalvadorDateTime().horEmi
 
         const extraInfo = [
-            [`${transmitter.nombre}`],
             [`${transmitter.nombreComercial}`],
             [`Sucursal: ${branch.name}`],
             [`Fecha: ${DATE}`],

@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import {
   get_branch_product,
+  get_branch_product_list,
   get_branch_product_orders,
   get_branches,
   get_product_by_code,
@@ -18,6 +19,7 @@ import { calc_iva } from '@/utils/money';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
+    branchProductsFilteredList: [],
   pagination_branch_products: {
     branchProducts: [],
     total: 0,
@@ -411,5 +413,16 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
 
       return false
     })
-  }
+  },
+    async getBranchProductsFilteredList(params) {
+    try {
+      const res = await get_branch_product_list(params);
+
+      if (!res.ok) return set({ branchProductsFilteredList: [] });
+
+      set({ branchProductsFilteredList: res.branchProducts });
+    } catch {
+      set({ branchProductsFilteredList: [] });
+    }
+  },
 }));
