@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
+import { IPagination } from '@/types/global.types';
 
 const formatDate = (dateString: string) => {
   const [year, month, day] = dateString.split('-');
@@ -402,4 +403,14 @@ export const convertImageToBase64 = (url: string): Promise<string> => {
       reject(error);
     };
   });
+};
+
+export const initialPagination: IPagination = {
+  total: 0,
+  totalPag: 0,
+  currentPag: 0,
+  nextPag: 0,
+  prevPag: 0,
+  status: 0,
+  ok: false,
 };

@@ -14,6 +14,7 @@ import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import { useConfigurationStore } from '@/store/perzonalitation.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
 
 
 interface jsPDFWithAutoTable extends jsPDF {
@@ -63,26 +64,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
         return;
       }
 
-      const currentDate = new Date();
       const doc = new jsPDF();
-
-      const dateOptions: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'America/El_Salvador',
-      };
-
-      const timeOptions: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'America/El_Salvador',
-      };
-
-      const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
-      const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
-
       const logo = personalization && personalization[0]?.logo ? personalization[0].logo : DEFAULT_LOGO;
 
       const logoBase64 = await convertImageToBase64(logo);
@@ -101,8 +83,8 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
                 styles: { halign: 'left' },
               },
             ],
-            [{ content: 'Fecha: ' + `${formattedDate}`, styles: { halign: 'left' } }],
-            [{ content: 'Hora: ' + `${formattedTime}`, styles: { halign: 'left' } }],
+            [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi}`, styles: { halign: 'left' } }],
+            [{ content: 'Hora: ' + `${getElSalvadorDateTime().horEmi}`, styles: { halign: 'left' } }],
           ],
           theme: 'plain',
           startY: 5,

@@ -197,3 +197,19 @@ export const get_branch_product_recipe_supplier = (
     }
   );
 };
+
+export const get_product_list_search = async ({
+  productName,
+}: {
+  productName?: string;
+}) => {
+  const token = get_token() ?? '';
+
+  return (
+    await axios.get<IGetProductsPaginated>(`${API_URL}/products/search/list?name=${productName}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  ).data;
+};

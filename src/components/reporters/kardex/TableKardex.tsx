@@ -59,8 +59,6 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
   }, [sortedProducts]);
 
   return (
-    <>
-      <div className="w-full h-full overflow-y-auto custom-scrollbar xl:pr-4 mt-2" >
         <>
           <TableComponent
             headers={[
@@ -156,7 +154,5 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
             )}
           </TableComponent>
         </>
-      </div>
-    </>
   );
 }

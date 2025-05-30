@@ -2,14 +2,17 @@ import { create } from 'zustand';
 
 import { IReportKardexStore } from './types/reportKardex.store';
 
-import { IPagination } from '@/types/global.types';
-import { get_adjustments_by_product, get_kardex_report } from '@/services/reports/reportKardex.service';
+import { get_adjustments_by_product, get_kardex_report, get_kardex_report_by_product } from '@/services/reports/reportKardex.service';
+import { initialPagination } from '@/utils/utils';
 
 export const useReportKardex = create<IReportKardexStore>((set) => ({
   kardex: [],
   details: [],
-  pagination_kardex: {} as IPagination,
+  pagination_kardex: initialPagination,
   loading: false,
+  KardexProduct: [],
+  paginationKardexProduct: initialPagination,
+  isLoadinKarProd: false,
   OnGetReportKardex(id, page, limit, name) {
     set({ loading: true });
     get_kardex_report(id, page, limit, name)
@@ -31,15 +34,7 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
       .catch(() => {
         set({
           kardex: [],
-          pagination_kardex: {
-            total: 0,
-            totalPag: 0,
-            currentPag: 0,
-            nextPag: 0,
-            prevPag: 0,
-            status: 0,
-            ok: false,
-          },
+          pagination_kardex: initialPagination,
           loading: false,
         });
       });
@@ -55,4 +50,33 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
         set({ details: [], loading: false });
       });
   },
+  async getReportKardexByProduct(...params) {
+    set({ isLoadinKarProd: true });
+
+    try {
+      const res = await get_kardex_report_by_product(...params);
+
+      if (!res.ok) {
+        return set({ KardexProduct: [], paginationKardexProduct: initialPagination });
+      }
+
+      set({
+        KardexProduct: res.movements,
+        paginationKardexProduct: {
+          total: res.total,
+          totalPag: res.totalPag,
+          currentPag: res.currentPag,
+          nextPag: res.nextPag,
+          prevPag: res.prevPag,
+          status: res.status,
+          ok: res.ok,
+        },
+      });
+    } catch {
+      set({ KardexProduct: [], paginationKardexProduct: initialPagination });
+    } finally {
+      set({ isLoadinKarProd: false });
+    }
+  },
+
 }));

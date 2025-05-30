@@ -8,6 +8,7 @@ import {
 import { SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
+import { useOutletContext } from 'react-router';
 
 import KardexTable from './TableKardex';
 import MobileViewKardex from './KardexCardView';
@@ -30,11 +31,13 @@ import DivGlobal from '@/themes/ui/div-global';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import RenderViewButton from '@/components/global/render-view-button';
 
-interface PProps {
-  actions: string[];
-}
+type ContextType = {
+  actionView: string[];
+};
 
-export default function KardexComponent({ actions }: PProps) {
+export default function KardexComponent() {
+  const { actionView } = useOutletContext<ContextType>();
+
   const user = get_user();
   const { transmitter, gettransmitter } = useTransmitterStore();
 
@@ -160,12 +163,12 @@ export default function KardexComponent({ actions }: PProps) {
         <RenderViewButton isList setView={setView} view={view} />
         {view === 'table' && (
           <div className="flex gap-3">
-            {actions.includes('Descargar PDF') && (
+            {JSON.stringify(actionView).includes('Descargar PDF') && (
             <DownloadPDFButton branch={branch!} tableData={data} transmitter={transmitter} />
-            )}
-            {actions.includes('Exportar Excel') && (
+             )}
+            {JSON.stringify(actionView).includes('Exportar Excel') && (
             <KardexExportExcell  branch={branch!} tableData={data} transmitter={transmitter} />
-            )}
+            )} 
           </div>
         )}
         </div>
@@ -177,7 +180,8 @@ export default function KardexComponent({ actions }: PProps) {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
+                <></>
+                // <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />
@@ -195,7 +199,7 @@ export default function KardexComponent({ actions }: PProps) {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />

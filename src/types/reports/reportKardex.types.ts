@@ -1,6 +1,10 @@
 import { BranchProduct } from '../branch_products.types';
 import { IPagination } from '../global.types';
-// import { InventoryAdjustment } from '../inventaryAdjustment.types';
+
+export enum TypeOfMovements {
+  Entries = 'Entradas',
+  Exits = 'Salidas',
+}
 
 export interface IReportKardex extends IPagination {
   ok: boolean;
@@ -37,7 +41,37 @@ export interface IDetaiLAdjustment {
   typed: string;
   isActive: boolean;
   branchProduct: BranchProduct;
-  // inventoryAdjustment: InventoryAdjustment;
   inventoryAdjustmentId: number;
+  branchProductId: number;
+}
+
+export interface IReportKardexByProduct extends IPagination {
+  ok: boolean;
+  movements: KardexByProduct[];
+  status: number;
+}
+
+export interface IReportKardexAllProduct {
+  ok: boolean;
+  status: number;
+  data: {
+    [key: string]: {
+      id: number;
+      name: string;
+      items: KardexByProduct[];
+    };
+  };
+}
+
+export interface KardexByProduct {
+  id: number;
+  typeOfMovement: string;
+  typeOfInventory: string;
+  quantity: number;
+  date: string;
+  time: string;
+  totalMovement: string;
+  isActive: boolean;
+  branchProduct: BranchProduct;
   branchProductId: number;
 }
