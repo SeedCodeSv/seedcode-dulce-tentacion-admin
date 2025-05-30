@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { Socket } from 'socket.io-client'
 
 import { DocumentoNoteOfRemission } from '@/shopping-branch-product/types/notes_of_remision.types';
 import { PayloadMH } from '@/types/DTE/credito_fiscal.types';
@@ -17,4 +18,6 @@ export interface IPropSendToMhShippingNote {
   employeeId?: number;
   receivingBranchId?: number;
   receivingEmployeeId?: number;
+    socket:Socket;
+  branchIssuingId:number
 }

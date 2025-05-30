@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { Socket } from 'socket.io-client'
 
 import { Branches } from './shipping_branch_product.types';
 
@@ -136,4 +137,6 @@ export interface IPropCustomer {
   branchLlegada?: Branches;
   employeeReceptor?: Employee;
   titleError: string;
+    socket:Socket;
+  branchIssuingId:number
 }

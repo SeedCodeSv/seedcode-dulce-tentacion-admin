@@ -28,6 +28,8 @@ function GenerateAShippingNote(props: IPropCustomer) {
     observation,
     branch,
     branchLlegada,
+    socket,
+    branchIssuingId
 
   } = props;
 
@@ -95,6 +97,8 @@ function GenerateAShippingNote(props: IPropCustomer) {
                 pointOfSaleId,
                 customerId: customer?.id,
                 employeeId: employee?.id,
+                socket:socket,
+                branchIssuingId:branchIssuingId
               });
             } else {
               props.setTitleString('Error al firmar el documento 222');

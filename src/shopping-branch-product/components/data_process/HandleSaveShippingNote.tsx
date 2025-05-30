@@ -15,7 +15,9 @@ export const HandleSaveShippingNote = ({
   customerId,
   handleDownload,
   receivingBranchId,
-  closeModal
+  closeModal,
+  socket,
+  branchIssuingId
 }: IPropSaveShippingNote) => {
   setCurrentState(steps[3].title);
   generate_a_shipping_note({
@@ -28,7 +30,16 @@ export const HandleSaveShippingNote = ({
   })
     .then((res) => {
       if (res.data.ok) {
+        const targetSucursalId = receivingBranchId ?? 0
+
         toast.success('Nota de envío creada con éxito', { position: 'top-right' });
+        socket.emit('new-referal-note-find-client', {
+          targetSucursalId,
+          note: {
+            descripcion: "Enviado desde la sucursal" + branchIssuingId,
+            fecha: new Date().toISOString(),
+          }
+        })
         OnClearProductSelectedAll();
         closeModal()
         window.location.reload();
