@@ -22,6 +22,7 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
     status: 404,
     ok: false,
   },
+  hasNewNotification:false,
   referalNote: [],
   detailNoteReferal: [],
   loading: false,
@@ -29,9 +30,9 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
   json_referal_note: undefined,
   recentReferalNote: [],
   pagination_referal_notesNot: {} as IPagination,
-  onGetReferalNotes: (id, page, limit, startDate, endDate, state) => {
+  onGetReferalNotes: (id, page, limit, startDate, endDate, state, branchId) => {
     set({ loading: true });
-    get_referal_notes(id, page, limit, startDate, endDate, state)
+    get_referal_notes(id, page, limit, startDate, endDate, state, branchId)
       .then(({ data }) => {
         if (data.referalNotes.length > 0) {
           set({
@@ -133,8 +134,8 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
         })
       })
   },
-  async getReferalNoteByBranch(id, page, limit) {
-    return get_list_referal_note(id, page, limit).then(({ data }) => {
+  async getReferalNoteByBranch(id, page, limit, important) {
+    return get_list_referal_note(id, page, limit, important).then(({ data }) => {
       set({
         referalNote: data.NoteRerefal,
         pagination_referal_notesNot: {
@@ -164,6 +165,8 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
         detailNoteReferal: []
       })
     })
-  }
+  },
+    setHasNewNotification: (value) => set({ hasNewNotification: value }),
+
 
 }));

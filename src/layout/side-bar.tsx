@@ -1,4 +1,4 @@
-import { Menu } from 'lucide-react';
+import { BellRing, Menu } from 'lucide-react';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
 import { useNavigate } from 'react-router';
@@ -13,6 +13,8 @@ import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
 import { LgLayout } from './lg-layout';
 import { LayoutItems } from './layout-items';
 import { SmLayout } from './sm-layout';
+import { RiBillFill } from 'react-icons/ri';
+import DropdownNotifications from './DropdownNotifications/DropdownNotifications';
 
 interface Props {
   children: ReactNode;
@@ -67,7 +69,6 @@ export const SideBar = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    // Guarda el estado del sidebar en localStorage.
     localStorage.setItem('sidebarState', JSON.stringify(isOpen));
   }, [isOpen]);
 
@@ -112,10 +113,15 @@ export const SideBar = (props: Props) => {
               <Menu />
             </Button>
           </div>
+
           <div className="ml-3">
             <p className="text-sm font-bold uppercase whitespace-nowrap start">{props.title}</p>
           </div>
-          <div className="flex items-end justify-end w-full">
+
+          <div className="flex items-end justify-end w-full gap-4">
+            <DropdownNotifications />
+
+
             <Dropdown showArrow placement="bottom-start">
               <DropdownTrigger>
                 <User

@@ -12,18 +12,22 @@ export interface ReferalNoteStore {
   referalNote: ReferalNote[]
   pagination_referal_notesNot: IPagination
   detailNoteReferal: DetailNote[]
+  hasNewNotification: boolean
   onGetReferalNotes: (
     id: number,
     page: number,
     limit: number,
     startDate: string,
     endDate: string,
-    state: string
+    state: string,
+    branchId:number
   ) => void;
   completeReferalNote: (id: number, payload: PayloadReferel) => Promise<boolean>;
   getJsonReferelNote: (path: string) => void
   getReferalNoteDetail: (id: number) => void
   getRecentReferal: (id: number) => void
-  getReferalNoteByBranch: (id: number, page: number, limit: number) => void
+  getReferalNoteByBranch: (id: number, page: number, limit: number, important:boolean) => void
   getDetailNote: (id: number) => void
+  setHasNewNotification: (value: boolean) => void
+
 }
