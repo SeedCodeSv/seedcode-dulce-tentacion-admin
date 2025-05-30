@@ -14,7 +14,6 @@ import { useReferalNote } from '@/store/referal-notes';
 function SocketContext() {
   const { user } = useAuthStore()
   const branchId = user?.branchId ?? 0
-  const { getReferalNoteByBranch } = useReferalNote()
 
   const socket = useMemo(() => {
     return connect(WS_URL, {

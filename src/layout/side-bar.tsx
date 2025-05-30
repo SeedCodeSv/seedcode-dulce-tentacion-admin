@@ -1,4 +1,4 @@
-import { BellRing, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
 import { useNavigate } from 'react-router';
@@ -13,7 +13,6 @@ import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
 import { LgLayout } from './lg-layout';
 import { LayoutItems } from './layout-items';
 import { SmLayout } from './sm-layout';
-import { RiBillFill } from 'react-icons/ri';
 import DropdownNotifications from './DropdownNotifications/DropdownNotifications';
 
 interface Props {
