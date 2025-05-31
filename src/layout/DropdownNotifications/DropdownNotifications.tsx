@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, BellIcon, BellRing, PanelLeftClose } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, BellIcon, BellRing, PanelLeftClose } from 'lucide-react'
 import {
     Button,
     Card,
@@ -46,8 +46,8 @@ const DropdownNotifications = () => {
 
 
     return (
-        <Popover showArrow backdrop="blur" placement="bottom">
-            <PopoverTrigger>
+        <Popover showArrow backdrop="blur" placement="bottom" >
+            <PopoverTrigger >
                 <Button
                     isIconOnly
                     className={`relative ${hasNewNotification ? 'animate-bounce' : ''}`}
@@ -117,20 +117,30 @@ export const UserTwitterCard = ({
 
         return `border border-teal-400`
     }
+
+    function validationDate(value: ReferalNote) {
+        const data = value.fecEmi !== formatDate()
+
+        if (data) {
+            return <AlertTriangle className="w-4 h-4" color={'orange'} />
+        }
+
+        return <BellIcon className="w-4 h-4" />
+    }
     const [view, setView] = useState<'card' | 'view'>('card')
 
     return (
         <>
             {view === 'card' && (
                 <Card
-                    className="w-[280px] rounded-xl shadow-lg border border-gray-200 bg-gradient-to-br from-white via-blue-50 to-white z-[10]"
+                    className="w-[280px] dark:bg-black shadow-lg border-gray-200 bg-gradient-to-br from-white via-blue-50 to-white z-[10]"
                     shadow="lg"
                 >
-                    <CardHeader className="justify-between px-4 py-2 border-b border-gray-100" />
+                    <CardHeader className="justify-between px-4 py-2 dark:bg-black" />
 
-                    <CardBody className="px-4 py-3 space-y-3">
+                    <CardBody className="px-4 py-3 space-y-3 dark:bg-black">
                         <Button
-                            className="w-full text-sm font-medium text-blue-600 border border-blue-400 bg-white hover:bg-blue-50"
+                            className="w-full text-sm dark:bg-black font-medium text-blue-600 border border-blue-400 bg-white hover:bg-blue-50"
                             size="sm"
                             variant="flat"
                             onPress={() => navigate('/note-referal')}
@@ -139,7 +149,7 @@ export const UserTwitterCard = ({
                         </Button>
 
                         <Button
-                            className="w-full text-sm font-medium text-emerald-600 border border-emerald-400 bg-white hover:bg-blue-50"
+                            className="w-full dark:bg-black text-sm font-medium text-emerald-600 border border-emerald-400 bg-white hover:bg-blue-50"
                             size="sm"
                             variant="flat"
                             onPress={() => {
@@ -153,12 +163,11 @@ export const UserTwitterCard = ({
                     </CardBody>
                 </Card>
             )}
-
             <>
                 {view === 'view' && (
                     <Card className="w-96 border-none bg-transparent z-[10]" shadow="none">
                         <CardHeader className="justify-between z-[10]" />
-                        <CardBody className="px-5 py-4">
+                        <CardBody className="px-5 py-4 dark:bg-black">
                             <div className='flex flex-row justify-between'>
                                 <button
                                     className="text-emerald-500 justify-start flex flex-row gap-2 text-sm cursor-pointer"
@@ -210,26 +219,24 @@ export const UserTwitterCard = ({
                                 {referalNote.slice(0, 20).map((item, index) => (
                                     <div
                                         key={index}
-                                        className={`flex items-start gap-3 p-3 bg-white rounded-md shadow-md ${limit.important ? validation(item) : `border border-teal-400 `} hover:shadow-lg transition-all`}
+                                        className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item) : `border border-teal-400 `} hover:shadow-lg transition-all`}
                                     >
                                         <div className="text-emerald-500 mt-1">
-                                            <BellIcon className="w-4 h-4" />
+                                            {validationDate(item)}
                                         </div>
                                         <div className="text-[12px]">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <p className="text-gray-700">
+                                                <p className="text-gray-700 dark:text-white">
                                                     <strong>Código:</strong> {item.codigoGeneracion}
                                                 </p>
-                                                <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full">
+                                                <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full ">
                                                     Entrantes
                                                 </span>
                                             </div>
-
-                                            <p className="text-gray-500">
+                                            <p className="text-gray-500 dark:text-white">
                                                 <strong>Fecha:</strong> {item.fecEmi} - {item.horEmi}
                                             </p>
                                         </div>
-
                                     </div>
                                 ))}
                             </div>

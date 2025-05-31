@@ -9,11 +9,14 @@ import { salesReportStore } from '@/store/reports/sales_report.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductReportStore } from '@/store/reports/branch_product.store';
 import { useReferalNote } from '@/store/referal-notes';
+import { formatDate } from '@/utils/dates';
 // import MP3 from "../assets/tienes_un_mensaje.mp3"
 
 function SocketContext() {
   const { user } = useAuthStore()
   const branchId = user?.branchId ?? 0
+
+
 
   const socket = useMemo(() => {
     return connect(WS_URL, {
@@ -33,6 +36,7 @@ function SocketContext() {
     getSalesTableDayDetails,
   } = salesReportStore();
   const { getMostProductMostSelled } = useBranchProductReportStore();
+  const { onGetReferalNotes } = useReferalNote()
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -98,6 +102,8 @@ function SocketContext() {
       });
       const setHasNewNotification = useReferalNote.getState().setHasNewNotification
 
+      onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', 0)
+
       setHasNewNotification(true)
     };
 
@@ -108,6 +114,16 @@ function SocketContext() {
     };
   }, [socket]);
 
+
+  // useEffect(() => {
+  //   const handleAnulation = (note: any) => {
+  //     toast.warning(`${note.description}`, {
+  //       duration: 3000,
+  //       icon: <NotebookIcon color={'#1E90FF'} size={14} />,
+  //       position: 'top-right'
+  //     })
+  //   }
+  // })
 
   return <></>;
 }

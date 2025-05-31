@@ -43,6 +43,7 @@ import { Employee } from '@/types/employees.types'
 import { get_employee_by_code } from '@/services/employess.service'
 import { formatAnnulations } from '@/utils/DTE/innvalidations'
 import { annulations } from '@/services/innvalidations.services'
+// import { useSocket } from '@/hooks/useSocket'
 
 interface Props {
     modalInvalidate: UseDisclosureProps
@@ -67,7 +68,6 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
     const modalInvalidation = useDisclosure()
     const styles = useGlobalStyles()
     const [employeeId, setEmployeeId] = useState<number>(0)
-
     const { secondaryStyle } = useGlobalStyles()
 
 
@@ -114,6 +114,7 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
     const modalError = useDisclosure()
     const [title, setTitle] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    // const { socket } = useSocket()
 
     const handleAnnulation = async (values: InvalidateNoteRemision) => {
         if (selectedMotivo !== 2 && codigoGeneracionR !== '') {
@@ -228,6 +229,13 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                                             toast.error('No se guardo la invalidacion')
                                         })
                                         toast.success('Invalidado  correctamente')
+                                        // socket.emit('new-invalidate-note-find-client', {
+                                        //     note: {
+                                        //         descripcion: `Se ah anulado la nota de remisión desde la sucursal ${user?.pointOfSale?.branch?.name ?? 'N/A'}`,
+                                        //         fecha: new Date().toISOString(),
+                                        //         typeDte: "04"
+                                        //     }
+                                        // })
                                         setLoading(false)
                                         setCurrentStep(0)
                                         modalInvalidate.onClose
