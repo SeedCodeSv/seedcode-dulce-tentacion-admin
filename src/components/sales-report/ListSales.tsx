@@ -83,7 +83,7 @@ function ListSales() {
   };
 
   return (
-    <DivGlobal className="flex flex-col h-full overflow-y-auto">
+    <DivGlobal>
       <Filters
         branch={branch}
         dateInitial={dateInitial}

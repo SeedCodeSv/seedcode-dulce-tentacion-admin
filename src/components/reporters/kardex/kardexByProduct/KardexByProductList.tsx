@@ -150,7 +150,6 @@ export const KardexByProductList = () => {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-            {windowSize.width > 768 && (
               <Autocomplete
                 isClearable
                 className="font-semibold dark:text-white w-full"
@@ -179,7 +178,6 @@ export const KardexByProductList = () => {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-            )}
             <Input
               className="dark:text-white"
               classNames={{ label: 'font-semibold' }}

@@ -352,7 +352,7 @@
       ]
     },
     {
-      "view": "Tipos de ordenes de producción",
+      "view": "Reporte ordenes de producción",
       "actions": [
         "Mostrar",
         "Agregar",

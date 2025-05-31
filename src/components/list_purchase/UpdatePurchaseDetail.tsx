@@ -105,7 +105,7 @@ function UpdatePurchaseDetail() {
 
   return (
     <Layout title="Confirmar orden">
-        <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+        <DivGlobal >
           <div className="flex justify-between">
             <h2 className="text-3xl font-bold dark:text-white mb-6">Detalle de Orden</h2>
           </div>

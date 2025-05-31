@@ -97,7 +97,7 @@ function ListProducts({ actions }: Props) {
 
   return (
     <>
-      <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+      <DivGlobal >
         <div className="hidden lg:flex w-full">
           <RenderProductsFilters
             category={category}

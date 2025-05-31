@@ -5,7 +5,7 @@ import DivGlobal from '@/themes/ui/div-global';
 function ActionRol() {
   return (
     <Layout title="Acción por rol">
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal>
           <ListActionRol />
         </DivGlobal>
     </Layout>

@@ -101,7 +101,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
   return (
     <>
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal>
         <div className='flex lg:flex-col items-start justify-between'>
           <ResponsiveFilterWrapper onApply={() => handleSearchMultipleParams(searchParams)}>
             <Input

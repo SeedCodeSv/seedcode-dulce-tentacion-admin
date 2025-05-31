@@ -17,6 +17,7 @@ import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetai
 import ActionRol from '@/pages/ActionRol';
 import { KardexByProductList } from '@/components/reporters/kardex/kardexByProduct/KardexByProductList';
 import KardexComponent from '@/components/reporters/kardex/KardexComponent';
+import OrdenProductionReport from '@/pages/OrdenProductionReport';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -349,6 +350,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/discounts"
+      />
+       <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte ordenes de producción') ? <OrdenProductionReport /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/order-prodcution-report"
       />
       <Route
         element={

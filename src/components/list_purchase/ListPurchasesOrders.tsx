@@ -84,7 +84,7 @@ function ListPurchasesOrders({ actions }: Props) {
 
   return (
     <>
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal >
           <div className="flex flex-row justify-between w-full gap-5 lg:flex-col lg:gap-0">
             <ResponsiveFilterWrapper
               onApply={() => handleSearch(undefined)}

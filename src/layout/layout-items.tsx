@@ -29,7 +29,8 @@ import {
   ListOrdered,
   ArrowDownUp,
   ShoppingBasket,
-  FileCog
+  FileCog,
+  ClipboardList
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -220,6 +221,12 @@ export const LayoutItems = (props: Props) => {
       to: '/contingence-section',
       icon: DatabaseBackup,
       label: 'Contingencias',
+    },
+     {
+      viewName: 'Reporte ordenes de producción',
+      to: '/order-prodcution-report',
+      icon: ClipboardList,
+      label: 'Ordenes de Producción',
     },
     {
       viewName: 'Movimientos',
