@@ -70,7 +70,7 @@ function ListSubCategory({ actions }: PProps) {
   const dislosureFilters = useDisclosure();
 
   return (
-    <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+    <DivGlobal>
       <div className="hidden md:flex">
         <Filters
           active={isActive}

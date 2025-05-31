@@ -91,7 +91,7 @@ export default function KardexComponent() {
 
 
   return (
-    <DivGlobal className="flex flex-col h-full overflow-y-auto">
+    <DivGlobal className="flex flex-col h-full overflow-y-auto pt-1">
       <div className="my-3 flex gap-5 justify-between lg:flex-col items-end">
         <ResponsiveFilterWrapper withButton={false}>
           <Autocomplete

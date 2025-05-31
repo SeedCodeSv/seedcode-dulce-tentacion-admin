@@ -53,27 +53,27 @@ export function getElSalvadorDateTime(): { fecEmi: string; horEmi: string } {
   return { fecEmi: formattedDatePart, horEmi: timePart };
 }
 
-export function getElSalvadorDateTimeText(): {fecEmi:string, horEmi:string}{
-   const currentDate = new Date();
-  
-        const dateOptions: Intl.DateTimeFormatOptions = {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          timeZone: 'America/El_Salvador',
-        };
-  
-        const timeOptions: Intl.DateTimeFormatOptions = {
-          hour: 'numeric',
-          minute: 'numeric',
-          timeZone: 'America/El_Salvador',
-        };
-  
-        const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
-        const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
+export function getElSalvadorDateTimeText(): { fecEmi: string, horEmi: string } {
+  const currentDate = new Date();
 
-        return {fecEmi: formattedDate, horEmi: formattedTime}
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'America/El_Salvador',
+  };
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZone: 'America/El_Salvador',
+  };
+
+  const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
+  const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
+
+  return { fecEmi: formattedDate, horEmi: formattedTime }
 }
 
 export function getElSalvadorDateTimeParam(date: Date): { fecEmi: string; horEmi: string } {

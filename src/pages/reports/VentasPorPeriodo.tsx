@@ -80,7 +80,7 @@ function VentasPorPeriodo() {
 
   return (
     <Layout title="Ventas por Periodo">
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal>
         <ResponsiveFilterWrapper
           showSearchButton={false}
           onApply={() => {

@@ -106,7 +106,7 @@ function ListUsers({ actions }: Props) {
 
   return (
     <>
-      <DivGlobal className=" w-full h-full">
+      <DivGlobal>
         <div className="w-full h-full overflow-y-auto">
           <div className="hidden w-full gap-5 md:flex">
             <div className="flex items-end gap-5 w-full">
