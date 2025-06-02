@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { persist } from 'zustand/middleware'
 
-import { ReferalNoteStore } from './types/referal-notes.types.store';
+import { IReferalNoteStore, ReferalNoteStore } from './types/referal-notes.types.store';
 
 import { complete_referal_note, detail_referal_note, get_list_referal_note, get_referal_note_recent, get_referal_notes } from '@/services/referal-notes.service';
 import { s3Client } from '@/plugins/s3';
@@ -22,13 +23,14 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
     status: 404,
     ok: false,
   },
-  hasNewNotification:false,
+  hasNewNotification: false,
   referalNote: [],
   detailNoteReferal: [],
   loading: false,
   json_referal_note_copy: undefined,
   json_referal_note: undefined,
   recentReferalNote: [],
+  // INVALIDATIONS_NOTIFICATIONS: [],
   pagination_referal_notesNot: {} as IPagination,
   onGetReferalNotes: (id, page, limit, startDate, endDate, state, branchId) => {
     set({ loading: true });
@@ -166,7 +168,50 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
       })
     })
   },
-    setHasNewNotification: (value) => set({ hasNewNotification: value }),
+  setHasNewNotification: (value) => set({ hasNewNotification: value }),
 
-
+  // saveNotifications(data) {
+  //   set({
+  //     INVALIDATIONS_NOTIFICATIONS: data
+  //   })
+  // }
 }));
+
+
+// export const useReferalNoteStore = create(
+//   persist(
+//     (set, get) => ({
+//       INVALIDATIONS_NOTIFICATIONS: [],
+//       saveNotifications: (data: any[]) => {
+//         const oneDay = 1000 * 60 * 60 * 24;
+//         const now = Date.now();
+
+//         const filtered = data.filter(n => now - n.timestamp < oneDay);
+
+//         set({ INVALIDATIONS_NOTIFICATIONS: filtered });
+//       }
+//     }),
+//     {
+//       name: 'referal-note-storage',
+//     }
+//   )
+// )
+
+
+export const useReferalNoteStore = create<IReferalNoteStore>()(
+  persist(
+    (set, get) => ({
+      INVALIDATIONS_NOTIFICATIONS: [],
+      saveNotifications: (data) => {
+        const oneDay = 1000 * 60 * 60 * 24;
+        const now = Date.now();
+        const filtered = data.filter(n => now - n.timestamp < oneDay);
+        
+        set({ INVALIDATIONS_NOTIFICATIONS: filtered });
+      },
+    }),
+    {
+      name: 'referal-note-storage',
+    }
+  )
+);

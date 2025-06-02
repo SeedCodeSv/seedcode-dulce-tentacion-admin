@@ -43,6 +43,7 @@ import { Employee } from '@/types/employees.types'
 import { get_employee_by_code } from '@/services/employess.service'
 import { formatAnnulations } from '@/utils/DTE/innvalidations'
 import { annulations } from '@/services/innvalidations.services'
+import { useSocket } from '@/hooks/useSocket'
 // import { useSocket } from '@/hooks/useSocket'
 
 interface Props {
@@ -69,7 +70,7 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
     const styles = useGlobalStyles()
     const [employeeId, setEmployeeId] = useState<number>(0)
     const { secondaryStyle } = useGlobalStyles()
-
+    const { socket } = useSocket()
 
     const { getJsonReferelNote, json_referal_note, getRecentReferal, recentReferalNote } =
         useReferalNote()
@@ -114,7 +115,6 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
     const modalError = useDisclosure()
     const [title, setTitle] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    // const { socket } = useSocket()
 
     const handleAnnulation = async (values: InvalidateNoteRemision) => {
         if (selectedMotivo !== 2 && codigoGeneracionR !== '') {
@@ -228,14 +228,17 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                                         }).catch(() => {
                                             toast.error('No se guardo la invalidacion')
                                         })
+                                        const targetSucursalId = item?.branch?.id ?? 0
+
                                         toast.success('Invalidado  correctamente')
-                                        // socket.emit('new-invalidate-note-find-client', {
-                                        //     note: {
-                                        //         descripcion: `Se ah anulado la nota de remisión desde la sucursal ${user?.pointOfSale?.branch?.name ?? 'N/A'}`,
-                                        //         fecha: new Date().toISOString(),
-                                        //         typeDte: "04"
-                                        //     }
-                                        // })
+                                        socket.emit('new-invalidate-note-find-client', {
+                                            targetSucursalId,
+                                            note: {
+                                                descripcion: `Se ah anulado la nota de remisión desde la sucursal ${user?.pointOfSale?.branch?.name ?? 'N/A'}`,
+                                                fecha: new Date().toISOString(),
+                                                data:item
+                                            }
+                                        })
                                         setLoading(false)
                                         setCurrentStep(0)
                                         modalInvalidate.onClose

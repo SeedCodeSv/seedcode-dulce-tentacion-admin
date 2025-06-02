@@ -8,9 +8,9 @@ import { WS_URL } from '../utils/constants';
 import { salesReportStore } from '@/store/reports/sales_report.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchProductReportStore } from '@/store/reports/branch_product.store';
-import { useReferalNote } from '@/store/referal-notes';
+import { useReferalNote, useReferalNoteStore } from '@/store/referal-notes';
 import { formatDate } from '@/utils/dates';
-// import MP3 from "../assets/tienes_un_mensaje.mp3"
+import { ReferalNote } from '@/types/referal-note.types';
 
 function SocketContext() {
   const { user } = useAuthStore()
@@ -107,6 +107,28 @@ function SocketContext() {
       socket.off('new-referal-note-find-admin', handleReferalNote);
     };
   }, [socket, user?.branchId]);
+
+  useEffect(() => {
+    const handleAnulation = (note: any) => {
+      toast.warning(`${note.descripcion} - ${note.fecha}`)
+
+      const newNotification = {
+        ...note,
+        data: note.data as ReferalNote,
+        timestamp: Date.now()
+      };
+
+      const previous = useReferalNoteStore.getState().INVALIDATIONS_NOTIFICATIONS;
+
+      useReferalNoteStore.getState().saveNotifications([...previous, newNotification]);
+    }
+
+    socket.on(`new-invalidate-note-find-admin`, handleAnulation)
+
+    return () => {
+      socket.off(`new-invalidate-note-find-client`, handleAnulation)
+    }
+  }, [socket, user?.branchId])
 
   return <></>;
 }

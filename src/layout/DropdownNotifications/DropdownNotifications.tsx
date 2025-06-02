@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AlertTriangle, ArrowLeft, BellIcon, BellRing, PanelLeftClose } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, BellIcon, BellRing, BellRingIcon, PanelLeftClose } from 'lucide-react'
 import {
     Button,
     Card,
@@ -16,10 +16,11 @@ import { toast } from 'sonner'
 
 import { useAuthStore } from '../../store/auth.store'
 
-import { useReferalNote } from '@/store/referal-notes'
+import { useReferalNote, useReferalNoteStore } from '@/store/referal-notes'
 import { ReferalNote } from '@/types/referal-note.types'
 import { IPagination } from '@/types/global.types'
 import { formatDate } from '@/utils/dates'
+import { DataNotification } from '@/store/types/referal-notes.types.store'
 
 const DropdownNotifications = () => {
     const { user } = useAuthStore()
@@ -33,6 +34,7 @@ const DropdownNotifications = () => {
         limit: 5,
         important: false
     })
+    const { INVALIDATIONS_NOTIFICATIONS } = useReferalNoteStore()
 
     useEffect(() => {
         if (hasNewNotification) {
@@ -43,6 +45,8 @@ const DropdownNotifications = () => {
     useEffect(() => {
         getReferalNoteByBranch(user?.branchId ?? 0, search.page, search.limit, search.important)
     }, [user?.branchId, search.page, search.limit, search.important])
+
+    const total = Number(pagination_referal_notesNot?.total ?? 0) + Number(INVALIDATIONS_NOTIFICATIONS?.length ?? 0)
 
 
     return (
@@ -58,11 +62,11 @@ const DropdownNotifications = () => {
                 >
                     <BellRing size={32} />
 
-                    {pagination_referal_notesNot?.total > 0 ? (
+                    {total > 0 ? (
                         <span
                             className='bg-emerald-500 rounded-xl w-6'
                         >
-                            {pagination_referal_notesNot.total}
+                            {total}
                         </span>
                     ) : (<span
                         className='bg-emerald-500 rounded-xl w-6'
@@ -73,6 +77,7 @@ const DropdownNotifications = () => {
             </PopoverTrigger>
             <PopoverContent className="p-1">
                 <UserTwitterCard
+                    INVALIDATIONS_NOTIFICATIONS={INVALIDATIONS_NOTIFICATIONS}
                     branchId={user?.branchId ?? 0}
                     getReferalNoteByBranch={getReferalNoteByBranch}
                     limit={search}
@@ -88,7 +93,8 @@ const DropdownNotifications = () => {
 export default DropdownNotifications
 
 export const UserTwitterCard = ({
-    referalNote, limit, setSearch
+    referalNote, limit, setSearch,
+    INVALIDATIONS_NOTIFICATIONS,
 }: {
     referalNote: ReferalNote[]
     pagination_referal_notesNot: IPagination
@@ -104,6 +110,8 @@ export const UserTwitterCard = ({
         limit: number;
         important: boolean
     }>>
+    ,
+    INVALIDATIONS_NOTIFICATIONS: DataNotification[]
 }) => {
     const modalDetails = useDisclosure()
     const navigate = useNavigate()
@@ -127,7 +135,10 @@ export const UserTwitterCard = ({
 
         return <BellIcon className="w-4 h-4" />
     }
+    const [typeNoti, setTypeNoti] = useState<'entrada' | 'salida'>('entrada')
     const [view, setView] = useState<'card' | 'view'>('card')
+
+
 
     return (
         <>
@@ -166,7 +177,41 @@ export const UserTwitterCard = ({
             <>
                 {view === 'view' && (
                     <Card className="w-96 border-none bg-transparent z-[10]" shadow="none">
-                        <CardHeader className="justify-between z-[10]" />
+                        <CardHeader className="justify-between z-[10] justify-end">
+                            <div className='flex fex-row gap-4'>
+                                <button className={`flex flex-row p-2 justify-between items-center h-10 w-24 rounded-xl
+                                        ${typeNoti.includes('entrada') ?
+                                        `border-sky-400 border-1` : 'border-gray-400 border-1'}`}
+                                    type='button'
+                                    onClick={() => setTypeNoti('entrada')}
+
+                                >
+                                    <p className={`text-[12px] ${typeNoti.includes('entrada') && `text-sky-400`}`}>
+                                        Entrantes
+                                    </p>
+                                    <BellRingIcon color={typeNoti.includes('entrada') ? `#00BFFF` : `gray`} size={16} />
+
+                                </button>
+                                <button
+                                    className={`flex flex-row p-2 justify-between  w-24 h-10 rounded-xl
+                                    ${typeNoti.includes('salida')
+                                            ? `border-red-400 border-1 ` : `border-gray-400 border-1`} `}
+                                    type='button'
+                                    onClick={() => setTypeNoti('salida')}
+
+                                >
+                                    <p className={`text-[12px] ${typeNoti.includes('salida') && `text-red-400`}`}
+                                    >
+                                        Salidas
+                                    </p>
+                                    <BellRingIcon color={typeNoti.includes('salida') ? `#FF3333` : `gray`} size={16} />
+
+                                </button>
+
+
+                            </div>
+
+                        </CardHeader>
                         <CardBody className="px-5 py-4 dark:bg-black">
                             <div className='flex flex-row justify-between'>
                                 <button
@@ -178,68 +223,113 @@ export const UserTwitterCard = ({
                                 >
                                     <ArrowLeft /> <p>Regresar</p>
                                 </button>
-                                <div className="flex flex-row gap-2">
-                                    <div className='flex flex-row justify-center items-center'>
-                                        <Checkbox
-                                            isSelected={limit.important}
-                                            size="sm"
-                                            onValueChange={(e) => {
-                                                setSearch((prev) => ({
-                                                    ...prev,
-                                                    important: e,
-                                                }));
-                                            }}
-                                        />
+                                {typeNoti.includes('entrada') && (
+                                    <div className="flex flex-row gap-2">
+                                        <div className='flex flex-row justify-center items-center'>
+                                            <Checkbox
+                                                isSelected={limit.important}
+                                                size="sm"
+                                                onValueChange={(e) => {
+                                                    setSearch((prev) => ({
+                                                        ...prev,
+                                                        important: e,
+                                                    }));
+                                                }}
+                                            />
 
-                                        <p className='text-cyan-700 text-[12px]'>
-                                            Importantes
-                                        </p>
+                                            <p className='text-cyan-700 text-[12px]'>
+                                                Importantes
+                                            </p>
 
-                                    </div>
-                                    <div className='flex flex-row justify-center items-center gap-1'>
-                                        <input
-                                            className='w-10 border-1 rounded-md items-center justify-center text-center text-[12px]'
-                                            value={limit.limit.toString()}
-                                            onChange={(e) => {
-                                                setSearch((prev) => ({
-                                                    ...prev,
-                                                    limit: Number(e.target.value),
-                                                }));
-                                            }}
-                                        />
-                                        <p className='text-sky-400 text-[12px]'>
-                                            Cantidad
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div
-                                className="max-h-[160px] overflow-y-auto mt-4 pr-2 space-y-2 scroll-smooth"
-                            >
-                                {referalNote.slice(0, 20).map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item) : `border border-teal-400 `} hover:shadow-lg transition-all`}
-                                    >
-                                        <div className="text-emerald-500 mt-1">
-                                            {validationDate(item)}
                                         </div>
-                                        <div className="text-[12px]">
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <p className="text-gray-700 dark:text-white">
-                                                    <strong>Código:</strong> {item.codigoGeneracion}
-                                                </p>
-                                                <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full ">
-                                                    Entrantes
-                                                </span>
-                                            </div>
-                                            <p className="text-gray-500 dark:text-white">
-                                                <strong>Fecha:</strong> {item.fecEmi} - {item.horEmi}
+                                        <div className='flex flex-row justify-center items-center gap-1'>
+                                            <input
+                                                className='w-10 border-1 rounded-md items-center justify-center text-center text-[12px]'
+                                                value={limit.limit.toString()}
+                                                onChange={(e) => {
+                                                    setSearch((prev) => ({
+                                                        ...prev,
+                                                        limit: Number(e.target.value),
+                                                    }));
+                                                }}
+                                            />
+                                            <p className='text-sky-400 text-[12px]'>
+                                                Cantidad
                                             </p>
                                         </div>
                                     </div>
-                                ))}
+                                )}
+
                             </div>
+                            {typeNoti === 'entrada' && (
+
+                                <div
+                                    className="max-h-[160px] overflow-y-auto mt-4 pr-2 space-y-2 scroll-smooth"
+                                >
+
+                                    {referalNote.length > 0 ? (<> {referalNote.slice(0, 20).map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item) : `border border-teal-400 `} hover:shadow-lg transition-all`}
+                                        >
+                                            <div className="text-emerald-500 mt-1">
+                                                {validationDate(item)}
+                                            </div>
+                                            <div className="text-[12px]">
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <p className="text-gray-700 dark:text-white">
+                                                        <strong>Código:</strong> {item.codigoGeneracion}
+                                                    </p>
+                                                    <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full ">
+                                                        Entrantes
+                                                    </span>
+                                                </div>
+                                                <p className="text-gray-500 dark:text-white">
+                                                    <strong>Fecha:</strong> {item.fecEmi} - {item.horEmi}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}</>) : (<p className='dark:text-white'>No hay datos</p>)}
+                                </div>)}
+                            {typeNoti === 'salida' && (
+                                <div
+                                    className="max-h-[160px] overflow-y-auto mt-4 pr-2 space-y-2 scroll-smooth"
+                                >
+
+                                    {INVALIDATIONS_NOTIFICATIONS.length > 0 ? (<> {
+                                        INVALIDATIONS_NOTIFICATIONS.slice(0, 20).map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item?.data) : `border border-red-400 `} hover:shadow-lg transition-all`}
+                                            >
+                                                <div className="text-red-500 mt-1">
+                                                    {validationDate(item?.data)}
+                                                </div>
+                                                <div className="text-[12px]">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <p className="text-gray-700 dark:text-white">
+                                                            <strong>Código:</strong> {item.data?.codigoGeneracion}
+                                                        </p>
+                                                        <span className="bg-red-500 text-white text-[10px] px-2 py-[1px] rounded-full ">
+                                                            Salidas
+                                                        </span>
+                                                    </div>
+
+                                                    <p className="text-gray-500 dark:text-white">
+                                                        <strong>Fecha:</strong> {item?.data?.fecEmi} - {item?.data?.horEmi}
+                                                    </p>
+                                                    <p className="text-gray-500 dark:text-white">
+                                                        {item?.descripcion.length > 48
+                                                            ? item.descripcion.slice(0, 48) + '...'
+                                                            : item.descripcion}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}</>) : (<p className='dark:text-white'>No hay datos</p>)}
+
+                                </div>
+                            )}
+
                         </CardBody>
                     </Card>
                 )}

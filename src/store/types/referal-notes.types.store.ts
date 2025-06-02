@@ -20,14 +20,26 @@ export interface ReferalNoteStore {
     startDate: string,
     endDate: string,
     state: string,
-    branchId:number
+    branchId: number
   ) => void;
   completeReferalNote: (id: number, payload: PayloadReferel) => Promise<boolean>;
   getJsonReferelNote: (path: string) => void
   getReferalNoteDetail: (id: number) => void
   getRecentReferal: (id: number) => void
-  getReferalNoteByBranch: (id: number, page: number, limit: number, important:boolean) => void
+  getReferalNoteByBranch: (id: number, page: number, limit: number, important: boolean) => void
   getDetailNote: (id: number) => void
   setHasNewNotification: (value: boolean) => void
 
+}
+
+export interface DataNotification {
+  descripcion: string
+  fecha: string,
+  timestamp: number;
+  data: ReferalNote
+}
+
+export interface IReferalNoteStore {
+  INVALIDATIONS_NOTIFICATIONS: DataNotification[]
+  saveNotifications: (data: DataNotification[]) => void
 }
