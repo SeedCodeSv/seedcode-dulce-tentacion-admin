@@ -224,7 +224,7 @@ export const LayoutItems = (props: Props) => {
     },
      {
       viewName: 'Reporte ordenes de producción',
-      to: '/order-prodcution-report',
+      to: '/OP-report',
       icon: ClipboardList,
       label: 'Ordenes de Producción',
     },

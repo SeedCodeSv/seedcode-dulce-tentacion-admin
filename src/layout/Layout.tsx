@@ -49,7 +49,7 @@ function Layout(props: Props) {
   const [transitionStage, setTransistionStage] = useState('fadeIn');
 
   useEffect(() => {
-    if (location.pathname.startsWith("/kardex")) return;
+    if (location.pathname.startsWith("/kardex") || location.pathname.startsWith("/OP-report")) return;
     if (location !== displayLocation) setTransistionStage('fadeOut');
   }, [location, displayLocation]);
 

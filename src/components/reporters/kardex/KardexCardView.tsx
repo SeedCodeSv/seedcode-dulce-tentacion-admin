@@ -85,7 +85,7 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
         </div>
       )}
       {view === 'list' && (
-        <div className="grid pb-10 grid-cols-1 gap-5 mt-5 dark:text-white">
+        <div className="grid pb-10 grid-cols-1 gap-5 h-full mt-5 dark:text-white">
           {sortedProducts.map((item, index) => (
             <div key={index} className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5">
               <div className="flex-grow">
