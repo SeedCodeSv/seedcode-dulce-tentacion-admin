@@ -62,7 +62,6 @@ export default function OrdenProductionComponent() {
     );
 
     const handleSearch = (page?: number) => {
-        console.log('handlesearch',page)
         getProductionsOrdersReport(
             page ?? search.page,
             search.limit,

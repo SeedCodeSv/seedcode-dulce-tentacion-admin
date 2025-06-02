@@ -8,7 +8,6 @@ interface Props extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDi
 
 function DivGlobal({ children, className}: Props) {
   const { theme, context } = useContext(ThemeContext);
-  console.log(theme.colors[context].background)
 
   return (
     <div
