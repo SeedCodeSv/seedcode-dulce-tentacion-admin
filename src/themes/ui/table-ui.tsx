@@ -20,7 +20,7 @@ export const TableComponent: React.FC<TableProps> = ({ headers, children, classN
         <thead className="sticky top-0 z-20">
           <tr>
             {headers.map((header, index) => (
-              <ThGlobal key={index} className="text-left p-3" onClick={() =>{onThClick!(header)}}>
+              <ThGlobal key={index} className="text-left p-3 " onClick={() =>{onThClick!(header)}}>
                  {renderHeader ? renderHeader(header) : header}
               </ThGlobal>
             ))}

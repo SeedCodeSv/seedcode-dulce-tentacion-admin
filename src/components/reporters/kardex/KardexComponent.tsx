@@ -180,8 +180,7 @@ export default function KardexComponent() {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <></>
-                // <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
+                  <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />

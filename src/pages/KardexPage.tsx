@@ -28,9 +28,9 @@ export default function KardexPage() {
           className="mb-4"
           classNames={{
             tab: 'text-white shadow py-1 h-full ',
-            tabList: 'bg-gray-100 border border-gray-500',
-            tabContent: "text-white",
-            cursor: 'bg-[#f4a261] dark:bg-blue-700'
+            tabList: 'bg-slate-100 border dark:border-gray-500',
+            tabContent: "text-gray-900 group-data-[selected=true]:text-white dark:text-white",
+            cursor: 'bg-blue-500 dark:bg-blue-700'
           }}
           radius="md"
           selectedKey={currentTab}

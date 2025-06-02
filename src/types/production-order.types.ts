@@ -141,7 +141,6 @@ export interface ProductionOrderDetailsVerify {
   damagedQuantity: number
   damagedReason: string
   totalCost: string
-  // productionOrderType: ProductionOrderType
   productionOrderTypeId: number
   employeeOrderId: number
   receptionBranchId: number
