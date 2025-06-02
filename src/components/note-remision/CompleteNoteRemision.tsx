@@ -42,6 +42,7 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
   const [motivoComplet, setMotivoComplet] = useState('')
   const [editableDetails, setEditableDetails] = useState<EditableDetail[]>([]);
   const { completeReferalNote,
+    getReferalNoteByBranch,
     getDetailNote, detailNoteReferal
   } = useReferalNote()
 
@@ -103,6 +104,7 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
 
             completeReferalNote(note.id, payload).then(() => {
               setIsLoading(false)
+              getReferalNoteByBranch(Number(user?.branchId), 1, 10, false)
               onClose(), reload()
             })
           }

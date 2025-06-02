@@ -36,7 +36,7 @@ function SocketContext() {
     getSalesTableDayDetails,
   } = salesReportStore();
   const { getMostProductMostSelled } = useBranchProductReportStore();
-  const { onGetReferalNotes } = useReferalNote()
+  const { getReferalNoteByBranch, onGetReferalNotes } = useReferalNote()
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -79,51 +79,34 @@ function SocketContext() {
 
   useEffect(() => {
     const handleReferal = () => {
-      toast.success('Nueva nota de remision registrada', {
+      toast.success('Nueva nota de remisión registrada', {
         duration: 3000,
         icon: <NotebookIcon color={'#1E90FF'} size={14} />,
         position: 'top-right'
       });
+    };
+
+    const handleReferalNote = (note: any) => {
+      if (Number(note.targetSucursalId) === user?.branchId) return;
+
+      const setHasNewNotification = useReferalNote.getState().setHasNewNotification
+
+      setHasNewNotification(true)
+      getReferalNoteByBranch(user?.branchId ?? 0, 1, 5, false)
+      onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', Number(user?.branchId))
+      setTimeout(() => {
+        setHasNewNotification(false)
+      }, 3000)
     };
 
     socket.on('new-referal-note-admin', handleReferal);
+    socket.on('new-referal-note-find-admin', handleReferalNote);
 
     return () => {
       socket.off('new-referal-note-admin', handleReferal);
+      socket.off('new-referal-note-find-admin', handleReferalNote);
     };
-  }, [socket]);
-
-  useEffect(() => {
-    const handleReferal = (note: any) => {
-      toast.success(`Nueva nota recibida: ${note.descripcion}`, {
-        duration: 3000,
-        icon: <NotebookIcon color={'#1E90FF'} size={14} />,
-        position: 'top-right'
-      });
-      const setHasNewNotification = useReferalNote.getState().setHasNewNotification
-
-      onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', 0)
-
-      setHasNewNotification(true)
-    };
-
-    socket.on('new-referal-note-find-admin', handleReferal);
-
-    return () => {
-      socket.off('new-referal-note-find-admin', handleReferal);
-    };
-  }, [socket]);
-
-
-  // useEffect(() => {
-  //   const handleAnulation = (note: any) => {
-  //     toast.warning(`${note.description}`, {
-  //       duration: 3000,
-  //       icon: <NotebookIcon color={'#1E90FF'} size={14} />,
-  //       position: 'top-right'
-  //     })
-  //   }
-  // })
+  }, [socket, user?.branchId]);
 
   return <></>;
 }
