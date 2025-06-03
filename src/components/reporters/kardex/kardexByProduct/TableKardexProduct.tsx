@@ -16,8 +16,8 @@ export default function TableKardexProduct() {
         'Descripción',
         'Entrada',
         'Salida',
-        'Precio',
-        'Costo promedio',
+        'Costo Unitario',
+        'Total Movimiento',
       ]}
     >
       {isLoadinKarProd ? (
@@ -53,10 +53,10 @@ export default function TableKardexProduct() {
                 </td>
 
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                  ${product.branchProduct.price}
+                  ${product.branchProduct.costoUnitario}
                 </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                  ${product.branchProduct.costoUnitario}
+                  ${product.totalMovement}
                 </td>
               </tr>
             ))

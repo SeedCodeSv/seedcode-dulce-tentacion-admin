@@ -67,8 +67,8 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
               'Entrada',
               'Salida',
               'Existencia',
-              'Precio',
               'Costo unitario',
+              'Precio',
               'Utilidad',
               'Rentabilidad',
             ]}
@@ -127,11 +127,11 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {product.quantity}
                       </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.price}
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        ${product.cost}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.cost}
+                        ${product.price}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         ${product.utility.toFixed(2)}

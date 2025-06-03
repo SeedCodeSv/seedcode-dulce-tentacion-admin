@@ -28,15 +28,15 @@ export default function KardexProductCardView({ view }: { view: string }) {
               </p>
               <div className="mt-3 grid grid-cols-2 gap-4 font-semibold dark:text-white text-gray-800">
                 <span>
-                  Costo promedio:
+                  Costo Unitario:
                   <p className="ml-1 font-normal text-gray-950 dark:text-white">
                     ${item.branchProduct.costoUnitario}
                   </p>
                 </span>
                 <span className="flex flex-col">
-                  Precio:
+                  total Movimiento:
                   <p className="ml-1 font-normal text-gray-950 dark:text-white">
-                    ${item.branchProduct.price}
+                    ${item.totalMovement}
                   </p>
                 </span>
                 <span className="flex ">
@@ -77,7 +77,7 @@ export default function KardexProductCardView({ view }: { view: string }) {
                 <div className="mt-4 flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-x-6 font-medium text-gray-700 dark:text-gray-300">
                   <div className="flex items-center gap-2">
                     <p className="flex items-center gap-1">
-                      <Box className="text-gray-500" size={16} /> Costo promedio:{' '}
+                      <Box className="text-gray-500" size={16} /> Costo Unitario:{' '}
                       <span className="text-gray-800 dark:text-gray-200">
                         ${item.branchProduct.costoUnitario}
                       </span>
@@ -85,8 +85,8 @@ export default function KardexProductCardView({ view }: { view: string }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="flex items-center">
-                      Precio:{' '}
-                      <span className="ml-1 text-green-500">${item.branchProduct.price}</span>
+                      Total Movimiento:{' '}
+                      <span className="ml-1 text-green-500">${item.totalMovement}</span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
