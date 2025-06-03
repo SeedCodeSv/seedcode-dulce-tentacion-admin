@@ -3,6 +3,9 @@ import debounce from "debounce";
 import { CheckCircleIcon, ClipboardIcon, LoaderIcon, SearchIcon, XCircleIcon, TrendingUp, TrendingDown } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
+import OPReportExportExcell from "./OP-ReportExcell";
+import { OPReportExportPDF } from "./OpReportPDF";
+
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
 import { get_user } from "@/storage/localStorage";
 import { useBranchesStore } from "@/store/branches.store";
@@ -15,10 +18,13 @@ import EmptyTable from "@/components/global/EmptyTable";
 import { useOrderProductionReportStore } from "@/store/reports/order-production-report.store";
 import Pagination from "@/components/global/Pagination";
 import { RenderIconStatus, Status } from "@/components/production-order/render-order-status";
+import { useTransmitterStore } from "@/store/transmitter.store";
 
 export default function OrdenProductionComponent() {
     const user = get_user();
     const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
+    const [branchName, setBranchName] = useState('');
+    const { transmitter, gettransmitter } = useTransmitterStore();
 
     const { getBranchesList, branch_list } = useBranchesStore();
     const { productsFilteredList, getProductsFilteredList } = useProductsStore()
@@ -37,8 +43,8 @@ export default function OrdenProductionComponent() {
         status: ''
     });
 
-
     useEffect(() => {
+        gettransmitter();
         getBranchesList();
         if (search.productName === '')
             getProductionsOrdersReport(
@@ -74,9 +80,15 @@ export default function OrdenProductionComponent() {
     }
 
     const options_limit = [
-        { label: 'Todos', value: pagination_production_orders_report.total},
+        { label: 'Todos', value: pagination_production_orders_report.total },
         ...limit_options.map((option) => ({ label: option, value: option })),
     ];
+
+    useEffect(() => {
+        const branchName = branch_list.find((branch) => branch.id === search.branch)?.name ?? '';
+
+        setBranchName(branchName);
+    }, [branch_list])
 
     const StatusCard = ({
         icon,
@@ -98,6 +110,7 @@ export default function OrdenProductionComponent() {
 
     return (
         <>
+        <div className="flex justify-between">
             <ResponsiveFilterWrapper classButtonLg="col-start-5" classLg='w-full grid grid-cols-5 gap-4' onApply={() => handleSearch()}>
                 <Autocomplete
                     className="font-semibold dark:text-white w-full"
@@ -108,11 +121,14 @@ export default function OrdenProductionComponent() {
                     variant="bordered"
                     onSelectionChange={(key) => {
                         const newBranchId = Number(key);
+                        const name = branch_list.find((branch) => branch.id === newBranchId)?.name ?? '';
 
                         setSearch({
                             ...search,
                             branch: newBranchId,
                         });
+
+                        setBranchName(name);
                     }}
                 >
                     {branch_list.map((branch) => (
@@ -192,10 +208,14 @@ export default function OrdenProductionComponent() {
                         <SelectItem key={status} className='dark:text-white'>{status}</SelectItem>
                     ))}
                 </Select>
+                <div className="hidden gap-2 lg:flex w-full col-span-2">
+                    <OPReportExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+                    <OPReportExportPDF branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+                </div>
                 <Select
                     disallowEmptySelection
                     aria-label="Cantidad a mostrar"
-                    className=" dark:text-white max-w-64 max-md:hidden"
+                    className="col-start-4 dark:text-white max-w-64 max-md:hidden"
                     classNames={{
                         label: 'font-semibold',
                     }}
@@ -214,7 +234,12 @@ export default function OrdenProductionComponent() {
                     ))}
                 </Select>
             </ResponsiveFilterWrapper>
-            <Card className="mt-2 w-full h-fit min-h-[15vh] shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl">
+            <div className="flex gap-2 lg:hidden">
+                <OPReportExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+                <OPReportExportPDF branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+            </div>
+            </div>
+            <Card className="mt-4 w-full h-fit min-h-[15vh] shadow-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 rounded-xl">
                 <CardBody className="grid grid-cols-2 sm:grid-cols-4 gap-5 p-5">
                     <StatusCard
                         color="text-yellow-500"
@@ -243,7 +268,7 @@ export default function OrdenProductionComponent() {
                 </CardBody>
             </Card>
             <TableComponent
-                headers={["Nº", 'Producto', "Fecha/Hora de inicio", 'Fecha/Hora de fin','Cantidad', 'Producido', 'Dañado', 'Estado',]}
+                headers={["Nº", 'Producto', "Fecha/Hora de inicio", 'Fecha/Hora de fin', 'Cantidad', 'Producido', 'Dañado', 'Estado',]}
                 renderHeader={(header) => (
                     <div className="flex items-center">
                         <span>{header}</span>

@@ -1,7 +1,7 @@
 import { Accordion, AccordionItem, Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
 import debounce from "debounce";
 import { SearchIcon, TrendingUp, TrendingDown } from "lucide-react";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 import OPReportDetailedExportExcell from "./OP-ReportDetailedByBranchProductExcell";
 import OPReportDetailedExportPDF from "./OpReportDetailedPDF";
@@ -17,7 +17,6 @@ import TdGlobal from "@/themes/ui/td-global";
 import EmptyTable from "@/components/global/EmptyTable";
 import { useOrderProductionReportStore } from "@/store/reports/order-production-report.store";
 import { RenderIconStatus, Status } from "@/components/production-order/render-order-status";
-import { ThemeContext } from "@/hooks/useTheme";
 import { formatCurrency } from "@/utils/dte";
 import LoadingTable from "@/components/global/LoadingTable";
 import { useTransmitterStore } from "@/store/transmitter.store";
@@ -25,7 +24,6 @@ import { useTransmitterStore } from "@/store/transmitter.store";
 export default function OPReportComponentDetailed() {
     const user = get_user();
     // const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
-    const { theme, context } = useContext(ThemeContext);
     const [branchName, setBranchName] = useState('');
 
     const { getBranchesList, branch_list } = useBranchesStore();
@@ -110,7 +108,6 @@ export default function OPReportComponentDetailed() {
                         });
 
                         setBranchName(name);
-
                     }}
                 >
                     {branch_list.map((branch) => (
@@ -213,9 +210,9 @@ export default function OPReportComponentDetailed() {
                     ))}
                 </Select>
             </ResponsiveFilterWrapper>
-            <div>
+            <div className="flex gap-2">
                 <OPReportDetailedExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
-                <OPReportDetailedExportPDF  branch={branchName} comercialName={transmitter.nombreComercial} params={search}/>
+                <OPReportDetailedExportPDF branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
             </div>
             {loading_report &&
                 <LoadingTable />
@@ -226,14 +223,14 @@ export default function OPReportComponentDetailed() {
                 </div>
             )}
             <div className="flex py-5 flex-col gap-3 max-h-[80vh] overflow-y-auto">
-                {po_report_detailed.map((data) => (
+                {!loading_report && po_report_detailed.map((data) => (
                     <Fragment key={data.branchProductId}>
                         <Accordion
                             itemClasses={{
-                                base: `py-8 lg:py-4 dark:bg-gray-800/20 w-full shadow shadow-[${theme.colors[context].buttons.colors.primary}] dark:shadow-gray-700`,
+                                base: `py-8 lg:py-4 dark:bg-gray-800/20 w-full shadow shadow-[#e49ca0] dark:shadow-gray-700`,
                                 title: "h-full font-normal text-medium ",
                                 trigger: "rounded-lg h-14 flex items-center",
-                                indicator: `text-medium text-[${theme.colors[context].buttons.colors.primary}]`,
+                                indicator: `text-medium text-[#e49ca0] dark:text-gray-300`,
                                 content: 'flex flex-col w-full'
                             }}
                             variant="splitted"
@@ -278,7 +275,7 @@ export default function OPReportComponentDetailed() {
                                 }>
                                 <TableComponent
                                     className="text-[15px]"
-                                    headers={["Nº", "Fecha/Hora de inicio", 'Fecha/Hora de fin', 'Producido', 'Dañado', 'Estado',]}
+                                    headers={["Nº", "Fecha/Hora de inicio", 'Fecha/Hora de fin', 'Cantidad', 'Producido', 'Dañado', 'Estado',]}
                                     renderHeader={(header) => (
                                         <div className="flex items-center">
                                             <span>{header}</span>
@@ -301,6 +298,7 @@ export default function OPReportComponentDetailed() {
                                                     ? `${item.endDate} - ${item.endTime}`
                                                     : 'No definido'}
                                             </TdGlobal>
+                                            <TdGlobal >{item.quantity}</TdGlobal>
                                             <TdGlobal className=""><p className={`font-semibold ${item.producedQuantity > 0 ? 'text-green-500' : 'text-gray-300'}`}>{item.producedQuantity}</p></TdGlobal>
                                             <TdGlobal className=""><p className={`font-semibold ${item.damagedQuantity > 0 ? 'text-red-500' : 'text-gray-300'}`}>{item.damagedQuantity}</p></TdGlobal>
                                             <TdGlobal className="">

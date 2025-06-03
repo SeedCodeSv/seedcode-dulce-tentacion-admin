@@ -200,7 +200,7 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
 
 export const useReferalNoteStore = create<IReferalNoteStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       INVALIDATIONS_NOTIFICATIONS: [],
       saveNotifications: (data) => {
         const oneDay = 1000 * 60 * 60 * 24;

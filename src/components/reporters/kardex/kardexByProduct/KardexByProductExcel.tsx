@@ -9,32 +9,10 @@ import { formatSimpleDate, getElSalvadorDateTime, getElSalvadorDateTimeText } fr
 import { useAuthStore } from '@/store/auth.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import ButtonUi from '@/themes/ui/button-ui';
-import { Colors } from '@/types/themes.types';
+import { Colors, Styles } from '@/types/themes.types';
 import { hexToARGB } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
 
-interface Styles {
-  darkStyle: {
-    backgroundColor: string,
-    color: string,
-  },
-  secondaryStyle: {
-    backgroundColor: string,
-    color: string,
-  },
-  thirdStyle: {
-    backgroundColor: string,
-    color: string,
-  },
-  dangerStyles: {
-    backgroundColor: string,
-    color: string,
-  },
-  warningStyles: {
-    backgroundColor: string,
-    color: string,
-  },
-}
 
 export const DownloadKardexProductExcelButton = ({ tableData, search }: {
   tableData: KardexByProduct[], search: {

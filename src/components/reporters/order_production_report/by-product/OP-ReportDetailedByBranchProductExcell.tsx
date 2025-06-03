@@ -112,7 +112,7 @@ export default function OPReportDetailedExportExcell({ branch, params, comercial
         const link = document.createElement('a');
 
         link.href = URL.createObjectURL(blob);
-        link.download = `REPORTE_KARDEX_${DATE}.xlsx`;
+        link.download =  `REPORTE_ORDEN_DE_PRODUCCION_(DETALLADO)_${getElSalvadorDateTime().fecEmi}.xlsx`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

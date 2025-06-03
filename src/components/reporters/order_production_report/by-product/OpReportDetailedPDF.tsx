@@ -61,6 +61,14 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
                 return;
             }
 
+            function textoConEspaciado(texto: string, x: number, y: number, fontSize: number, espaciado: number) {
+                const espacio = espaciado || 0; // Espacio por defecto en 0
+                let textoAjustado = texto.replace(/./g, (letra) => { return letra + String.fromCharCode(espacio) });
+
+                doc.setFontSize(fontSize);
+                doc.text(textoAjustado, x, y);
+            }
+
             const doc = new jsPDF();
 
             const createHeader = (doc: jsPDF) => {
@@ -69,10 +77,11 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
                 autoTable(doc, {
                     showHead: false,
                     body: [
-                        [{ content: comercialName, styles: { halign: 'center' } }],
+                        [{ content: comercialName, styles: { halign: 'center', fontStyle: 'bold' } }],
                         [{ content: 'Sucursal: ' + branch, styles: { halign: 'center' } }],
                         [{ content: 'Fecha/Hora ' + `${getElSalvadorDateTimeText().fecEmi}-${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
                         [{ content: 'Reporte desde ' + `${params.startDate} hasta ${params.endDate}`, styles: { halign: 'center' } }],
+                        [{ content: '(Detallado)', styles: { halign: 'center' } }],
                     ],
                     theme: 'plain',
                     startY: 5,
@@ -88,6 +97,7 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
 
             createHeader(doc);
             let lastY = (doc as jsPDFWithAutoTable).lastAutoTable.finalY;
+            let tableCount = 1;
 
             for (const detail of po_report_detailed) {
                 const rows = detail.table.map((item, index) => [
@@ -102,7 +112,7 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
 
                 autoTable(doc, {
                     body: rows,
-                    startY: lastY + 5,
+                    startY: tableCount === 1 ? lastY + 12 : lastY + 5,
                     theme: 'plain' as ThemeType,
                     columnStyles: {
                         0: { cellWidth: 10, halign: 'center' as HAlignType },
@@ -120,23 +130,19 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
                         fontSize: 8,
                     },
                     didDrawPage: ({ table, doc, cursor }) => {
-                        if (!table) return;
+                        if (!table || !cursor) return;
 
-                        const isFirstPage = table.pageNumber === 1;
-
-                        const endY = cursor?.y;
                         const marginX = 5;
                         const tableWidth = table.getWidth(doc.internal.pageSize.getWidth());
 
-                        const startY = isFirstPage
-                            ? (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 5
-                            : table.settings.margin.top -10 ;
+                        const endY = cursor.y;
+                        const startY = endY < table.settings.startY ? table.settings.margin.top
+                            : table.settings.startY;
 
 
                         doc.setDrawColor('#b3b8bd');
                         doc.setLineWidth(0.2);
-                        doc.roundedRect(marginX, startY, tableWidth, endY! - startY, 3, 3);
-
+                        doc.roundedRect(marginX, startY, tableWidth, endY - startY, 3, 3);
                     },
                     head: [headers],
                     didDrawCell: (data) => {
@@ -156,9 +162,9 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
                         }
 
                         if (data.section === 'head') {
-                            doc.setTextColor(0, 0, 0);
-                            doc.setFontSize(10);
-                            doc.text(`${detail.productName}`, 5, cell.y - 5);
+                            doc.setTextColor(60, 60, 60);
+                            doc.setFont('helvetica', 'normal');
+                            textoConEspaciado(`${detail.productName}`, 5, cell.y - 5, 10, 0);
                         }
                         if (row.section === 'head') {
 
@@ -182,9 +188,10 @@ export default function OPReportDetailedExportPDF({ branch, params, comercialNam
                 });
 
                 lastY = (doc as jsPDFWithAutoTable).lastAutoTable.finalY + 10;
+                tableCount++
             }
 
-            doc.save(`REPORTE_KARDEX_${getElSalvadorDateTime().fecEmi}.pdf`);
+            doc.save(`REPORTE_ORDEN_DE_PRODUCCION_(DETALLADO)_${getElSalvadorDateTime().fecEmi}.pdf`);
         } catch {
             toast.error('Ocurrió un error al descargar el PDF. Intente de nuevo más tarde.');
         }
