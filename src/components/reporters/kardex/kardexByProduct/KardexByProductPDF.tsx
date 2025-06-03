@@ -144,8 +144,8 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         'Descripción',
         'Entrada',
         'Salida',
-        'Precio',
-        'Costo promedio',
+        'Costo Unitario',
+        'Total Movimiento',
       ];
 
       const rows = tableData.map((item, index) => [
@@ -154,8 +154,8 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         item.typeOfInventory || '',
         item.typeOfMovement === TypeOfMovements.Entries ? item.quantity : 0,
         item.typeOfMovement === TypeOfMovements.Exits ? item.quantity : 0,
-        `$ ${Number(item.branchProduct.price ?? 0).toFixed(2)}`,
         `$ ${Number(item.branchProduct.costoUnitario ?? 0).toFixed(2)}`,
+        `$ ${Number(item.totalMovement ?? 0).toFixed(2)}`,
       ]);
       
       createHeader(doc)

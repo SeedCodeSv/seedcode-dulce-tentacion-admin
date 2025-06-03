@@ -75,3 +75,28 @@ export interface KardexByProduct {
   branchProduct: BranchProduct;
   branchProductId: number;
 }
+
+
+export interface IReportKardexGeneral {
+  ok:         boolean;
+  data:       DataKardex[];
+  total:      number;
+  totalPag:   number;
+  currentPag: number;
+  nextPag:    number;
+  prevPag:    number;
+  status:     number;
+}
+
+export interface DataKardex {
+  date:          Date;
+  time:          string;
+  movementType:  string;
+  inventoryType: string;
+  productName:   string;
+  productCode:   string;
+  branchName:    string;
+  quantity:      number;
+  unitCost:      number;
+  totalMovement: number;
+}

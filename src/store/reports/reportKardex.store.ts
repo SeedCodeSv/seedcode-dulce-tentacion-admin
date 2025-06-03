@@ -2,11 +2,12 @@ import { create } from 'zustand';
 
 import { IReportKardexStore } from './types/reportKardex.store';
 
-import { get_adjustments_by_product, get_kardex_report, get_kardex_report_by_product } from '@/services/reports/reportKardex.service';
+import { get_adjustments_by_product, get_kardex_report, get_kardex_report_by_product, get_kardex_report_general } from '@/services/reports/reportKardex.service';
 import { initialPagination } from '@/utils/utils';
 
 export const useReportKardex = create<IReportKardexStore>((set) => ({
   kardex: [],
+  kardexGeneral: [],
   details: [],
   pagination_kardex: initialPagination,
   loading: false,
@@ -77,6 +78,27 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
     } finally {
       set({ isLoadinKarProd: false });
     }
+  },
+  async getReportKardexGeneral(id, page, limit, name, dateFrom, dateTo) {
+    set({ loading: true })
+
+    return await get_kardex_report_general(id, page, limit, name, dateFrom, dateTo).then((data) => {
+
+      set({
+        kardexGeneral: data.data,
+        pagination_kardex: {
+          total: data.total,
+          totalPag: data.totalPag,
+          currentPag: data.currentPag,
+          nextPag: data.nextPag,
+          prevPag: data.prevPag,
+          status: data.status,
+          ok: data.ok,
+        }
+      })
+    }).catch(() => {
+      set({ kardexGeneral: [], pagination_kardex: initialPagination })
+    })
   },
 
 }));

@@ -1,8 +1,9 @@
 import { IPagination } from '@/types/global.types';
-import { IDetaiLAdjustment, Kardex, KardexByProduct } from '@/types/reports/reportKardex.types';
+import { DataKardex, IDetaiLAdjustment, Kardex, KardexByProduct } from '@/types/reports/reportKardex.types';
 
 export interface IReportKardexStore {
   kardex: Kardex[];
+  kardexGeneral: DataKardex[] 
   details: IDetaiLAdjustment[];
   loading: boolean;
   pagination_kardex: IPagination;
@@ -19,5 +20,13 @@ export interface IReportKardexStore {
     startDate?: string,
     endDate?: string,
     branchProductId?: number,
+  ) => void;
+  getReportKardexGeneral: (
+    id: number,
+    page: number,
+    limit: number,
+    name?: string,
+    dateFrom?: string,
+    dateTo?: string
   ) => void;
 }
