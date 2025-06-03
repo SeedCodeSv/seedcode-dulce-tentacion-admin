@@ -70,6 +70,9 @@ function ContingenceFC_CCF() {
     getBranchesList();
   }, []);
 
+  useEffect(() => {
+    getSalesInContingence(Number(branchId));
+  }, [branchId])
   const timeStart = useMemo(() => {
     if (contingence_sales.length > 0) {
       setStartTime(contingence_sales[0]?.horEmi);
@@ -117,7 +120,10 @@ function ContingenceFC_CCF() {
       return;
     }
   };
-
+  const handleFinishProccess = () => {
+    setCurrentStep(0);
+    navigation(0);
+  }
   const handleProcessContingence = async () => {
     try {
       setLoading(true);
@@ -180,38 +186,38 @@ function ContingenceFC_CCF() {
       } else {
         toast.success('Contingencia enviada con éxito');
 
-        const promises = contingence_sales.map((sale, saleIndex) =>
+        const promises = contingence_sales.map(async (sale, saleIndex) =>
           sale.tipoDte === '01'
-            ? processSaleFCF(
-                sale,
-                saleIndex,
-                token_mh,
-                Number(motivo),
-                transmitter.nit,
-                transmitter.clavePrivada
-              )
-            : processSaleCCF(
-                sale,
-                saleIndex,
-                token_mh,
-                Number(motivo),
-                transmitter.nit,
-                transmitter.clavePrivada
-              )
+            ? await processSaleFCF(
+              sale,
+              saleIndex,
+              token_mh,
+              Number(motivo),
+              transmitter.nit,
+              transmitter.clavePrivada,
+            )
+            : await processSaleCCF(
+              sale,
+              saleIndex,
+              token_mh,
+              Number(motivo),
+              transmitter.nit,
+              transmitter.clavePrivada,
+            )
         );
 
         await Promise.all(promises)
-          .then(() => {
+          .then(async () => {
             toast.success('Contingencia procesada');
             setLoading(false);
-            setCurrentStep(0);
-            navigation(0);
+            await handleFinishProccess()
           })
           .catch(() => {
+
             toast.error('Error al procesar la contingencia');
             setLoading(false);
             setCurrentStep(0);
-          });
+          })
       }
     } catch (error) {
       toast.error('Error al procesar la contingencia');
@@ -230,19 +236,17 @@ function ContingenceFC_CCF() {
             {contingence_steps.map((step, index) => (
               <div key={index} className="flex items-start py-2">
                 <div
-                  className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${
-                    index <= currentStep
-                      ? 'bg-green-600 border-green-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-500'
-                  }`}
+                  className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${index <= currentStep
+                    ? 'bg-green-600 border-green-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-500'
+                    }`}
                 >
                   {index + 1}
                 </div>
                 <div className="ml-4">
                   <div
-                    className={`font-semibold ${
-                      index <= currentStep ? 'text-green-600' : 'text-gray-500'
-                    }`}
+                    className={`font-semibold ${index <= currentStep ? 'text-green-600' : 'text-gray-500'
+                      }`}
                   >
                     {step.label}
                   </div>
@@ -315,7 +319,7 @@ function ContingenceFC_CCF() {
               onChange={(e) => setMotivo(e.target.value)}
             >
               {service.get005TipoDeContingencum().map((item) => (
-                <SelectItem key={item.codigo}  className="dark:text-white">
+                <SelectItem key={item.codigo} className="dark:text-white">
                   {item.valores}
                 </SelectItem>
               ))}
@@ -331,7 +335,7 @@ function ContingenceFC_CCF() {
               value={observaciones}
               variant="bordered"
               onChange={(e) => setObservaciones(e.target.value)}
-             />
+            />
           </div>
           <div className="flex flex-col-2 gap-4">
             <Autocomplete

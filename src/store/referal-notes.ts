@@ -30,7 +30,6 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
   json_referal_note_copy: undefined,
   json_referal_note: undefined,
   recentReferalNote: [],
-  // INVALIDATIONS_NOTIFICATIONS: [],
   pagination_referal_notesNot: {} as IPagination,
   onGetReferalNotes: (id, page, limit, startDate, endDate, state, branchId) => {
     set({ loading: true });
@@ -170,37 +169,13 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
   },
   setHasNewNotification: (value) => set({ hasNewNotification: value }),
 
-  // saveNotifications(data) {
-  //   set({
-  //     INVALIDATIONS_NOTIFICATIONS: data
-  //   })
-  // }
 }));
 
-
-// export const useReferalNoteStore = create(
-//   persist(
-//     (set, get) => ({
-//       INVALIDATIONS_NOTIFICATIONS: [],
-//       saveNotifications: (data: any[]) => {
-//         const oneDay = 1000 * 60 * 60 * 24;
-//         const now = Date.now();
-
-//         const filtered = data.filter(n => now - n.timestamp < oneDay);
-
-//         set({ INVALIDATIONS_NOTIFICATIONS: filtered });
-//       }
-//     }),
-//     {
-//       name: 'referal-note-storage',
-//     }
-//   )
-// )
 
 
 export const useReferalNoteStore = create<IReferalNoteStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       INVALIDATIONS_NOTIFICATIONS: [],
       saveNotifications: (data) => {
         const oneDay = 1000 * 60 * 60 * 24;
