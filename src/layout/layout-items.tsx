@@ -37,6 +37,7 @@ import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import { FaChartLine } from 'react-icons/fa';
+import { TbCashRegister } from 'react-icons/tb';
 
 import LOGO from '../assets/dulce-logo.png';
 import { ThemeContext } from '../hooks/useTheme';
@@ -239,6 +240,12 @@ export const LayoutItems = (props: Props) => {
       to: '/kardex',
       label: 'Kardex',
       icon: List,
+    },
+    {
+      viewName: 'Cortes',
+      to: '/cash-cuts',
+      label: 'Cortes',
+      icon: TbCashRegister,
     },
     {
       viewName: 'Ver invalidaciones',

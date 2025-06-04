@@ -20,6 +20,9 @@ import KardexComponent from '@/components/reporters/kardex/KardexComponent';
 import OrdenProductionReport from '@/pages/OrdenProductionReport';
 import OrdenProductionComponent from '@/components/reporters/order_production_report/general/OrderProductionComponentReport';
 import OPReportComponentDetailed from '@/components/reporters/order_production_report/by-product/OP-ReportDetailedByBranch';
+import CashCutsPage from '@/pages/CashCuts';
+import GeneralCashCutReportComponent from '@/components/reporters/cuts/general-cuts/GeneralCutsReport';
+import DetailedCashCutReportComponent from '@/components/reporters/cuts/detaild-cuts/DetailedCutsReport';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -142,10 +145,16 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route element={<KardexPage />} path="/kardex">
+      <Route element={handleCheckPermission('Kardex') ? <KardexPage /> : <Home/>} path="/kardex">
         <Route index element={
           <KardexComponent />} />
         <Route element={<KardexByProductList />} path="by-product" />
+      </Route>
+      
+      <Route element={handleCheckPermission('Cortes') ? <CashCutsPage /> : <Home/>} path="/cash-cuts">
+        <Route index element={
+          <GeneralCashCutReportComponent />} />
+        <Route element={<DetailedCashCutReportComponent />} path="detailed" />
       </Route>
       <Route
         element={
@@ -352,14 +361,6 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/discounts"
-      />
-      <Route
-        element={
-          <AnimatedRoute>
-            {handleCheckPermission('Reporte ordenes de producción') ? <OrdenProductionReport /> : <Home />}
-          </AnimatedRoute>
-        }
-        path="/OP-report"
       />
       <Route element={handleCheckPermission('Reporte ordenes de producción') ? <OrdenProductionReport /> : <Home />}
         path="/OP-report">

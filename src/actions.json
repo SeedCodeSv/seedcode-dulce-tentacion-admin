@@ -260,6 +260,14 @@
       ]
     },
     {
+      "view": "Cortes",
+      "actions": [
+        "Mostrar",
+        "Descargar PDF",
+        "Exportar Excel"
+      ]
+    },
+    {
       "view": "IVA de Compras",
       "actions": [
         "Imprimir",
@@ -387,6 +395,5 @@
         "Mostrar"
       ]
     }
-    
   ]
 }

@@ -226,6 +226,7 @@ export default function OPReportComponentDetailed() {
                 {!loading_report && po_report_detailed.map((data) => (
                     <Fragment key={data.branchProductId}>
                         <Accordion
+                        key={data.branchProductId}
                             itemClasses={{
                                 base: `py-8 lg:py-4 dark:bg-gray-800/20 w-full shadow shadow-[#e49ca0] dark:shadow-gray-700`,
                                 title: "h-full font-normal text-medium ",
