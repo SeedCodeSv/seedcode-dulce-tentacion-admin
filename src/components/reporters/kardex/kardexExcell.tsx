@@ -3,7 +3,7 @@ import ExcelJS from 'exceljs';
 
 import ButtonUi from "@/themes/ui/button-ui";
 import { Branches } from "@/types/branches.types";
-import { Kardex } from "@/types/reports/reportKardex.types";
+import { DataKardex } from "@/types/reports/reportKardex.types";
 import { Colors } from "@/types/themes.types";
 import { ITransmitter } from "@/types/transmitter.types";
 import { getElSalvadorDateTime } from "@/utils/dates";
@@ -12,7 +12,7 @@ import { hexToARGB } from "@/utils/utils";
 
 
 
-export default function KardexExportExcell({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) {
+export default function KardexExportExcell({ tableData, transmitter, branch }: { tableData: DataKardex[]; transmitter: ITransmitter, branch: Branches }) {
     const styles = useGlobalStyles();
 
     const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
@@ -43,14 +43,13 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
 
         const headers = [
             'No.',
+            'Fecha/Hora',
+            'Movimiento/Tipo',
+            'Código',
             'Descripción',
-            'Entrada',
-            'Salida',
-            'Existencia',
-            'Precio',
+            'Cantidad',
             'Costo unitario',
-            'Utilidad',
-            'Rentabilidad',
+            'Total Movimiento',
         ];
         const headerRow = worksheet.addRow(headers);
 
@@ -69,27 +68,25 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
 
         worksheet.columns = [
             { width: 6 },
+            { width: 20 },
+            { width: 25 },
+            { width: 10 },
             { width: 40 },
-            { width: 10 },
-            { width: 10 },
-            { width: 10 },
             { width: 12 },
             { width: 15 },
-            { width: 12 },
-            { width: 12 },
+            { width: 20 }
         ];
 
         tableData.forEach((item, index) => {
             worksheet.addRow([
                 index + 1,
+                `${item.date} - ${item.time}`,
+                `${item.movementType} - ${item.inventoryType}`,
+                item.productCode || '',
                 item.productName || '',
-                item.entries || 0,
-                item.exits || 0,
-                Number(item.quantity) || 0,
-                Number(item.price ?? 0),
-                Number(item.cost ?? 0),
-                Number(item.utility ?? 0),
-                Number(item.profitability ?? 0),
+                item.quantity || 0,
+                item.unitCost ?? 0,
+                item.totalMovement ?? 0,
             ]);
         });
 

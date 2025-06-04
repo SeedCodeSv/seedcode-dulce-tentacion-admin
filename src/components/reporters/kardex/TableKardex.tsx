@@ -3,16 +3,16 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import EmptyTable from '@/components/global/EmptyTable';
 import LoadingTable from '@/components/global/LoadingTable';
-import { Kardex } from '@/types/reports/reportKardex.types';
+import { DataKardex } from '@/types/reports/reportKardex.types';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
 import { TableComponent } from '@/themes/ui/table-ui';
 
 
-export default function KardexTable({ data }: { data: (data: Kardex[]) => void }) {
-  const { kardex, loading } = useReportKardex();
+export default function KardexTable({ data }: { data: (data: DataKardex[]) => void }) {
+  const { loading, kardexGeneral } = useReportKardex();
 
   const [sortConfig, setSortConfig] = useState<{
-    key: keyof Kardex | null;
+    key: keyof DataKardex | null;
     direction: 'asc' | 'desc';
   }>({
     key: null,
@@ -21,12 +21,12 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
 
 
   const sortedProducts = useMemo(() => {
-    return [...kardex].sort((a, b) => {
+    return [...kardexGeneral].sort((a, b) => {
       if (sortConfig.key) {
         let aValue = a[sortConfig.key];
         let bValue = b[sortConfig.key];
 
-        const numericKeys: (keyof Kardex)[] = ['price'];
+        const numericKeys: (keyof DataKardex)[] = ['unitCost'];
 
         if (numericKeys.includes(sortConfig.key)) {
           aValue = Number(String(aValue).replace(/[^0-9.-]+/g, ''));
@@ -43,9 +43,9 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
 
       return 0;
     });
-  }, [kardex, sortConfig]);
+  }, [kardexGeneral, sortConfig]);
 
-  const handleSort = (key: keyof Kardex) => {
+  const handleSort = (key: keyof DataKardex) => {
     let direction: 'asc' | 'desc' = 'asc';
 
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -63,22 +63,21 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
           <TableComponent
             headers={[
               'No.',
+              'Fecha/Hora',
+              'Movimiento/Tipo',
+              'Código',
               'Descripción',
-              'Entrada',
-              'Salida',
-              'Existencia',
+              'Cantidad',
               'Costo unitario',
-              'Precio',
-              'Utilidad',
-              'Rentabilidad',
+              'Total Movimiento',
             ]}
 
             renderHeader={(header) => (
               <div className="flex items-center">
                 <span>{header}</span>
-                {(header === 'Existencia' || header === 'Precio') && (
+                {(header === 'Cantidad' || header === 'Costo Unitario') && (
                   <span className="ml-1 flex items-center">
-                    {sortConfig.key === (header === 'Existencia' ? 'quantity' : 'price') &&
+                    {sortConfig.key === (header === 'Cantidad' ? 'quantity' : 'unitCost') &&
                       (sortConfig.direction === 'asc' ? (
                         <ChevronUp size={20} />
                       ) : (
@@ -90,10 +89,10 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
             )}
 
             onThClick={(header) => {
-              if (header === 'Existencia') {
+              if (header === 'Cantidad') {
                 handleSort('quantity');
-              } else if (header === 'Precio') {
-                handleSort('price');
+              } else if (header === 'Costo Unitario') {
+                handleSort('unitCost');
               } else {
                 setSortConfig({ key: null, direction: 'asc' });
               }
@@ -115,29 +114,27 @@ export default function KardexTable({ data }: { data: (data: Kardex[]) => void }
                         {' '}
                         {index + 1}
                       </td>
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.date}  - {product.time}
+                      </td>
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.movementType}  - {product.inventoryType}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {product.productCode}
+                      </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {product.productName}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.entries}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.exits}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {product.quantity}
                       </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.cost}
-                      </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.price}
+                        {product.unitCost}
                       </td>
+                      
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.utility.toFixed(2)}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {Number(product.profitability).toFixed(2)}%
+                        ${product.totalMovement}
                       </td>
                     </tr>
                   ))
