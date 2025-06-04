@@ -89,7 +89,7 @@ export interface IReportKardexGeneral {
 }
 
 export interface DataKardex {
-  date:          Date;
+  date:          string;
   time:          string;
   movementType:  string;
   inventoryType: string;

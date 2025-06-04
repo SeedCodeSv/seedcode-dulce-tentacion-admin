@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import moment from 'moment';
 import { AiOutlineFilePdf } from "react-icons/ai";
 
-import { Kardex } from '@/types/reports/reportKardex.types';
+import { DataKardex } from '@/types/reports/reportKardex.types';
 import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
 import { hexToRgb } from '@/utils/utils';
@@ -23,7 +23,7 @@ interface jsPDFWithAutoTable extends jsPDF {
   };
 }
 
-const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) => {
+const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: DataKardex[]; transmitter: ITransmitter, branch: Branches }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
   const styles = useGlobalStyles();
 
@@ -98,26 +98,24 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
 
       const headers = [
         'No.',
+        'Fecha/Hora',
+        'Movimiento/Tipo',
+        'Código',
         'Descripción',
-        'Entrada',
-        'Salida',
-        'Existencia',
-        'Precio',
+        'Cantidad',
         'Costo unitario',
-        'Utilidad',
-        'Rentabilidad',
+        'Total Movimiento',
       ];
 
       const rows = tableData.map((item, index) => [
         index + 1,
+        `${item.date} - ${item.time}`,
+        `${item.movementType} - ${item.inventoryType}`,
+        item.productCode || '',
         item.productName || '',
-        item.entries || 0,
-        item.exits || 0,
         item.quantity || 0,
-        `$ ${Number(item.price ?? 0).toFixed(2)}`,
-        `$ ${Number(item.cost ?? 0).toFixed(2)}`,
-        `$ ${(item.utility ?? 0).toFixed(2)}`,
-        `${item.profitability ? item.profitability.toFixed(2) : '0'}%`,
+        `$ ${Number(item.unitCost ?? 0).toFixed(2)}`,
+        `$ ${(item.totalMovement ?? 0).toFixed(2)}`,
       ]);
 
       createHeader(doc);
@@ -129,7 +127,11 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
         theme: 'plain' as ThemeType,
         columnStyles: {
           0: { cellWidth: 10, halign: 'center' as HAlignType },
-          1: { cellWidth: 65 },
+          1: { cellWidth: 20, halign: 'center' as HAlignType },
+          3: { cellWidth: 20, halign: 'center' as HAlignType },
+          4: { cellWidth: 50, halign: 'center' as HAlignType },
+          5: { cellWidth: 15, halign: 'center' as HAlignType },
+          6: { cellWidth: 20, halign: 'center' as HAlignType },
         },
         margin: { horizontal: 5 },
         styles: {

@@ -1,5 +1,5 @@
 import { Button } from '@heroui/react';
-import { ArrowDown, ArrowDownUp, ArrowUp, Box, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
+import { ArrowDown, ArrowDownCircle, ArrowDownUp, ArrowUp, ArrowUpCircle, Box, ChevronDown, ChevronUp, CreditCard } from 'lucide-react';
 import { useState } from 'react';
 
 import DownloadPDFButton from './KardexPDF';
@@ -12,20 +12,20 @@ import { ITransmitter } from '@/types/transmitter.types';
 
 
 export default function ViewKardexList({ view, branch, transmitter, actions }: { view: string; transmitter: ITransmitter, branch: Branches, actions: string[] }) {
-  const { kardex } = useReportKardex();
+  const { kardexGeneral } = useReportKardex();
 
-  const [sortBy, setSortBy] = useState<keyof typeof kardex[0] | null>(null);
+  const [sortBy, setSortBy] = useState<keyof typeof kardexGeneral[0] | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
 
-  const sortedProducts = [...kardex].sort((a, b) => {
+  const sortedProducts = [...kardexGeneral].sort((a, b) => {
     if (!sortBy) return 0;
     const order = sortDirection === 'asc' ? 1 : -1;
 
     return a[sortBy] > b[sortBy] ? order : -order;
   });
 
-  const handleSort = (property: keyof typeof kardex[0]) => {
+  const handleSort = (property: keyof typeof kardexGeneral[0]) => {
     if (sortBy === property) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -46,13 +46,13 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
           )}
         </div>
         <div className="flex justify-start md:justify-end gap-2">
-          <Button style={global_styles().thirdStyle} onPress={() => handleSort('price')} >
+          <Button style={global_styles().thirdStyle} onPress={() => handleSort('unitCost')} >
             <ArrowDownUp size={15} />
-            Precio {sortBy === 'price' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
+            CostUnitario {sortBy === 'unitCost' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
           </Button>
           <Button style={global_styles().thirdStyle} onPress={() => handleSort('quantity')} >
             <ArrowDownUp size={15} />
-            Stock  {sortBy === 'quantity' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
+            Cantidad  {sortBy === 'quantity' && (sortDirection === 'asc' ? <ChevronUp size={24} /> : <ChevronDown size={24} />)}
           </Button>
         </div>
       </div>
@@ -63,22 +63,40 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
               key={index}
               className="w-full shadow dark:border border-gray-600 hover:shadow-lg p-5 rounded-2xl bg-white dark:bg-transparent dark:text-white"
             >
-              <span className="flex gap-2">
-                <Box className="text-blue-500" size={24} />
-                <h2 className="text-lg font-bold">{item.productName}</h2></span>
-              <p className="text-sm text-gray-500 dark:text-gray-300">Existencias: {item.quantity}</p>
-              <div className="mt-3 grid grid-cols-2 gap-4 font-semibold dark:text-white text-gray-800">
-                <span >Costo unitario:<p className="ml-1 font-normal text-gray-950 dark:text-white">${item.cost}</p></span>
-                <span className="flex flex-col">Precio:<p className="ml-1 font-normal text-gray-950 dark:text-white">${item.price}</p></span>
-                <span className="flex ">Entrada:<p className="ml-1 font-normal text-gray-950 dark:text-white">{item.entries}</p></span>
-                <span className="flex ">Salida:<p className="ml-1 font-normal text-gray-950 dark:text-white">{item.exits}</p></span>
+              <div className="flex items-center gap-3">
+                {item.movementType === 'Entradas' ? (
+                  <span className='flex'>
+                    <ArrowDownCircle className="text-green-600" size={20} />
+                  </span>
+                ) : (
+                  <span className='flex'>
+                    <ArrowUpCircle className="text-red-600" size={20} />
+                    {item.movementType}
+                  </span>
+                )}
+                <div>
+                  <p className="font-medium text-[15px] uppercase">{item.productName}</p>
+                  <p className="text-sm text-gray-500">
+                    {item.movementType} • {item.inventoryType}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {item.date} • {item.time}
+                  </p>
+                </div>
               </div>
-              <div className="mt-3 flex justify-between font-semibold text-gray-800 dark:text-white">
-                <span className="flex">Utilidad:<p className="ml-1 font-normal text-gray-950 dark:text-white">${(item.utility ? item.utility.toFixed(2) : 0)}</p></span>
-                <span className="flex items-center  dark:text-gray-300">
-                  <TrendingUp className="text-green-500" size={18} />
-                  Rentabilidad: <p className="ml-1 font-normal text-gray-950 dark:text-white ">{item.profitability ? item.profitability.toFixed(2) : 0}%</p>
-                </span>
+
+              <div className="mt-4 w-full flex gap-2 flex-col">
+                <p className="justify-between flex text-sm">
+                  Cantidad: <span className="font-semibold">{item.quantity}</span>
+                </p>
+                <p className="justify-between flex text-sm">
+                  Costo unitario:{' '}
+                  <span className="font-semibold">${item.unitCost.toFixed(2)}</span>
+                </p>
+                <p className="justify-between flex text-sm">
+                  Total:{' '}
+                  <span className="font-semibold">${item.totalMovement.toFixed(2)}</span>
+                </p>
               </div>
             </div>
           ))}
@@ -87,50 +105,65 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
       {view === 'list' && (
         <div className="grid pb-10 grid-cols-1 gap-5 h-full mt-5 dark:text-white">
           {sortedProducts.map((item, index) => (
-            <div key={index} className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5">
+            <div
+              key={index}
+              className="flex flex-col md:flex-row w-full border dark:border-gray-600 rounded-2xl shadow p-5 bg-white dark:bg-transparent"
+            >
+              {/* Columna izquierda */}
               <div className="flex-grow">
-                <span className="flex gap-2">
-                  <Box className="text-blue-500" size={24} />
-                  <h2 className="text-lg font-bold">{item.productName}</h2></span>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Existencias: {item.quantity}</p>
-
-                <div className="mt-4 flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-x-6 font-medium text-gray-700 dark:text-gray-300">
-
-                  <div className="flex items-center gap-2">
-                    <p className="flex items-center gap-1">
-                      <Box className="text-gray-500" size={16} /> Costo unitario: <span className="text-gray-800 dark:text-gray-200">${item.cost}</span>
+                <div className="flex items-start gap-3">
+                  <div className="mt-1">
+                    {item.movementType === 'Entradas' ? (
+                      <ArrowDownCircle className="text-green-600" size={20} />
+                    ) : (
+                      <ArrowUpCircle className="text-red-600" size={20} />
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <h2 className="text-lg font-bold uppercase">{item.productName}</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {item.movementType} • {item.inventoryType}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {item.date} • {item.time}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      Existencias: {item.quantity}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2">
+                </div>
 
-                    <span className="flex items-center">
-                      Precio: <span className="ml-1 text-green-500">${item.price}</span>
+                {/* Detalles */}
+                <div className="mt-4 flex flex-col md:flex-row items-start md:items-center gap-y-2 md:gap-x-6 font-medium text-gray-700 dark:text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Box className="text-gray-500" size={16} />
+                    <span>
+                      Costo unitario: <span className="text-gray-800 dark:text-gray-200">${item.unitCost.toFixed(2)}</span>
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ArrowUp className="text-blue-500" size={18} />
-                    <span>Entrada: <span className="text-gray-800 dark:text-gray-200">{item.entries}</span></span>
+                    {item.movementType === 'Entradas' ?
+                      <ArrowUp className="text-blue-500" size={18} />
+                      :
+                      <ArrowDown className="text-red-500" size={18} />
+                    }
+                    <span>
+                      Cantidad: <span className="text-gray-800 dark:text-gray-200">{item.quantity}</span>
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ArrowDown className="text-red-500" size={18} />
-                    <span>Salida: <span className="text-gray-800 dark:text-gray-200">{item.exits}</span></span>
+                    <CreditCard className="text-purple-500" size={16} />
+                    <span>
+                      Total movimiento: <span className="text-gray-800 dark:text-gray-200">${item.totalMovement.toFixed(2)}</span>
+                    </span>
                   </div>
                 </div>
-              </div>
-
-              <div className="flex flex-col justify-center items-end ml-5 text-sm font-medium text-gray-700 dark:text-gray-300">
-
-                <p className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="text-blue-500" size={16} /> Utilidad: <span className="text-blue-500">${(item.utility ? item.utility.toFixed(2) : 0)}</span>
-                </p>
-                <p className="flex items-center gap-1 mt-2">
-                  <TrendingUp className="text-green-500" size={16} /> Rentabilidad: <span className="text-green-500">{item.profitability ? item.profitability.toFixed(2) : 0}%</span>
-                </p>
               </div>
             </div>
           ))}
         </div>
       )}
+
     </div>
-  );
+  )
 }

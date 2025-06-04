@@ -94,10 +94,11 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
           prevPag: data.prevPag,
           status: data.status,
           ok: data.ok,
-        }
+        },
+        loading:false
       })
     }).catch(() => {
-      set({ kardexGeneral: [], pagination_kardex: initialPagination })
+      set({ kardexGeneral: [], pagination_kardex: initialPagination, loading: false })
     })
   },
 
