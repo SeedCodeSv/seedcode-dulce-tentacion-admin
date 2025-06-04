@@ -2,6 +2,8 @@ import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from '@hero
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { useEffect, useState } from 'react';
 import { SearchIcon } from 'lucide-react';
+import { toast } from 'sonner';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
@@ -21,6 +23,9 @@ import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import { exportSalesExcel } from '@/components/export-reports/SalesByPeriods';
+import { reporst_details_sales } from '@/services/reports/reports-by-periods.services';
+
 
 function VentasPorPeriodo() {
   const [filter, setFilter] = useState({
@@ -30,7 +35,6 @@ function VentasPorPeriodo() {
   const service = new SeedcodeCatalogosMhService();
   const typeSales = service.get017FormaDePago();
   const { getBranchesList, branch_list } = useBranchesStore();
-
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [typePayment, setTypePayment] = useState('');
@@ -41,6 +45,27 @@ function VentasPorPeriodo() {
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
 
   const { point_of_sales, getPointOfSales } = usePointOfSales();
+
+  const handleData = async (searchParam: string | undefined) => {
+    await reporst_details_sales(
+      1,
+      99999,
+      searchParam ?? startDate,
+      searchParam ?? endDate,
+      searchParam ?? typePayment,
+      searchParam ?? selectedBranch?.name ?? '',
+      '',
+      searchParam ?? filter.typeVoucher,
+      pointOfSale ?? ''
+    ).then(({ data }) => {
+      if (data) {
+        exportSalesExcel(data.sales, startDate, endDate)
+      }
+    }).catch(() => {
+      toast.error('No se proceso la solicitud')
+    })
+
+  }
 
   useEffect(() => {
     if (selectedBranch) {
@@ -245,6 +270,21 @@ function VentasPorPeriodo() {
             >
               Buscar
             </ButtonUi>
+            {(sales_by_period?.totalSales ?? 0) > 0 && (
+              <ButtonUi
+                className="mt-4 font-semibold flex-row gap-10"
+                color="success"
+                theme={Colors.Success}
+                onPress={() => {
+                  handleData(undefined)
+                }}
+
+              >
+                <p>Exportar reporte</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+              </ButtonUi>
+            )}
+
+
           </div>
         </ResponsiveFilterWrapper>
         <div className="flex flex-col w-full gap-10 pt-10 md:flex-row">
