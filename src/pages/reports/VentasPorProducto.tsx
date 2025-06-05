@@ -1,5 +1,7 @@
 import { Input, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
@@ -14,12 +16,9 @@ import DivGlobal from '@/themes/ui/div-global';
 import LoadingTable from '@/components/global/LoadingTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
-import { get_sales_by_product } from '@/services/sales.service';
 import { report_sales_by_products } from '@/services/reports/reports-by-periods.services';
 import { salesByProductsExports } from '@/components/export-reports/SalesByProduct';
-import { toast } from 'sonner';
 import ButtonUi from '@/themes/ui/button-ui';
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { Colors } from '@/types/themes.types';
 
 function VentasPorProducto() {
