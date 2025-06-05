@@ -41,7 +41,7 @@ export default function GeneralCashCutReportComponent() {
 
     useEffect(() => {
         onGetCashCutReportSummary(search)
-    }, [search])
+    }, [search.limit])
 
     const changePage = (page: number) => {
         onGetCashCutReportSummary({ ...search, page });
@@ -54,7 +54,7 @@ export default function GeneralCashCutReportComponent() {
 
     return (
         <>
-            <ResponsiveFilterWrapper classButtonLg="w-1/2" withButton={false}>
+            <ResponsiveFilterWrapper classButtonLg="w-1/2" onApply={() => changePage(1)}>
                 <Autocomplete
                     className="font-semibold dark:text-white w-full"
                     defaultSelectedKey={String(search.branchId)}
