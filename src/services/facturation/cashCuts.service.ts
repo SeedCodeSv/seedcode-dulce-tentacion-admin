@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { CloseZ, IGetCutsReport, SearchCutReport, ZCashCutsRequest } from '../../types/cashCuts.types';
+import { CloseZ, IGetCutsReport, IGetCutsReportSummary, SearchCutReport, ZCashCutsRequest } from '../../types/cashCuts.types';
 
 import { get_token } from '@/storage/localStorage';
 export const get_cashCuts = (id?: number, startDate?: string, endDate?: string, code?: string) => {
@@ -33,6 +33,20 @@ export const get_cuts_report = async (params: SearchCutReport) => {
   const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts/${params.branchId}?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}&employee=${params.employee}`;
 
   const response = await axios.get<IGetCutsReport>(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
+
+
+export const get_cuts_report_summary = async (params: SearchCutReport) => {
+  const token = get_token() ?? '';
+  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts-summary/${params.branchId}?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}`;
+
+  const response = await axios.get<IGetCutsReportSummary>(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

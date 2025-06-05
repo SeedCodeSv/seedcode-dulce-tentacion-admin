@@ -6,23 +6,23 @@ import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 
 
-export default function CashCutsPage() {
+export default function ProductSelledReportPage() {
   const { actions } = useViewsStore();
-  const categoriasView = actions.find((view) => view.view.name === 'cashCuts');
+  const categoriasView = actions.find((view) => view.view.name === 'Productos Vendidos');
   const actionView = categoriasView?.actions?.name || [];
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentTab = location.pathname === "/cash-cuts/detailed" ? "detailed" : "general";
+  const currentTab = location.pathname === "/products-selled/detailed" ? "detailed" : "general";
 
   const handleChange = (key: string) => {
-    if (key === "general") navigate("/cash-cuts");
-    else if (key === "detailed") navigate("/cash-cuts/detailed");
+    if (key === "general") navigate("/products-selled");
+    else if (key === "detailed") navigate("/products-selled/detailed");
   };
 
   return (
-    <Layout title="Cortes">
+    <Layout title="Total Productos Vendidos">
       <DivGlobal>
         <Tabs
           className="mb-4"

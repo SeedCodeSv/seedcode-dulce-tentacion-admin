@@ -10,7 +10,7 @@ export default function DetailedCutTable() {
 
     return (
         <TableComponent
-            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero']}
+            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero', 'Sucursal']}
         >
             {loadingDetailed ? (
                 <tr>
@@ -58,10 +58,13 @@ export default function DetailedCutTable() {
                             <div className="flex justify-center">{formatCurrency(Number(item.difference ?? 0))}</div>
                         </TdGlobal>
                         <TdGlobal >
-                            <div className="flex flex-col p-2">
-                                <span>{item.employee.firstName} {item.employee.secondName}</span>
-                                <span>{item.employee.firstLastName} {item.employee.secondLastName}</span>
+                            <div className="flex flex-col p-2 uppercase">
+                                <span className="">{item.employee.firstName} {item.employee.secondName}</span>
+                                <span className="">{item.employee.firstLastName} {item.employee.secondLastName}</span>
                             </div>
+                        </TdGlobal>
+                        <TdGlobal >
+                           {item.branchName}
                         </TdGlobal>
                     </tr>
                 ))

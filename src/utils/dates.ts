@@ -209,6 +209,29 @@ export function formatSimpleDate(date: string): string {
   return `${day}-${monthName}-${year} ${hour}:${minute}`;
 }
 
+export function formatDateSimple(date: string): string {
+  if (!date) return '';
+  const days = date.split('|')[0];
+  const monts = [
+    'Ene',
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic',
+  ];
+  const [year, month, day] = days.split('-');
+  const monthName = monts[Number(month) - 1];
+
+  return `${day}-${monthName}-${year}`;
+}
+
 
 export function formatEmployee(value: Employee | Employee2) {
   const render =

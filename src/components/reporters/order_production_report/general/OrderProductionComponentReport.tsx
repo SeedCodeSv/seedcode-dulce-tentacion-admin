@@ -59,7 +59,19 @@ export default function OrdenProductionComponent() {
                 search.productName,
                 search.status,
                 0)
-    }, [search.productName, search.limit]);
+    }, [search.productName]);
+
+    useEffect(() => {
+        getProductionsOrdersReport(
+            search.page,
+            search.limit,
+            search.startDate,
+            search.endDate,
+            search.branch,
+            search.productName,
+            search.status,
+            0)
+    }, [search.limit]);
 
     const handleSearchProduct = useCallback(
         debounce((value: string) => {

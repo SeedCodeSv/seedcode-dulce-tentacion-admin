@@ -79,7 +79,7 @@ export const OPReportExportPDF = ({ branch, params, comercialName }: Props) => {
                 autoTable(doc, {
                     showHead: false,
                     body: [
-                        [{ content: comercialName, styles: { halign: 'center' } }],
+                        [{ content: comercialName, styles: { halign: 'center', fontStyle:'bold' } }],
                         [{ content: 'Sucursal: ' + branch, styles: { halign: 'center' } }],
                         [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
                         [{ content: `Reporte desde ${params.startDate} hasta ${params.endDate}`, styles: { halign: 'center' } }],
@@ -122,7 +122,6 @@ export const OPReportExportPDF = ({ branch, params, comercialName }: Props) => {
             };
 
             const headers = ['Nº','Producto', 'Fecha/Hora de inicio', 'Fecha/Hora de fin', 'Cantidad', 'Producido', 'Dañado', 'Estado/Orden'];
-
 
             const rows = production_orders_report.map((item, index) => [
                 index + 1,

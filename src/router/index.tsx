@@ -21,8 +21,11 @@ import OrdenProductionReport from '@/pages/OrdenProductionReport';
 import OrdenProductionComponent from '@/components/reporters/order_production_report/general/OrderProductionComponentReport';
 import OPReportComponentDetailed from '@/components/reporters/order_production_report/by-product/OP-ReportDetailedByBranch';
 import CashCutsPage from '@/pages/CashCuts';
-import GeneralCashCutReportComponent from '@/components/reporters/cuts/general-cuts/GeneralCutsReport';
+import GeneralCashCutReportComponent from '@/components/reporters/cuts/general-cuts/SummaryCutsReport';
 import DetailedCashCutReportComponent from '@/components/reporters/cuts/detaild-cuts/DetailedCutsReport';
+import ProductsSelledSummaryComponent from '@/components/reporters/products_selled/general/ProductsSelledSummaryComponent';
+import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
+import ProductSelledReportPage from '@/pages/ProductsSelledReport';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -155,6 +158,11 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         <Route index element={
           <GeneralCashCutReportComponent />} />
         <Route element={<DetailedCashCutReportComponent />} path="detailed" />
+      </Route>
+       <Route element={handleCheckPermission('Productos Vendidos') ? <ProductSelledReportPage /> : <Home/>} path="/products-selled">
+        <Route index element={
+          <ProductsSelledSummaryComponent />} />
+        <Route element={<ProductsSelledDetailComponent />} path="detailed" />
       </Route>
       <Route
         element={
