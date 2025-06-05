@@ -15,6 +15,7 @@ import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
 import { limit_options } from "@/utils/constants";
 import { useBranchesStore } from "@/store/branches.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
+import { getElSalvadorDateTime } from "@/utils/dates";
 
 export default function DetailedCashCutReportComponent() {
     const { onGetCashCutReportDetailed, cashCutsDetailed } = useCutReportStore()
@@ -24,14 +25,12 @@ export default function DetailedCashCutReportComponent() {
 
     const isMovil = useIsMobileOrTablet()
     const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
-    const currentDate = new Date();
-    const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
         branchId: 0,
-        dateFrom: defaultStartDate.toISOString().split('T')[0],
-        dateTo: currentDate.toISOString().split('T')[0],
+        dateFrom: getElSalvadorDateTime().fecEmi,
+        dateTo: getElSalvadorDateTime().fecEmi,
         employee: '',
     });
 

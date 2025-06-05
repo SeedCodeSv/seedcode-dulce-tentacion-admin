@@ -230,6 +230,12 @@ export const LayoutItems = (props: Props) => {
       label: 'Ordenes de Producción',
     },
     {
+      viewName: 'Productos Vendidos',
+      to: '/products-selled',
+      label: 'Productos vendidos',
+      icon: List,
+    },
+    {
       viewName: 'Movimientos',
       to: '/movement',
       icon: ArrowDownUp,
