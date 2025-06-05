@@ -20,7 +20,7 @@ export default function DetailedCashCutReportComponent() {
     const { onGetCashCutReportDetailed, cashCutsDetailed } = useCutReportStore()
     const { getBranchesList, branch_list } = useBranchesStore();
     const [branchName, setBranchName] = useState('');
-    const { transmitter, gettransmitter } = useTransmitterStore();
+    const {transmitter, gettransmitter } = useTransmitterStore();
 
     const isMovil = useIsMobileOrTablet()
     const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
