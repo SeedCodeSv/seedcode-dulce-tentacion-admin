@@ -2,7 +2,7 @@ import axios from "axios"
 
 import { API_URL } from "@/utils/constants"
 import { SalesChartGraphPeriod } from "@/types/reports/sales_by_period.report"
-import { ResponseDetailsReport } from "@/components/export-reports/types/sales_by_periods.types"
+import { IResponseByProduct, ResponseDetailsReport } from "@/components/export-reports/types/sales_by_periods.types"
 import { get_user } from "@/storage/localStorage"
 
 export const reports_by_periods = async (id: number) => {
@@ -16,6 +16,16 @@ export const reporst_details_sales = async (
 ) => {
     const user = get_user();
 
-     return axios.get<ResponseDetailsReport>(`
+    return axios.get<ResponseDetailsReport>(`
         ${API_URL}/sales/get-sales-excel-report/${user?.pointOfSale?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}&paymentType=${paymentType}&branch=${branch}&correlative=${correlative}&typeVoucher=${typeVoucher}&pointOfSale=${pointOfSale}`)
+}
+
+export const report_sales_by_products = async (
+    id: number,
+    startDate: string,
+    endDate: string,
+    branch = ''
+) => {
+    return axios.get<IResponseByProduct>(API_URL + `/sales/report-sales-by-product-export/${id}?startDate=${startDate}&endDate=${endDate}&branch=${branch}`
+    )
 }

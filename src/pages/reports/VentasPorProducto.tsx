@@ -14,6 +14,13 @@ import DivGlobal from '@/themes/ui/div-global';
 import LoadingTable from '@/components/global/LoadingTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import { get_sales_by_product } from '@/services/sales.service';
+import { report_sales_by_products } from '@/services/reports/reports-by-periods.services';
+import { salesByProductsExports } from '@/components/export-reports/SalesByProduct';
+import { toast } from 'sonner';
+import ButtonUi from '@/themes/ui/button-ui';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import { Colors } from '@/types/themes.types';
 
 function VentasPorProducto() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -49,7 +56,24 @@ function VentasPorProducto() {
       endDate,
       typePayment
     );
+
   };
+
+  const handleExportData = async (searchParam: string | undefined) => {
+    await report_sales_by_products(
+      Number(user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
+      searchParam ?? startDate,
+      searchParam ?? endDate,
+      searchParam ?? typePayment
+    ).then(({ data }) => {
+      if (data) {
+        salesByProductsExports(data.sales, startDate, endDate)
+      }
+    }).catch(() => {
+      toast.error('No se proceso la solicitud')
+    })
+  }
 
   return (
     <Layout title="Ventas por Producto">
@@ -102,6 +126,19 @@ function VentasPorProducto() {
               </SelectItem>
             ))}
           </Select>
+
+          <ButtonUi
+            className="mt-4 font-semibold"
+            color="success"
+            theme={Colors.Success}
+            onPress={() => {
+              handleExportData(undefined)
+            }}
+
+          >
+            <p>Exportar</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+          </ButtonUi>
+
         </ResponsiveFilterWrapper>
 
         <div className="w-full h-full overflow-y-auto py-1 border-b dark:border-gray-700">

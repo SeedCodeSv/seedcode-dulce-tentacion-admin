@@ -175,7 +175,6 @@ export interface Box {
   pointOfSale: PointOfSale
   pointOfSaleId: number
 }
-
 export interface PointOfSale {
   id: number
   code: string
@@ -214,4 +213,24 @@ export interface Payment {
   period: any
   deadline: any
   saleId: number
+}
+
+
+export interface IResponseByProduct {
+  ok: boolean
+  sales: SaleByProduct[]
+  totalSales: number
+}
+
+export interface SaleByProduct {
+  unitPrice: string
+  productId: number
+  productName: string
+  subCategoryName: string
+  categoryName: string
+  pointOfSaleCode: string
+  branchName: string
+  totalQuantity: string
+  totalItemSum: string
+  saleDate: string
 }
