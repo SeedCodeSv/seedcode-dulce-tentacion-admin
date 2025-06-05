@@ -37,7 +37,7 @@ export default function CashCutsPage() {
           variant="bordered"
           onSelectionChange={(key) => handleChange(key as string)}
         >
-          <Tab key="general" title="General" />
+          <Tab key="general" title="Resumen" />
           <Tab key="detailed" title="Detallado" />
         </Tabs>
         <Outlet context={{ actionView }} />

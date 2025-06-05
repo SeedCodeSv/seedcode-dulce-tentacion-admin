@@ -90,6 +90,26 @@ export interface CashCutsReport {
     employee:      Employee;
 }
 
+export interface IGetCutsReportSummary {
+    ok:               boolean;
+    cash_cuts_summary: CashCutsReportSummary[];
+    total:            number;
+    totalPag:         number;
+    currentPag:       number;
+    nextPag:          number;
+    prevPag:          number;
+    status:           number;
+}
+
+export interface CashCutsReportSummary {
+    date:             string;
+    sumTotalSales:    number;
+    sumTotalCash:     number;
+    sumTotalCard:     number;
+    sumTotalOthers:   number;
+    sumCashDelivered: number;
+    sumExpenses:      number;
+}
 
 export interface SearchCutReport {
     branchId: number;

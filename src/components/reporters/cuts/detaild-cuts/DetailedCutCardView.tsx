@@ -42,13 +42,12 @@ export default function DetailedCutMovilView() {
                     <EmptyTable />
                 </div>
             ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                     {cashCutsDetailed.cash_cuts_report.map((item, index) => (
                         <Card
                             key={index}
                             className="text-sm text-slate-700 dark:text-slate-100 p-5 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 space-y-5"
                         >
-                            {/* Cajero e Info de Turno */}
                             <div className="flex flex-col gap-1">
                                 <h2 className="text-[15px] font-semibold text-slate-900 dark:text-slate-100">
                                     {item.employee.firstName} {item.employee.secondName} {item.employee.firstLastName} {item.employee.secondLastName}

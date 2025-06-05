@@ -10,7 +10,7 @@ export default function DetailedCutTable() {
 
     return (
         <TableComponent
-            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero']}
+            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero', 'Sucursal']}
         >
             {loadingDetailed ? (
                 <tr>
@@ -62,6 +62,9 @@ export default function DetailedCutTable() {
                                 <span>{item.employee.firstName} {item.employee.secondName}</span>
                                 <span>{item.employee.firstLastName} {item.employee.secondLastName}</span>
                             </div>
+                        </TdGlobal>
+                        <TdGlobal >
+                           {item.branchName}
                         </TdGlobal>
                     </tr>
                 ))

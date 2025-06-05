@@ -167,7 +167,7 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         theme: 'plain' as ThemeType,
         columnStyles: {
           0: { cellWidth: 10, halign: 'center' as HAlignType },
-          1: { cellWidth: 65 },
+          2: { cellWidth: 65 },
         },
         margin: { horizontal: 5 },
         styles: {

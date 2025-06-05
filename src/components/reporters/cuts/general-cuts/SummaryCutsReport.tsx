@@ -1,29 +1,28 @@
-import { useEffect, useState } from "react";
 import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
-import { SearchIcon } from "lucide-react";
+import { useEffect, useState } from "react";
 
-import DetailedCutTable from "./DetailedCutTable";
-import DetailedCutMovilView from "./DetailedCutCardView";
-import DetailedCutExportExcell from "./DetailedCutExportExecll";
-import DetailedCutExportPdf from "./DetailedCutExportPdf";
+import SummaryCutExportExcell from "./SummaryCutExportExecll";
+import SummaryCutExportPdf from "./SummaryCutExportPdf";
+import SummaryCutReportTable from "./SummaryCutReportTable";
 
 import RenderViewButton from "@/components/global/render-view-button";
-import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
-import { useCutReportStore } from "@/store/reports/cashCuts.store";
-import Pagination from "@/components/global/Pagination";
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
-import { limit_options } from "@/utils/constants";
+import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
 import { useBranchesStore } from "@/store/branches.store";
+import { useCutReportStore } from "@/store/reports/cashCuts.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
+import { limit_options } from "@/utils/constants";
+import Pagination from "@/components/global/Pagination";
 
-export default function DetailedCashCutReportComponent() {
-    const { onGetCashCutReportDetailed, cashCutsDetailed } = useCutReportStore()
+
+export default function GeneralCashCutReportComponent() {
+    const { onGetCashCutReportSummary, cashCutsSummary } = useCutReportStore()
     const { getBranchesList, branch_list } = useBranchesStore();
     const [branchName, setBranchName] = useState('');
     const { transmitter, gettransmitter } = useTransmitterStore();
-
     const isMovil = useIsMobileOrTablet()
     const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
+
     const currentDate = new Date();
     const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const [search, setSearch] = useState({
@@ -32,36 +31,30 @@ export default function DetailedCashCutReportComponent() {
         branchId: 0,
         dateFrom: defaultStartDate.toISOString().split('T')[0],
         dateTo: currentDate.toISOString().split('T')[0],
-        employee: '',
     });
 
     useEffect(() => {
         gettransmitter()
         getBranchesList()
-        onGetCashCutReportDetailed(search)
+        onGetCashCutReportSummary(search)
     }, [])
 
     useEffect(() => {
-        if (search.employee === '')
-            onGetCashCutReportDetailed(search)
-    }, [search.employee])
-
-    useEffect(() => {
-        onGetCashCutReportDetailed(search)
-    }, [search.limit])
+        onGetCashCutReportSummary(search)
+    }, [search])
 
     const changePage = (page: number) => {
-        onGetCashCutReportDetailed({ ...search, page });
+        onGetCashCutReportSummary({ ...search, page });
     };
 
     const options_limit = [
-        { label: 'Todos', value: cashCutsDetailed.total },
+        { label: 'Todos', value: cashCutsSummary.total },
         ...limit_options.map((option) => ({ label: option, value: option })),
     ];
 
     return (
         <>
-            <ResponsiveFilterWrapper classButtonLg="w-1/2" onApply={() => changePage(1)}>
+            <ResponsiveFilterWrapper classButtonLg="w-1/2" withButton={false}>
                 <Autocomplete
                     className="font-semibold dark:text-white w-full"
                     defaultSelectedKey={String(search.branchId)}
@@ -83,24 +76,6 @@ export default function DetailedCashCutReportComponent() {
                         </AutocompleteItem>
                     ))}
                 </Autocomplete>
-                <Input
-                    isClearable
-                    className="w-full dark:text-white"
-                    classNames={{
-                        label: 'font-semibold text-gray-700',
-                        inputWrapper: 'pr-0',
-                    }}
-                    label="Empleado"
-                    labelPlacement="outside"
-                    placeholder="Escribe para buscar..."
-                    startContent={<SearchIcon />}
-                    value={search.employee}
-                    variant="bordered"
-                    onChange={(e) => setSearch({ ...search, employee: e.target.value })}
-                    onClear={() => {
-                        setSearch({ ...search, employee: '' });
-                    }}
-                />
                 <Input
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
@@ -153,22 +128,17 @@ export default function DetailedCashCutReportComponent() {
                     <RenderViewButton setView={setView} view={view} />
                 </div>
                 <div className="flex gap-2">
-                    <DetailedCutExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
-                    <DetailedCutExportPdf branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+                    <SummaryCutExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
+                    <SummaryCutExportPdf branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
                 </div>
             </div>
-
-            {view === 'table' ?
-                <DetailedCutTable/>
-                :
-                <DetailedCutMovilView />
-            }
-            {cashCutsDetailed.totalPag > 1 && (
+            <SummaryCutReportTable />
+            {cashCutsSummary.totalPag > 1 && (
                 <Pagination
-                    currentPage={cashCutsDetailed.currentPag}
-                    nextPage={cashCutsDetailed.nextPag}
-                    previousPage={cashCutsDetailed.prevPag}
-                    totalPages={cashCutsDetailed.totalPag}
+                    currentPage={cashCutsSummary.currentPag}
+                    nextPage={cashCutsSummary.nextPag}
+                    previousPage={cashCutsSummary.prevPag}
+                    totalPages={cashCutsSummary.totalPag}
                     onPageChange={(page) => changePage(page)}
                 />
             )}
