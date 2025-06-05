@@ -10,6 +10,7 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
     worksheet.columns = [
         { header: 'Fecha', key: 'fecEmi', width: 15 },
         { header: 'Hora', key: 'horEmi', width: 10 },
+        { header: 'Número de Control', key: 'controlNumber', width: 20 },
         { header: 'Total No Sujeto', key: 'totalNoSuj', width: 15 },
         { header: 'Total Exenta', key: 'totalExenta', width: 15 },
         { header: 'Total Gravada', key: 'totalGravada', width: 15 },
@@ -83,6 +84,7 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
         worksheet.insertRow(rowIndex++, {
             fecEmi: sale.fecEmi,
             horEmi: sale.horEmi,
+            controlNumber: sale.numeroControl || 'N/D',
             totalNoSuj: Number(sale.totalNoSuj),
             totalExenta: Number(sale.totalExenta),
             totalGravada: Number(sale.totalGravada),
@@ -103,33 +105,35 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
             branch: saleData.branch,
         });
     });
+    ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
+        .forEach((col) => {
+            worksheet.getColumn(col).numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
+        });
 
-    ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P'].forEach((col) => {
-        worksheet.getColumn(col).numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
-    });
 
     const totalRowNumber = worksheet.rowCount + 1;
 
     const totalRow = worksheet.addRow([
-        'Total General:', '',
-
-        { formula: `SUBTOTAL(9,C4:C${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,D4:D${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,E4:E${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,F4:F${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,G4:G${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,H4:H${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,I4:I${totalRowNumber - 1})` }, 
+        'Total General:',
+        '',
+        '',
+        { formula: `SUBTOTAL(9,D4:D${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,E4:E${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,F4:F${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,G4:G${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,H4:H${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,I4:I${totalRowNumber - 1})` },
         { formula: `SUBTOTAL(9,J4:J${totalRowNumber - 1})` },
-        { formula: `SUBTOTAL(9,K4:K${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,L4:L${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,M4:M${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,N4:N${totalRowNumber - 1})` }, 
-        { formula: `SUBTOTAL(9,O4:O${totalRowNumber - 1})` }, 
-        '', '', '', '',''
+        { formula: `SUBTOTAL(9,K4:K${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,L4:L${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,M4:M${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,N4:N${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,O4:O${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,P4:P${totalRowNumber - 1})` },
+        '', '', '', '', ''
     ]);
 
-    const moneyColumns = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    const moneyColumns = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
     totalRow.eachCell((cell, colNumber) => {
         cell.fill = {
