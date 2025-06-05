@@ -8,14 +8,31 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
     const worksheet = workbook.addWorksheet('Ventas');
 
     worksheet.columns = [
-        { header: 'Fecha', key: 'fecEmi', width: 20 },
-        { header: 'Número Control', key: 'numeroControl', width: 35 },
-        { header: 'Monto Total', key: 'montoTotal', width: 30 },
+        { header: 'Fecha', key: 'fecEmi', width: 15 },
+        { header: 'Hora', key: 'horEmi', width: 10 },
+        { header: 'Número de Control', key: 'controlNumber', width: 20 },
+        { header: 'Total No Sujeto', key: 'totalNoSuj', width: 15 },
+        { header: 'Total Exenta', key: 'totalExenta', width: 15 },
+        { header: 'Total Gravada', key: 'totalGravada', width: 15 },
+        { header: 'Subtotal Ventas', key: 'subTotalVentas', width: 15 },
+        { header: 'Desc. No Suj', key: 'descuNoSuj', width: 15 },
+        { header: 'Desc. Exenta', key: 'descuExenta', width: 15 },
+        { header: 'Desc. Gravada', key: 'descuGravada', width: 15 },
+        { header: '% Descuento', key: 'porcentajeDescuento', width: 12 },
+        { header: 'Total Descuento', key: 'totalDescu', width: 15 },
+        { header: 'Subtotal', key: 'subTotal', width: 15 },
+        { header: 'Total IVA', key: 'totalIva', width: 15 },
+        { header: 'Monto Total Op.', key: 'montoTotalOperacion', width: 18 },
+        { header: 'Total a Pagar', key: 'totalPagar', width: 15 },
+        { header: 'Total en Letras', key: 'totalLetras', width: 30 },
+        { header: 'Código Punto de Venta', key: 'codePOS', width: 20 },
+        { header: 'Tipo Comprobante', key: 'typeVoucher', width: 20 },
+        { header: 'Descripción', key: 'description', width: 30 },
         { header: 'Sucursal', key: 'branch', width: 30 },
     ];
+
     const lastColLetter = worksheet.getColumn(worksheet.columns.length).letter;
 
-    // TITULO
     worksheet.mergeCells(`A1:${lastColLetter}1`);
     const titleCell = worksheet.getCell('A1');
 
@@ -28,7 +45,6 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
         fgColor: { argb: 'FF4682B4' },
     };
 
-    // SUBTITULO
     worksheet.mergeCells(`A2:${lastColLetter}2`);
     const subtitleCell = worksheet.getCell('A2');
 
@@ -41,7 +57,6 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
         fgColor: { argb: 'FF4682B4' },
     };
 
-    // 🔁 INSERCIÓN DE ENCABEZADOS ANTES DE LOS DATOS
     worksheet.insertRow(3, worksheet.columns.map(col => col.header));
     const headerRow = worksheet.getRow(3);
 
@@ -60,32 +75,65 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
         to: { row: 3, column: worksheet.columns.length },
     };
 
-    // 👇 Insertar datos DESPUÉS de encabezado
     let rowIndex = 4;
-    
-    sales.forEach((sale) => {
 
+    sales.forEach((saleData) => {
+        const sale = saleData.sale;
+        const pointOfSale = sale?.box?.pointOfSale;
 
         worksheet.insertRow(rowIndex++, {
             fecEmi: sale.fecEmi,
-            numeroControl: sale.numeroControl,
-            montoTotal: sale.montoTotal,
-            branch: sale.branch,
+            horEmi: sale.horEmi,
+            controlNumber: sale.numeroControl || 'N/D',
+            totalNoSuj: Number(sale.totalNoSuj),
+            totalExenta: Number(sale.totalExenta),
+            totalGravada: Number(sale.totalGravada),
+            subTotalVentas: Number(sale.subTotalVentas),
+            descuNoSuj: Number(sale.descuNoSuj),
+            descuExenta: Number(sale.descuExenta),
+            descuGravada: Number(sale.descuGravada),
+            porcentajeDescuento: Number(sale.porcentajeDescuento),
+            totalDescu: Number(sale.totalDescu),
+            subTotal: Number(sale.subTotal),
+            totalIva: Number(sale.totalIva),
+            montoTotalOperacion: Number(sale.montoTotalOperacion),
+            totalPagar: Number(sale.totalPagar),
+            totalLetras: sale.totalLetras,
+            codePOS: pointOfSale?.code || 'N/D',
+            typeVoucher: pointOfSale?.typeVoucher || 'N/D',
+            description: pointOfSale?.description || 'N/D',
+            branch: saleData.branch,
         });
     });
+    ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q']
+        .forEach((col) => {
+            worksheet.getColumn(col).numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
+        });
 
-    worksheet.getColumn('C').numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
 
-    // FILA DE TOTAL
     const totalRowNumber = worksheet.rowCount + 1;
+
     const totalRow = worksheet.addRow([
         'Total General:',
         '',
-        { formula: `SUBTOTAL(9,C4:C${totalRowNumber - 1})` },
         '',
+        { formula: `SUBTOTAL(9,D4:D${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,E4:E${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,F4:F${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,G4:G${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,H4:H${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,I4:I${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,J4:J${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,K4:K${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,L4:L${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,M4:M${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,N4:N${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,O4:O${totalRowNumber - 1})` },
+        { formula: `SUBTOTAL(9,P4:P${totalRowNumber - 1})` },
+        '', '', '', '', ''
     ]);
 
-
+    const moneyColumns = [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
     totalRow.eachCell((cell, colNumber) => {
         cell.fill = {
@@ -96,7 +144,7 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
         cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
         cell.alignment = { vertical: 'middle', horizontal: 'center' };
 
-        if (colNumber === 3) {
+        if (moneyColumns.includes(colNumber)) {
             cell.numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
         }
     });
@@ -106,5 +154,3 @@ export async function exportSalesExcel(sales: SaleDetailsReport[], startDate: st
 
     saveAs(new Blob([buffer]), `Ventas_Por_Periodos_${date}.xlsx`);
 }
-
-
