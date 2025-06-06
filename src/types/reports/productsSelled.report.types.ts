@@ -1,3 +1,5 @@
+import { IPagination } from "../global.types";
+
 export interface IGetSummaryTotalProductsSelled {
     ok:      boolean;
     summary: Summary[];
@@ -10,15 +12,8 @@ export interface Summary {
 }
 
 
-export interface IGetProductsSelled {
-    ok:               boolean;
+export interface IGetProductsSelled extends IPagination{
     products_sellled: ProductsSellled[];
-    total:            number;
-    totalPag:         number;
-    currentPag:       number;
-    nextPag:          number;
-    prevPag:          number;
-    status:           number;
 }
 
 export interface ProductsSellled {

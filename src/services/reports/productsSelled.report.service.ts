@@ -3,9 +3,9 @@ import axios from "axios";
 import { get_token } from "@/storage/localStorage";
 import { IGetProductsSelled, IGetSummaryTotalProductsSelled, SearchReport } from "@/types/reports/productsSelled.report.types";
 
-export const get_cuts_report = async (params: SearchReport) => {
+export const get_products_selled_by_dates = async (params: SearchReport) => {
   const token = get_token() ?? '';
-  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&productName=${params.productName}`;
+  const url = import.meta.env.VITE_API_URL + `/reports/products-selled-by-dates/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&productName=${params.productName}`;
 
   const response = await axios.get<IGetProductsSelled>(url, {
     headers: {
@@ -17,9 +17,9 @@ export const get_cuts_report = async (params: SearchReport) => {
 }
 
 
-export const get_cuts_report_summary = async (params: SearchReport) => {
+export const get_products_selled_summary = async (params: SearchReport) => {
   const token = get_token() ?? '';
-  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts-summary/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}`;
+  const url = import.meta.env.VITE_API_URL + `/reports/products-selled-summary/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}`;
 
   const response = await axios.get<IGetSummaryTotalProductsSelled>(url, {
     headers: {
