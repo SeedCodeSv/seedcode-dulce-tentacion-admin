@@ -167,7 +167,6 @@ function ContingenceFC_CCF() {
         correlativesDte!.codPuntoVenta,
         correlativesDte!.tipoEstablecimiento
       );
-
       const firma = await firmarDocumentoContingencia(contingence_send);
       const send = { nit: transmitter.nit, documento: firma.data.body };
 

@@ -178,7 +178,8 @@
         "Mostrar",
         "Agregar",
         "Editar",
-        "Eliminar"
+        "Eliminar",
+        "Exportar Excel"
       ]
     },
     {
@@ -411,7 +412,8 @@
     {
       "view": "Ver invalidaciones",
       "actions": [
-        "Mostrar"
+        "Mostrar",
+        "Exportar Excel"
       ]
     }
   ]
