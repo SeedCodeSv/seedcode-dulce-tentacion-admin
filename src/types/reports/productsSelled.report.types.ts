@@ -1,31 +1,32 @@
 import { IPagination } from "../global.types";
 
 export interface IGetSummaryTotalProductsSelled {
-    ok:      boolean;
+    ok: boolean;
     summary: Summary[];
-    status:  number;
+    totals: Totals;
+    status: number;
 }
 
 export interface Summary {
-    branchName: string;
-    total:      number;
+    date: string;
+    totalGeneral: number;
+      [branchName: string]: number | string;
 }
 
-
-export interface IGetProductsSelled extends IPagination{
+export interface IGetProductsSelled extends IPagination {
     products_sellled: ProductsSellled[];
 }
 
 export interface ProductsSellled {
-    date:        string;
-    branchName:  string;
-    code:        string;
+    date: string;
+    branchName: string;
+    code: string;
     productName: string;
     unitMessure: string;
-    quantity:    number;
-    price:       number;
-    total:       number;
-    category:    string;
+    quantity: number;
+    price: number;
+    total: number;
+    category: string;
 }
 
 
@@ -37,3 +38,8 @@ export interface SearchReport {
     endDate?: string;
     productName?: string;
 }
+interface Totals {
+    [branchName: string]: number;
+}
+
+

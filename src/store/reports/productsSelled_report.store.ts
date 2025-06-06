@@ -12,22 +12,25 @@ export const useProductsOrdersReportStore = create<IProductSelledStore>((set) =>
         ...initialPagination,
         products_sellled: []
     },
-    products_selled_summary: {
-        ...initialPagination,
-        summary: []
+    summary_products_selled: {
+        ok: false,
+        status: 404,
+        summary: [],
+        totals: {}
     },
     getProductSelledSummary(params) {
         get_products_selled_summary(params).then((data) => {
-            set({ products_selled_summary: data })
-        })
-            .catch(() => {
-                set({
-                    products_selled_summary: {
-                        ...initialPagination,
-                        summary: []
-                    }
-                })
+            set({ summary_products_selled: data })
+        }).catch(() => {
+            set({
+                summary_products_selled: {
+                    ok: false,
+                    status: 404,
+                    summary: [],
+                    totals: {}
+                }
             })
+        })
     },
     getProductsSelled(params) {
         get_products_selled_by_dates(params).then((data) => {
