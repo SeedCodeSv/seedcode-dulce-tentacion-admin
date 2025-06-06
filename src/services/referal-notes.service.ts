@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
+import { IExportExcel, IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -10,7 +10,7 @@ export const get_referal_notes = (
   startDate: string,
   endDate: string,
   type: string,
-  branchId:number
+  branchId: number
 ) => {
   const params = new URLSearchParams({
     startDate: startDate,
@@ -18,13 +18,17 @@ export const get_referal_notes = (
     page: page.toString(),
     limit: limit.toString(),
     type: type,
-    branchId:branchId.toString()
+    branchId: branchId.toString()
   });
 
   return axios.get<IGetReferalNotes>(
     API_URL + '/referal-note/paginated/' + transmitterId + '?' + params.toString()
   );
 };
+
+export const export_referal_note = async (transmitterId: number, page: number, limit: number, startDate: string, endDate: string, type: string, branchId: number) => {
+  return await axios.get<IExportExcel>(`${API_URL}/referal-note/export-notes-referal/${transmitterId}?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}&type=${type}&branchId=${branchId}`)
+}
 
 export const complete_referal_note = async (id: number, payload: PayloadReferel) => {
   return (await axios.post<{ ok: boolean }>(API_URL + `/referal-note/receive/${id}`, payload)).data;

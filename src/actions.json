@@ -368,7 +368,7 @@
         "Cancelar"
       ]
     },
-     {
+    {
       "view": "Ordenes de Productos",
       "actions": [
         "Mostrar",
@@ -406,7 +406,8 @@
       "actions": [
         "Mostrar",
         "Completar",
-        "Ver comprobante"
+        "Ver comprobante",
+        "Exportar Excel"
       ]
     },
     {
