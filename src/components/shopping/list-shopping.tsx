@@ -178,7 +178,7 @@ function ShoppingPage({ actions }: ArrayAction) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+      <DivGlobal>
         <div className="flex flex-row-reverse lg:flex-col mt-3 w-full px-5">
           <div className="flex justify-end mt-0 flex-grow">
             {actions.includes('Agregar') && (

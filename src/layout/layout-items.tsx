@@ -29,13 +29,17 @@ import {
   ListOrdered,
   ArrowDownUp,
   ShoppingBasket,
-  FileCog
+  FileCog,
+  ClipboardList,
+  FileBox,
+  ScanBarcode
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { motion } from 'framer-motion';
 import { Barcode } from 'lucide-react';
 import { FaChartLine } from 'react-icons/fa';
+import { TbCashRegister } from 'react-icons/tb';
 
 import LOGO from '../assets/dulce-logo.png';
 import { ThemeContext } from '../hooks/useTheme';
@@ -110,6 +114,12 @@ export const LayoutItems = (props: Props) => {
       to: '/production-orders',
       icon: ListOrdered,
       label: 'Ordenes de producción',
+    },
+    {
+      viewName: 'Ordenes de Productos',
+      to: '/order-products',
+      icon: FileBox,
+      label: 'Ordenes de Productos',
     },
     {
       viewName: 'Compras',
@@ -221,17 +231,35 @@ export const LayoutItems = (props: Props) => {
       icon: DatabaseBackup,
       label: 'Contingencias',
     },
+     {
+      viewName: 'Reporte ordenes de producción',
+      to: '/OP-report',
+      icon: ClipboardList,
+      label: 'Ordenes de Producción',
+    },
+    {
+      viewName: 'Productos Vendidos',
+      to: '/products-selled',
+      label: 'Productos vendidos',
+      icon: ScanBarcode,
+    },
     {
       viewName: 'Movimientos',
       to: '/movement',
       icon: ArrowDownUp,
       label: 'Movimientos',
     },
-    {
+     {
       viewName: 'Kardex',
-      to: '/kardex-inventory',
-      icon: List,
+      to: '/kardex',
       label: 'Kardex',
+      icon: List,
+    },
+    {
+      viewName: 'Cortes',
+      to: '/cash-cuts',
+      label: 'Cortes',
+      icon: TbCashRegister,
     },
     {
       viewName: 'Ver invalidaciones',

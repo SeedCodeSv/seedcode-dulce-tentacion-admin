@@ -31,3 +31,14 @@ export const RenderStatus = ({ status }: { status: Status }) => {
     </div>
   );
 };
+
+export const RenderIconStatus = ({ status }: { status: Status }) => {
+  return (
+    <div className="flex">
+        <span className="text-xs max-w-24 flex justify-between w-full">{status}{status === 'En Proceso' && <Settings className="text-blue-400" size={20} />}
+          {status === 'Abierta' && <Clock className="text-yellow-400" size={20} />}
+          {status === 'Cancelada' && <X className="text-red-400" size={20} />}
+          {status === 'Completada' && <Check className="text-green-400" size={20} />}</span>
+    </div>
+  );
+};

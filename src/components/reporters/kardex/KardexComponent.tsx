@@ -8,6 +8,7 @@ import {
 import { SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Lottie from 'lottie-react';
+import { useOutletContext } from 'react-router';
 
 import KardexTable from './TableKardex';
 import MobileViewKardex from './KardexCardView';
@@ -22,51 +23,55 @@ import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { Branches } from '@/types/branches.types';
 import Pagination from '@/components/global/Pagination';
-import { Kardex } from '@/types/reports/reportKardex.types';
-import { useDebounce } from '@/hooks/useDebounce';
+import { DataKardex } from '@/types/reports/reportKardex.types';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
 import LoadingTable from '@/components/global/LoadingTable';
 import DivGlobal from '@/themes/ui/div-global';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import RenderViewButton from '@/components/global/render-view-button';
 
-interface PProps {
-  actions: string[];
-}
+type ContextType = {
+  actionView: string[];
+};
 
-export default function KardexComponent({ actions }: PProps) {
+export default function KardexComponent() {
+  const { actionView } = useOutletContext<ContextType>();
+
   const user = get_user();
   const { transmitter, gettransmitter } = useTransmitterStore();
 
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { OnGetReportKardex, pagination_kardex, loading } = useReportKardex();
+  const { pagination_kardex, loading, getReportKardexGeneral } = useReportKardex();
   const { windowSize } = useWindowSize();
-  const [data, setData] = useState<Kardex[]>([]);
+  const [data, setData] = useState<DataKardex[]>([]);
   const [branch, setBranch] = useState<Branches>();
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
 
+  const currentDate = new Date();
+  const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const [search, setSearch] = useState({
     limit: 20,
     name: '',
     branch: user?.branchId ?? 0,
+    startDate: defaultStartDate.toISOString().split('T')[0],
+    endDate: currentDate.toISOString().split('T')[0],
   });
-
-  const debounceName = useDebounce(search.name, 300);
 
   useEffect(() => {
     gettransmitter();
     getBranchesList();
+    getReportKardexGeneral(Number(search.branch), 1, search.limit, search.name, search.startDate, search.endDate);
   }, []);
 
-  useEffect(() => {
-    OnGetReportKardex(Number(search.branch), 1, search.limit, search.name);
-  }, [search.branch, search.limit]);
+  const handleSearch = () => {
+    getReportKardexGeneral(Number(search.branch), 1, search.limit, search.name, search.startDate, search.endDate);
+  }
 
   const changePage = (page: number) => {
-    OnGetReportKardex(Number(search.branch), page, search.limit, search.name);
+    getReportKardexGeneral(Number(search.branch), page, search.limit, search.name, search.startDate, search.endDate);
   };
 
   const options_limit = [
@@ -82,15 +87,10 @@ export default function KardexComponent({ actions }: PProps) {
     }
   }, [branch_list]);
 
-  useEffect(() => {
-    OnGetReportKardex(Number(search.branch), 1, search.limit, search.name);
-  }, [debounceName]);
-
-
   return (
-    <DivGlobal className="flex flex-col h-full overflow-y-auto">
+    <DivGlobal className="flex flex-col h-full overflow-y-auto pt-1">
       <div className="my-3 flex gap-5 justify-between lg:flex-col items-end">
-        <ResponsiveFilterWrapper withButton={false}>
+        <ResponsiveFilterWrapper classButtonLg='col-start-4 justify-self-end w-1/2' classLg='grid grid-cols-4 w-full gap-4 items-end justify-end' onApply={() => handleSearch()}>
           <Autocomplete
             className="font-semibold dark:text-white w-full"
             defaultSelectedKey={String(search.branch)}
@@ -134,6 +134,30 @@ export default function KardexComponent({ actions }: PProps) {
               setSearch({ ...search, name: '' });
             }}
           />
+          <Input
+            className="dark:text-white"
+            classNames={{ label: 'font-semibold' }}
+            label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
+            value={search.startDate}
+            variant="bordered"
+            onChange={(e) => {
+              setSearch({ ...search, startDate: e.target.value });
+            }}
+          />
+          <Input
+            className="dark:text-white"
+            classNames={{ label: 'font-semibold' }}
+            label="Fecha final"
+            labelPlacement="outside"
+            type="date"
+            value={search.endDate}
+            variant="bordered"
+            onChange={(e) => {
+              setSearch({ ...search, endDate: e.target.value });
+            }}
+          />
           <Select
             disallowEmptySelection
             className="w-full dark:text-white "
@@ -157,17 +181,17 @@ export default function KardexComponent({ actions }: PProps) {
           </Select>
         </ResponsiveFilterWrapper>
         <div className="w-full flex gap-5 justify-between items-end">
-        <RenderViewButton isList setView={setView} view={view} />
-        {view === 'table' && (
-          <div className="flex gap-3">
-            {actions.includes('Descargar PDF') && (
-            <DownloadPDFButton branch={branch!} tableData={data} transmitter={transmitter} />
-            )}
-            {actions.includes('Exportar Excel') && (
-            <KardexExportExcell  branch={branch!} tableData={data} transmitter={transmitter} />
-            )}
-          </div>
-        )}
+          <RenderViewButton isList setView={setView} view={view} />
+          {view === 'table' && (
+            <div className="flex gap-3">
+              {JSON.stringify(actionView).includes('Descargar PDF') && (
+                <DownloadPDFButton branch={branch!} tableData={data} transmitter={transmitter} />
+              )}
+              {JSON.stringify(actionView).includes('Exportar Excel') && (
+                <KardexExportExcell branch={branch!} tableData={data} transmitter={transmitter} />
+              )}
+            </div>
+          )}
         </div>
       </div>
       {view === 'grid' && (
@@ -177,7 +201,7 @@ export default function KardexComponent({ actions }: PProps) {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />
@@ -195,7 +219,7 @@ export default function KardexComponent({ actions }: PProps) {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actions} branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IGetRecenReferal, IGetReferalNotes, PayloadReferel } from '@/types/referal-note.types';
+import { IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -8,15 +8,17 @@ export const get_referal_notes = (
   page: number,
   limit: number,
   startDate: string,
-  endDate: string, 
-  type: string
+  endDate: string,
+  type: string,
+  branchId:number
 ) => {
   const params = new URLSearchParams({
     startDate: startDate,
     endDate: endDate,
     page: page.toString(),
     limit: limit.toString(),
-    type: type
+    type: type,
+    branchId:branchId.toString()
   });
 
   return axios.get<IGetReferalNotes>(
@@ -41,3 +43,16 @@ export const get_referal_note_recent = (id: number) => {
 }
 
 
+export const get_list_referal_note = (id: number, page: number, limit: number, important: boolean) => {
+  const value = important === true && 1 || important === false && 0
+
+  return axios.get<IResponseNote>(API_URL + `/referal-note/notes-referals-by-branch/${id}?page=${page}&limit=${limit}&important=${value}`)
+}
+
+export const get_invalidate_note_referaL = (id: number, page: number, limit: number) => {
+  return axios.get<IResponseNoteInvali>(API_URL + `/referal-note/list-invalidate/${id}?page=${page}&limit=${limit}`)
+}
+
+export const detail_referal_note = (id: number) => {
+  return axios.get<IResponseDetailNote>(`${API_URL}/referal-note/detail-note/${id}`)
+}

@@ -24,6 +24,8 @@ export const HandleSendToMhShippingNote = ({
   setTitleMessage,
   receivingBranchId,
   receivingEmployeeId,
+  socket,
+  branchIssuingId
 }: IPropSendToMhShippingNote) => {
   setCurrentState(steps[1].title);
 
@@ -65,6 +67,8 @@ export const HandleSendToMhShippingNote = ({
           employeeId,
           receivingBranchId,
           receivingEmployeeId,
+          socket:socket,
+          branchIssuingId:branchIssuingId
         });
       })
       .catch(async (error: AxiosError<SendMHFailed>) => {

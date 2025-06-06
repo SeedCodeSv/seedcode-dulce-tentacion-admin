@@ -30,6 +30,7 @@ function List() {
 
     const actions = useMemo(() => returnActionsByView('Control de existencias'), [roleActions]);
     const [state, setState] = useState('')
+    const [branchId] = useState(0)
     const [startDate, setStartDate] = useState(formatDate());
     const [endDate, setEndDate] = useState(formatDate());
     const [limit, setLimit] = useState<number>(10)
@@ -49,7 +50,7 @@ function List() {
     const modalComplete = useDisclosure()
 
     useEffect(() => {
-        onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state);
+        onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state, branchId);
     }, [startDate, endDate, limit, state]);
 
     const styles = useGlobalStyles();
@@ -317,7 +318,7 @@ function List() {
                                     previousPage={pagination_referal_notes.prevPag}
                                     totalPages={pagination_referal_notes.totalPag}
                                     onPageChange={(page) => {
-                                        onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state);
+                                        onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state, branchId);
                                     }}
                                 />
                             </div>
@@ -331,7 +332,8 @@ function List() {
                                             10,
                                             startDate,
                                             endDate,
-                                            state
+                                            state,
+                                            branchId
                                         );
                                     }}
                                     handlePrev={() => {
@@ -341,7 +343,8 @@ function List() {
                                             10,
                                             startDate,
                                             endDate,
-                                            state
+                                            state,
+                                            branchId
                                         );
                                     }}
                                     totalPages={pagination_referal_notes.totalPag}

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { get_token } from '@/storage/localStorage';
-import { IReportKardex, IResponseDetailsByProduct } from '@/types/reports/reportKardex.types';
+import { IReportKardex, IReportKardexByProduct, IReportKardexGeneral, IResponseDetailsByProduct } from '@/types/reports/reportKardex.types';
 
 
 export const get_kardex_report = (id: number, page: number, limit: number, name: string) => {
@@ -28,4 +28,52 @@ export const get_adjustments_by_product = (id: number) => {
       },
     }
   );
+};
+
+export const get_kardex_report_by_product = async (
+  id: number,
+  page: number,
+  limit: number,
+  productName: string = '',
+  startDate: string = '',
+  endDate: string = '',
+  branchProductId: number = 0,
+) => {
+  const token = get_token() ?? '';
+
+  return (
+    await axios.get<IReportKardexByProduct>(
+      import.meta.env.VITE_API_URL +
+      `/reports/kardex-by-product/${id}?page=${page}&limit=${limit}&branchProductId=${branchProductId}&startDate=${startDate}&endDate=${endDate}&productName=${productName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+  ).data;
+};
+
+
+export const get_kardex_report_general = async (
+  branchId: number,
+  page: number,
+  limit: number,
+  name: string = '',
+  dateFrom: string = '',
+  dateTo: string = ''
+) => {
+  const token = get_token() ?? '';
+
+  const url =
+    import.meta.env.VITE_API_URL +
+    `/reports/kardex/general/${branchId}?page=${page}&limit=${limit}&name=${name}&dateFrom=${dateFrom}&dateTo=${dateTo}`;
+
+  const response = await axios.get<IReportKardexGeneral>(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
 };

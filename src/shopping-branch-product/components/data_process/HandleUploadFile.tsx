@@ -24,7 +24,9 @@ export const HandleUploadFile = async ({
   customerId,
   employeeId,
   receivingBranchId,
-  receivingEmployeeId
+  receivingEmployeeId,
+    socket,
+  branchIssuingId
 }: IPropHadleUploadFile) => {
   setCurrentState(steps[2].title);
 
@@ -69,6 +71,8 @@ export const HandleUploadFile = async ({
       employeeId: employeeId ?? 0,
       receivingBranchId: receivingBranchId ?? 0,
       receivingEmployeeId: receivingEmployeeId ?? 0,
+        socket:socket,
+  branchIssuingId:branchIssuingId
     });
   } catch (error: unknown) {
     if (error instanceof Error) {

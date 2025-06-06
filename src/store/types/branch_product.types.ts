@@ -16,6 +16,7 @@ import { FC_CuerpoDocumentoItems } from '@/types/svf_dte/fc.types';
 export interface IBranchProductStore {
   branch_products: BranchProduct[];
   pagination_branch_products: IGetBranchProductPaginated;
+  branchProductsFilteredList: BranchProduct[];
   cart_products: ICartProduct[];
   branch_product_order: IBranchProductOrder[];
   order_branch_products: IBranchProductOrderQuantity[];
@@ -26,6 +27,7 @@ export interface IBranchProductStore {
   branchProductRecipeSupplier: BranchProductRecipeSupplier[];
   loadingBranchProductRecipe: boolean;
   branchProductRecipePaginated: IPagination;
+  getBranchProductsFilteredList: (params: { branchId: number; productName?: string }) => void;
   getBranchProductsRecipe: (
     id: number,
     page: number,

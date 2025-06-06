@@ -1,3 +1,5 @@
+import { Employee } from "./employees.types";
+
 export interface ZCashCutsResponse {
     Ticket: {
         inicio: number;
@@ -39,9 +41,6 @@ export interface IZCashCutsStore {
 
 }
 
-
-
-
 export interface CloseZ {
     posId: number;
     numberCut: number;
@@ -62,4 +61,62 @@ export interface CloseZ {
     totalDevTkt: number;
     totalGeneral: number;
   }
+
+  export interface IGetCutsReport {
+    ok:               boolean;
+    cash_cuts_report: CashCutsReport[];
+    total:            number;
+    totalPag:         number;
+    currentPag:       number;
+    nextPag:          number;
+    prevPag:          number;
+    status:           number;
+}
+
+export interface CashCutsReport {
+    startDate:     string;
+    statTime:      string;
+    endDate:       string;
+    endTime:       string;
+    totalSales:    string;
+    totalCash:     string;
+    totalCard:     string;
+    totalOthers:   string;
+    expenses:      string;
+    pettyCash:     string;
+    cashDelivered: string;
+    difference:    string;
+    branchName:    string;
+    employee:      Employee;
+}
+
+export interface IGetCutsReportSummary {
+    ok:               boolean;
+    cash_cuts_summary: CashCutsReportSummary[];
+    total:            number;
+    totalPag:         number;
+    currentPag:       number;
+    nextPag:          number;
+    prevPag:          number;
+    status:           number;
+}
+
+export interface CashCutsReportSummary {
+    date:             string;
+    sumTotalSales:    number;
+    sumTotalCash:     number;
+    sumTotalCard:     number;
+    sumTotalOthers:   number;
+    sumCashDelivered: number;
+    sumExpenses:      number;
+}
+
+export interface SearchCutReport {
+    branchId: number;
+    page: number;
+    limit: number;
+    dateFrom?: string;
+    dateTo?: string;
+    employee?: string;
+}
   

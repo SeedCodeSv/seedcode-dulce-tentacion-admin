@@ -145,7 +145,7 @@ function ProductionOrders() {
 
   return (
     <Layout title="Ordenes de producción">
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal>
           <ResponsiveFilterWrapper withButton={false}>
           <Input
             className='dark:text-white'

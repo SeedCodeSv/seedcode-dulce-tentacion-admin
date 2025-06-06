@@ -2,13 +2,15 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
+import { persist } from 'zustand/middleware'
 
-import { ReferalNoteStore } from './types/referal-notes.types.store';
+import { IReferalNoteStore, ReferalNoteStore } from './types/referal-notes.types.store';
 
-import { complete_referal_note, get_referal_note_recent, get_referal_notes } from '@/services/referal-notes.service';
+import { complete_referal_note, detail_referal_note, get_list_referal_note, get_referal_note_recent, get_referal_notes } from '@/services/referal-notes.service';
 import { s3Client } from '@/plugins/s3';
 import { SPACES_BUCKET } from '@/utils/constants';
 import { SVFC_NRE_Firmado } from '@/types/svf_dte/nre.types';
+import { IPagination } from '@/types/global.types';
 
 export const useReferalNote = create<ReferalNoteStore>((set) => ({
   referalNotes: [],
@@ -21,13 +23,17 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
     status: 404,
     ok: false,
   },
+  hasNewNotification: false,
+  referalNote: [],
+  detailNoteReferal: [],
   loading: false,
   json_referal_note_copy: undefined,
   json_referal_note: undefined,
   recentReferalNote: [],
-  onGetReferalNotes: (id, page, limit, startDate, endDate, state) => {
+  pagination_referal_notesNot: {} as IPagination,
+  onGetReferalNotes: (id, page, limit, startDate, endDate, state, branchId) => {
     set({ loading: true });
-    get_referal_notes(id, page, limit, startDate, endDate, state)
+    get_referal_notes(id, page, limit, startDate, endDate, state, branchId)
       .then(({ data }) => {
         if (data.referalNotes.length > 0) {
           set({
@@ -128,6 +134,59 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
           recentReferalNote: []
         })
       })
-  }
+  },
+  async getReferalNoteByBranch(id, page, limit, important) {
+    return get_list_referal_note(id, page, limit, important).then(({ data }) => {
+      set({
+        referalNote: data.NoteRerefal,
+        pagination_referal_notesNot: {
+          total: data.total,
+          totalPag: data.totalPag,
+          currentPag: data.currentPag,
+          nextPag: data.nextPag,
+          prevPag: data.prevPag,
+          status: data.status,
+          ok: data.ok
+        }
+      })
+    }).catch(() => [
+      set({
+        referalNote: [],
+        pagination_referal_notesNot: {} as IPagination
+      })
+    ])
+  },
+  async getDetailNote(id) {
+    return detail_referal_note(id).then(({ data }) => {
+      set({
+        detailNoteReferal: data.detailNote
+      })
+    }).catch(() => {
+      set({
+        detailNoteReferal: []
+      })
+    })
+  },
+  setHasNewNotification: (value) => set({ hasNewNotification: value }),
 
 }));
+
+
+
+export const useReferalNoteStore = create<IReferalNoteStore>()(
+  persist(
+    (set) => ({
+      INVALIDATIONS_NOTIFICATIONS: [],
+      saveNotifications: (data) => {
+        const oneDay = 1000 * 60 * 60 * 24;
+        const now = Date.now();
+        const filtered = data.filter(n => now - n.timestamp < oneDay);
+        
+        set({ INVALIDATIONS_NOTIFICATIONS: filtered });
+      },
+    }),
+    {
+      name: 'referal-note-storage',
+    }
+  )
+);

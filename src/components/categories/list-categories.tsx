@@ -67,7 +67,7 @@ function ListCategories({ actions }: PProps) {
   };
 
   return (
-    <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+    <DivGlobal>
       <div className="flex justify-between gap-5">
         <div className="flex gap-5">
           <Input

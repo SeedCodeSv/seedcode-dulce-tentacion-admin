@@ -29,7 +29,7 @@ const ProductList: React.FC<ProductListProps> = ({ order }) => {
             : "bg-red-100 text-red-800"
         }`}>
           {canFulfillAll 
-            ? "Todos los productos pueden ser producidos" 
+            ? "El producto puede ser producido" 
             : "Stock insuficiente para algunos insumos"}
         </div>
       </div>

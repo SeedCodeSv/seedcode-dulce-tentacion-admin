@@ -12,6 +12,7 @@ import {
   get_product_recipe_book,
   get_product_by_id,
   get_products_and_recipe,
+  get_product_list_search,
 } from '../services/products.service';
 import { messages } from '../utils/constants';
 import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-item.service';
@@ -21,6 +22,7 @@ import { IProductsStore } from './types/products.store';
 export const useProductsStore = create<IProductsStore>((set, get) => ({
   cat_011_tipo_de_item: [],
   products_list: [],
+  productsFilteredList: [],
   paginated_products: {
     products: [],
     total: 0,
@@ -195,4 +197,15 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
         set({ recipeBook: null, loadingRecipeBook: false });
       });
   },
+    async getProductsFilteredList(params) {
+      try {
+        const res = await get_product_list_search(params);
+  
+        if (!res.ok) return set({ productsFilteredList: [] });
+  
+        set({ productsFilteredList: res.products });
+      } catch {
+        set({ productsFilteredList: [] });
+      }
+    },
 }));

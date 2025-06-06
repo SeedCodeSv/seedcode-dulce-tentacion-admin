@@ -103,7 +103,7 @@ function CreateTheme(props: Props) {
   };
 
   return (
-    <DivGlobal className="w-full h-full overflow-y-auto p-5 dark:border-gray-700 shadow border">
+    <DivGlobal>
       <div className="pb-10">
         <div className="flex justify-between">
           <div

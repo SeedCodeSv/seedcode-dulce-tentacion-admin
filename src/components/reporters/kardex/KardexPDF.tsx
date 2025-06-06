@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import moment from 'moment';
 import { AiOutlineFilePdf } from "react-icons/ai";
 
-import { Kardex } from '@/types/reports/reportKardex.types';
+import { DataKardex } from '@/types/reports/reportKardex.types';
 import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
 import { hexToRgb } from '@/utils/utils';
@@ -14,6 +14,7 @@ import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import { useConfigurationStore } from '@/store/perzonalitation.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
 
 
 interface jsPDFWithAutoTable extends jsPDF {
@@ -22,7 +23,7 @@ interface jsPDFWithAutoTable extends jsPDF {
   };
 }
 
-const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kardex[]; transmitter: ITransmitter, branch: Branches }) => {
+const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: DataKardex[]; transmitter: ITransmitter, branch: Branches }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
   const styles = useGlobalStyles();
 
@@ -63,26 +64,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
         return;
       }
 
-      const currentDate = new Date();
       const doc = new jsPDF();
-
-      const dateOptions: Intl.DateTimeFormatOptions = {
-        weekday: 'long',
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'America/El_Salvador',
-      };
-
-      const timeOptions: Intl.DateTimeFormatOptions = {
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZone: 'America/El_Salvador',
-      };
-
-      const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
-      const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
-
       const logo = personalization && personalization[0]?.logo ? personalization[0].logo : DEFAULT_LOGO;
 
       const logoBase64 = await convertImageToBase64(logo);
@@ -101,8 +83,8 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
                 styles: { halign: 'left' },
               },
             ],
-            [{ content: 'Fecha: ' + `${formattedDate}`, styles: { halign: 'left' } }],
-            [{ content: 'Hora: ' + `${formattedTime}`, styles: { halign: 'left' } }],
+            [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi}`, styles: { halign: 'left' } }],
+            [{ content: 'Hora: ' + `${getElSalvadorDateTime().horEmi}`, styles: { halign: 'left' } }],
           ],
           theme: 'plain',
           startY: 5,
@@ -116,26 +98,24 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
 
       const headers = [
         'No.',
+        'Fecha/Hora',
+        'Movimiento/Tipo',
+        'Código',
         'Descripción',
-        'Entrada',
-        'Salida',
-        'Existencia',
-        'Precio',
+        'Cantidad',
         'Costo unitario',
-        'Utilidad',
-        'Rentabilidad',
+        'Total Movimiento',
       ];
 
       const rows = tableData.map((item, index) => [
         index + 1,
+        `${item.date} - ${item.time}`,
+        `${item.movementType} - ${item.inventoryType}`,
+        item.productCode || '',
         item.productName || '',
-        item.entries || 0,
-        item.exits || 0,
         item.quantity || 0,
-        `$ ${Number(item.price ?? 0).toFixed(2)}`,
-        `$ ${Number(item.cost ?? 0).toFixed(2)}`,
-        `$ ${(item.utility ?? 0).toFixed(2)}`,
-        `${item.profitability ? item.profitability.toFixed(2) : '0'}%`,
+        `$ ${Number(item.unitCost ?? 0).toFixed(2)}`,
+        `$ ${(item.totalMovement ?? 0).toFixed(2)}`,
       ]);
 
       createHeader(doc);
@@ -147,7 +127,11 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Kard
         theme: 'plain' as ThemeType,
         columnStyles: {
           0: { cellWidth: 10, halign: 'center' as HAlignType },
-          1: { cellWidth: 65 },
+          1: { cellWidth: 20, halign: 'center' as HAlignType },
+          3: { cellWidth: 20, halign: 'center' as HAlignType },
+          4: { cellWidth: 50, halign: 'center' as HAlignType },
+          5: { cellWidth: 15, halign: 'center' as HAlignType },
+          6: { cellWidth: 20, halign: 'center' as HAlignType },
         },
         margin: { horizontal: 5 },
         styles: {

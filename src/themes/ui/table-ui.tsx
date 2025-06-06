@@ -29,6 +29,7 @@ export const TableComponent: React.FC<TableProps> = ({ headers, children, classN
         <tbody >
           {children}
         </tbody>
+        
       </table>
     </div>
   );

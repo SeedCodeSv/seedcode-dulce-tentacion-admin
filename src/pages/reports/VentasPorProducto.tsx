@@ -1,5 +1,7 @@
 import { Input, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
@@ -14,8 +16,17 @@ import DivGlobal from '@/themes/ui/div-global';
 import LoadingTable from '@/components/global/LoadingTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import { report_sales_by_products } from '@/services/reports/reports-by-periods.services';
+import { salesByProductsExports } from '@/components/export-reports/SalesByProduct';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import { useViewsStore } from '@/store/views.store';
 
 function VentasPorProducto() {
+  const { actions } = useViewsStore()
+
+  const salesByProduct = actions.find((view) => view.view.name === 'Ventas por Productos')
+  const actionsViews = salesByProduct?.actions?.name || []
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [typePayment, setTypePayment] = useState('');
@@ -49,7 +60,24 @@ function VentasPorProducto() {
       endDate,
       typePayment
     );
+
   };
+
+  const handleExportData = async (searchParam: string | undefined) => {
+    await report_sales_by_products(
+      Number(user?.pointOfSale?.branch.transmitterId ?? 0
+      ),
+      searchParam ?? startDate,
+      searchParam ?? endDate,
+      searchParam ?? typePayment
+    ).then(({ data }) => {
+      if (data) {
+        salesByProductsExports(data.sales, startDate, endDate)
+      }
+    }).catch(() => {
+      toast.error('No se proceso la solicitud')
+    })
+  }
 
   return (
     <Layout title="Ventas por Producto">
@@ -102,7 +130,35 @@ function VentasPorProducto() {
               </SelectItem>
             ))}
           </Select>
+
         </ResponsiveFilterWrapper>
+        {actionsViews.includes('Exportar Excel') && (
+          <>
+            {sales_products.length > 0 ? <ButtonUi
+              className="mt-4 font-semibold w-48 "
+              color="success"
+              theme={Colors.Success}
+              onPress={() => {
+                handleExportData(undefined)
+              }}
+            >
+              <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+            </ButtonUi>
+              :
+              <ButtonUi
+                className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
+                color="success"
+                theme={Colors.Success}
+              >
+                <p>Exportar Excel</p>
+                <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+              </ButtonUi>
+
+            }
+
+          </>
+
+        )}
 
         <div className="w-full h-full overflow-y-auto py-1 border-b dark:border-gray-700">
           <div className="w-full mt-5">

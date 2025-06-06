@@ -13,6 +13,7 @@ import { delete_RVA, delete_seller_mode } from '../storage/localStorage';
 import { LgLayout } from './lg-layout';
 import { LayoutItems } from './layout-items';
 import { SmLayout } from './sm-layout';
+import DropdownNotifications from './DropdownNotifications/DropdownNotifications';
 
 interface Props {
   children: ReactNode;
@@ -67,7 +68,6 @@ export const SideBar = (props: Props) => {
   }, []);
 
   useEffect(() => {
-    // Guarda el estado del sidebar en localStorage.
     localStorage.setItem('sidebarState', JSON.stringify(isOpen));
   }, [isOpen]);
 
@@ -112,10 +112,15 @@ export const SideBar = (props: Props) => {
               <Menu />
             </Button>
           </div>
+
           <div className="ml-3">
             <p className="text-sm font-bold uppercase whitespace-nowrap start">{props.title}</p>
           </div>
-          <div className="flex items-end justify-end w-full">
+
+          <div className="flex items-end justify-end w-full gap-4">
+            <DropdownNotifications />
+
+
             <Dropdown showArrow placement="bottom-start">
               <DropdownTrigger>
                 <User

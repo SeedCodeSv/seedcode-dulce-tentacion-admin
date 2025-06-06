@@ -100,3 +100,26 @@ export interface ThemeData {
 export interface IGetPaginationThemes  extends IPagination{
   themes: ThemeData[];
 }
+
+export interface Styles {
+  darkStyle: {
+    backgroundColor: string,
+    color: string,
+  },
+  secondaryStyle: {
+    backgroundColor: string,
+    color: string,
+  },
+  thirdStyle: {
+    backgroundColor: string,
+    color: string,
+  },
+  dangerStyles: {
+    backgroundColor: string,
+    color: string,
+  },
+  warningStyles: {
+    backgroundColor: string,
+    color: string,
+  },
+}

@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { Socket } from 'socket.io-client'
 
 import { DocumentoNoteOfRemission } from '@/shopping-branch-product/types/notes_of_remision.types';
 import { RespuestaMH } from '@/types/DTE/DTE.types';
@@ -16,5 +17,7 @@ export interface IPropHadleUploadFile {
   employeeId?: number;
   customerId?: number;
   receivingBranchId?: number;
-  receivingEmployeeId?:number
+  receivingEmployeeId?:number;
+    socket:Socket;
+  branchIssuingId:number
 }

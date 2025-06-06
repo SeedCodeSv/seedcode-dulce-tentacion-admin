@@ -49,8 +49,15 @@ function Layout(props: Props) {
   const [transitionStage, setTransistionStage] = useState('fadeIn');
 
   useEffect(() => {
-    if (location !== displayLocation) setTransistionStage('fadeOut');
-  }, [location, displayLocation]);
+  const excludedRoutes = ["/kardex", "/OP-report", "/cash-cuts", "/products-selled"];
+
+  const isExcluded = excludedRoutes.some(route => location.pathname.startsWith(route));
+
+  if (isExcluded) return;
+
+  if (location !== displayLocation) setTransistionStage('fadeOut');
+}, [location, displayLocation]);
+
 
   return (
     <>

@@ -82,7 +82,7 @@ const ListClients = ({ actions }: Props) => {
 
   return (
     <>
-      <DivGlobal className="flex flex-col h-full overflow-y-auto">
+      <DivGlobal>
         <div className="flex justify-between items-end ">
           <SearchClient
             emailCustomer={(email: string) => setEmail(email)}

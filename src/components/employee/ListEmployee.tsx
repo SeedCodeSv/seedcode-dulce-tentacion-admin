@@ -179,7 +179,7 @@ function ListEmployee({ actions }: Props) {
         />
       ) : (
         <>
-          <DivGlobal className="flex flex-col h-full overflow-y-auto">
+          <DivGlobal>
             <div className="flex justify-between items-end ">
               <SearchEmployee
                 branchName={(e) => setBranch(e)}

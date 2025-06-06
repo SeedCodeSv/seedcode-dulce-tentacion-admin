@@ -35,6 +35,11 @@ export const typeOrden = [
   { label: 'Ascendente', value: 'ASC' },
   { label: 'Descendente', value: 'DESC' }
 ];
+
+export const Motivos_Complet = [
+  { label: "Satisfactorio", value: '00' },
+  { label: "Normal", value: "01" }
+]
 export const defaultTheme = {
   name: 'theme1',
   context: 'dark',

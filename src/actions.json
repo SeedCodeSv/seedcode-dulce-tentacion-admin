@@ -178,7 +178,8 @@
         "Mostrar",
         "Agregar",
         "Editar",
-        "Eliminar"
+        "Eliminar",
+        "Exportar Excel"
       ]
     },
     {
@@ -256,6 +257,22 @@
       "view": "Corte X",
       "actions": [
         "Imprimir",
+        "Exportar Excel"
+      ]
+    },
+    {
+      "view": "Cortes",
+      "actions": [
+        "Mostrar",
+        "Descargar PDF",
+        "Exportar Excel"
+      ]
+    },
+    {
+      "view": "Productos Vendidos",
+      "actions": [
+        "Mostrar",
+        "Descargar PDF",
         "Exportar Excel"
       ]
     },
@@ -351,8 +368,19 @@
         "Cancelar"
       ]
     },
+     {
+      "view": "Ordenes de Productos",
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Completar",
+        "Cancelar"
+      ]
+    },
     {
-      "view": "Tipos de ordenes de producción",
+      "view": "Reporte ordenes de producción",
       "actions": [
         "Mostrar",
         "Agregar",
@@ -384,9 +412,9 @@
     {
       "view": "Ver invalidaciones",
       "actions": [
-        "Mostrar"
+        "Mostrar",
+        "Exportar Excel"
       ]
     }
-    
   ]
 }

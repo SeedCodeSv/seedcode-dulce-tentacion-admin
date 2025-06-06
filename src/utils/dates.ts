@@ -53,27 +53,27 @@ export function getElSalvadorDateTime(): { fecEmi: string; horEmi: string } {
   return { fecEmi: formattedDatePart, horEmi: timePart };
 }
 
-export function getElSalvadorDateTimeText(): {fecEmi:string, horEmi:string}{
-   const currentDate = new Date();
-  
-        const dateOptions: Intl.DateTimeFormatOptions = {
-          weekday: 'long',
-          day: 'numeric',
-          month: 'long',
-          year: 'numeric',
-          timeZone: 'America/El_Salvador',
-        };
-  
-        const timeOptions: Intl.DateTimeFormatOptions = {
-          hour: 'numeric',
-          minute: 'numeric',
-          timeZone: 'America/El_Salvador',
-        };
-  
-        const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
-        const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
+export function getElSalvadorDateTimeText(): { fecEmi: string, horEmi: string } {
+  const currentDate = new Date();
 
-        return {fecEmi: formattedDate, horEmi: formattedTime}
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'America/El_Salvador',
+  };
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZone: 'America/El_Salvador',
+  };
+
+  const formattedDate = new Intl.DateTimeFormat('es-ES', dateOptions).format(currentDate);
+  const formattedTime = new Intl.DateTimeFormat('es-ES', timeOptions).format(currentDate);
+
+  return { fecEmi: formattedDate, horEmi: formattedTime }
 }
 
 export function getElSalvadorDateTimeParam(date: Date): { fecEmi: string; horEmi: string } {
@@ -207,6 +207,29 @@ export function formatSimpleDate(date: string): string {
   const monthName = monts[Number(month) - 1];
 
   return `${day}-${monthName}-${year} ${hour}:${minute}`;
+}
+
+export function formatDateSimple(date: string): string {
+  if (!date) return '';
+  const days = date.split('|')[0];
+  const monts = [
+    'Ene',
+    'Feb',
+    'Mar',
+    'Abr',
+    'May',
+    'Jun',
+    'Jul',
+    'Ago',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dic',
+  ];
+  const [year, month, day] = days.split('-');
+  const monthName = monts[Number(month) - 1];
+
+  return `${day}-${monthName}-${year}`;
 }
 
 

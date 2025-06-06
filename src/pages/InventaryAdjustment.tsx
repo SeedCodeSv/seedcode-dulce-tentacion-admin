@@ -19,7 +19,7 @@ function PurchaseOrders() {
   return (
     <Layout title="Ajuste de Inventario">
       <>
-       <DivGlobal className="flex flex-col h-full overflow-y-auto ">
+       <DivGlobal>
             <div className="flex w-full flex-col">
               <div className="flex justify-end absolute right-8">
                 <Button

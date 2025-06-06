@@ -11,6 +11,7 @@ import { IPagination } from '@/types/global.types';
 
 export interface IProductsStore {
   products_list: Product[];
+  productsFilteredList: Product[];
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
@@ -49,4 +50,5 @@ export interface IProductsStore {
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
   getProductsDetails: (id: number) => void;
+  getProductsFilteredList: (params: {productName?: string }) => void;
 }

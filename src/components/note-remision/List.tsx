@@ -26,6 +26,7 @@ import { limit_options } from '@/utils/constants';
 import { estadosV } from '@/utils/utils';
 import { ThemeContext } from '@/hooks/useTheme';
 import ThGlobal from '@/themes/ui/th-global';
+import { useBranchesStore } from '@/store/branches.store';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
@@ -37,6 +38,7 @@ function List() {
   const [limit, setLimit] = useState(10)
   const { referalNotes, loading, onGetReferalNotes, pagination_referal_notes } = useReferalNote();
   const { user } = useAuthStore();
+  const [branchId, setBranchId] = useState<number>(0)
   const { theme, context } = useContext(ThemeContext)
   const { colors } = theme
   const navigate = useNavigate()
@@ -49,10 +51,16 @@ function List() {
   const [items, setItems] = useState<ReferalNote | undefined>(undefined)
   const modalInvalidate = useDisclosure()
   const modalComplete = useDisclosure()
+  const { branch_list, getBranchesList } = useBranchesStore()
+
 
   useEffect(() => {
-    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state.value);
-  }, [startDate, endDate, limit, state.value]);
+    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state.value, branchId);
+  }, [startDate, endDate, limit, state.value, branchId]);
+
+  useEffect(() => {
+    getBranchesList()
+  }, [])
 
   const styles = useGlobalStyles();
 
@@ -103,6 +111,31 @@ function List() {
                 label: 'font-semibold',
                 selectorIcon: 'dark:text-white'
               }}
+              label="Sucursales"
+              labelPlacement="outside"
+              placeholder="Selecciona una sucursal"
+              value={limit}
+              variant="bordered"
+              onChange={(e) => {
+                setBranchId(Number(e.target.value));
+              }}
+            >
+              {branch_list.map((item) => (
+                <SelectItem key={item.id} className="dark:text-white">
+                  {item.name}
+                </SelectItem>
+              ))}
+            </Select>
+            <div />
+
+          </div>
+          <div className='flex flex-row gap-2 justify-end items-end'>
+            <Select
+              className="w-44"
+              classNames={{
+                label: 'font-semibold',
+                selectorIcon: 'dark:text-white'
+              }}
               label="Mostrar"
               labelPlacement="outside"
               placeholder="Mostrar"
@@ -134,12 +167,9 @@ function List() {
                 </SelectItem>
               ))}
             </Select>
-            <div />
             <Button
               isIconOnly
-
               style={{ ...style, justifySelf: "end" }}
-
               type="button"
               onClick={() => navigate('/list-referal-notes')}
             >
@@ -244,16 +274,9 @@ function List() {
                                   </Button>
                                 </TooltipGlobal>
                               )}
-                              <TooltipGlobal text="Invalidar">
-                                {item.status.name !== 'PROCESADO' ? (
-                                  <Button
+                              {item?.status.name.includes('PROCESADO') && (
+                                <TooltipGlobal text="Invalidar">
 
-                                    isIconOnly
-                                    style={{ backgroundColor: "gray", color: 'white' }}
-                                  >
-                                    <FileX2 size={25} />
-                                  </Button>
-                                ) : (
                                   <Button
                                     isIconOnly
                                     style={styles.dangerStyles}
@@ -264,9 +287,9 @@ function List() {
                                   >
                                     <FileX2 size={25} />
                                   </Button>
-                                )}
 
-                              </TooltipGlobal>
+                                </TooltipGlobal>
+                              )}
                               {!!item.employee && item.status.name.includes('PENDIENTE') && (
                                 <TooltipGlobal
                                   text={item?.isCompleted ? 'Completado' : 'Completar'}
@@ -319,7 +342,7 @@ function List() {
                   previousPage={pagination_referal_notes.prevPag}
                   totalPages={pagination_referal_notes.totalPag}
                   onPageChange={(page) => {
-                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value);
+                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value, branchId);
                   }}
                 />
               </div>
@@ -333,7 +356,8 @@ function List() {
                       10,
                       startDate,
                       endDate,
-                      state.value
+                      state.value,
+                      branchId
                     );
                   }}
                   handlePrev={() => {
@@ -343,7 +367,8 @@ function List() {
                       10,
                       startDate,
                       endDate,
-                      state.value
+                      state.value,
+                      branchId
                     );
                   }}
                   totalPages={pagination_referal_notes.totalPag}
@@ -383,7 +408,7 @@ function List() {
           <CompleteNoteModal
             note={selectedNote}
             reload={() => {
-              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state.value)
+              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state.value, branchId)
             }}
             visibled={modalComplete}
             onClose={() => {
@@ -396,7 +421,7 @@ function List() {
         item={items}
         modalInvalidate={modalInvalidate}
         reload={() => {
-          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state.value)
+          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state.value, branchId)
         }}
       />
     </>

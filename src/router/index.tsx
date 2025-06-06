@@ -15,6 +15,18 @@ import InventaryAdjustment from '@/pages/InventaryAdjustment';
 import Movements from '@/pages/Movements';
 import UpdatePurchaseDetail from '@/components/list_purchase/UpdatePurchaseDetail';
 import ActionRol from '@/pages/ActionRol';
+import { KardexByProductList } from '@/components/reporters/kardex/kardexByProduct/KardexByProductList';
+import KardexComponent from '@/components/reporters/kardex/KardexComponent';
+import OrdenProductionReport from '@/pages/OrdenProductionReport';
+import OrdenProductionComponent from '@/components/reporters/order_production_report/general/OrderProductionComponentReport';
+import OPReportComponentDetailed from '@/components/reporters/order_production_report/by-product/OP-ReportDetailedByBranch';
+import CashCutsPage from '@/pages/CashCuts';
+import GeneralCashCutReportComponent from '@/components/reporters/cuts/general-cuts/SummaryCutsReport';
+import DetailedCashCutReportComponent from '@/components/reporters/cuts/detaild-cuts/DetailedCutsReport';
+import ProductsSelledSummaryComponent from '@/components/reporters/products_selled/general/ProductsSelledSummaryComponent';
+import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
+import ProductSelledReportPage from '@/pages/ProductsSelledReport';
+import ProductOrderPage from '@/pages/product-order';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -137,7 +149,30 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/add-product"
       />
-      <Route element={<AnimatedRoute> {handleCheckPermission('Kardex') ? <KardexPage /> : <Home/> }</AnimatedRoute>} path="/kardex-inventory" />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de Productos') ? <ProductOrderPage /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/order-products"
+      />
+      <Route element={handleCheckPermission('Kardex') ? <KardexPage /> : <Home/>} path="/kardex">
+        <Route index element={
+          <KardexComponent />} />
+        <Route element={<KardexByProductList />} path="by-product" />
+      </Route>
+      
+      <Route element={handleCheckPermission('Cortes') ? <CashCutsPage /> : <Home/>} path="/cash-cuts">
+        <Route index element={
+          <GeneralCashCutReportComponent />} />
+        <Route element={<DetailedCashCutReportComponent />} path="detailed" />
+      </Route>
+       <Route element={handleCheckPermission('Productos Vendidos') ? <ProductSelledReportPage /> : <Home/>} path="/products-selled">
+        <Route index element={
+          <ProductsSelledSummaryComponent />} />
+        <Route element={<ProductsSelledDetailComponent />} path="detailed" />
+      </Route>
       <Route
         element={
           <AnimatedRoute>
@@ -344,6 +379,12 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/discounts"
       />
+      <Route element={handleCheckPermission('Reporte ordenes de producción') ? <OrdenProductionReport /> : <Home />}
+        path="/OP-report">
+        <Route index element={
+          <OrdenProductionComponent/>} />
+        <Route element={<OPReportComponentDetailed />} path="by-product" />
+      </Route>
       <Route
         element={
           <AnimatedRoute>
@@ -709,7 +750,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route
         element={
           <AnimatedRoute>
-            {handleCheckPermission('Productos') ? <CreateBranchProduct  /> : <Home />}
+            {handleCheckPermission('Productos') ? <CreateBranchProduct /> : <Home />}
           </AnimatedRoute>
         }
         path="/create-branch-product/:id"

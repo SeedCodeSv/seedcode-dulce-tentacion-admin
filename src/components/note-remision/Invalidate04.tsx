@@ -43,6 +43,8 @@ import { Employee } from '@/types/employees.types'
 import { get_employee_by_code } from '@/services/employess.service'
 import { formatAnnulations } from '@/utils/DTE/innvalidations'
 import { annulations } from '@/services/innvalidations.services'
+import { useSocket } from '@/hooks/useSocket'
+// import { useSocket } from '@/hooks/useSocket'
 
 interface Props {
     modalInvalidate: UseDisclosureProps
@@ -67,9 +69,8 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
     const modalInvalidation = useDisclosure()
     const styles = useGlobalStyles()
     const [employeeId, setEmployeeId] = useState<number>(0)
-
     const { secondaryStyle } = useGlobalStyles()
-
+    const { socket } = useSocket()
 
     const { getJsonReferelNote, json_referal_note, getRecentReferal, recentReferalNote } =
         useReferalNote()
@@ -227,7 +228,17 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                                         }).catch(() => {
                                             toast.error('No se guardo la invalidacion')
                                         })
+                                        const targetSucursalId = item?.branch?.id ?? 0
+
                                         toast.success('Invalidado  correctamente')
+                                        socket.emit('new-invalidate-note-find-client', {
+                                            targetSucursalId,
+                                            note: {
+                                                descripcion: `Se ah anulado la nota de remisión desde la sucursal ${user?.pointOfSale?.branch?.name ?? 'N/A'}`,
+                                                fecha: new Date().toISOString(),
+                                                data:item
+                                            }
+                                        })
                                         setLoading(false)
                                         setCurrentStep(0)
                                         modalInvalidate.onClose
@@ -324,15 +335,8 @@ function InvalidateNoteReferal({ modalInvalidate, item, reload }: Props) {
                             ANULAR NOTA DE REMISIÓN
                         </ModalHeader>
                         <ModalBody className="bg-gray-100 dark:bg-gray-800">
-                            <div className="max-h-[80vh] overflow-y-auto pr-2">
+                            <div className="max-h-[90vh] overflow-y-auto pr-2">
                                 <>
-
-                                    {/* {loading && (
-                                        <div className="w-full h-full flex flex-col justify-center items-center">
-                                            <div className="loader" />
-                                            <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                                        </div>
-                                    )} */}
                                     {loading && (
                                         <div className="absolute z-[100] left-0 bg-white/80 top-0 h-screen w-screen flex flex-col justify-center items-center">
                                             <FaSpinner className="w-24 h-24 animate-spin" />
