@@ -19,7 +19,7 @@ export default function ProductsSelledSummaryComponent() {
         page: 1,
         limit: 20,
         branchId: 0,
-        starTdGlobalate: getElSalvadorDateTime().fecEmi,
+        startDate: getElSalvadorDateTime().fecEmi,
         endDate: getElSalvadorDateTime().fecEmi,
         productName: ''
     });
@@ -87,10 +87,10 @@ export default function ProductsSelledSummaryComponent() {
                     label="Fecha inicial"
                     labelPlacement="outside"
                     type="date"
-                    value={search.starTdGlobalate}
+                    value={search.startDate}
                     variant="bordered"
                     onChange={(e) => {
-                        setSearch({ ...search, starTdGlobalate: e.target.value });
+                        setSearch({ ...search, startDate: e.target.value });
                     }}
                 />
                 <Input
