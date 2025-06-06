@@ -178,14 +178,13 @@ function ContingenceFSE() {
           nit: transmitter.nit,
           documento: firma.data.body,
         };
-
+        
         setCurrentStep(1);
         const source = axios.CancelToken.source();
 
         const timeout = setTimeout(() => {
           source.cancel('El tiempo de espera ha expirado');
         }, 25000);
-
         const token_mh = return_mh_token();
 
         if (!token_mh) {

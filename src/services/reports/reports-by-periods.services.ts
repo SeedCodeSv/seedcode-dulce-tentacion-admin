@@ -29,3 +29,4 @@ export const report_sales_by_products = async (
     return axios.get<IResponseByProduct>(API_URL + `/sales/report-sales-by-product-export/${id}?startDate=${startDate}&endDate=${endDate}&branch=${branch}`
     )
 }
+

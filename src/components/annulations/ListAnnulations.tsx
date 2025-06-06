@@ -1,17 +1,29 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Input, Select, SelectItem } from '@heroui/react'
+import { toast } from 'sonner'
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi'
+import { SearchIcon } from 'lucide-react'
 
 import { formatDate } from '../../utils/dates'
 import LoadingTable from '../global/LoadingTable'
 import Pagination from '../global/Pagination'
+import { exportInvalidationsToExcel } from '../export-reports/ExportInvalidations'
 
 import { limit_options } from '@/utils/constants'
 import { TypesVentas } from '@/utils/utils'
 import ThGlobal from '@/themes/ui/th-global'
 import { useAnnulations } from '@/store/annulations.store'
+import { get_list_invalidations } from '@/services/innvalidations.services'
+import ButtonUi from '@/themes/ui/button-ui'
+import { Colors } from '@/types/themes.types'
+import { useViewsStore } from '@/store/views.store'
+
 
 function ListAnnulations(): JSX.Element {
+    const { actions } = useViewsStore()
 
+    const invalidations = actions.find((view) => view.view.name === 'Ver invalidaciones')
+    const actionsView = invalidations?.actions?.name || []
 
     const [startDate, setStartDate] = useState(formatDate())
     const [endDate, setEndDate] = useState(formatDate())
@@ -22,16 +34,39 @@ function ListAnnulations(): JSX.Element {
 
     useEffect(() => {
         getInnvalidations(1, limit, startDate, endDate, state)
-    }, [limit, startDate, endDate, state])
+    }, [limit])
 
 
+    const handleSearch = (searchParam: string | undefined) => {
+        getInnvalidations(
+            1,
+            limit,
+            searchParam ?? startDate,
+            searchParam ?? endDate,
+            searchParam ?? state
+        );
+    };
 
+    const handleData = async (searchParam: string | undefined) => {
+        await get_list_invalidations(
+            1,
+            99999,
+            searchParam ?? startDate,
+            searchParam ?? endDate,
+            searchParam ?? state,
+        ).then(({ data }) => {
+            if (data) {
+                exportInvalidationsToExcel(data.innvalidations, startDate, endDate)
+            }
+        }).catch(() => {
+            toast.error('No se proceso la solicitud')
+        })
 
+    }
 
     return (
         <>
             <div className="w-full h-full p-0 md:p-5 bg-gray-100 dark:bg-gray-800">
-
                 <div className="w-full flex flex-col h-full p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
                     <Filters
                         dateInitial={startDate}
@@ -42,6 +77,31 @@ function ListAnnulations(): JSX.Element {
                     <div className="flex flex-row justify-between mt-3">
                         <div className="flex justify-between gap-5" />
                         <div className="flex gap-5">
+                            {actionsView?.includes("Exportar Excel") && (
+                                <>
+                                    {innvalidations?.length > 0 ?
+                                        <ButtonUi
+                                            className="mt-4 font-semibold w-48 "
+                                            color="success"
+                                            theme={Colors.Success}
+                                            onPress={() => {
+                                                handleData(undefined)
+                                            }}
+                                        >
+                                            <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                                        </ButtonUi>
+                                        :
+                                        <ButtonUi
+                                            className="mt-4 opacity-70 font-semibold flex-row gap-10"
+                                            color="success"
+                                            theme={Colors.Success}
+                                        >
+                                            <p>Exportar Excel</p>
+                                            <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                                        </ButtonUi>
+                                    }
+                                </>
+                            )}
                             <Select
                                 className="w-44"
                                 classNames={{
@@ -81,6 +141,18 @@ function ListAnnulations(): JSX.Element {
                                     >{e.label}</SelectItem>
                                 ))}
                             </Select>
+
+                            <ButtonUi
+                                className="mt-6 hidden font-semibold lg:flex"
+                                color="primary"
+                                endContent={<SearchIcon size={15} />}
+                                theme={Colors.Info}
+                                onPress={() => {
+                                    handleSearch(undefined);
+                                }}
+                            >
+                                Buscar
+                            </ButtonUi>
 
                         </div>
                     </div>

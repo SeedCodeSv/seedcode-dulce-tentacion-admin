@@ -3,28 +3,6 @@ import { saveAs } from 'file-saver'
 
 import { SaleByProduct } from "./types/sales_by_periods.types";
 
-// export function salesByProductsExports(item: SaleByProduct[], startDate: string, endDate: string) {
-//     const workbook = new ExcelJS.Workbook()
-//     const worksheet = workbook.addWorksheet('Productos')
-
-//     worksheet.columns = [
-//         { header: 'Fecha', key: 'saleDate', width: 15 },
-//         { header: 'Nombre producto', key: 'productName', width: 40 },
-//         { header: 'Categoria', key: 'categoryName', width: 30 },
-//         { header: 'Sub-categoria', key: 'subCategoryName', width: 35 },
-//         { header: 'total cantidad', key: 'totalQuantity', width: 30 },
-//         { header: 'Cantidad Total', key: 'totalItemSum', width: 30 },
-//         { header: 'Precio unitario', key: 'unitPrice', width: 30 },
-//         { header: 'Sucursal', key: 'branchName', width: 40 },
-//     ]
-
-//     const lastColLetter = worksheet.getColumn(worksheet.columns.length).letter;
-
-//     worksheet.mergeCells(`A1:${lastColLetter}1`)
-//     const titleCell = worksheet.getCell('A1')
-// }
-
-
 export async function salesByProductsExports(item: SaleByProduct[], startDate: string, endDate: string) {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Productos');
@@ -42,7 +20,6 @@ export async function salesByProductsExports(item: SaleByProduct[], startDate: s
 
     const lastColLetter = worksheet.getColumn(worksheet.columns.length).letter;
 
-    // Título principal
     worksheet.mergeCells(`A1:${lastColLetter}1`);
     const titleCell = worksheet.getCell('A1');
 
@@ -55,7 +32,6 @@ export async function salesByProductsExports(item: SaleByProduct[], startDate: s
         fgColor: { argb: 'FF4682B4' },
     };
 
-    // Subtítulo con fechas
     worksheet.mergeCells(`A2:${lastColLetter}2`);
     const subtitleCell = worksheet.getCell('A2');
 
@@ -86,7 +62,7 @@ export async function salesByProductsExports(item: SaleByProduct[], startDate: s
         to: { row: 3, column: worksheet.columns.length },
     };
 
-    // Datos
+    
     let rowIndex = 4;
 
     item.forEach((product) => {
@@ -102,12 +78,10 @@ export async function salesByProductsExports(item: SaleByProduct[], startDate: s
         });
     });
 
-    // Formato de moneda
     ['F', 'G'].forEach((col) => {
         worksheet.getColumn(col).numFmt = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"??_);_(@_)';
     });
 
-    // Total general (usamos SUBTOTAL para permitir filtros)
     const totalRowNumber = worksheet.rowCount + 1;
 
     const totalRow = worksheet.addRow([
@@ -134,7 +108,6 @@ export async function salesByProductsExports(item: SaleByProduct[], startDate: s
         }
     });
 
-    // Exportar archivo
     const buffer = await workbook.xlsx.writeBuffer();
     const date = new Date().toISOString().slice(0, 10);
 

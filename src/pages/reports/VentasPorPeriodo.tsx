@@ -25,9 +25,18 @@ import { TableComponent } from '@/themes/ui/table-ui';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import { exportSalesExcel } from '@/components/export-reports/SalesByPeriods';
 import { reporst_details_sales } from '@/services/reports/reports-by-periods.services';
+import { useViewsStore } from '@/store/views.store';
 
 
 function VentasPorPeriodo() {
+
+  const { actions } = useViewsStore();
+  const reportSale = actions.find((view) => view.view.name === 'Ventas por Periodo');
+
+  // const reportSales = actions.find((view) => view.name === "Ventas por Periodo")
+  const actionsView = reportSale?.actions?.name || []
+
+
   const [filter, setFilter] = useState({
     typeVoucher: '',
     correlativeType: '',
@@ -270,19 +279,33 @@ function VentasPorPeriodo() {
             >
               Buscar
             </ButtonUi>
-            {(sales_by_period?.totalSales ?? 0) > 0 && (
-              <ButtonUi
-                className="mt-4 font-semibold flex-row gap-10"
-                color="success"
-                theme={Colors.Success}
-                onPress={() => {
-                  handleData(undefined)
-                }}
+            {actionsView?.includes("Exportar Excel") && (
+              <>
+                {(sales_by_period?.totalSales ?? 0) > 0 ? (
+                  <ButtonUi
+                    className="mt-4 font-semibold flex-row gap-10"
+                    color="success"
+                    theme={Colors.Success}
+                    onPress={() => {
+                      handleData(undefined)
+                    }}
 
-              >
-                <p>Exportar reporte</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
-              </ButtonUi>
+                  >
+                    <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                  </ButtonUi>
+                ) :
+                  <ButtonUi
+                    className="mt-4 opacity-70 font-semibold flex-row gap-10"
+                    color="success"
+                    theme={Colors.Success}
+                  >
+                    <p>Exportar Excel</p>
+                    <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                  </ButtonUi>
+                }
+              </>
             )}
+
 
 
           </div>
