@@ -31,7 +31,8 @@ import {
   ShoppingBasket,
   FileCog,
   ClipboardList,
-  FileBox
+  FileBox,
+  ScanBarcode
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -240,7 +241,7 @@ export const LayoutItems = (props: Props) => {
       viewName: 'Productos Vendidos',
       to: '/products-selled',
       label: 'Productos vendidos',
-      icon: List,
+      icon: ScanBarcode,
     },
     {
       viewName: 'Movimientos',

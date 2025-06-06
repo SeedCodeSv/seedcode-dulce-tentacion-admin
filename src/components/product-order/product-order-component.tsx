@@ -64,7 +64,7 @@ export default function ProductOrderComponent() {
     }
 
     const handleSearch = (page: number) => {
-        getOrdersByDates({...search, page})
+        getOrdersByDates({ ...search, page })
     }
 
     return (
@@ -169,18 +169,18 @@ export default function ProductOrderComponent() {
                     </tr>
                 ))}
             </TableComponent>
-             {ordersProducts.totalPag > 1 &&
-                            <Pagination
-                                currentPage={ordersProducts.currentPag}
-                                nextPage={ordersProducts.nextPag}
-                                previousPage={ordersProducts.prevPag}
-                                totalPages={ordersProducts.totalPag}
-                                onPageChange={(page) => {
-            
-                                    handleSearch(page)
-                                }}
-                            />
-                        }
+            {ordersProducts.totalPag > 1 &&
+                <Pagination
+                    currentPage={ordersProducts.currentPag}
+                    nextPage={ordersProducts.nextPag}
+                    previousPage={ordersProducts.prevPag}
+                    totalPages={ordersProducts.totalPag}
+                    onPageChange={(page) => {
+
+                        handleSearch(page)
+                    }}
+                />
+            }
             <Drawer placement="right" size="full" {...modalDetails}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>
