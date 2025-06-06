@@ -26,6 +26,7 @@ import DetailedCashCutReportComponent from '@/components/reporters/cuts/detaild-
 import ProductsSelledSummaryComponent from '@/components/reporters/products_selled/general/ProductsSelledSummaryComponent';
 import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
 import ProductSelledReportPage from '@/pages/ProductsSelledReport';
+import ProductOrderPage from '@/pages/product-order';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -147,6 +148,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/add-product"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ordenes de Productos') ? <ProductOrderPage /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/order-products"
       />
       <Route element={handleCheckPermission('Kardex') ? <KardexPage /> : <Home/>} path="/kardex">
         <Route index element={

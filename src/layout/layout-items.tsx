@@ -30,7 +30,8 @@ import {
   ArrowDownUp,
   ShoppingBasket,
   FileCog,
-  ClipboardList
+  ClipboardList,
+  FileBox
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -112,6 +113,12 @@ export const LayoutItems = (props: Props) => {
       to: '/production-orders',
       icon: ListOrdered,
       label: 'Ordenes de producción',
+    },
+    {
+      viewName: 'Ordenes de Productos',
+      to: '/order-products',
+      icon: FileBox,
+      label: 'Ordenes de Productos',
     },
     {
       viewName: 'Compras',

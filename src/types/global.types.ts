@@ -27,3 +27,12 @@ export interface BasicResponse{
   message: string;
   status: number
 }
+
+
+export interface SearchGlobal {
+    branchId: number;
+    page: number;
+    limit: number;
+    startDate?: string;
+    endDate?: string;
+}

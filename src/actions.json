@@ -367,6 +367,17 @@
         "Cancelar"
       ]
     },
+     {
+      "view": "Ordenes de Productos",
+      "actions": [
+        "Mostrar",
+        "Agregar",
+        "Editar",
+        "Eliminar",
+        "Completar",
+        "Cancelar"
+      ]
+    },
     {
       "view": "Reporte ordenes de producción",
       "actions": [
