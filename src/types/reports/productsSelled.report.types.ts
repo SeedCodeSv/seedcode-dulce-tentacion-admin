@@ -31,11 +31,12 @@ export interface ProductsSellled {
 
 
 export interface SearchReport {
-    branchId: number;
     page: number;
     limit: number;
-    startDate?: string;
-    endDate?: string;
+    startDate: string;
+    endDate: string;
+    branchId?:number;
+    branchIds?: number[]; 
     productName?: string;
 }
 interface Totals {

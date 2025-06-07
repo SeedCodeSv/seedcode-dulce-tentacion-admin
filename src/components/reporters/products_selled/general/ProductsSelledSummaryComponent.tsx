@@ -1,5 +1,8 @@
-import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
+
+import ProductsExportExcell from "./ProductsExportExcell";
+import ProductsExportPdf from "./ProductsExportPdf";
 
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
 import { TableComponent } from "@/themes/ui/table-ui";
@@ -10,21 +13,25 @@ import LoadingTable from "@/components/global/LoadingTable";
 import EmptyTable from "@/components/global/EmptyTable";
 import { formatCurrency } from "@/utils/dte";
 import TdGlobal from "@/themes/ui/td-global";
+import { useTransmitterStore } from "@/store/transmitter.store";
 
 export default function ProductsSelledSummaryComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { getProductSelledSummary, summary_products_selled, loading_summary } = useProductsOrdersReportStore();
-    // const [products, setProducts] = useState<{ id: number; name: string }[]>([]);
+    const { transmitter, gettransmitter } = useTransmitterStore();
+    // const [selectedProducts, setSelectedProducts] = useState<{ id: number, name: string }[]>([]);
+
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
-        branchId: 0,
-        starTdGlobalate: getElSalvadorDateTime().fecEmi,
+        startDate: getElSalvadorDateTime().fecEmi,
         endDate: getElSalvadorDateTime().fecEmi,
+        branchIds: [] as number[],
         productName: ''
     });
 
     useEffect(() => {
+        gettransmitter()
         getBranchesList()
         getProductSelledSummary(search)
     }, [])
@@ -33,36 +40,66 @@ export default function ProductsSelledSummaryComponent() {
         getProductSelledSummary({ ...search, page })
     }
 
-
-
     const branchNames = Object.keys(summary_products_selled.totals || {}).filter(key => key !== 'totalGeneral');
+
+
+    const branchesOptions = [
+        { label: 'Todos', value: 'all' },
+        ...branch_list.map((option) => ({
+            label: option.name,
+            value: String(option.id),
+        })),
+    ];
+
+
 
     return (
         <div className="p-4">
+            {/* <div className="w-full flex items-end justify-end">
+                <div className="w-full max-w-[20vw]">
+            <MultiSelectProductAutocomplete
+                    selectedProducts={selectedProducts}
+                    onChange={setSelectedProducts}
+                />
+                </div>
+                </div> */}
             <ResponsiveFilterWrapper classButtonLg="col-start-5" classLg='w-full grid grid-cols-5 gap-4 items-end pb-4' onApply={() => handleSearch(1)}>
-                <Autocomplete
-                    className="font-semibold dark:text-white w-full"
-                    defaultSelectedKey={String(search.branchId)}
-                    label="Sucursal"
+                <Select
+                    className="w-full"
+                    classNames={{
+                        label: 'font-semibold',
+                        innerWrapper: 'uppercase'
+                    }}
+                    label="Sucursales"
                     labelPlacement="outside"
-                    placeholder="Selecciona la sucursal"
+                    placeholder="Selecciona una o más sucursales"
+                    selectedKeys={new Set(search.branchIds.map(id => id.toString()))}
+                    selectionMode="multiple"
                     variant="bordered"
-                    onSelectionChange={(key) => {
-                        const newBranchId = Number(key);
+                    onSelectionChange={(keys) => {
+                        const selected = Array.from(keys);
+                        const allIds = branch_list.map((b) => b.id);
+                        const allSelected = search.branchIds.length === allIds.length;
 
-                        setSearch({
-                            ...search,
-                            branchId: newBranchId,
-                        });
+                        if (selected.includes("all")) {
+                            if (allSelected) {
+                                setSearch({ ...search, branchIds: [] });
+                            } else {
+                                setSearch({ ...search, branchIds: allIds });
+                            }
+                        } else {
+                            const ids = selected.map(Number).filter((id) => !isNaN(id));
 
+                            setSearch({ ...search, branchIds: ids });
+                        }
                     }}
                 >
-                    {branch_list.map((branch) => (
-                        <AutocompleteItem key={branch.id} className="dark:text-white">
-                            {branch.name}
-                        </AutocompleteItem>
+                    {branchesOptions.map(({ label, value }) => (
+                        <SelectItem key={value.toString()} className="uppercase">
+                            {label}
+                        </SelectItem>
                     ))}
-                </Autocomplete>
+                </Select>
                 <Input
                     isClearable
                     className="dark:text-white"
@@ -87,10 +124,10 @@ export default function ProductsSelledSummaryComponent() {
                     label="Fecha inicial"
                     labelPlacement="outside"
                     type="date"
-                    value={search.starTdGlobalate}
+                    value={search.startDate}
                     variant="bordered"
                     onChange={(e) => {
-                        setSearch({ ...search, starTdGlobalate: e.target.value });
+                        setSearch({ ...search, startDate: e.target.value });
                     }}
                 />
                 <Input
@@ -106,6 +143,8 @@ export default function ProductsSelledSummaryComponent() {
                     }}
                 />
             </ResponsiveFilterWrapper>
+            <ProductsExportPdf comercialName={transmitter.nombreComercial} headers={['Fecha', ...branchNames, 'Total General']} params={search} />
+            <ProductsExportExcell comercialName={transmitter.nombreComercial} headers={['Fecha', ...branchNames, 'Total General']} params={search} />
             {loading_summary ? (
                 <LoadingTable />
             ) : summary_products_selled.summary.length === 0 ? (
