@@ -143,8 +143,10 @@ export default function ProductsSelledSummaryComponent() {
                     }}
                 />
             </ResponsiveFilterWrapper>
+            <div className="flex gap-3 mt-2 lg:mt-0">
             <ProductsExportPdf comercialName={transmitter.nombreComercial} headers={['Fecha', ...branchNames, 'Total General']} params={search} />
             <ProductsExportExcell comercialName={transmitter.nombreComercial} headers={['Fecha', ...branchNames, 'Total General']} params={search} />
+           </div>
             {loading_summary ? (
                 <LoadingTable />
             ) : summary_products_selled.summary.length === 0 ? (

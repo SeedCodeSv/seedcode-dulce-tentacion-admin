@@ -1,6 +1,10 @@
 import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 
+
+import ProductsDetailedExportPdf from "./ProductsDetailedExportPdf";
+import ProductsDetailedExportExcell from "./ProductsDetailedExportExcell";
+
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
 import { TableComponent } from "@/themes/ui/table-ui";
 import { getElSalvadorDateTime } from "@/utils/dates";
@@ -12,10 +16,13 @@ import TdGlobal from "@/themes/ui/td-global";
 import EmptyTable from "@/components/global/EmptyTable";
 import { formatCurrency } from "@/utils/dte";
 import Pagination from "@/components/global/Pagination";
+import { useTransmitterStore } from "@/store/transmitter.store";
 
 export default function ProductsSelledDetailComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { products_selled, getProductsSelled, loading } = useProductsOrdersReportStore()
+    const { transmitter, gettransmitter } = useTransmitterStore();
+
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
@@ -26,6 +33,7 @@ export default function ProductsSelledDetailComponent() {
     });
 
     useEffect(() => {
+        gettransmitter()
         getBranchesList()
         getProductsSelled(search)
     }, [])
@@ -73,9 +81,9 @@ export default function ProductsSelledDetailComponent() {
                     onChange={(e) => {
                         setSearch({ ...search, productName: e.target.value });
                     }}
-                    onClear={() =>{
+                    onClear={() => {
                         setSearch({ ...search, productName: '' });
-                        getProductsSelled({...search, productName: ''})
+                        getProductsSelled({ ...search, productName: '' })
                     }}
                 />
                 <Input
@@ -103,28 +111,34 @@ export default function ProductsSelledDetailComponent() {
                     }}
                 />
             </ResponsiveFilterWrapper>
-            <Select
-                disallowEmptySelection
-                aria-label="Cantidad a mostrar"
-                className="w-1/6 dark:text-white max-md:hidden"
-                classNames={{
-                    label: 'font-semibold',
-                }}
-                defaultSelectedKeys={['20']}
-                label='Mostrar'
-                labelPlacement="outside"
-                value={search.limit}
-                variant="bordered"
-                onChange={(e) => {
-                    setSearch({ ...search, limit: Number(e.target.value) });
-                }}
-            >
-                {limit_options.map((limit) => (
-                    <SelectItem key={limit} className="dark:text-white">
-                        {limit}
-                    </SelectItem>
-                ))}
-            </Select>
+            <div className="flex gap-3 items-end justify-between">
+                <Select
+                    disallowEmptySelection
+                    aria-label="Cantidad a mostrar"
+                    className="w-1/6 dark:text-white max-md:hidden"
+                    classNames={{
+                        label: 'font-semibold',
+                    }}
+                    defaultSelectedKeys={['20']}
+                    label='Mostrar'
+                    labelPlacement="outside"
+                    value={search.limit}
+                    variant="bordered"
+                    onChange={(e) => {
+                        setSearch({ ...search, limit: Number(e.target.value) });
+                    }}
+                >
+                    {limit_options.map((limit) => (
+                        <SelectItem key={limit} className="dark:text-white">
+                            {limit}
+                        </SelectItem>
+                    ))}
+                </Select>
+                <div className="flex gap-3 mt-2 lg:mt-0">
+                    <ProductsDetailedExportPdf comercialName={transmitter.nombreComercial} params={search} />
+                    <ProductsDetailedExportExcell comercialName={transmitter.nombreComercial} params={search} />
+                </div>
+            </div>
             <TableComponent
                 headers={['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría']}
             >
