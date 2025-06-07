@@ -8,7 +8,10 @@ export interface Branch {
   id: number;
   name: string;
   address: string;
-  phone: string;
+   phone: string;
+  codEstableMH: string;
+  codEstable: string;
+  tipoEstablecimiento: string;
   isActive: boolean;
   transmitterId: number;
 }
@@ -33,6 +36,7 @@ export interface BranchProduct {
   porcentaje: number;
   minimum: number;
   days: string;
+  isActive: boolean
 }
 
 export interface IGetBranchProductPaginated {
@@ -78,7 +82,7 @@ export interface SubCategory {
   name: string;
   isActive: boolean;
   categoryProduct: CategoryProduct;
-  categoryPorudctId: number;
+  categoryProductId: number;
 }
 
 export interface CategoryProduct {
@@ -164,6 +168,19 @@ export interface IPayloadBranchProduct {
   priceC: number;
   costoUnitario: number;
   minimumStock: number;
+}
 
+export interface ICheckStockResponse {
+  ok:      boolean;
+  results: Result[];
+}
+
+export interface Result {
+  productId:   number;
+  productName: string;
+  status:      string;
+  stock?:      string;
+  required?:   number;
+  message:     string;
 }
 

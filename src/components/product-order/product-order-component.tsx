@@ -1,10 +1,12 @@
 import { Autocomplete, AutocompleteItem, Drawer, DrawerBody, DrawerContent, DrawerHeader, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { CalendarDays, Clock, Eye, Hash, Info, ShoppingCart, User } from "lucide-react";
+import { CalendarDays, Clipboard, Clock, Eye, Hash, Info, ShoppingCart, User } from "lucide-react";
 
 import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
+
+import NotaRemisionProdutOrder from "./nota-remision-product-order";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
@@ -18,23 +20,25 @@ import { TableComponent } from "@/themes/ui/table-ui";
 import { getElSalvadorDateTime } from "@/utils/dates";
 import { limit_options } from "@/utils/constants";
 import { useBranchesStore } from "@/store/branches.store";
+import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 
 export default function ProductOrderComponent() {
 
     const { backgroundColor, textColor } = useColors()
     const { getBranchesList, branch_list } = useBranchesStore();
+    const { onAddBydetail } = useShippingBranchProductBranch();
 
     const [selectedOrder, setSelectedOrder] = useState<Order>()
 
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
 
     const modalDetails = useDisclosure()
-
+    const modalNota = useDisclosure()
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
         branchId: 0,
-        startDate: getElSalvadorDateTime().fecEmi,
+        startDate: '2025-06-01',
         endDate: getElSalvadorDateTime().fecEmi,
     });
 
@@ -96,6 +100,7 @@ export default function ProductOrderComponent() {
                 <Input
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
+                    id='fecha-inicial'
                     label="Fecha inicial"
                     labelPlacement="outside"
                     type="date"
@@ -165,6 +170,12 @@ export default function ProductOrderComponent() {
                             <ButtonUi isIconOnly theme={Colors.Info} onPress={() => handleDetails(order)}>
                                 <Eye />
                             </ButtonUi>
+                            <ButtonUi isIconOnly theme={Colors.Primary} onPress={() => {
+                                modalNota.onOpen();
+                                onAddBydetail(order.orderProductDetails)
+                            }}>
+                                <Clipboard />
+                            </ButtonUi>
                         </TdGlobal>
                     </tr>
                 ))}
@@ -181,6 +192,7 @@ export default function ProductOrderComponent() {
                     }}
                 />
             }
+            <NotaRemisionProdutOrder disclousure={modalNota} />
             <Drawer placement="right" size="full" {...modalDetails}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>
