@@ -166,7 +166,7 @@ export default function ProductsExportPdf({headers, params, comercialName }: Pro
       },
     });
 
-    doc.save(`RESUMEN_PRODUCTOS_VENDIDOS_${getElSalvadorDateTime().fecEmi}.pdf`);
+    doc.save(`RESUMEN_PRODUCTOS_${getElSalvadorDateTime().fecEmi}.pdf`);
   } catch {
     toast.error('Ocurrió un error al generar el PDF.');
   }

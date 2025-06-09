@@ -118,7 +118,7 @@ export default function ProductsExportExcell({ params, comercialName, headers }:
     const link = document.createElement('a');
 
     link.href = URL.createObjectURL(blob);
-    link.download = `RESUMEN_PRODUCTOS_VENDIDOS_${DATE}.xlsx`;
+    link.download = `RESUMEN_PRODUCTOS_${DATE}.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -1,5 +1,5 @@
 import { Transmitter } from '@/types/categories.types';
-import { IAddress } from '@/types/transmitter.types';
+import { OrderProductDetail } from '@/types/order-products.types';
 
 export interface IResponseBranchProductPaginatedSent {
   ok?: boolean;
@@ -23,10 +23,8 @@ export interface BranchProduct {
   isActive: boolean;
   product: Product;
   branch: Branch;
-  supplier: Supplier;
   branchId: number;
   productId: number;
-  supplierId: number;
 }
 export interface Product {
   id: number;
@@ -38,14 +36,11 @@ export interface Product {
   unidaDeMedida: string;
   code: string;
   isActive: boolean;
-  subCategoryProduct: SubCategoryProduct;
-  subCategoryProductId: number;
   subCategory?: SubCategoryProduct
 }
 export interface SubCategoryProduct {
   id: number;
   name: string;
-  description: string;
   isActive: boolean;
   categoryProduct: CategoryProduct;
   categoryProductId: number;
@@ -64,7 +59,6 @@ export interface Branch {
   codEstable: string;
   tipoEstablecimiento: string;
   isActive: boolean;
-  location: boolean;
   transmitterId: number;
 }
 export interface Supplier {
@@ -90,6 +84,7 @@ export interface Supplier {
 export interface IShippingProductBranchStore {
   branchProducts: BranchProduct[];
   product_selected: BranchProduct[];
+  onAddBydetail: (order:OrderProductDetail[] ) => void;
   OnAddProductSelected: (product: BranchProduct) => void;
   OnPlusProductSelected: (productId: number) => void;
   OnMinusProductSelected: (productId: number) => void;
@@ -124,7 +119,7 @@ export interface FilterShippingProductBranch {
 export interface Branches {
   id: number;
   name: string;
-  address: IAddress;
+  address: string;
   phone: string;
   codEstable: string;
   codEstableMH: string;

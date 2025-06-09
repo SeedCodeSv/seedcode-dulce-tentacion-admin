@@ -76,8 +76,9 @@ function ShippingProductBranchSelected(props: Props) {
   const [observations, setObservations] = useState('');
 
   useEffect(() => {
+    if(props.branchData)
     getPointOfSales(props.branchData.id);
-  }, [props]);
+  }, [props.branchData]);
 
   const filteredEmployees = useMemo(() => {
     if (branchData) {

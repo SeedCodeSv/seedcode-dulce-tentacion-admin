@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import {
+  ICheckStockResponse,
   IGetBranchProductByCode,
   IGetBranchProductOrder,
   IGetBranchProductPaginated,
@@ -9,7 +10,7 @@ import { API_URL } from '../utils/constants';
 import { get_token, get_user } from '../storage/localStorage';
 
 import { IGetBranchesList } from '@/types/branches.types';
-import {  UpdateBranchProductOrder } from '@/types/products.types';
+import { UpdateBranchProductOrder } from '@/types/products.types';
 
 export const get_branch_product = (id: number, page = 1, limit = 5, name = '', code = '') => {
   const token = get_token() ?? '';
@@ -73,7 +74,7 @@ export const get_branches = () => {
 
   return axios.get<IGetBranchesList>(
     API_URL +
-      `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
+    `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -106,3 +107,11 @@ export const get_branch_product_list = async ({
     })
   ).data;
 };
+
+export const verify_products_stock = async ( branchId: number, products: {id: number,
+    name: string,
+    quantity: number}[] ) => {
+  const data = axios.post<ICheckStockResponse>(`${API_URL}/branch-products/check-stock/${branchId}`, products)
+
+  return data
+}

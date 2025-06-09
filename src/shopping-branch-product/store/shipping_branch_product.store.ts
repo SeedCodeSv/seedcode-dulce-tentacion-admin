@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
 
-import { IResponseBranchProductPaginatedSent, IShippingProductBranchStore } from '../types/shipping_branch_product.types';
+import { BranchProduct, IResponseBranchProductPaginatedSent, IShippingProductBranchStore } from '../types/shipping_branch_product.types';
 import { get_shopping_products_branch } from '../service/shipping_branch_product.service';
 export const useShippingBranchProductBranch = create<IShippingProductBranchStore>((set, get) => ({
   branchProducts: [],
@@ -67,7 +67,6 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       toast.error('Error al agregar o actualizar el producto');
     }
   },
-
   OnPlusProductSelected(productId) {
     try {
       set({
@@ -154,5 +153,20 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       branchProducts: [],
       pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
     });
-  }
+  },
+ onAddBydetail(details) {
+    get().OnClearDataShippingProductBranch()
+
+    const products = [] as BranchProduct[]
+
+    for (const detail of details) {
+      const branchProduct = detail.branchProduct
+
+      products.push({...branchProduct,
+        quantity: Number(detail.quantity)
+      })
+    }
+
+    set({ product_selected: products })
+  },
 }));
