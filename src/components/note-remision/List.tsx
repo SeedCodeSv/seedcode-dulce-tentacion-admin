@@ -6,6 +6,7 @@ import { PiFilePdf, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { Clipboard, ClipboardCheck, FileX2, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import useGlobalStyles from '../global/global.styles';
 import LoadingTable from '../global/LoadingTable';
@@ -83,6 +84,8 @@ function List() {
       })
       .catch(() => setLoadingPdf(false));
   };
+
+  useHotkeys('ctrl+f2', () => navigate('/list-referal-notes'))
 
   const handleExportExcel = async (searchParam: string | undefined, value: number | undefined) => {
     await export_referal_note(
