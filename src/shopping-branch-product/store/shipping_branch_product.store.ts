@@ -3,9 +3,12 @@ import { toast } from 'sonner';
 
 import { BranchProduct, IResponseBranchProductPaginatedSent, IShippingProductBranchStore } from '../types/shipping_branch_product.types';
 import { get_shopping_products_branch } from '../service/shipping_branch_product.service';
+
+import { Branches } from '@/types/branches.types';
 export const useShippingBranchProductBranch = create<IShippingProductBranchStore>((set, get) => ({
   branchProducts: [],
   pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
+  branchDestiny: {} as Branches,
   OnGetShippinProductBranch(
     branchId: number,
     page: number,
@@ -120,10 +123,12 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
     try {
       set({
         product_selected: [],
+        branchDestiny: {} as Branches
       });
     } catch (error) {
       set({
         product_selected: [],
+        branchDestiny: {} as Branches
       });
     }
   },
@@ -156,7 +161,7 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
   },
  onAddBydetail(details) {
     get().OnClearDataShippingProductBranch()
-
+    get().OnClearProductSelectedAll()
     const products = [] as BranchProduct[]
 
     for (const detail of details) {
@@ -169,4 +174,8 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
 
     set({ product_selected: products })
   },
+onAddBranchDestiny(branch) {
+  set({branchDestiny: branch})
+},
+
 }));

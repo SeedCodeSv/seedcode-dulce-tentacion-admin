@@ -30,6 +30,7 @@ import { preventLetters } from '@/utils';
 import { ResponseVerifyProduct } from '@/types/production-order.types';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import { useAlert } from '@/lib/alert';
+import TdGlobal from '@/themes/ui/td-global';
 
 type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
@@ -416,17 +417,17 @@ function AddProductionOrder() {
                     >
                       {selectedProducts[0].recipeBook?.productRecipeBookDetails?.map((r) => (
                         <tr key={r.id}>
-                          <td className="p-3">{r.product?.name}</td>
-                          <td className="p-3">{r.product.code}</td>
-                          <td className="p-3">{r.quantity}</td>
-                          <td className="p-3">{r.branchProduct?.costoUnitario}
-                          </td>
-                          <td className="p-3">{r.quantityPerPerformance}</td>
-                          <td className="p-3">
+                          <TdGlobal className="p-3">{r.product?.name}</TdGlobal>
+                          <TdGlobal className="p-3">{r.product.code}</TdGlobal>
+                          <TdGlobal className="p-3">{r.quantity}</TdGlobal>
+                          <TdGlobal className="p-3">{r.branchProduct?.costoUnitario}
+                          </TdGlobal>
+                          <TdGlobal className="p-3">{r.quantityPerPerformance}</TdGlobal>
+                          <TdGlobal className="p-3">
                             {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
                               4
                             )}
-                          </td>
+                          </TdGlobal>
                         </tr>
                       ))}
                     </TableComponent>

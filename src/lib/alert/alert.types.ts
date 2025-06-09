@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export type AlertType = 'success' | 'error' | 'warning' | 'info';
 
 export interface AlertOptions {
@@ -13,6 +15,7 @@ export interface AlertOptions {
   isAutoClose?: boolean;
   buttonOptions?: JSX.Element,
   customBody?: JSX.Element
+  content?: ReactNode
 }
 
 export interface AlertContextType {

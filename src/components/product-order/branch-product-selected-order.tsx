@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion';
-import { Minus, MoveLeft, Plus, Trash } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { ArrowBigLeft, Minus, Plus, Save, Trash, TriangleAlert } from 'lucide-react';
+import { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Autocomplete,
   AutocompleteItem,
-  Button,
   Input,
   Modal,
   ModalBody,
@@ -15,12 +14,10 @@ import {
   Select,
   SelectItem,
   Textarea,
+  useDisclosure,
 } from '@heroui/react';
-
-import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
-import { Branches } from '../types/shipping_branch_product.types';
-
-import GenerateAShippingNote from './GenerateAShippingNote';
+import { MdCancel, MdWarning } from 'react-icons/md';
+import { useNavigate } from 'react-router';
 
 import { useEmployeeStore } from '@/store/employee.store';
 import { useBranchesStore } from '@/store/branches.store';
@@ -33,6 +30,10 @@ import { Colors } from '@/types/themes.types';
 import { useSocket } from '@/hooks/useSocket';
 import { TableComponent } from '@/themes/ui/table-ui';
 import TdGlobal from '@/themes/ui/td-global';
+import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
+import GenerateAShippingNote from '@/shopping-branch-product/components/GenerateAShippingNote';
+import { Branches } from '@/shopping-branch-product/types/shipping_branch_product.types';
+import { ICheckStockResponse } from '@/types/branch_products.types';
 
 interface Props {
   branchData: Branches;
@@ -42,9 +43,11 @@ interface Props {
   setCurrentStep: Dispatch<SetStateAction<string>>;
   openModalSteps: () => void;
   titleError: string;
+  response: ICheckStockResponse | undefined
+  children?: ReactNode
 }
 
-function ShippingProductBranchSelected(props: Props) {
+export default function BranchProductSelectedOrder(props: Props) {
   const [branchData, setBranchData] = useState<Branches>();
   const {
     product_selected,
@@ -59,6 +62,8 @@ function ShippingProductBranchSelected(props: Props) {
   const { branch_list, getBranchesList } = useBranchesStore();
   const { point_of_sales, getPointOfSales } = usePointOfSales();
   const { socket } = useSocket()
+  const modalError = useDisclosure()
+  const navigate = useNavigate()
 
   useEffect(() => {
     getEmployeesList();
@@ -103,6 +108,33 @@ function ShippingProductBranchSelected(props: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
 
+  const handleSave = () => {
+    if (responsibleEmployee === undefined) {
+      toast.warning('Debes seleccionar el responsable');
+
+      return;
+    }
+
+    if (!props.branchData) {
+      toast.warning('Debes seleccionar la sucursal de origen');
+
+      return;
+    }
+
+    const hasWarningsOrErrors = props.response?.results.some(
+      (item) => item.status === 'insufficient_stock' || item.status === 'not_found'
+    );
+
+    if (hasWarningsOrErrors) {
+      modalError.onOpen()
+
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
+
+
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
@@ -110,7 +142,6 @@ function ShippingProductBranchSelected(props: Props) {
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
     >
-      <span className="text-2xl font-bold dark:text-white">Productos a Enviar</span>
       {product_selected.length === 0 ? (
         <div className="flex mt-3 items-center justify-center h-[100%] border border-gray-700 w-[100%] rounded-xl">
           <div className="flex items-center justify-center w-80 h-[400px]">
@@ -119,63 +150,61 @@ function ShippingProductBranchSelected(props: Props) {
         </div>
       ) : (
         <>
+          <div>
+            <ButtonUi
+              startContent={<ArrowBigLeft />}
+              theme={Colors.Info}
+              onPress={() => navigate('/order-products')}
+            >
+              Regresar
+            </ButtonUi>
+          </div>
+          <div className='flex gap-5 items-start mt-4'>
+            <Autocomplete
+              required
+              className="dark:text-white font-semibold max-w-72"
+              clearButtonProps={{
+                onClick: () => {
+                  setResponsibleEmployee(undefined);
+                },
+              }}
+              label="Responsable"
+              labelPlacement="outside"
+              placeholder="Selecciona el empleado responsable"
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  const employee = JSON.parse(key as string) as Employee;
+
+                  setResponsibleEmployee(employee);
+                }
+              }}
+            >
+              {employee_list &&
+                employee_list.map((employee) => (
+                  <AutocompleteItem
+                    key={JSON.stringify(employee)}
+                    className="dark:text-white"
+                    textValue={
+                      employee.firstName + ' ' + employee.secondName + ' ' + employee.firstLastName + ' ' +employee.secondLastName
+                    }
+                  >
+                    {employee.firstName ?? '-'} {employee.secondName ?? '-'} {employee.firstLastName ?? '-'}{employee.secondLastName ?? '-'}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
+            {props.children}
+          </div>
           <div className="flex justify-between">
-            <div>
-              <Autocomplete
-                required
-                className="dark:text-white mt-4"
-                clearButtonProps={{
-                  onClick: () => {
-                    setResponsibleEmployee(undefined);
-                  },
-                }}
-                label="Selecciona el empleado responsable"
-                labelPlacement="outside"
-                placeholder="Selecciona el empleado responsable"
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    const employee = JSON.parse(key as string) as Employee;
-
-                    setResponsibleEmployee(employee);
-                  }
-                }}
-              >
-                {employee_list &&
-                  employee_list.map((employee) => (
-                    <AutocompleteItem
-                      key={JSON.stringify(employee)}
-                      className="dark:text-white"
-                    >
-                      {employee.firstName}
-                    </AutocompleteItem>
-                  ))}
-              </Autocomplete>
-            </div>
-            <div className="mt-10">
-              <Button
-                className="dark:text-wite"
-                color="primary"
-                onPress={() => {
-                  if (responsibleEmployee === undefined) {
-                    toast.warning('Debes seleccionar el responsable')
-
-                    return
-                  }
-
-                  if (!props.branchData) {
-                    toast.warning('Debes seleccionar la sucursal de origen')
-
-                    return
-                  }
-
-                  setIsModalOpen(true)
-                }}
-              >
-                <MoveLeft />
-                Guardar
-              </Button>
-            </div>
+            <span className="text-2xl font-bold dark:text-white">Productos a Enviar</span>
+            <ButtonUi
+              className="dark:text-wite"
+              theme={Colors.Success}
+              onPress={() => handleSave()}
+            >
+              <Save />
+              Guardar
+            </ButtonUi>
           </div>
           <TableComponent className='uppercase' headers={[
             'N°',
@@ -484,8 +513,6 @@ function ShippingProductBranchSelected(props: Props) {
           <ModalFooter className="flex justify-between items-end">
             <ButtonUi
               className="px-10"
-              // style={global_styles().dangerStyles}
-              // variant="light"
               theme={Colors.Error}
               onPress={() => setIsModalOpen(false)}
             >
@@ -511,8 +538,48 @@ function ShippingProductBranchSelected(props: Props) {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <Modal {...modalError}>
+        <ModalContent>
+          <ModalHeader className='flex gap-2'>
+            <TriangleAlert className='text-orange-500' size={26} /> Advertencia
+          </ModalHeader>
+          <ModalBody className='pb-4'>
+            {props.response && props.response.results.length > 0 && (
+              <div className='text-[14px]'>
+                {props.response.results.filter((item) => item.status !== 'ok').map((item) => {
+                  let icon, color, message;
+
+                  switch (item.status) {
+                    case 'insufficient_stock':
+                      icon = <span className="text-yellow-600"><MdWarning /></span>;
+                      color = 'text-yellow-700';
+                      message = `${item.productName}: stock insuficiente (${item.stock} disponibles, requiere ${item.required})`;
+                      break;
+                    case 'not_found':
+                      icon = <span className="text-red-600"><MdCancel /></span>;
+                      color = 'text-red-700';
+                      message = `${item.productName}: no encontrado en esta sucursal`;
+                      break;
+                    default:
+                      icon = null;
+                      color = 'text-gray-700';
+                      message = item.productName;
+                  }
+
+                  return (
+                    <div key={item.productId} className={`flex items-center gap-2 ${color}`}>
+                      {icon}
+                      <span>{message}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <strong className='text-[14px]'>¡Advertencia: Se encontró algunos problemas con algunos productos!</strong>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </motion.div>
   );
 }
 
-export default ShippingProductBranchSelected;

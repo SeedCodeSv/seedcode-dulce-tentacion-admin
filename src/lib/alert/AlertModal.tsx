@@ -23,6 +23,7 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
   timer,
   isAutoClose = true,
   buttonOptions,
+  content
 }) => {
   useEffect(() => {
     if (isAutoClose && timer) {
@@ -60,6 +61,8 @@ export const AlertModal: React.FC<AlertOptions & { onClose: () => void }> = ({
             {title && <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>}
 
             {message && <p className="text-gray-600 mb-6">{message}</p>}
+
+            {content && content}
 
             <div className="flex gap-3">
               {(onCancel || cancelText) && (

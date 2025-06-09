@@ -1,12 +1,13 @@
 import { Autocomplete, AutocompleteItem, Drawer, DrawerBody, DrawerContent, DrawerHeader, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { CalendarDays, Clipboard, Clock, Eye, Hash, Info, ShoppingCart, User } from "lucide-react";
+import { CalendarDays, Clock, Eye, Hash, Info, ReceiptText, ShoppingCart, StickyNote, User } from "lucide-react";
+import { useNavigate } from "react-router";
 
 import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
-import NotaRemisionProdutOrder from "./nota-remision-product-order";
+import OrderProductionProductOrder from "./order-production-product-order";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
@@ -21,19 +22,22 @@ import { getElSalvadorDateTime } from "@/utils/dates";
 import { limit_options } from "@/utils/constants";
 import { useBranchesStore } from "@/store/branches.store";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
+import { useProductionOrderStore } from "@/store/production-order.store";
 
 export default function ProductOrderComponent() {
 
     const { backgroundColor, textColor } = useColors()
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { onAddBydetail } = useShippingBranchProductBranch();
-
+    const { onAddBydetail, onAddBranchDestiny} = useShippingBranchProductBranch();
+    const {addSelectedProducts} = useProductionOrderStore()
+const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
 
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
 
-    const modalDetails = useDisclosure()
-    const modalNota = useDisclosure()
+    const modalDetails = useDisclosure();
+    const modalNota = useDisclosure();
+    const modalProduction = useDisclosure()
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
@@ -166,15 +170,35 @@ export default function ProductOrderComponent() {
                             {order.employee.firstLastName} {order.employee.secondLastName}
                         </TdGlobal>
                         <TdGlobal className="p-2 text-sm">{order.status}</TdGlobal>
-                        <TdGlobal className="p-2 text-sm">
-                            <ButtonUi isIconOnly theme={Colors.Info} onPress={() => handleDetails(order)}>
+                        <TdGlobal className="p-2 text-sm flex gap-2">
+                            <ButtonUi isIconOnly showTooltip 
+                            theme={Colors.Info}
+                            tooltipText="Detalles"
+                            onPress={() => handleDetails(order)}>
                                 <Eye />
                             </ButtonUi>
-                            <ButtonUi isIconOnly theme={Colors.Primary} onPress={() => {
-                                modalNota.onOpen();
+                            <ButtonUi isIconOnly 
+                            showTooltip
+                            theme={Colors.Primary}
+                            tooltipText="Nota de Remisión"
+                            onPress={() => {
+                                navigate('/order-products-nota')
+                                modalNota.onOpen()
                                 onAddBydetail(order.orderProductDetails)
+                                onAddBranchDestiny(order.branch)
                             }}>
-                                <Clipboard />
+                                <StickyNote/>
+                            </ButtonUi>
+                            <ButtonUi isIconOnly 
+                            showTooltip
+                            theme={Colors.Error}
+                            tooltipText="Order de Producción"
+                            onPress={() => {
+                                modalProduction.onOpen();
+                                addSelectedProducts(order.orderProductDetails)
+                                onAddBranchDestiny(order.branch)
+                            }}>
+                                <ReceiptText/>
                             </ButtonUi>
                         </TdGlobal>
                     </tr>
@@ -192,7 +216,7 @@ export default function ProductOrderComponent() {
                     }}
                 />
             }
-            <NotaRemisionProdutOrder disclousure={modalNota} />
+            <OrderProductionProductOrder disclosure={modalProduction}/>
             <Drawer placement="right" size="full" {...modalDetails}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>

@@ -50,16 +50,13 @@ function AuxiliarBook({ disclosure }: Props) {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    const trandId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    const trandId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
     getAccountCatalogs(trandId, '', '');
   }, []);
 
   const handleGetItems = () => {
-    const transId = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    const transId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
     const accountsArray = Array.from(accounts) as string[];
 

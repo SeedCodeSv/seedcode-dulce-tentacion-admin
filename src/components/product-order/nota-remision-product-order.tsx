@@ -1,22 +1,18 @@
-import { Autocomplete, AutocompleteItem, Drawer, DrawerBody, DrawerContent, DrawerHeader, useDisclosure } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { MdCancel, MdCheckCircle, MdWarning } from "react-icons/md";
 
+import BranchProductSelectedOrder from "./branch-product-selected-order";
+
 import { steps } from "@/shopping-branch-product/components/process/types/process.types";
-import ShippingProductBranchSelected from "@/shopping-branch-product/components/ShippingProductBranchSelected";
-import useColors from "@/themes/use-colors";
 import { Branches } from "@/types/branches.types";
 import { useBranchesStore } from "@/store/branches.store";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 import { verify_products_stock } from "@/services/branch_product.service";
 import { ICheckStockResponse } from "@/types/branch_products.types";
-
-
-type DisclosureProps = ReturnType<typeof useDisclosure>;
-
-interface Props {
-    disclousure: DisclosureProps
-}
+import { SigningProcess } from "@/shopping-branch-product/components/process/SingningProcess";
+import Layout from "@/layout/Layout";
+import DivGlobal from "@/themes/ui/div-global";
 
 interface Product {
     id: number,
@@ -24,10 +20,9 @@ interface Product {
     quantity: number,
 }
 
-export default function NotaRemisionProdutOrder({ disclousure }: Props) {
+export default function NotaRemisionProdutOrder() {
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { product_selected } = useShippingBranchProductBranch();
-    const { backgroundColor, textColor } = useColors()
+    const { product_selected, branchDestiny } = useShippingBranchProductBranch();
     const [branchData, setBranchData] = useState<Branches>();
     const modalLoading = useDisclosure();
     const [currentState, setCurrentState] = useState(steps[0].title);
@@ -58,13 +53,22 @@ export default function NotaRemisionProdutOrder({ disclousure }: Props) {
     }
 
     return (
-        <Drawer isOpen={disclousure.isOpen} placement="right" size="full" onClose={() => disclousure.onClose()}>
-            <DrawerContent style={{ ...backgroundColor, ...textColor }}>
-                <DrawerHeader>Nota de Remision</DrawerHeader>
-                <DrawerBody>
-                    <div className="flex gap-4 ">
+        <Layout title="Nota de Remisón">
+            <DivGlobal>
+
+                <BranchProductSelectedOrder
+                    branchData={branchData!}
+                    branchDestiny={branchDestiny}
+                    openModalSteps={modalLoading.onOpenChange}
+                    response={response}
+                    setCurrentStep={setCurrentState}
+                    setErrors={setMessageError}
+                    setTitleString={setTitleError}
+                    titleError={titleError}
+                >
+                    <div className="flex flex-col lg:flex-row gap-4 justify-between items-start w-full">
                         <Autocomplete
-                            className="dark:text-white"
+                            className="max-w-72 dark:text-white"
                             classNames={{
                                 base: 'font-semibold text-sm text-gray-900 dark:text-white',
                             }}
@@ -95,7 +99,7 @@ export default function NotaRemisionProdutOrder({ disclousure }: Props) {
                             ))}
                         </Autocomplete>
                         {response && response.results.length > 0 && (
-                            <div className="w-full rounded-lg bg-gray-100 p-4 space-y-2">
+                            <div className="lg:w-[30vw] rounded-lg bg-gray-100 p-4 space-y-2">
                                 {response.results.map((item) => {
                                     let icon, color, message;
 
@@ -132,20 +136,16 @@ export default function NotaRemisionProdutOrder({ disclousure }: Props) {
                         )}
 
                     </div>
-                    <span className="hidden">
-                        {currentState}
-                        {messageError}
-                    </span>
-                    <ShippingProductBranchSelected
-                        branchData={branchData!}
-                        openModalSteps={modalLoading.onOpenChange}
-                        setCurrentStep={setCurrentState}
-                        setErrors={setMessageError}
-                        setTitleString={setTitleError}
-                        titleError={titleError}
-                    />
-                </DrawerBody>
-            </DrawerContent>
-        </Drawer>
+
+                </BranchProductSelectedOrder>
+                <SigningProcess
+                    currentState={currentState}
+                    errors={messageError}
+                    isOpen={modalLoading.isOpen}
+                    titleMessage={titleError}
+                    onClose={() => modalLoading.onClose()}
+                />
+            </DivGlobal>
+        </Layout>
     )
 }
