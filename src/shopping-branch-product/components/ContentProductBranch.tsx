@@ -1,9 +1,12 @@
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Autocomplete, AutocompleteItem, Button, useDisclosure } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@heroui/react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { CiWarning } from 'react-icons/ci';
 
 import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
 import { Branches } from '../types/shipping_branch_product.types';
@@ -14,6 +17,9 @@ import { steps } from './process/types/process.types';
 
 import { useBranchesStore } from '@/store/branches.store';
 import SelectProductNote from '@/components/note-remision/SelectProduct';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+
 
 
 export default function ContentProductBranch() {
@@ -36,6 +42,7 @@ export default function ContentProductBranch() {
   const modalProducts = useDisclosure();
 
   const {
+    product_selected,
     OnGetShippinProductBranch,
     OnClearProductSelectedAll,
   } = useShippingBranchProductBranch();
@@ -63,16 +70,78 @@ export default function ContentProductBranch() {
     }
   }, [branchData]);
 
+  const modalExit = useDisclosure()
+  const autocomplete = React.useRef<HTMLInputElement>(null)
+
+
+  useHotkeys('ctrl+f1', () => {
+    autocomplete?.current?.focus()
+  })
+
+  useHotkeys('ctrl+f2', () => {
+    if (!branchData) {
+      toast.warning('Debes seleccionar una sucursal')
+
+      return
+    }
+    modalProducts.onOpen()
+  })
+
+  useHotkeys(['Esc'], () => {
+    if (product_selected[0]?.id) {
+      modalExit.onOpen()
+
+    } else {
+      navigate(-1)
+
+    }
+  })
+
   return (
     <>
+      <Modal isDismissable isOpen={modalExit.isOpen} onClose={modalExit.onClose}>
+        <ModalContent>
+
+          <ModalHeader>
+            <CiWarning color={'orange'} size={28} />
+            <p className='dark:text-white'> Tienes productos seleccionados</p>
+          </ModalHeader>
+          <ModalBody>
+            <h2 className='dark:text-white '>
+              ¿Estás seguro de que quieres volver atrás?
+              Al hacerlo, deberás seleccionar nuevamente los productos.
+            </h2>
+            <div className='flex justify-between'>
+              <ButtonUi
+                theme={Colors.Error}
+                onPress={() => { modalExit.onClose() }
+                }
+              >
+                Cancelar
+              </ButtonUi>
+              <ButtonUi
+                theme={Colors.Success}
+                onPress={() => {
+                  modalExit.onClose()
+                  OnClearProductSelectedAll();
+                  navigate(-1)
+                }}
+              >
+                Aceptar
+              </ButtonUi>
+            </div>
+          </ModalBody>
+        </ModalContent>
+
+      </Modal>
       <div className="w-full ">
         <div className="space-y-6">
-           <Button
-                className="bg-transparent dark:text-white flex"
-                onClick={() => navigate('/note-referal')}
-              >
-                <ArrowLeft /> Regresar
-              </Button>
+          <Button
+            className="bg-transparent dark:text-white flex"
+            onClick={() => navigate('/note-referal')}
+          >
+            <ArrowLeft /> Regresar
+          </Button>
           <motion.div
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
@@ -81,6 +150,7 @@ export default function ContentProductBranch() {
           >
             <div className="grid grid-cols-3 gap-4">
               <Autocomplete
+                ref={autocomplete}
                 className="dark:text-white"
                 classNames={{
                   base: 'font-semibold text-sm text-gray-900 dark:text-white',
@@ -117,10 +187,6 @@ export default function ContentProductBranch() {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
-
-
-
-
               <div />
               <Button
                 isDisabled={!isEnabled}

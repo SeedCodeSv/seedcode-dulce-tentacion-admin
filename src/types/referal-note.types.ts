@@ -65,9 +65,23 @@ export interface ReferalNote {
   receivingEmployeeId?: number
 }
 
+export interface IExportNote extends ReferalNote {
+  receivingBranchName?: string
+}
 export interface IGetReferalNotes {
   ok: boolean;
   referalNotes: ReferalNote[];
+  total: number;
+  totalPag: number;
+  currentPag: number;
+  nextPag: number;
+  prevPag: number;
+  status: number;
+}
+
+export interface IExportExcel {
+  ok: boolean;
+  referalNotes: IExportNote[];
   total: number;
   totalPag: number;
   currentPag: number;

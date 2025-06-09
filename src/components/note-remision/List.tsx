@@ -2,15 +2,18 @@
 import { Button, Chip, Input, Select, SelectItem, useDisclosure } from '@heroui/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import Lottie from 'lottie-react';
-import { PiFilePdf } from 'react-icons/pi';
+import { PiFilePdf, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { Clipboard, ClipboardCheck, FileX2, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import useGlobalStyles from '../global/global.styles';
 import LoadingTable from '../global/LoadingTable';
 import Pagination from '../global/Pagination';
 import SmPagination from '../global/SmPagination';
 import TooltipGlobal from '../global/TooltipGlobal';
+import { exportNotesReferal } from '../export-reports/ExportByNotesReferal';
 
 import { CompleteNoteModal } from './CompleteNoteRemision';
 import InvalidateNoteReferal from './Invalidate04';
@@ -20,13 +23,15 @@ import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import { useAuthStore } from '@/store/auth.store';
 import { ReferalNote } from '@/types/referal-note.types';
 import { useReferalNote } from '@/store/referal-notes';
-import { get_pdf_nre } from '@/services/referal-notes.service';
+import { export_referal_note, get_pdf_nre } from '@/services/referal-notes.service';
 import { usePermission } from '@/hooks/usePermission';
 import { limit_options } from '@/utils/constants';
 import { estadosV } from '@/utils/utils';
 import { ThemeContext } from '@/hooks/useTheme';
 import ThGlobal from '@/themes/ui/th-global';
 import { useBranchesStore } from '@/store/branches.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
@@ -80,6 +85,25 @@ function List() {
       .catch(() => setLoadingPdf(false));
   };
 
+  useHotkeys('ctrl+f2', () => navigate('/list-referal-notes'))
+
+  const handleExportExcel = async (searchParam: string | undefined, value: number | undefined) => {
+    await export_referal_note(
+      Number(user?.transmitterId),
+      1,
+      99999999,
+      searchParam ?? startDate,
+      searchParam ?? endDate,
+      searchParam ?? state.value,
+      value ?? branchId
+    ).then(({ data }) => {
+      exportNotesReferal(data.referalNotes, startDate, endDate)
+    }).catch(() => {
+      toast.error('No se proceso la peticion')
+    })
+
+  }
+
   return (
     <>
       <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
@@ -129,53 +153,84 @@ function List() {
             <div />
 
           </div>
-          <div className='flex flex-row gap-2 justify-end items-end'>
-            <Select
-              className="w-44"
-              classNames={{
-                label: 'font-semibold',
-                selectorIcon: 'dark:text-white'
-              }}
-              label="Mostrar"
-              labelPlacement="outside"
-              placeholder="Mostrar"
-              value={limit}
-              variant="bordered"
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
-              }}
-            >
-              {limit_options.map((limit) => (
-                <SelectItem key={limit} className="dark:text-white">
-                  {limit}
-                </SelectItem>
-              ))}
-            </Select>
-            <Select
-              className="w-44"
-              classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
-              label="Mostrar por estado"
-              labelPlacement="outside"
-              placeholder="Selecciona un estado"
-              value={state.label}
-              variant="bordered"
-              onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
-            >
-              {estadosV.map((e) => (
-                <SelectItem key={e.value} className="dark:text-white">
-                  {e.label}
-                </SelectItem>
-              ))}
-            </Select>
-            <Button
-              isIconOnly
-              style={{ ...style, justifySelf: "end" }}
-              type="button"
-              onClick={() => navigate('/list-referal-notes')}
-            >
-              <Plus />
-            </Button>
+          <div className='flex flex-row items-end grid grid-cols-2'>
+
+            {actions?.includes("Exportar Excel") && (
+              <>
+                {referalNotes?.length > 0 ?
+                  <ButtonUi
+                    className="mt-4 font-semibold w-48 "
+                    color="success"
+                    theme={Colors.Success}
+                    onPress={() => {
+                      handleExportExcel(undefined, undefined)
+                    }}
+                  >
+                    <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                  </ButtonUi>
+                  :
+                  <ButtonUi
+                    className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
+                    color="success"
+                    theme={Colors.Success}
+                  >
+                    <p>Exportar Excel</p>
+                    <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                  </ButtonUi>
+                }
+              </>
+            )}
+            <div className='flex flex-row gap-2 justify-end items-end'>
+              <Select
+                className="w-44"
+                classNames={{
+                  label: 'font-semibold',
+                  selectorIcon: 'dark:text-white'
+                }}
+                label="Mostrar"
+                labelPlacement="outside"
+                placeholder="Mostrar"
+                value={limit}
+                variant="bordered"
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                {limit_options.map((limit) => (
+                  <SelectItem key={limit} className="dark:text-white">
+                    {limit}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Select
+                className="w-44"
+                classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
+                label="Mostrar por estado"
+                labelPlacement="outside"
+                placeholder="Selecciona un estado"
+                value={state.label}
+                variant="bordered"
+                onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
+              >
+                {estadosV.map((e) => (
+                  <SelectItem key={e.value} className="dark:text-white">
+                    {e.label}
+                  </SelectItem>
+                ))}
+              </Select>
+
+
+              <Button
+                isIconOnly
+                style={{ ...style, justifySelf: "end" }}
+                type="button"
+                onClick={() => navigate('/list-referal-notes')}
+              >
+                <Plus />
+              </Button>
+            </div>
           </div>
+
           <div className="overflow-x-auto custom-scrollbar mt-4">
             <table className="w-full">
               <thead className="sticky top-0 z-20 bg-white">
