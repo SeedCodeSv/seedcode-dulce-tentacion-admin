@@ -22,7 +22,7 @@ export interface IProductsStore {
   productsAndRecipe: ProductAndRecipe[];
   productsAndRecipeLoading: boolean;
   productsAndRecipePagination: IPagination;
-  getRecipeBook: (id: number) => void;
+  getRecipeBook: (id: number) => Promise<boolean>;
   savePaginatedProducts: (products: IGetProductsPaginated) => void;
   getPaginatedProducts: (
     page: number,

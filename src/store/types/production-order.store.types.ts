@@ -1,4 +1,6 @@
+import { BranchProduct } from '@/types/branch_products.types';
 import { IPagination } from '@/types/global.types';
+import { OrderProductDetail } from '@/types/order-products.types';
 import {
   IError,
   IPayloadVerifyProducts,
@@ -9,6 +11,7 @@ import {
 } from '@/types/production-order.types';
 
 export interface ProductionOrderStore {
+  selectedProducts: BranchProduct[]
   productionOrders: ProductionOrder[];
   paginationProductionOrders: IPagination;
   loadingProductionOrders: boolean;
@@ -18,6 +21,7 @@ export interface ProductionOrderStore {
   loadingProductionOrderDetail: boolean;
   errors: IError[];
   verified_product: ResponseVerifyProduct;
+  addSelectedProducts: (products: OrderProductDetail[]) => void;
   getProductionsOrderDetail: (id: number) => void;
   getProductionsOrder: (id: number) => void;
   getProductionsOrders: (

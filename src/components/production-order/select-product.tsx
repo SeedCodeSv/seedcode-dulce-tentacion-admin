@@ -116,13 +116,13 @@ function SelectProduct({
     );
   }, [dbounceName, selectedTypeProduct]);
 
-  const OnVerifyProduct = async (recipe: ProductAndRecipe) => {
+  const OnVerifyProduct = async (prd: ProductAndRecipe) => {
     createProduct.onClose()
-      const productFind = selectedProducts.find((sp) => sp.branchProduct.product.id === recipe.id);
+      const productFind = selectedProducts.find((sp) => sp.branchProduct.product.id === prd.id);
 
     if (productFind) {
       setSelectedProducts([]);
-      toast.warning(`Se eliminó ${recipe.name} con éxito`);
+      toast.warning(`Se eliminó ${prd.name} con éxito`);
 
       return;
     }
@@ -130,12 +130,12 @@ function SelectProduct({
     const res = await handleVerifyProduct({
       branchDestinationId: Number(new Set(moveSelectedBranch).values().next().value),
       branchDepartureId: Number(new Set(selectedBranch).values().next().value),
-      productId: recipe.id,
+      productId: prd.id,
     });
 
     if (!res.ok && res.message?.includes("No se encontró el producto")) {
       getBranchById(Number(new Set(moveSelectedBranch).values().next().value))
-      setProductToCreate(recipe,);
+      setProductToCreate(prd);
       modalProduct.onOpen();
 
       return

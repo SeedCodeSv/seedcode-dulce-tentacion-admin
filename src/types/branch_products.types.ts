@@ -72,6 +72,7 @@ export interface Product {
   tipoDeItem: string;
   uniMedida: string;
   unidaDeMedida: string;
+  productType: string;
   code: string;
   isActive: boolean;
   subCategory: SubCategory;

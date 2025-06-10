@@ -189,12 +189,17 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   },
   getRecipeBook(id) {
     set({ loadingRecipeBook: true });
-    get_product_recipe_book(id)
+
+   return get_product_recipe_book(id)
       .then((result) => {
         set({ recipeBook: result.data.recipeBook, loadingRecipeBook: false });
+
+        return true
       })
       .catch(() => {
         set({ recipeBook: null, loadingRecipeBook: false });
+
+        return false
       });
   },
     async getProductsFilteredList(params) {

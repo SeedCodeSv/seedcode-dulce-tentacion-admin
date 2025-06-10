@@ -83,6 +83,7 @@ export interface Supplier {
 
 export interface IShippingProductBranchStore {
   branchProducts: BranchProduct[];
+  branchDestiny: Branches;
   product_selected: BranchProduct[];
   onAddBydetail: (order:OrderProductDetail[] ) => void;
   OnAddProductSelected: (product: BranchProduct) => void;
@@ -94,7 +95,7 @@ export interface IShippingProductBranchStore {
   OnChangeQuantityManual: (productId: number, quantity: number) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
   OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
-
+onAddBranchDestiny: (branch: Branches) => void
   OnClearDataShippingProductBranch: () => void;
   OnGetShippinProductBranch: (
     branchId: number,

@@ -14,6 +14,7 @@ import { IError, RecipeBook, ResponseVerifyProduct } from '@/types/production-or
 import { BranchProduct } from '@/types/branch_products.types';
 
 export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
+  selectedProducts: [],
   productionOrders: [],
   paginationProductionOrders: {
     currentPag: 0,
@@ -161,6 +162,15 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
           message,
         };
       });
-  }
+  },
+  addSelectedProducts(products) {
+    let data: BranchProduct[] = []
+
+    products.map((item) => {
+      data.push(item.branchProduct)
+    })
+
+    set({ selectedProducts: data })
+  },
 
 }));

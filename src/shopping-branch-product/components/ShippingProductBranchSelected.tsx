@@ -38,6 +38,7 @@ import TdGlobal from '@/themes/ui/td-global';
 
 interface Props {
   branchData: Branches;
+  branchDestiny?: Branches;
   setErrors: Dispatch<SetStateAction<string[]>>;
   setTitleString: Dispatch<SetStateAction<string>>;
   setCurrentStep: Dispatch<SetStateAction<string>>;
@@ -95,6 +96,13 @@ function ShippingProductBranchSelected(props: Props) {
   useEffect(() => {
     getCustomerByBranchId();
   }, []);
+
+  useEffect(() => {
+    if (props.branchDestiny) {
+      setBranchData(props.branchDestiny)
+    }
+
+  }, [props.branchDestiny])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
   const autocomplete = React.useRef<HTMLInputElement>(null)
