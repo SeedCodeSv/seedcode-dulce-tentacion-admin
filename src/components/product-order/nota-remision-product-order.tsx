@@ -1,6 +1,6 @@
-import { Autocomplete, AutocompleteItem, useDisclosure } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Tooltip, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { MdCancel, MdCheckCircle, MdWarning } from "react-icons/md";
+import {MdWarning } from "react-icons/md";
 
 import BranchProductSelectedOrder from "./branch-product-selected-order";
 
@@ -9,7 +9,7 @@ import { Branches } from "@/types/branches.types";
 import { useBranchesStore } from "@/store/branches.store";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 import { verify_products_stock } from "@/services/branch_product.service";
-import { ICheckStockResponse } from "@/types/branch_products.types";
+import { ICheckStockResponse, Result } from "@/types/branch_products.types";
 import { SigningProcess } from "@/shopping-branch-product/components/process/SingningProcess";
 import Layout from "@/layout/Layout";
 import DivGlobal from "@/themes/ui/div-global";
@@ -51,6 +51,39 @@ export default function NotaRemisionProdutOrder() {
             }
         })
     }
+
+    const getProblemSummary = (results: Result[]) => {
+        const notFound = results.filter((item) => item.status === 'not_found');
+        const insufficient = results.filter((item) => item.status === 'insufficient_stock');
+
+        const tooltipContent = (
+            <div className="text-sm space-y-1">
+                {notFound.length > 0 && (
+                    <div>
+                        <strong className="text-red-600 block">No existen en la sucursal:</strong>
+                        {notFound.map(item => (
+                            <div key={item.productId} className="text-red-700">{item.productName}</div>
+                        ))}
+                    </div>
+                )}
+                {insufficient.length > 0 && (
+                    <div className="mt-2">
+                        <strong className="text-yellow-600 block">Stock insuficiente:</strong>
+                        {insufficient.map(item => (
+                            <div key={item.productId} className="text-yellow-700">
+                                {item.productName} ({item.stock} disponibles, requiere {item.required})
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        );
+
+        return {
+            hasIssues: notFound.length > 0 || insufficient.length > 0,
+            tooltipContent
+        };
+    };
 
     return (
         <Layout title="Nota de Remisón">
@@ -98,42 +131,25 @@ export default function NotaRemisionProdutOrder() {
                                 </AutocompleteItem>
                             ))}
                         </Autocomplete>
-                        {response && response.results.length > 0 && (
-                            <div className="lg:w-[30vw] rounded-lg bg-gray-100 p-4 space-y-2">
-                                {response.results.map((item) => {
-                                    let icon, color, message;
+                        {response && response?.results?.length > 0 && (() => {
+                            const { hasIssues, tooltipContent } = getProblemSummary(response.results);
 
-                                    switch (item.status) {
-                                        case 'ok':
-                                            icon = <span className="text-green-600"><MdCheckCircle /></span>;
-                                            color = 'text-green-700';
-                                            message = `${item.productName}: stock suficiente (${item.stock} disponibles, requiere ${item.required})`;
-                                            break;
-                                        case 'insufficient_stock':
-                                            icon = <span className="text-yellow-600"><MdWarning /></span>;
-                                            color = 'text-yellow-700';
-                                            message = `${item.productName}: stock insuficiente (${item.stock} disponibles, requiere ${item.required})`;
-                                            break;
-                                        case 'not_found':
-                                            icon = <span className="text-red-600"><MdCancel /></span>;
-                                            color = 'text-red-700';
-                                            message = `${item.productName}: no encontrado en esta sucursal`;
-                                            break;
-                                        default:
-                                            icon = null;
-                                            color = 'text-gray-700';
-                                            message = item.productName;
-                                    }
+                            if (!hasIssues) return null;
 
-                                    return (
-                                        <div key={item.productId} className={`flex items-center gap-2 ${color}`}>
-                                            {icon}
-                                            <span>{message}</span>
+                            return (
+                                <div className="lg:w-[30vw] rounded-lg bg-yellow-50 p-4 text-sm flex items-start gap-2">
+                                    <MdWarning className="text-yellow-600 mt-1" size={20} />
+                                    <div>
+                                        <div className="text-yellow-800">
+                                            Se encontraron productos con problemas: algunos no existen en la sucursal y otros tienen stock insuficiente.
                                         </div>
-                                    );
-                                })}
-                            </div>
-                        )}
+                                        <Tooltip content={tooltipContent} placement="right">
+                                            <button className="text-blue-600 underline text-xs mt-1">Ver detalles</button>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            );
+                        })()}
 
                     </div>
 

@@ -1,42 +1,43 @@
 import {
     Drawer, DrawerBody, DrawerContent, DrawerHeader, SelectItem, useDisclosure, Select,
     Button,
+    ModalBody,
+    ModalContent,
+    Modal,
+    ModalFooter,
+    ModalHeader,
 } from "@heroui/react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { PackageX, Store } from "lucide-react";
+import { Check, ChevronLeft, PackageX, Store, TriangleAlert } from "lucide-react";
 
 import AddProductionOrderByProductOrder from "./add-production-order-product-order";
 
-import useColors from "@/themes/use-colors";
 import { useProductionOrderStore } from "@/store/production-order.store";
 import { useBranchesStore } from "@/store/branches.store";
 import { Branches } from "@/types/branches.types";
 import { ResponseVerifyProduct } from "@/types/production-order.types";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 import Pui from "@/themes/ui/p-ui";
-import { useAlert } from "@/lib/alert";
+import Layout from "@/layout/Layout";
+import DivGlobal from "@/themes/ui/div-global";
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
+import { TableComponent } from "@/themes/ui/table-ui";
+import TdGlobal from "@/themes/ui/td-global";
 
-type DisclosureProps = ReturnType<typeof useDisclosure>;
-
-interface Props {
-    disclosure?: DisclosureProps
-}
 
 type ProductRecipe = ResponseVerifyProduct & {
     quantity: number;
 };
 
-
-export default function OrderProductionProductOrder({ disclosure }: Props) {
-    const { backgroundColor, textColor } = useColors()
-    const { selectedProducts, handleVerifyProduct } = useProductionOrderStore()
+export default function OrderProductionProductOrder() {
+    const { selectedProducts, handleVerifyProduct, errors, verified_product } = useProductionOrderStore()
     const [selectedBranch, setSelectedBranch] = useState<Branches>();
     const [selectedProduct, setSelectedProduct] = useState<ProductRecipe>();
     const { branchDestiny } = useShippingBranchProductBranch();
-    const modalAdd = useDisclosure();
-    const { show } = useAlert()
-
+    const [isOpen, setIsOpen] = useState(true)
+    const modalError = useDisclosure()
 
     const { getBranchesList, branch_list } = useBranchesStore();
 
@@ -62,38 +63,12 @@ export default function OrderProductionProductOrder({ disclosure }: Props) {
         }
 
         if (!res.ok && res.errors && selectedProduct?.branchProduct.id !== res.branchProduct.id) {
-
-            const bProduct = selectedProducts.find(item => item.product.id === id)
-
-            show({
-                type: 'warning',
-                content: (
-                    <div className="flex flex-col gap-2 py-2">
-                        <p className="font-bold text-orange-500">
-                            {`Problemas con los insumos del producto seleccionado ( ${bProduct?.product.name}): `}
-                        </p>
-
-                        {res.errors.map((item, index) => (
-                            <span key={index} className="flex items-center gap-2 text-gray-700">
-                                {item.exist === false ? (
-                                    <Store className="text-red-500" size={20} />
-                                ) : (
-                                    <PackageX className="text-yellow-500" size={20} />
-                                )}
-                                <p className="font-semibold">{item.nameProduct}</p> - {item.description}
-                            </span>
-                        ))}
-                    </div>
-                ),
-            });
-
-
+            modalError.onOpen()
 
             return
         }
 
         await handleAddProductRecipe(res)
-        modalAdd.onOpen()
     }
 
     const handleAddProductRecipe = async (recipe: ResponseVerifyProduct): Promise<void> => {
@@ -112,83 +87,141 @@ export default function OrderProductionProductOrder({ disclosure }: Props) {
 
     return (
         <>
-            <Drawer {...disclosure} isDismissable={false} size="xl" onClose={() => {
-                disclosure?.onClose()
-                setSelectedProduct(undefined)
-            }}>
-                <DrawerContent>
-                    <>
-                        <DrawerHeader>
-                            <Pui>Elige un producto para iniciar la producción</Pui>
-                        </DrawerHeader>
-                        <DrawerBody className="flex flex-col gap-4">
-                            <div className="flex items-center gap-1">
-                                <Select
-                                    required
-                                    className="dark:text-white w-full"
-                                    classNames={{ label: 'font-semibold' }}
-                                    errorMessage={selectedBranch === undefined ? 'Debes seleccionar una sucursal para continuar' : ''}
-                                    isInvalid={selectedBranch === undefined}
-                                    label="Extraer producto de"
-                                    placeholder="Selecciona la sucursal de origen"
-                                    selectedKeys={selectedBranch?.id ? [String(selectedBranch.id)] : []}
-                                    variant="bordered"
-                                    onSelectionChange={(keys) => {
-                                        const key = Array.from(keys)[0];
-                                        const branch = branch_list.find((item) => item.id === Number(key));
+            <Layout title="Orden de Prodcucción">
+                <DivGlobal className="flex h-full">
+                    <Drawer isOpen={isOpen} size="xl" onClose={() => {
+                        setIsOpen(false)
+                    }}>
 
-                                        if (branch) {
-                                            setSelectedBranch(branch);
-                                        } else {
-                                            setSelectedBranch(undefined);
-                                            setSelectedProduct(undefined);
-                                        }
+                        <DrawerContent>
+                            <>
+                                <DrawerHeader>
+                                    <Pui>Elige un producto para iniciar la producción</Pui>
+                                </DrawerHeader>
+                                <DrawerBody className="flex flex-col gap-4">
+                                    <div className="flex items-center gap-1">
+                                        <Select
+                                            required
+                                            className="dark:text-white w-full"
+                                            classNames={{ label: 'font-semibold' }}
+                                            errorMessage={selectedBranch === undefined ? 'Debes seleccionar una sucursal para continuar' : ''}
+                                            isInvalid={selectedBranch === undefined}
+                                            label="Extraer producto de"
+                                            placeholder="Selecciona la sucursal de origen"
+                                            selectedKeys={selectedBranch?.id ? [String(selectedBranch.id)] : []}
+                                            variant="bordered"
+                                            onSelectionChange={(keys) => {
+                                                const key = Array.from(keys)[0];
+                                                const branch = branch_list.find((item) => item.id === Number(key));
+
+                                                if (branch) {
+                                                    setSelectedBranch(branch);
+                                                } else {
+                                                    setSelectedBranch(undefined);
+                                                }
+                                                setSelectedProduct(undefined);
+                                            }}
+                                        >
+                                            {branch_list.map((b) => (
+                                                <SelectItem key={b.id.toString()} className="dark:text-white">
+                                                    {b.name}
+                                                </SelectItem>
+                                            ))}
+                                        </Select>
+                                    </div>
+                                    <div>
+                                        <TableComponent
+                                            headers={['Producto', 'Cant. Solicitada', 'Seleccionar']}
+                                        >
+                                            {selectedProducts.length > 0 && selectedProducts.map((item) => (
+                                                <tr key={item.id}>
+                                                    <TdGlobal className="py-3">{item.product.name}</TdGlobal>
+                                                    <TdGlobal>{Number(item.quantity).toFixed(0)}</TdGlobal>
+                                                    <TdGlobal>
+                                                        <Button
+                                                            key={item.id}
+                                                            isIconOnly
+                                                            className={`bg-white rounded-xl flex flex-col ${selectedProduct?.branchProduct.id === item.id ? 'border-green-600' : 'border-gray-200'}`}
+                                                            isDisabled={selectedBranch === undefined}
+                                                            size="sm"
+                                                            variant="bordered"
+                                                            onPress={() => OnVerifyProduct(item.product.id)}
+                                                        >
+                                                            {selectedProduct?.branchProduct.id === item.id ?
+                                                                <Check className="text-green-500" /> : ''
+                                                            }
+                                                        </Button>
+                                                    </TdGlobal>
+                                                </tr>
+                                            ))}
+                                        </TableComponent>
+                                    </div>
+                                </DrawerBody>
+
+                            </>
+                        </DrawerContent>
+                    </Drawer>
+                    <AddProductionOrderByProductOrder
+                        branchOrigin={selectedBranch!}
+                        selectedProduct={selectedProduct!}
+                        setSelectedProduct={(product) => setSelectedProduct(product)}
+                    />
+                    <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        className="mt-10"
+                        theme={Colors.Success}
+                        tooltipText="Ver Productos"
+                        onPress={() => setIsOpen(true)}
+                    ><ChevronLeft /></ButtonUi>
+                    <Modal {...modalError}>
+                        <ModalContent>
+                            <ModalHeader className='flex gap-2'>
+                                <TriangleAlert className='text-orange-500' size={26} /> Advertencia
+                            </ModalHeader>
+                            <ModalBody>
+                                <strong>
+                                    {`Problemas con los insumos del producto seleccionado: `}
+                                </strong>
+                                {errors && errors.length > 0 && errors.map((item, index) => (
+                                    <span key={index} className="flex items-center gap-2 text-gray-700">
+                                        {item.exist === false ? (
+                                            <Store className="text-red-500" size={20} />
+                                        ) : (
+                                            <PackageX className="text-yellow-500" size={20} />
+                                        )}
+                                        <p className="font-semibold">{item.nameProduct}</p> - {item.description}
+                                    </span>
+                                ))}
+                            </ModalBody>
+                            <ModalFooter className='flex w-full justify-start items-start'>
+                                <ButtonUi
+                                    theme={Colors.Success}
+                                    onPress={() => {
+                                        modalError.onClose()
                                     }}
                                 >
-                                    {branch_list.map((b) => (
-                                        <SelectItem key={b.id.toString()} className="dark:text-white">
-                                            {b.name}
-                                        </SelectItem>
-                                    ))}
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-                                {selectedProducts.length > 0 && selectedProducts.map((item) => (
-                                    <Button
-                                        key={item.id}
-                                        className="p-7 bg-white border-gray-200"
-                                        isDisabled={selectedBranch === undefined}
-                                        variant="bordered"
-                                        onPress={() => OnVerifyProduct(item.product.id)}
-                                    >
-                                        <span className="text-lg text-gray-700">
-                                            {item.product.name}
-                                        </span>
-                                    </Button>
-                                ))}
-                            </div>
-                        </DrawerBody>
+                                    Cancelar
+                                </ButtonUi>
+                                <ButtonUi
+                                    theme={Colors.Info}
+                                    onPress={() => {
+                                        if (errors.some((item) => item.exist === false)) {
+                                            toast.error("Algunos productos no existen en la sucursal de origen. Verifica tu selección.", { duration: 7000 })
 
-                    </>
-                </DrawerContent>
-            </Drawer>
-            <Drawer {...modalAdd} placement="right" size="full" onClose={() =>{
-                modalAdd.onClose()
-                setSelectedProduct(undefined)
-            }}>
-                <DrawerContent style={{ ...backgroundColor, ...textColor }}>
-                    <DrawerHeader>Orden de Producción</DrawerHeader>
-                    <DrawerBody>
-                        <AddProductionOrderByProductOrder
-                            branchOrigin={selectedBranch!}
-                            disclosure={modalAdd}
-                            selectedProduct={selectedProduct!}
-                            setSelectedProduct={(product) => setSelectedProduct(product)}
-                        />
-                    </DrawerBody>
-                </DrawerContent>
-            </Drawer>
-
+                                            return
+                                        }
+                                        handleAddProductRecipe(verified_product)
+                                        modalError.onClose()
+                                    }}
+                                >
+                                    Continuar de todas formas
+                                </ButtonUi>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
+                </DivGlobal>
+            </Layout>
         </>
     )
 }

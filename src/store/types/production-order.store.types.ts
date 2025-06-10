@@ -1,4 +1,4 @@
-import { BranchProduct } from '@/types/branch_products.types';
+import { BProductPlusQuantity } from '@/types/branch_products.types';
 import { IPagination } from '@/types/global.types';
 import { OrderProductDetail } from '@/types/order-products.types';
 import {
@@ -11,7 +11,7 @@ import {
 } from '@/types/production-order.types';
 
 export interface ProductionOrderStore {
-  selectedProducts: BranchProduct[]
+  selectedProducts: BProductPlusQuantity[]
   productionOrders: ProductionOrder[];
   paginationProductionOrders: IPagination;
   loadingProductionOrders: boolean;

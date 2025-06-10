@@ -115,6 +115,7 @@ export interface DocumentoNoteOfRemission {
 }
 
 export interface ICreateShippingProducts {
+  orderId?: number
   dte: string;
   pointOfSaleId: number;
   employeeId: number;

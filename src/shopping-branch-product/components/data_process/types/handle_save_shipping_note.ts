@@ -12,5 +12,6 @@ export interface IPropSaveShippingNote {
   receivingBranchId?: number;
   receivingEmployeeId?: number;
   socket:Socket
-    branchIssuingId:number
+  branchIssuingId:number
+  orderId?: number
 }

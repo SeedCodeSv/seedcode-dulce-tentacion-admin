@@ -26,7 +26,8 @@ export const HandleUploadFile = async ({
   receivingBranchId,
   receivingEmployeeId,
     socket,
-  branchIssuingId
+  branchIssuingId,
+  orderId
 }: IPropHadleUploadFile) => {
   setCurrentState(steps[2].title);
 
@@ -60,6 +61,7 @@ export const HandleUploadFile = async ({
     await s3Client.send(new PutObjectCommand(uploadParams));
 
     HandleSaveShippingNote({
+      orderId,
       json_url,
       OnClearProductSelectedAll,
       closeModal,

@@ -142,6 +142,15 @@ export default function BranchProductSelectedOrder(props: Props) {
       initial={{ opacity: 0, y: 20 }}
       transition={{ duration: 0.5 }}
     >
+      <div>
+        <ButtonUi
+          startContent={<ArrowBigLeft />}
+          theme={Colors.Info}
+          onPress={() => navigate('/order-products')}
+        >
+          Regresar
+        </ButtonUi>
+      </div>
       {product_selected.length === 0 ? (
         <div className="flex mt-3 items-center justify-center h-[100%] border border-gray-700 w-[100%] rounded-xl">
           <div className="flex items-center justify-center w-80 h-[400px]">
@@ -150,15 +159,6 @@ export default function BranchProductSelectedOrder(props: Props) {
         </div>
       ) : (
         <>
-          <div>
-            <ButtonUi
-              startContent={<ArrowBigLeft />}
-              theme={Colors.Info}
-              onPress={() => navigate('/order-products')}
-            >
-              Regresar
-            </ButtonUi>
-          </div>
           <div className='flex gap-5 items-start mt-4'>
             <Autocomplete
               required
@@ -186,7 +186,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                     key={JSON.stringify(employee)}
                     className="dark:text-white"
                     textValue={
-                      employee.firstName + ' ' + employee.secondName + ' ' + employee.firstLastName + ' ' +employee.secondLastName
+                      employee.firstName + ' ' + employee.secondName + ' ' + employee.firstLastName + ' ' + employee.secondLastName
                     }
                   >
                     {employee.firstName ?? '-'} {employee.secondName ?? '-'} {employee.firstLastName ?? '-'}{employee.secondLastName ?? '-'}
@@ -232,6 +232,7 @@ export default function BranchProductSelectedOrder(props: Props) {
 
                 <TdGlobal className="px-6 py-4 dark:text-white">
                   <Input
+                    isReadOnly
                     value={Number(item.costoUnitario)!.toString()}
                     variant="bordered"
                     onChange={(e) => {
@@ -241,6 +242,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                 </TdGlobal>
                 <TdGlobal className="px-6 py-4 dark:text-white">
                   <Input
+                    isReadOnly
                     value={item.quantity!.toString()}
                     variant="bordered"
                     onChange={(e) => {
@@ -254,6 +256,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                 <TdGlobal className="px-6 py-4 dark:text-white ">
                   <div className="flex gap-4">
                     <ButtonUi
+                      isDisabled
                       isIconOnly
                       theme={Colors.Success}
                       onPress={() => OnPlusProductSelected(item.id)}
@@ -261,6 +264,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                       <Plus />
                     </ButtonUi>
                     <ButtonUi
+                      isDisabled
                       isIconOnly
                       theme={Colors.Primary}
                       onPress={() => OnMinusProductSelected(item.id)}
@@ -268,6 +272,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                       <Minus />
                     </ButtonUi>
                     <ButtonUi
+                      isDisabled
                       isIconOnly
                       theme={Colors.Error}
                       onPress={() => OnClearProductSelected(item.id)}
@@ -404,7 +409,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                     label="Selecciona la sucursal destino"
                     labelPlacement="outside"
                     placeholder="Selecciona la sucursal destino"
-                    selectedKey={branchData && branchData.id.toString()}
+                    selectedKey={branchData && branchData?.id?.toString()}
                     variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {

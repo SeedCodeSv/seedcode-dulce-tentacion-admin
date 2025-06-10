@@ -5,6 +5,7 @@ import { DocumentoNoteOfRemission } from '@/shopping-branch-product/types/notes_
 import { RespuestaMH } from '@/types/DTE/DTE.types';
 
 export interface IPropHadleUploadFile {
+  orderId?:number
   json: DocumentoNoteOfRemission;
   firma: string;
   respuestaMH: RespuestaMH;

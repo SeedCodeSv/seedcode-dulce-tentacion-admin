@@ -30,13 +30,16 @@ export interface BranchProduct {
   branchId: number;
   productId: number;
   suppliers: Supplier[]
-  supplierId: number;
   fixedPrice: string;
   maximum: number;
   porcentaje: number;
   minimum: number;
   days: string;
   isActive: boolean
+}
+
+export interface BProductPlusQuantity extends BranchProduct {
+  quantity?: string
 }
 
 export interface IGetBranchProductPaginated {

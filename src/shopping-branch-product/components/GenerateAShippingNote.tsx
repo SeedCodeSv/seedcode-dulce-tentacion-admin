@@ -29,8 +29,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
     branch,
     branchLlegada,
     socket,
-    branchIssuingId
-
+    branchIssuingId,
   } = props;
 
   const { gettransmitter, transmitter } = useTransmitterStore();
@@ -40,7 +39,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
   useEffect(() => {
     gettransmitter();
   }, []);
-  const { product_selected, OnClearProductSelectedAll } = useShippingBranchProductBranch();
+  const { product_selected, OnClearProductSelectedAll, orderId } = useShippingBranchProductBranch();
   const generateJson = async () => {
     props.onOpenChange();
     props.setTitleString('');
@@ -74,6 +73,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
 
             if (res.data.body && generatedJson) {
               HandleSendToMhShippingNote({
+                orderId,
                 data_send,
                 json: generatedJson,
                 firma,

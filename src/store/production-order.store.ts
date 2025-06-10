@@ -11,7 +11,7 @@ import {
 } from '@/services/production-order.service';
 import { BasicResponse } from '@/types/global.types';
 import { IError, RecipeBook, ResponseVerifyProduct } from '@/types/production-order.types';
-import { BranchProduct } from '@/types/branch_products.types';
+import { BProductPlusQuantity, BranchProduct } from '@/types/branch_products.types';
 
 export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
   selectedProducts: [],
@@ -164,10 +164,10 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
       });
   },
   addSelectedProducts(products) {
-    let data: BranchProduct[] = []
+    let data: BProductPlusQuantity [] = []
 
     products.map((item) => {
-      data.push(item.branchProduct)
+      data.push({...item.branchProduct, quantity: item.quantity})
     })
 
     set({ selectedProducts: data })

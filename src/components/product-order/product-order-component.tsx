@@ -7,8 +7,6 @@ import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
-import OrderProductionProductOrder from "./order-production-product-order";
-
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
 import TdGlobal from "@/themes/ui/td-global";
@@ -28,7 +26,7 @@ export default function ProductOrderComponent() {
 
     const { backgroundColor, textColor } = useColors()
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { onAddBydetail, onAddBranchDestiny} = useShippingBranchProductBranch();
+    const { onAddBydetail, onAddBranchDestiny, onAddOrderId} = useShippingBranchProductBranch();
     const {addSelectedProducts} = useProductionOrderStore()
 const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
@@ -36,8 +34,6 @@ const navigate = useNavigate()
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
 
     const modalDetails = useDisclosure();
-    const modalNota = useDisclosure();
-    const modalProduction = useDisclosure()
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
@@ -183,20 +179,21 @@ const navigate = useNavigate()
                             tooltipText="Nota de Remisión"
                             onPress={() => {
                                 navigate('/order-products-nota')
-                                modalNota.onOpen()
                                 onAddBydetail(order.orderProductDetails)
                                 onAddBranchDestiny(order.branch)
+                                onAddOrderId(order.id)
                             }}>
                                 <StickyNote/>
                             </ButtonUi>
                             <ButtonUi isIconOnly 
                             showTooltip
                             theme={Colors.Error}
-                            tooltipText="Order de Producción"
+                            tooltipText="Orden de Producción"
                             onPress={() => {
-                                modalProduction.onOpen();
+                                navigate('/order-products-production')
                                 addSelectedProducts(order.orderProductDetails)
                                 onAddBranchDestiny(order.branch)
+                                onAddOrderId(order.id)
                             }}>
                                 <ReceiptText/>
                             </ButtonUi>
@@ -216,7 +213,6 @@ const navigate = useNavigate()
                     }}
                 />
             }
-            <OrderProductionProductOrder disclosure={modalProduction}/>
             <Drawer placement="right" size="full" {...modalDetails}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>

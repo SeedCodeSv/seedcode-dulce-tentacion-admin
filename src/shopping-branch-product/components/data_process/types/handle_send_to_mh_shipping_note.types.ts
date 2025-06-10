@@ -20,4 +20,5 @@ export interface IPropSendToMhShippingNote {
   receivingEmployeeId?: number;
     socket:Socket;
   branchIssuingId:number
+  orderId?: number
 }

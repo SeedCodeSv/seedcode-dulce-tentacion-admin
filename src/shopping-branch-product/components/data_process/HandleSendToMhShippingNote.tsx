@@ -25,7 +25,8 @@ export const HandleSendToMhShippingNote = ({
   receivingBranchId,
   receivingEmployeeId,
   socket,
-  branchIssuingId
+  branchIssuingId,
+  orderId
 }: IPropSendToMhShippingNote) => {
   setCurrentState(steps[1].title);
 
@@ -51,7 +52,7 @@ export const HandleSendToMhShippingNote = ({
           json,
           firma,
           respuestaMH,
-
+orderId,
           OnClearProductSelectedAll,
           closeModal() {
             closeModal();

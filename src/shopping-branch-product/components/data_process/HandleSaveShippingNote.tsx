@@ -17,10 +17,12 @@ export const HandleSaveShippingNote = ({
   receivingBranchId,
   closeModal,
   socket,
-  branchIssuingId
+  branchIssuingId,
+  orderId
 }: IPropSaveShippingNote) => {
   setCurrentState(steps[3].title);
   generate_a_shipping_note({
+    orderId: orderId,
     pointOfSaleId: pointOfSaleId,
     employeeId: employeeId,
     sello: true,
@@ -42,7 +44,12 @@ export const HandleSaveShippingNote = ({
         })
         OnClearProductSelectedAll();
         closeModal()
-        window.location.reload();
+        if(orderId === 0){
+          window.location.reload();
+        }
+        else{
+          window.location.href = '/order-products'
+        }
       } else {
         toast.error('Error al crear la nota de envió');
         handleDownload();

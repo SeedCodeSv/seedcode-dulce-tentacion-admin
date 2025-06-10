@@ -6,6 +6,7 @@ import { get_shopping_products_branch } from '../service/shipping_branch_product
 
 import { Branches } from '@/types/branches.types';
 export const useShippingBranchProductBranch = create<IShippingProductBranchStore>((set, get) => ({
+  orderId: 0,
   branchProducts: [],
   pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
   branchDestiny: {} as Branches,
@@ -176,6 +177,9 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
   },
 onAddBranchDestiny(branch) {
   set({branchDestiny: branch})
+},
+onAddOrderId(id) {
+  set({orderId: id})
 },
 
 }));

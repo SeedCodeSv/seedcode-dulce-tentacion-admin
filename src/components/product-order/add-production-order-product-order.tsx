@@ -7,10 +7,11 @@ import {
   SelectItem,
   useDisclosure,
 } from '@heroui/react';
-import { ArrowDown, DollarSign } from 'lucide-react';
+import { ArrowBigLeft, ArrowDown, DollarSign } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -32,41 +33,40 @@ import { Branches } from '@/types/branches.types';
 type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
-type DisclosureProps = ReturnType<typeof useDisclosure>;
 
 type TypeSearch = 'MP' | 'RENDIMIENTO';
 
 interface Props {
-  disclosure: DisclosureProps
   branchOrigin: Branches
   selectedProduct: ProductRecipe
   setSelectedProduct: (product: ProductRecipe | undefined) => void
 }
 
-export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct, disclosure }: Props) {
+export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct }: Props) {
 
   const handleChangePerformance = (performance: string) => {
-  const performanceNumber = Number(performance);
+    const performanceNumber = Number(performance);
 
-  if (performanceNumber <= 0) return;
+    if (performanceNumber <= 0) return;
 
-  const updatedDetails = selectedProduct.recipeBook.productRecipeBookDetails.map((detail) => ({
-    ...detail,
-    quantityPerPerformance: (performanceNumber * Number(detail.quantity)).toFixed(4),
-  }));
+    const updatedDetails = selectedProduct.recipeBook.productRecipeBookDetails.map((detail) => ({
+      ...detail,
+      quantityPerPerformance: (performanceNumber * Number(detail.quantity)).toFixed(4),
+    }));
 
-  const updatedProduct = {
-    ...selectedProduct,
-    recipeBook: {
-      ...selectedProduct.recipeBook,
-      performance: performanceNumber,
-      productRecipeBookDetails: updatedDetails,
-    },
+    const updatedProduct = {
+      ...selectedProduct,
+      recipeBook: {
+        ...selectedProduct.recipeBook,
+        performance: performanceNumber,
+        productRecipeBookDetails: updatedDetails,
+      },
+    };
+
+    setSelectedProduct(updatedProduct);
   };
 
-  setSelectedProduct(updatedProduct);
-};
-
+  const navigate = useNavigate();
 
   const isMovil = useIsMobileOrTablet();
   const { show, close } = useAlert()
@@ -197,7 +197,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
           position: isMovil ? 'bottom-right' : 'top-center',
           duration: 1000,
         });
-        disclosure.onClose()
+        navigate('/order-products')
       })
       .catch(() => {
         toast.error('Error al crear la orden de producción', {
@@ -284,6 +284,15 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
         onOpenChange={modalRecipe.onOpenChange}
       />
       <DivGlobal>
+        <div className='pb-2'>
+          <ButtonUi
+            startContent={<ArrowBigLeft />}
+            theme={Colors.Info}
+            onPress={() => navigate('/order-products')}
+          >
+            Regresar
+          </ButtonUi>
+        </div>
         <div className="flex justify-between items-end w-full">
           <div className="flex flex-row-reverse w-full justify-between xl:flex-col gap-5">
             <ResponsiveFilterWrapper withButton={false}>
@@ -347,15 +356,15 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
             <>
               <div className="grid grid-cols-2 lg:grid-cols-2 items-center">
                 <p>PROCESO: {selectedProduct?.branchProduct?.product?.name}</p>
-                  <Input
-                    className="max-w-64"
-                    defaultValue={String(selectedProduct?.recipeBook?.performance)}
-                    label='PRODUCCIÓN:'
-                    labelPlacement='outside-left'
-                    variant="bordered"
-                    onKeyDown={preventLetters}
-                    onValueChange={(e) => handleChangePerformance(e)}
-                  />
+                <Input
+                  className="max-w-64"
+                  defaultValue={String(selectedProduct?.recipeBook?.performance)}
+                  label='PRODUCCIÓN:'
+                  labelPlacement='outside-left'
+                  variant="bordered"
+                  onKeyDown={preventLetters}
+                  onValueChange={(e) => handleChangePerformance(e)}
+                />
               </div>
 
               {selectedProduct?.recipeBook && (
@@ -557,7 +566,8 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
         </Accordion>
 
         <div className="flex justify-between md:justify-end gap-0 md:gap-4 items-end mt-3">
-          <ButtonUi theme={Colors.Error} onPress={() =>{ disclosure.onClose()
+          <ButtonUi theme={Colors.Error} onPress={() => {
+            navigate('/order-products')
             setSelectedProduct(undefined)
           }}>
             Cancelar
