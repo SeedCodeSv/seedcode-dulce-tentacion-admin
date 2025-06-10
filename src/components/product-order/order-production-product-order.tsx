@@ -141,14 +141,14 @@ export default function OrderProductionProductOrder() {
                                                         <Button
                                                             key={item.id}
                                                             isIconOnly
-                                                            className={`bg-white rounded-xl flex flex-col ${selectedProduct?.branchProduct.id === item.id ? 'border-green-600' : 'border-gray-200'}`}
+                                                            className={`bg-white rounded-xl flex flex-col ${selectedProduct?.branchProduct.id === item.id ? 'bg-green-600 border-green-600' : 'border-gray-200'}`}
                                                             isDisabled={selectedBranch === undefined}
                                                             size="sm"
                                                             variant="bordered"
                                                             onPress={() => OnVerifyProduct(item.product.id)}
                                                         >
                                                             {selectedProduct?.branchProduct.id === item.id ?
-                                                                <Check className="text-green-500" /> : ''
+                                                                <Check className="text-white-500" /> : ''
                                                             }
                                                         </Button>
                                                     </TdGlobal>

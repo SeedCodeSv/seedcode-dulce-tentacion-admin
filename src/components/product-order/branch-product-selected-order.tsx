@@ -80,8 +80,8 @@ export default function BranchProductSelectedOrder(props: Props) {
   const [responsibleEmployee, setResponsibleEmployee] = useState<Employee>();
   const [pointOfSaleId, setPointOfSaleId] = useState(0);
   const [movementType, setMovementType] = useState(2);
-  const [observations, setObservations] = useState('');
-
+  const [observations, setObservations] = useState('Nota de Remisión a partir de orden de producto');
+  
   useEffect(() => {
     if (props.branchData)
       getPointOfSales(props.branchData.id);

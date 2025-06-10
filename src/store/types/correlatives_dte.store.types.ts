@@ -7,6 +7,7 @@ export interface ICorrelativesDteStore {
   point_of_sales: Correlatives[],
   getPointOfSales: (branch_id: number) => void;
   getCorrelativesByDte: (transmitter_id: number, dte: string) => Promise<Correlativo | undefined>;
+  getCorrelativesByBranch: (branchId: number, dte: string) => Promise<Correlativo | undefined>;
   getCorrelativeByPointOfSaleDte: (
     transmitter_id: number,
     dte: string

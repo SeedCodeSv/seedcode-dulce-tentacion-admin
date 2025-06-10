@@ -11,7 +11,6 @@ import { HandleSendToMhShippingNote } from './data_process/HandleSendToMhShippin
 import { PayloadMH } from '@/types/DTE/DTE.types';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
-import { useAuthStore } from '@/store/auth.store';
 import { ambiente } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -33,8 +32,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
   } = props;
 
   const { gettransmitter, transmitter } = useTransmitterStore();
-  const { getCorrelativesByDte } = useCorrelativesDteStore();
-  const { user } = useAuthStore();
+  const { getCorrelativesByBranch } = useCorrelativesDteStore();
 
   useEffect(() => {
     gettransmitter();
@@ -45,7 +43,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
     props.setTitleString('');
     props.setErrors([]);
     props.setCurrentStep(steps[0].title);
-    const correlatives = await getCorrelativesByDte(Number(user?.id), 'NRE');
+    const correlatives = await getCorrelativesByBranch(Number(branch?.id), 'NRE');
     const generatedJson = generateJsonNoteRemision(
       employee,
       { ...transmitter },

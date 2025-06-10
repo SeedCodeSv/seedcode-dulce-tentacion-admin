@@ -42,3 +42,16 @@ export const get_correlatives_dte_point_of_sales = (userId: number, tipo_dte: st
     }
   )
 }
+
+export const get_correlatives_by_branch = (branchId: number, tipo_dte: string) => {
+  const token = get_token() ?? null;
+
+  return axios.get<IGetCorrelativesByTransmitter>(
+    `${API_URL}/point-of-sale/find-correlative/typevoucher/by-branch/${branchId}?dteType=${tipo_dte}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
