@@ -54,32 +54,13 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
   } = useShippingBranchProductBranch();
   const { list_categories, getListCategories } = useCategoriesStore();
 
-  // const inputsName = React.useRef<HTMLInputElement>(null)
-  // const inputCategory = React.useRef<HTMLInputElement>(null)
-  // const inputCode = React.useRef<HTMLInputElement>(null)
   const productRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [, setSelectedIndex] = useState(0);
 
-  // const inputsSelected = React.useRef<HTMLButtonElement>(null)
   useEffect(() => {
     getListCategories();
   }, []);
 
-  // useHotkeys('ctrl + 2', () => {
-  //     inputsName.current?.focus()
-  // })
-
-  // useHotkeys('ctrl + 3', () => {
-  //     inputCategory.current?.focus()
-  // })
-
-  // useHotkeys('ctrl + 4', () => {
-  //     inputCode.current?.focus()
-  // })
-
-  // useHotkeys('f3', () => {
-  //     productRefs.current[selectedIndex]?.focus();
-  // });
 
   useHotkeys(['right', 'down'], () => {
     setSelectedIndex((prev) => {
