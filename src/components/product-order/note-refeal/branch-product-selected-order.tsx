@@ -34,6 +34,7 @@ import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/
 import GenerateAShippingNote from '@/shopping-branch-product/components/GenerateAShippingNote';
 import { Branches } from '@/shopping-branch-product/types/shipping_branch_product.types';
 import { ICheckStockResponse } from '@/types/branch_products.types';
+import { verify_products_stock } from '@/services/branch_product.service';
 
 interface Props {
   branchData: Branches;
@@ -44,7 +45,15 @@ interface Props {
   openModalSteps: () => void;
   titleError: string;
   response: ICheckStockResponse | undefined
+  setResponse: (response: ICheckStockResponse) => void
   children?: ReactNode
+}
+
+
+interface Product {
+  id: number,
+  name: string,
+  quantity: number,
 }
 
 export default function BranchProductSelectedOrder(props: Props) {
@@ -81,7 +90,7 @@ export default function BranchProductSelectedOrder(props: Props) {
   const [pointOfSaleId, setPointOfSaleId] = useState(0);
   const [movementType, setMovementType] = useState(2);
   const [observations, setObservations] = useState('Nota de Remisión a partir de orden de producto');
-  
+
   useEffect(() => {
     if (props.branchData)
       getPointOfSales(props.branchData.id);
@@ -108,8 +117,8 @@ export default function BranchProductSelectedOrder(props: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
 
-  const handleSave = () => {
-    if (responsibleEmployee === undefined) {
+  const handleSave = async () => {
+    if (!responsibleEmployee) {
       toast.warning('Debes seleccionar el responsable');
 
       return;
@@ -117,22 +126,44 @@ export default function BranchProductSelectedOrder(props: Props) {
 
     if (!props.branchData) {
       toast.warning('Debes seleccionar la sucursal de origen');
-
+      
       return;
     }
 
-    const hasWarningsOrErrors = props.response?.results.some(
-      (item) => item.status === 'insufficient_stock' || item.status === 'not_found'
-    );
+    const isValid = await verifyProducts(props.branchData);
 
-    if (hasWarningsOrErrors) {
-      modalError.onOpen()
-
-      return;
+    if (isValid) {
+      setIsModalOpen(true);
     }
-
-    setIsModalOpen(true);
   };
+
+
+  const verifyProducts = async (branch: Branches): Promise<boolean> => {
+    let products: Product[] = product_selected.map((item) => ({
+      id: item.product.id,
+      name: item.product.name,
+      quantity: item.quantity ?? 1,
+    }));
+
+    const data = await verify_products_stock(branch.id, products);
+
+    if (data) {
+      props.setResponse(data.data);
+
+      const hasWarningsOrErrors = data.data?.results.some(
+        (item) => item.status === 'insufficient_stock' || item.status === 'not_found'
+      );
+
+      if (hasWarningsOrErrors) {
+        modalError.onOpen();
+
+        return false;
+      }
+    }
+
+    return true;
+  };
+
 
 
   return (
@@ -232,7 +263,6 @@ export default function BranchProductSelectedOrder(props: Props) {
 
                 <TdGlobal className="px-6 py-4 dark:text-white">
                   <Input
-                    isReadOnly
                     value={Number(item.costoUnitario)!.toString()}
                     variant="bordered"
                     onChange={(e) => {
@@ -242,7 +272,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                 </TdGlobal>
                 <TdGlobal className="px-6 py-4 dark:text-white">
                   <Input
-                    isReadOnly
                     value={item.quantity!.toString()}
                     variant="bordered"
                     onChange={(e) => {
@@ -256,7 +285,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                 <TdGlobal className="px-6 py-4 dark:text-white ">
                   <div className="flex gap-4">
                     <ButtonUi
-                      isDisabled
                       isIconOnly
                       theme={Colors.Success}
                       onPress={() => OnPlusProductSelected(item.id)}
@@ -264,7 +292,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                       <Plus />
                     </ButtonUi>
                     <ButtonUi
-                      isDisabled
                       isIconOnly
                       theme={Colors.Primary}
                       onPress={() => OnMinusProductSelected(item.id)}
@@ -272,7 +299,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                       <Minus />
                     </ButtonUi>
                     <ButtonUi
-                      isDisabled
                       isIconOnly
                       theme={Colors.Error}
                       onPress={() => OnClearProductSelected(item.id)}

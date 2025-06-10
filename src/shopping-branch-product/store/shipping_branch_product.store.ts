@@ -167,9 +167,11 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
 
     for (const detail of details) {
       const branchProduct = detail.branchProduct
+      const pendingQuantity = Number(detail.pendingQuantity)
 
+      if(detail.completedRequest === false)
       products.push({...branchProduct,
-        quantity: Number(detail.quantity)
+        quantity: pendingQuantity
       })
     }
 

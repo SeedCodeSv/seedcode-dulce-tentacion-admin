@@ -7,6 +7,8 @@ import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
+import { RenderStatus, Status } from "./render-order-status";
+
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
 import TdGlobal from "@/themes/ui/td-global";
@@ -165,7 +167,9 @@ const navigate = useNavigate()
                             {order.employee.firstName} {order.employee.secondName}{' '}
                             {order.employee.firstLastName} {order.employee.secondLastName}
                         </TdGlobal>
-                        <TdGlobal className="p-2 text-sm">{order.status}</TdGlobal>
+                        <TdGlobal className="p-2 text-sm">
+                            {RenderStatus({ status:order.status as Status }) || order.status}
+                            </TdGlobal>
                         <TdGlobal className="p-2 text-sm flex gap-2">
                             <ButtonUi isIconOnly showTooltip 
                             theme={Colors.Info}
@@ -268,7 +272,7 @@ const navigate = useNavigate()
                                                 selectedOrder.orderProductDetails.length
                                             })
                                         </h2>
-                                        <TableComponent headers={['Nº', 'Producto', 'Cantidad solicitada', 'Cantidad entregada', 'Stock actual', 'Stock Anterior']}>
+                                        <TableComponent headers={['Nº', 'Producto', 'Cantidad solicitada', 'Cantidad entregada','Cantidad Pendiente', 'Stock actual', 'Stock Anterior']}>
                                             {ordersProducts.order_products.length === 0 && (
                                                 <tr className="border-b border-slate-200">
                                                     <td
@@ -287,6 +291,7 @@ const navigate = useNavigate()
                                                     </TdGlobal>
                                                     <TdGlobal className="p-2 py-4">{order.quantity}</TdGlobal>
                                                     <TdGlobal className="p-2 py-4">{order.finalQuantitySend}</TdGlobal>
+                                                    <TdGlobal>{order.pendingQuantity}</TdGlobal>
                                                     <TdGlobal className="p-2 py-4">
                                                         {order.branchProduct.stock}
                                                     </TdGlobal>

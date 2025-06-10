@@ -73,8 +73,8 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
 
   const { branchDestiny } = useShippingBranchProductBranch();
   const [selectedEmployee, setSelectedEmployee] = useState<Selection>(new Set([]));
-  const [observation, setObservation] = useState('');
-
+  const [observation, setObservation] = useState('Orden de producción a partir de orden de productos');
+  
   const modalRecipe = useDisclosure();
   const typeSearch = ['RENDIMIENTO', 'MP'];
 

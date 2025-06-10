@@ -40,6 +40,8 @@ export interface BranchProduct {
 
 export interface BProductPlusQuantity extends BranchProduct {
   quantity?: string
+  completedRequest?:boolean
+  finalQuantitySend?: string
 }
 
 export interface IGetBranchProductPaginated {

@@ -164,10 +164,14 @@ export const useProductionOrderStore = create<ProductionOrderStore>((set) => ({
       });
   },
   addSelectedProducts(products) {
-    let data: BProductPlusQuantity [] = []
+    let data: BProductPlusQuantity[] = []
 
     products.map((item) => {
-      data.push({...item.branchProduct, quantity: item.quantity})
+      data.push({
+        ...item.branchProduct, quantity: item.quantity,
+        completedRequest: item.completedRequest,
+        finalQuantitySend: item.finalQuantitySend
+      })
     })
 
     set({ selectedProducts: data })

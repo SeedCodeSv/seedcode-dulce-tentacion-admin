@@ -28,10 +28,12 @@ export interface OrderProductDetail {
   id: number
   quantity: string
   finalQuantitySend: string
+  pendingQuantity: string
   stockWhenSend: string
   branchProduct: BranchProduct
   orderProductId: number
   branchProductId: number
+  completedRequest: boolean
 }
 
 export interface IGetOrdersProducts extends IPagination {

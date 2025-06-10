@@ -27,8 +27,8 @@ import ProductsSelledSummaryComponent from '@/components/reporters/products_sell
 import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
 import ProductSelledReportPage from '@/pages/ProductsSelledReport';
 import ProductOrderPage from '@/pages/product-order';
-import NotaRemisionProdutOrder from '@/components/product-order/nota-remision-product-order';
-import OrderProductionProductOrder from '@/components/product-order/order-production-product-order';
+import NotaRemisionProdutOrder from '@/components/product-order/note-refeal/nota-remision-product-order';
+import OrderProductionProductOrder from '@/components/product-order/production-order/order-production-product-order';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));

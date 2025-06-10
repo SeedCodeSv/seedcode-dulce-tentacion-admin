@@ -131,18 +131,19 @@ export default function OrderProductionProductOrder() {
                                     </div>
                                     <div>
                                         <TableComponent
-                                            headers={['Producto', 'Cant. Solicitada', 'Seleccionar']}
+                                            headers={['Producto', 'Cant. Solicitada','Cant. Entregada', 'Seleccionar']}
                                         >
                                             {selectedProducts.length > 0 && selectedProducts.map((item) => (
                                                 <tr key={item.id}>
-                                                    <TdGlobal className="py-3">{item.product.name}</TdGlobal>
+                                                    <TdGlobal className="p-3">{item.product.name}</TdGlobal>
                                                     <TdGlobal>{Number(item.quantity).toFixed(0)}</TdGlobal>
+                                                    <TdGlobal>{Number(item.finalQuantitySend).toFixed(0)}</TdGlobal>
                                                     <TdGlobal>
                                                         <Button
                                                             key={item.id}
                                                             isIconOnly
                                                             className={`bg-white rounded-xl flex flex-col ${selectedProduct?.branchProduct.id === item.id ? 'bg-green-600 border-green-600' : 'border-gray-200'}`}
-                                                            isDisabled={selectedBranch === undefined}
+                                                            isDisabled={selectedBranch === undefined || item.completedRequest}
                                                             size="sm"
                                                             variant="bordered"
                                                             onPress={() => OnVerifyProduct(item.product.id)}
@@ -184,7 +185,7 @@ export default function OrderProductionProductOrder() {
                                     {`Problemas con los insumos del producto seleccionado: `}
                                 </strong>
                                 {errors && errors.length > 0 && errors.map((item, index) => (
-                                    <span key={index} className="flex items-center gap-2 text-gray-700">
+                                    <span key={index} className="flex items-center gap-2 text-gray-700 dark:text-gray-100">
                                         {item.exist === false ? (
                                             <Store className="text-red-500" size={20} />
                                         ) : (

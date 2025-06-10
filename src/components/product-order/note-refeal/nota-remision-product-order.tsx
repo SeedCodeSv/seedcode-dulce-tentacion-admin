@@ -96,6 +96,7 @@ export default function NotaRemisionProdutOrder() {
                     response={response}
                     setCurrentStep={setCurrentState}
                     setErrors={setMessageError}
+                    setResponse={setResponse}
                     setTitleString={setTitleError}
                     titleError={titleError}
                 >
