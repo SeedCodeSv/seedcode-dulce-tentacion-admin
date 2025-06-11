@@ -242,7 +242,7 @@ const currentDate = new Date();
                     }}
                 />
             }
-            <Drawer placement="right" size="full" {...modalDetails}>
+            <Drawer isOpen={modalDetails.isOpen} placement="right" size="full" onClose={() => modalDetails.onClose()}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>
                     <DrawerBody>
