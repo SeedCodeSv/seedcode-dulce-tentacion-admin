@@ -8,5 +8,5 @@ export const get_order_products = (branchId: number) => {
 }
 
 export const get_order_products_paginated = (params: SearchGlobal) => {
-    return axios.get<IGetOrdersProducts>(import.meta.env.VITE_API_URL + `/order-product/by-dates/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}`)
+    return axios.get<IGetOrdersProducts>(import.meta.env.VITE_API_URL + `/order-product/by-dates/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&status=${params.status}`)
 }

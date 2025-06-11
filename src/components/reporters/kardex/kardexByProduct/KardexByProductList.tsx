@@ -28,6 +28,7 @@ import RenderViewButton from '@/components/global/render-view-button';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import EmptyTable from '@/components/global/EmptyTable';
 import { useProductsStore } from '@/store/products.store';
+import { getElSalvadorDateTime } from '@/utils/dates';
 
 type ContextType = {
   actionView: string[];
@@ -55,7 +56,7 @@ export const KardexByProductList = () => {
     productId: 0,
     branch: user?.branchId,
     startDate: defaultStartDate.toISOString().split('T')[0],
-    endDate: currentDate.toISOString().split('T')[0],
+    endDate: getElSalvadorDateTime().fecEmi,
     productName: ''
   });
 

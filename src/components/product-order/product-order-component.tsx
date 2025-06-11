@@ -7,7 +7,7 @@ import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
-import { RenderStatus, Status } from "./render-order-status";
+import { RenderStatus, Status, StautsProductOrder } from "./render-order-status";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
@@ -34,14 +34,16 @@ const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
 
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
-
+const currentDate = new Date();
+  const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const modalDetails = useDisclosure();
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
         branchId: 0,
-        startDate: '2025-06-01',
+        startDate: defaultStartDate.toISOString().split('T')[0],
         endDate: getElSalvadorDateTime().fecEmi,
+        status: '',
     });
 
     useEffect(() => {
@@ -124,6 +126,27 @@ const navigate = useNavigate()
                         setSearch({ ...search, endDate: e.target.value });
                     }}
                 />
+                 <Select
+                    aria-label="Estado"
+                    className=" dark:text-white w-full max-md:hidden"
+                    classNames={{
+                        label: 'font-semibold',
+                    }}
+                    label='Estado'
+                    labelPlacement="outside"
+                    placeholder="selecciona para buscar"
+                    value={search.status}
+                    variant="bordered"
+                    onChange={(e) => {
+                        setSearch({ ...search, status: e.target.value });
+                    }}
+                >
+                    {StautsProductOrder.map((item) => (
+                        <SelectItem key={item} className="dark:text-white">
+                            {item}
+                        </SelectItem>
+                    ))}
+                </Select>
                 <Select
                     disallowEmptySelection
                     aria-label="Cantidad a mostrar"
@@ -179,6 +202,7 @@ const navigate = useNavigate()
                             </ButtonUi>
                             <ButtonUi isIconOnly 
                             showTooltip
+                            isDisabled={order.status === 'Completada'}
                             theme={Colors.Primary}
                             tooltipText="Nota de Remisión"
                             onPress={() => {
@@ -191,6 +215,7 @@ const navigate = useNavigate()
                             </ButtonUi>
                             <ButtonUi isIconOnly 
                             showTooltip
+                            isDisabled={order.status === 'Completada'}
                             theme={Colors.Error}
                             tooltipText="Orden de Producción"
                             onPress={() => {
