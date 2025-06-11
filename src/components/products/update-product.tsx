@@ -44,8 +44,8 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
 
   useEffect(() => {
     getListCategories();
-    getSubcategories(product?.subCategory.categoryPorudctId || 0);
-  }, [getListCategories, product?.subCategory.categoryPorudctId]);
+    getSubcategories(product?.subCategory.categoryProductId || 0);
+  }, [getListCategories, product?.subCategory.categoryProductId]);
 
   const formik = useFormik({
     initialValues: {

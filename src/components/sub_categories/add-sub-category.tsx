@@ -28,7 +28,7 @@ const AddSubCategory = (props: Props) => {
 
   const initialValues = {
     name: props.subCategory?.name ?? '',
-    categoryProductId: props.subCategory?.categoryPorudctId ?? 0,
+    categoryProductId: props.subCategory?.categoryProductId ?? 0,
   };
 
   const { postSubCategory, patchSubCategory } = useSubCategoryStore();
@@ -68,7 +68,7 @@ const AddSubCategory = (props: Props) => {
   const selectedKeyCategory = useMemo(() => {
     if (props.subCategory) {
       const classProduct = list_categories.find(
-        (classProduct) => classProduct.id === props.subCategory?.categoryPorudctId
+        (classProduct) => classProduct.id === props.subCategory?.categoryProductId
       );
 
       return JSON.stringify(classProduct);
