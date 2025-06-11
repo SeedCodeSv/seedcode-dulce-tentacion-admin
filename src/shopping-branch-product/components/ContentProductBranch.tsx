@@ -28,7 +28,7 @@ export default function ContentProductBranch() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState({
     page: 1,
-    limit: 5,
+    limit: 10,
     name: '',
     category: '',
     supplier: '',
@@ -97,6 +97,18 @@ export default function ContentProductBranch() {
     }
   })
 
+  useHotkeys('Enter', () => {
+    if (modalExit.isOpen) {
+      handleExit()
+    }
+  })
+
+  const handleExit = () => {
+    modalExit.onClose()
+    OnClearProductSelectedAll();
+    navigate(-1)
+  }
+
   return (
     <>
       <Modal isDismissable isOpen={modalExit.isOpen} onClose={modalExit.onClose}>
@@ -122,9 +134,7 @@ export default function ContentProductBranch() {
               <ButtonUi
                 theme={Colors.Success}
                 onPress={() => {
-                  modalExit.onClose()
-                  OnClearProductSelectedAll();
-                  navigate(-1)
+
                 }}
               >
                 Aceptar

@@ -1,6 +1,8 @@
 import {
   Autocomplete,
   AutocompleteItem,
+  ButtonGroup,
+  Checkbox,
   Drawer,
   DrawerBody,
   DrawerContent,
@@ -9,15 +11,19 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
-import classNames from 'classnames';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { ArrowLeft, BarChart3, Barcode, Check, ChevronRight, DollarSign, Grid3X3, Package, Search, Sparkles, Tag } from 'lucide-react';
+import { ArrowLeft, Badge, BarChart3, Barcode, Check, CreditCard, DollarSign, Grid3X3, Hash, Package, Search, Sparkles, Table, Tag } from 'lucide-react';
+import classNames from 'classnames';
 
 import Pagination from '../global/Pagination';
 
 import { Branches } from '@/shopping-branch-product/types/shipping_branch_product.types';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { useCategoriesStore } from '@/store/categories.store';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import ThGlobal from '@/themes/ui/th-global';
+import TdGlobal from '@/themes/ui/td-global';
 
 type DisclosureProps = ReturnType<typeof useDisclosure>;
 
@@ -51,15 +57,27 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     pagination_shippin_product_branch,
     product_selected,
     OnGetShippinProductBranch,
+    OnClearProductSelected
   } = useShippingBranchProductBranch();
   const { list_categories, getListCategories } = useCategoriesStore();
 
-  const productRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [, setSelectedIndex] = useState(0);
+  const productRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     getListCategories();
+    OnGetShippinProductBranch(
+      selectedBranch?.id ?? 0,
+      1,
+      10,
+      '',
+      '',
+      '',
+      ''
+    )
   }, []);
+
+  const [view, setView] = useState<"grid" | "table">("table")
 
 
   useHotkeys(['right', 'down'], () => {
@@ -73,6 +91,15 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
   });
 
 
+  const header = [
+    { name: "", uuid: "check" },
+    { name: "No.", uuid: "no" },
+    { name: "Codigo", uuid: "code" },
+    { name: "Nombre", uuid: "name" },
+    { name: "Stock", uuid: "stock" },
+    { name: "Precio", uuid: "price" }]
+
+
   useHotkeys(['left', 'up'], () => {
     setSelectedIndex((prev) => {
       const nextIndex = Math.max(0, prev - 1);
@@ -83,8 +110,29 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     });
   });
 
+  useHotkeys('ctrl+arrowleft', () => {
+    setView('table')
+  })
+
+  useHotkeys('ctrl+arrowright', () => {
+    setView('grid')
+  })
 
   useHotkeys('0', () => modalProducts.onClose())
+
+  const handleSelect = (id: number) => {
+    const selectedProduct = branchProducts.find((item) => item.id === id)
+    const data = product_selected.find((item) => item.id === id)
+
+    if (data) {
+      OnClearProductSelected(data.id)
+
+      return
+    }
+
+    OnAddProductSelected(selectedProduct!)
+  }
+
 
   return (
     <>
@@ -100,13 +148,16 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
           <DrawerBody className="p-0">
             <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-gray-100 ">
               <div className="bg-white/80 dark:bg-black backdrop-blur-xl border-b dark:border-gray-200/50 border-rose-200 px-6 py-6">
-                <button className='flex flex-row gap-6 items-center mb-4'
+                <button className='flex flex-row gap-2 items-center mb-4 p-2 rounded-xl'
                   onClick={() => {
                     modalProducts.onClose()
                   }}
+               
                 >
-                  <ArrowLeft size={24} />
-                  <p className='dark:text-white'>Regresar</p>
+                  <ArrowLeft size={24}
+                  />
+                  <p className='dark:text-white' 
+                  >Regresar</p>
 
                 </button>
                 <div className="mb-6">
@@ -180,6 +231,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       </div>
 
                       <div className="flex items-center gap-6 flex-shrink-0">
+
                         <div className="text-center">
                           <div className="text-2xl font-bold text-gray-900 dark:text-sky-400">{branchProducts.length}</div>
                           <div className="text-xs text-gray-500 dark:text-gray-300">Productos</div>
@@ -200,7 +252,27 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       Mostrando <span className="font-semibold dark:text-sky-300">{branchProducts.length}</span> productos
                     </span>
                   </div>
+
                   <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <ButtonGroup>
+                      <ButtonUi
+                        isIconOnly
+                        color="secondary"
+                        theme={view === 'table' ? Colors.Primary : Colors.Default}
+                        onPress={() => setView('table')}
+                      >
+                        <Table />
+                      </ButtonUi>
+
+                      <ButtonUi
+                        isIconOnly
+                        color="default"
+                        theme={view === 'grid' ? Colors.Primary : Colors.Default}
+                        onPress={() => setView('grid')}
+                      >
+                        <CreditCard />
+                      </ButtonUi>
+                    </ButtonGroup>
                     <div className="w-2 h-2 bg-green-400 rounded-full" />
                     <span>Disponible</span>
                     <div className="w-2 h-2 bg-gray-400 rounded-full ml-3" />
@@ -218,82 +290,165 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                   </div>
                 ) : (
                   <>
+                    {view === 'grid' && (
+                      <section
+                        className={`
+                                                    w-full max-h-[200px] lg:max-h-[422px] 
+                                                2xl:max-h-[600px] p-6  
+                                                dark:bg-gray-900F
+                                                `}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {branchProducts.map((bp, index) => {
+                            const isSelected = product_selected.some((product) => product.id === bp.id)
+                            const isFocused = index === selectedIndex
+                            const isOutOfStock = bp.stock === 0
+                            const colorFocus2 = Colors.Success
+                            const colorFocus3 = Colors.Secondary
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
-                      {branchProducts.map((item, index) => {
-                        const isSelected = product_selected.find((p) => p.id === item.id);
-                        const isDisabled = !item?.product?.name;
+                            return (
+                             
+                              <div
+                                key={bp.id}
+                                ref={(el) => (productRefs.current[index] = el)}
+                                className={`
+                                                                 mb-2 relative cursor-pointer transition-all duration-200 border-2 hover:shadow-xl hover:-translate-y-1 rounded-xl
+                                                                 focus:outline-none focus:ring-4 } dark:focus:ring-rose-400
+                                                                  ${isFocused ? `ring-4  dark:ring-rose-400 ` : ""}
+                                                                  ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 bg-white dark:bg-gray-800`}
+                                                                   ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}
+                                                                 `}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => {
+                                  setSelectedIndex(index)
+                                  handleSelect(bp.id)
+                                }
 
-                        return (
-                          <button
-                            key={item.id}
-                            ref={(el) => (productRefs.current[index] = el)}
-                            className={classNames(
-                              "relative group p-5 rounded-xl transition-all duration-300",
-                              "border-2 bg-white dark:bg-black dark:border-sky-300 text-left shadow-sm hover:shadow-lg",
-                              "focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 dark:ring-2 dark:focus:ring-offset-2", // <-- Esto controla el foco
-                              isDisabled
-                                ? "opacity-40 cursor-not-allowed border-gray-200"
-                                : isSelected
-                                  ? "border-emerald-500 border-1"
-                                  : "border-transparent hover:border-emerald-400"
-                            )}
-                            disabled={isDisabled}
-                            onClick={() => {
-                              if (!isDisabled) {
-                                setSelectedIndex(index);
-                                OnAddProductSelected(item);
-                              }
-                            }}
+                                }
 
-                          >
-                            {item.product?.subCategory?.name && (
-                              <span className="dark:text-white absolute top-4 left-4 bg-blue-500 text-white text-xs px-3 py-1 rounded-full shadow">
-                                {item.product.subCategory.name}
-                              </span>
-                            )}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    handleSelect(bp.id);
+                                    setSelectedIndex(index);
+                                  }
+                                }}
 
-                            <div className="flex items-center gap-4 mb-4">
-                              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-emerald-600 text-white flex items-center justify-center shadow-inner">
-                                <Package className="w-6 h-6" />
-                              </div>
-                              <h3 className="text-lg font-semibold text-gray-900 line-clamp-2 dark:text-white">
-                                {item?.product?.name || "Producto no disponible"}
-                              </h3>
-                            </div>
+                              >
+                                {isSelected && (
+                                  <div className={`absolute -top-2 -right-2 w-8 h-8 bg-${colorFocus2} rounded-full flex items-center justify-center shadow-lg`}>
+                                    <Check className="w-5 h-5 text-white" />
+                                  </div>
+                                )}
 
-                            <div className="flex items-center gap-2 mb-3">
-                              <DollarSign className="w-5 h-5 text-emerald-600" />
-                              <span className="text-xl font-bold text-gray-800 dark:text-white">
-                                ${item?.price?.toLocaleString() ?? "N/A"}
-                              </span>
-                            </div>
+                                {isOutOfStock && (
+                                  <div className="absolute top-3 right-3">
+                                    <Badge className="text-xs font-semibold">
+                                      Sin Stock
+                                    </Badge>
+                                  </div>
+                                )}
 
-                            {item?.product?.code && (
-                              <div className="flex items-center gap-2 text-sm font-mono text-gray-500 mb-3">
-                                <Barcode className="w-4 h-4 text-gray-400" />
-                                <span className="bg-gray-100 px-2 py-0.5 rounded ">{item.product.code}</span>
-                              </div>
-                            )}
+                                <div className="p-6">
+                                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 leading-tight">
+                                    {bp.product.name}
+                                  </h3>
 
-                            {!isDisabled && (
-                              <div className="absolute bottom-4 right-4 group-hover:translate-x-0 translate-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                <ChevronRight className="w-6 h-6 text-blue-500" />
-                              </div>
-                            )}
+                                  <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                                      <Hash className="w-4 h-4" />
+                                      <span className="font-mono">{bp.product.code}</span>
+                                    </div>
 
-                            {isSelected && (
-                              <>
-                                <div className="absolute top-4 right-4 bg-emerald-500 rounded-full w-7 h-7 flex items-center justify-center shadow-md animate-pulse">
-                                  <Check className="w-4 h-4 text-white" />
+                                    <div className="flex items-center gap-2">
+                                      <Package className="w-4 h-4 text-gray-500" />
+                                      <span className="text-sm text-gray-600 dark:text-gray-400">Stock:</span>
+                                      <span
+                                        className={`text-sm font-semibold ${bp.stock > 10 ? "text-green-600" : bp.stock > 0 ? "text-yellow-600" : "text-red-600"
+                                          }`}
+                                      >
+                                        {bp.stock} unidades
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                                      <DollarSign className="w-5 h-5 text-rose-400" />
+                                      <span className="text-xl font-bold text-rose-500">{bp.price}</span>
+                                    </div>
+                                  </div>
+
+                                  <div className={`text-xs font-medium ${isSelected ? `text-rose-600` : "text-gray-400"}`}>
+                                    {isSelected ? "✓ Seleccionado" : "Click para seleccionar"}
+                                  </div>
                                 </div>
-                                <div className="absolute inset-0 pointer-events-none" />
-                              </>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+
+
+                      </section>
+                    )}
+                    {view === 'table' && (
+                      <section className="w-full max-h-[400px] lg:max-h-[500px] 2xl:max-h-[600px] shadow text-white overflow-auto">
+                        <table className='w-full'>
+                          <thead className="sticky top-0 z-10 bg-gray-700">
+                            <tr className='text-left text-sm'>
+                              {header.map((item) => (
+                                <ThGlobal key={item.uuid} className="py-4 px-3">
+                                  {item.name}
+                                </ThGlobal>
+
+                              ))}
+
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {branchProducts.map((bp, index) => {
+                              const isSelected = product_selected.find((p) => p.id === bp.id);
+                              const iseSelectedBol = isSelected ? true : false
+                              const isFocused = index === selectedIndex;
+
+                              return (
+                                <tr
+                                  key={bp.id}
+                                  ref={(el) => (productRefs.current[index] = el)}
+                                  className={classNames(
+                                    'text-left text-gray-600 dark:text-white hover:cursor-pointer hover:bg-gray-200 focus:outline-none',
+                                    isFocused && 'bg-blue-100 dark:bg-blue-600'
+                                  )}
+                                  tabIndex={0}
+                                  onClick={() => {
+                                    setSelectedIndex(index);
+                                    handleSelect(bp.id)
+                                    // OnAddProductSelected(bp);
+                                  }
+
+                                  }
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      setSelectedIndex(index);
+                                      handleSelect(bp.id)
+
+                                      // OnAddProductSelected(bp);
+                                    }
+                                  }}
+                                >
+                                  <TdGlobal className="py-2 px-3">
+                                    <Checkbox isSelected={iseSelectedBol} />
+                                  </TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{bp.id}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{bp.product.code}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{bp.product.name}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{bp.stock}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{bp.price}</TdGlobal>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </section>
+
+                    )}
 
                   </>
                 )}
