@@ -35,7 +35,7 @@ export default function CashCutComponent({ branch, params, totalGeneral, data, b
           PUNTO DE VENTA: {params.pointCode ? params.pointCode : 'GENERAL'}
         </h1>
         <div className="border-dashed h-3 border-black dark:border-white border-t border-b my-3 w-full" />
-        <table >
+        <table className="w-full" >
         <tbody>
           <tr>
             <td className="text-center font-bold" colSpan={3}>
@@ -43,7 +43,7 @@ export default function CashCutComponent({ branch, params, totalGeneral, data, b
             </td>
           </tr>
           <tr>
-            <td className="text-center w-full" colSpan={2}>
+            <td className="text-center w-full" colSpan={3}>
         <div className="border-dashed h-3 border-black dark:border-white border-t border-b my-3 w-full" />
             </td>
           </tr>
