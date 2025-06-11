@@ -35,4 +35,5 @@ export interface SearchGlobal {
     limit: number;
     startDate?: string;
     endDate?: string;
+    status?: string
 }

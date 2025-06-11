@@ -7,7 +7,7 @@ import EmptyTable from "../global/EmptyTable";
 import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
-import { RenderStatus, Status } from "./render-order-status";
+import { RenderStatus, Status, StautsProductOrder } from "./render-order-status";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
@@ -28,20 +28,22 @@ export default function ProductOrderComponent() {
 
     const { backgroundColor, textColor } = useColors()
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { onAddBydetail, onAddBranchDestiny, onAddOrderId} = useShippingBranchProductBranch();
-    const {addSelectedProducts} = useProductionOrderStore()
-const navigate = useNavigate()
+    const { onAddBydetail, onAddBranchDestiny, onAddOrderId } = useShippingBranchProductBranch();
+    const { addSelectedProducts } = useProductionOrderStore()
+    const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
 
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
-
+    const currentDate = new Date();
+    const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const modalDetails = useDisclosure();
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
         branchId: 0,
-        startDate: '2025-06-01',
+        startDate: defaultStartDate.toISOString().split('T')[0],
         endDate: getElSalvadorDateTime().fecEmi,
+        status: '',
     });
 
     useEffect(() => {
@@ -125,6 +127,27 @@ const navigate = useNavigate()
                     }}
                 />
                 <Select
+                    aria-label="Estado"
+                    className=" dark:text-white w-full max-md:hidden"
+                    classNames={{
+                        label: 'font-semibold',
+                    }}
+                    label='Estado'
+                    labelPlacement="outside"
+                    placeholder="selecciona para buscar"
+                    value={search.status}
+                    variant="bordered"
+                    onChange={(e) => {
+                        setSearch({ ...search, status: e.target.value });
+                    }}
+                >
+                    {StautsProductOrder.map((item) => (
+                        <SelectItem key={item} className="dark:text-white">
+                            {item}
+                        </SelectItem>
+                    ))}
+                </Select>
+                <Select
                     disallowEmptySelection
                     aria-label="Cantidad a mostrar"
                     className=" dark:text-white w-full max-md:hidden"
@@ -168,38 +191,40 @@ const navigate = useNavigate()
                             {order.employee.firstLastName} {order.employee.secondLastName}
                         </TdGlobal>
                         <TdGlobal className="p-2 text-sm">
-                            {RenderStatus({ status:order.status as Status }) || order.status}
-                            </TdGlobal>
+                            {RenderStatus({ status: order.status as Status }) || order.status}
+                        </TdGlobal>
                         <TdGlobal className="p-2 text-sm flex gap-2">
-                            <ButtonUi isIconOnly showTooltip 
-                            theme={Colors.Info}
-                            tooltipText="Detalles"
-                            onPress={() => handleDetails(order)}>
+                            <ButtonUi isIconOnly showTooltip
+                                theme={Colors.Info}
+                                tooltipText="Detalles"
+                                onPress={() => handleDetails(order)}>
                                 <Eye />
                             </ButtonUi>
-                            <ButtonUi isIconOnly 
-                            showTooltip
-                            theme={Colors.Primary}
-                            tooltipText="Nota de Remisión"
-                            onPress={() => {
-                                navigate('/order-products-nota')
-                                onAddBydetail(order.orderProductDetails)
-                                onAddBranchDestiny(order.branch)
-                                onAddOrderId(order.id)
-                            }}>
-                                <StickyNote/>
+                            <ButtonUi isIconOnly
+                                showTooltip
+                                isDisabled={order.status === 'Completada'}
+                                theme={Colors.Primary}
+                                tooltipText="Nota de Remisión"
+                                onPress={() => {
+                                    navigate('/order-products-nota')
+                                    onAddBydetail(order.orderProductDetails)
+                                    onAddBranchDestiny(order.branch)
+                                    onAddOrderId(order.id)
+                                }}>
+                                <StickyNote />
                             </ButtonUi>
-                            <ButtonUi isIconOnly 
-                            showTooltip
-                            theme={Colors.Error}
-                            tooltipText="Orden de Producción"
-                            onPress={() => {
-                                navigate('/order-products-production')
-                                addSelectedProducts(order.orderProductDetails)
-                                onAddBranchDestiny(order.branch)
-                                onAddOrderId(order.id)
-                            }}>
-                                <ReceiptText/>
+                            <ButtonUi isIconOnly
+                                showTooltip
+                                isDisabled={order.status === 'Completada'}
+                                theme={Colors.Error}
+                                tooltipText="Orden de Producción"
+                                onPress={() => {
+                                    navigate('/order-products-production')
+                                    addSelectedProducts(order.orderProductDetails)
+                                    onAddBranchDestiny(order.branch)
+                                    onAddOrderId(order.id)
+                                }}>
+                                <ReceiptText />
                             </ButtonUi>
                         </TdGlobal>
                     </tr>
@@ -217,7 +242,7 @@ const navigate = useNavigate()
                     }}
                 />
             }
-            <Drawer placement="right" size="full" {...modalDetails}>
+            <Drawer isOpen={modalDetails.isOpen} placement="right" size="full" onClose={() => modalDetails.onClose()}>
                 <DrawerContent style={{ ...backgroundColor, ...textColor }}>
                     <DrawerHeader>Detalles de la orden</DrawerHeader>
                     <DrawerBody>
@@ -272,7 +297,7 @@ const navigate = useNavigate()
                                                 selectedOrder.orderProductDetails.length
                                             })
                                         </h2>
-                                        <TableComponent headers={['Nº', 'Producto', 'Cantidad solicitada', 'Cantidad entregada','Cantidad Pendiente', 'Stock actual', 'Stock Anterior']}>
+                                        <TableComponent headers={['Nº', 'Producto', 'Cantidad solicitada', 'Cantidad entregada', 'Cantidad Pendiente', 'Stock actual', 'Stock Anterior']}>
                                             {ordersProducts.order_products.length === 0 && (
                                                 <tr className="border-b border-slate-200">
                                                     <td

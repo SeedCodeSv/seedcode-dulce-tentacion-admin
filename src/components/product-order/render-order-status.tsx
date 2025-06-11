@@ -1,7 +1,14 @@
 import { Chip } from "@heroui/react";
-import { Check, Clock, Settings, TriangleAlert} from "lucide-react";
+import { Check, Clock, Settings, TriangleAlert } from "lucide-react";
 
 export type Status = 'Abierta' | 'En Proceso' | 'Completada' | 'Completada Parcial';
+export const StautsProductOrder = [
+  'Abierta', 
+  'En Proceso', 
+  'Completada', 
+  'Completada Parcial'
+]
+
 type StatusColors = 'warning' | 'primary' | 'success' | 'danger';
 
 export const RenderStatus = ({ status }: { status: Status }) => {
@@ -26,7 +33,7 @@ export const RenderStatus = ({ status }: { status: Status }) => {
           </>
         }
       >
-        <span className="text-xs text-white">{status}</span>
+        <span className="text-xs text-white select-none">{status}</span>
       </Chip>
     </div>
   );

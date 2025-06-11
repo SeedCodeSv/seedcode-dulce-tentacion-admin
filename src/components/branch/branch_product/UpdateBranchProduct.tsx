@@ -45,7 +45,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
     const [selectedKeySubCategory, setSelectedKeySubCategory] = useState('');
 
     useEffect(() => {
-        const catId = branchProductRecipeSupplier[0]?.product?.subCategory?.categoryPorudctId?.toString() || '';
+        const catId = branchProductRecipeSupplier[0]?.product?.subCategory?.categoryProductId?.toString() || '';
         const subId = branchProductRecipeSupplier[0]?.product?.subCategory?.id?.toString() || '';
 
         setSelectedKeyCategory(catId);
@@ -53,7 +53,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
     }, [branchProductRecipeSupplier]);
 
 
-    const [category, setCategory] = useState<string | null>(branch_products?.product?.subCategory.categoryPorudctId.toString() || null)
+    const [category, setCategory] = useState<string | null>(branch_products?.product?.subCategory.categoryProductId.toString() || null)
     const { getSubcategories, subcategories } = useSubCategoriesStore();
 
     const [initialValues, setInitialValues] = useState<UpdateBranchProductOrder | null>(null);

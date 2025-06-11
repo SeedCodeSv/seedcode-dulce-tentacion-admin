@@ -10,6 +10,7 @@ export interface Branches {
   tipoEstablecimiento: string;
   isActive: boolean;
   transmitter?: Transmitter
+  transmitterId: number
 }
 
 export interface IGetBranchesPaginated {

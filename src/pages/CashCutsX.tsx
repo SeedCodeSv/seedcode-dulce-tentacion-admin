@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button } from "@heroui/react";
+import { Autocomplete, AutocompleteItem } from "@heroui/react";
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { IoPrintSharp } from 'react-icons/io5';
-import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
 
 import { ZCashCutsResponse } from '../types/cashCuts.types';
 import { fechaActualString } from '../utils/dates';
 import { get_cashCuts_x } from '../services/facturation/cashCuts.service';
-import { global_styles } from '../styles/global.styles';
 import { useBranchesStore } from '../store/branches.store';
 import { get_correlatives } from '../services/correlatives.service';
 import { Correlatives } from '../types/correlatives.types';
@@ -19,11 +17,17 @@ import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import { useTransmitterStore } from '@/store/transmitter.store';
+import CashCutComponent from '@/components/cash-cuts/CashCutComponent';
+import { Branches } from '@/types/branches.types';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
+import { exportToExcel } from '@/components/cash-cuts/CashCutsExcellExport';
 
 const CashCutsX = () => {
   const { actions } = useViewsStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  
+  const [branch, setBranch] = useState<Branches>()
+
   const x = actions.find((view) => view.view.name === 'Corte X');
   const actionsView = x?.actions?.name || [];
   const [data, setData] = useState<ZCashCutsResponse | null>(null);
@@ -32,11 +36,10 @@ const CashCutsX = () => {
   const [branchId, setBranchId] = useState(0);
   const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
   const [codeSelected, setCodeSelected] = useState('');
-  const [branchName, setBranchName] = useState('');
-  const [branchAdress, setBranchAdress] = useState('');
+
 
   useEffect(() => {
-    const getBranchId = () => {};
+    const getBranchId = () => { };
 
     getBranchId();
     const getIdBranch = async () => {
@@ -56,8 +59,6 @@ const CashCutsX = () => {
 
     getIdBranch();
   }, [dateInitial, dateEnd, branchId, codeSelected]);
-
-  const calculateIVA = (total: number) => total / 1.13;
 
   const totalGeneral = useMemo(() => {
     const totalFactura = Number(data?.Factura?.total ?? 0);
@@ -122,105 +123,138 @@ const CashCutsX = () => {
       const time = now.toLocaleTimeString();
       const Am = now.getHours() < 12 ? 'AM' : 'PM';
       const customContent = `
-        <div>
-         <span>------------------------------------</span><br />
-         <span style="text-align: right:30px;">Reporte de Ventas</span><br />
-         <span>------------------------------------</span><br />
-          <span>MADNESS</span><br />
-           <span>${branchName}</span><br />
-        <span>${branchAdress}</span><br />
-          <span>GIRO: VENTA AL POR MENOR DE ROPA</span><br />
-          <span>
-            FECHA: ${date} - ${time} ${Am}
-          </span>
-          <br />
-           <span>
-           PUNTO DE VENTA: ${codeSelected ? codeSelected : 'GENERAL'}
-        </span>
-          <br />
-          <span>------------------------------------</span><br />
-          <span>------------------------------------</span<br />
-          <div className="w-full">
-            <span>VENTAS CON FACTURA</span><br />
-            <span>N. INICIAL: ${data?.Factura?.inicio}</span><br />
-            <span>N. FINAL: ${data?.Factura?.fin}</span><br />
-            <span>
-              GRAVADAS: ${formatCurrency(
-                Number(data?.Factura.total ?? 0) - calculateIVA(data?.Factura?.total || 0)
-              )}
-            </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.Factura?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
-            <span>EXENTAS: $0.00</span><br />
-            <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.Factura?.total))}</span><br />
-          </div>
-          <br />
-          <span>------------------------------------</span><br />
-          <span>------------------------------------</span<br />
-          <div className="w-full">
-            <span>VENTAS CON CRÉDITO FISCAL</span><br />
-            <span>N. INICIAL: ${data?.CreditoFiscal?.inicio}</span><br />
-            <span>N. FINAL: ${data?.CreditoFiscal?.fin}</span><br />
-            <span>
-              GRAVADAS: ${formatCurrency(
-                Number(data?.CreditoFiscal.total ?? 0) -
-                  calculateIVA(data?.CreditoFiscal?.total || 0)
-              )}
-            </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.CreditoFiscal?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
-            <span>EXENTAS: $0.00</span><br />
-            <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span><br />
-          </div>
-          <br />
-          <span>------------------------------------</span><br />
-          <span>------------------------------------</span<br />
-          <div className="w-full">
-            <span>DEVOLUCIONES CON NOTA DE CRÉDITO</span><br />
-            <span>N. INICIAL: ${data?.DevolucionNC?.inicio}</span><br />
-            <span>N. FINAL: ${data?.DevolucionNC?.fin}</span><br />
-            <span>
-              GRAVADAS: ${formatCurrency(
-                Number(data?.DevolucionNC.total ?? 0) - calculateIVA(data?.DevolucionNC?.total || 0)
-              )}
-            </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionNC?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
-            <span>EXENTAS: $0.00</span><br />
-            <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionNC?.total))}</span><br />
-          </div>
-          <br />
-          <span>------------------------------------</span><br />
-          <span>------------------------------------</span<br />
-          <div className="w-full">
-            <span>DEVOLUCIONES CON TICKET</span><br />
-            <span>N. INICIAL: ${data?.DevolucionT?.inicio}</span><br />
-            <span>N. FINAL: ${data?.DevolucionT?.fin}</span><br />
-            <span>
-              GRAVADAS: ${formatCurrency(
-                Number(data?.DevolucionT.total ?? 0) - calculateIVA(data?.DevolucionT?.total || 0)
-              )}
-            </span><br />
-            <span>IVA: ${formatCurrency(calculateIVA(data?.DevolucionT?.total || 0))}</span><br />
-            <span>SUB_TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
-            <span>EXENTAS: $0.00</span><br />
-            <span>NO SUJETAS: $0.00</span><br />
-            <span>TOTAL: ${formatCurrency(Number(data?.DevolucionT?.total))}</span><br />
-          </div>
-          <br />
-          <br />
+      <div style="text-align: center; font-family: sans-serif; margin-left: 60px; margin-right: 60px;">
           <div>
-            <span>TOTAL GENERAL</span><br />
-            <span>GRAVADAS: ${formatCurrency(totalGeneral / 1.13)}</span><br />
-            <span>IVA: ${formatCurrency(totalGeneral - totalGeneral / 1.13)}</span><br />
-            <span>SUB-TOTAL: ${formatCurrency(totalGeneral)}</span><br />
-            <span>EXENTAS:</span><br />
-            <span>NO SUJETAS:</span><br />
-            <span>RETENCIONES:</span><br />
-            <span>TOTAL: ${formatCurrency(totalGeneral)}</span>
+            <div><strong>${transmitter.nombreComercial}</strong></div>
+            <div>Sucursal: ${branch?.name ?? ''}</div>
+            <div>Dirección: ${branch?.address ?? ''}</div>
+            <div>Actividad Económica: ${transmitter?.descActividad ?? ''}</div>
+            <div>Fecha: ${date} - ${time} ${Am}</div>
+            <div>Punto de venta: ${codeSelected || 'GENERAL'}</div>
+          </div>
+      
+          <br />
+              <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; height: 0.25rem; margin-top: 0.75rem; margin-bottom: 0.75rem; width: 100%;"></div>
+         <table style="width: 100%; font-family: sans-serif;">
+        <tbody>
+          <tr>
+            <td colspan="3" style="text-align: center; font-weight: bold;">
+              FORMAS DE PAGO
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; width: 100%;">
+            <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; height: 0.25rem; margin-top: 0.75rem; margin-bottom: 0.75rem; width: 100%;"></div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align: left;">TOTAL TARJETA</td>
+            <td style="text-align: right;">${formatCurrency(0)}</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align: left;">TOTAL EFECTIVO</td>
+            <td style="text-align: right;">${formatCurrency(0)}</td>
+          </tr>
+          <tr>
+           <td colspan="3" style="text-align: center;">
+              <div style=" border-top: 1.5px dashed black;  height: 1px;  width: 100%; margin-top: 10px; margin-bottom: 10px"></div>
+           </td>
+          </tr>
+          <tr>
+            <td colspan="2" style="text-align: left;">SUB TOTAL GENERAL</td>
+            <td style="text-align: right;">${formatCurrency(0)}</td>
+          </tr>
+           <tr>
+            <td colspan="3" style="text-align: center; width: 100%;">
+              <div style="border-top: 1px dashed black; border-bottom: 1px dashed black; height: 0.75rem; margin-top: 0.75rem; margin-bottom: 0.75rem; width: 100%;"></div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+          <div>
+          <br />
+            <strong style="text-align: center; margin: 10px">DETALLE DE VENTAS</strong><br />
+            <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
+       <br />
+            <strong style="text-align: center; margin: 10px">FACTURA CONSUMIDOR FIINAL</strong><br />
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+          <span>N. INICIAL:</span>
+          <span>${data?.Factura?.inicio}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>N. FINAL:</span>
+        <span>${data?.Factura?.fin}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>GRAVADAS:</span>
+        <span> ${formatCurrency(Number(data?.Factura?.total))}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>EXENTAS:</span>
+        <span>  $0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>NO SUJETAS:</span>
+        <span>  $0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span><strong>TOTAL:</strong></span>
+        <span><strong>  ${formatCurrency(Number(data?.Factura?.total))}</strong></span>
+      </div>
+          </div>
+            <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
+           <br />
+          <div>
+            <strong>COMPROBANTE DE CRÉDITO FISCAL</strong><br />
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+          <span>N. INICIAL:</span>
+          <span>${data?.CreditoFiscal?.inicio}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>N. FINAL:</span>
+        <span>${data?.CreditoFiscal?.fin}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>GRAVADAS:</span>
+        <span> ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>EXENTAS:</span>
+        <span>  $0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>NO SUJETAS:</span>
+        <span>  $0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span><strong>TOTAL:</strong></span>
+        <span><strong>  ${formatCurrency(Number(data?.CreditoFiscal?.total))}</strong></span>
+      </div>
+          </div>
+            <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
+             <br />
+          <div>
+            <strong>TOTAL GENERAL</strong><br />
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>GRAVADAS:</span>
+        <span> ${formatCurrency(totalGeneral / 1.13)}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>SUB_TOTAL</span>
+        <span>   ${formatCurrency(totalGeneral)}</span>
+      </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>EXENTAS:</span>
+        <span>  $0.00</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span>NO SUJETAS:</span>
+        <span>  $0.00</span>
+      </div>
+           <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+        <span><strong>TOTAL:</strong></span>
+        <span><strong>  ${formatCurrency(totalGeneral)}</strong></span>
+      </div>
           </div>
         </div>
       `;
@@ -233,514 +267,98 @@ const CashCutsX = () => {
     });
   };
 
-  const exportDataToExcel = () => {
-    const data_convert = [
-      {
-        descripcion: '',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: '==============================================',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'DETALLE VENTAS POR COMPROBANTE',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: '==============================================',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'VENTAS CON FACTURA',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. INICIAL: ${data?.Factura.inicio}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. FINAL: ${data?.Factura.fin}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.Factura.total) - Number(data?.Factura.total) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.Factura.total) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.Factura.total),
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO-SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.Factura.total,
-      },
-      {
-        descripcion: '',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'VENTAS CON CRÉDITO FISCAL',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. INICIAL: ${data?.CreditoFiscal.inicio}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. FINAL: ${data?.CreditoFiscal.fin}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.CreditoFiscal.total) - Number(data?.CreditoFiscal.total) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.CreditoFiscal.total) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.CreditoFiscal.total),
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO-SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.CreditoFiscal.total,
-      },
-      {
-        descripcion: '',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'DEVOLUCIONES CON NOTA DE CRÉDITO',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. INICIAL: ${data?.DevolucionNC.inicio}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. FINAL: ${data?.DevolucionNC.fin}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionNC.total) - Number(data?.DevolucionNC.total) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionNC.total) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionNC.total),
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO-SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.DevolucionNC.total,
-      },
-      {
-        descripcion: '',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: 'DEVOLUCIONES CON TICKET',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. INICIAL: ${data?.DevolucionT.inicio}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `No. FINAL: ${data?.DevolucionT.fin}`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionT.total) - Number(data?.DevolucionT.total) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionT.total) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.DevolucionT.total),
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO-SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.DevolucionT.total,
-      },
-      {
-        descripcion: '',
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL GENERAL:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `GRAVADAS:`,
-        cantidad: 0,
-        total: Number(data?.totalGeneral) - Number(data?.totalGeneral) * 0.13,
-      },
-      {
-        descripcion: `IVA:`,
-        cantidad: 0,
-        total: Number(data?.totalGeneral) * 0.13,
-      },
-      {
-        descripcion: `SUB-TOTAL:`,
-        cantidad: 0,
-        total: Number(data?.totalGeneral) - Number(data?.totalGeneral) * 0.13,
-      },
-      {
-        descripcion: `EXENTAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `NO SUJETAS:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `RETENCIONES:`,
-        cantidad: 0,
-        total: 0,
-      },
-      {
-        descripcion: `TOTAL:`,
-        cantidad: 0,
-        total: data?.totalGeneral,
-      },
-    ];
+  const exportDataToExcel = async () => {
+    if (!branch) {
+      toast.warning("Debes seleccionar una sucursal")
 
-    const worksheet = XLSX.utils.json_to_sheet(data_convert);
-    const currencyFormat = '"$"#,##0.00';
+      return
+    }
 
-    Object.keys(worksheet).forEach((cell) => {
-      if (cell.startsWith('C') && !isNaN(worksheet[cell].v)) {
-        worksheet[cell].z = currencyFormat;
-      }
-    });
+    const blob = await exportToExcel({
+      branch,
+      params: { startDate: dateInitial, endDate: dateEnd, pointCode: codeSelected },
+      data: data!,
+      totalGeneral,
+      transmitter
+    })
 
-    const workbook = XLSX.utils.book_new();
-
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array',
-    });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-
-    saveAs(blob, `Corte_x_${branchName}_${Date.now()}.xlsx`);
+    saveAs(blob, `Corte_x_${branch?.name ?? ''}_${Date.now()}.xlsx`);
   };
 
   return (
     <Layout title="Corte de X">
       <DivGlobal>
-          <div className="flex flex-col justify-between w-full gap-5 flex-row lg:gap-0">
-            <div className="flex flex-col items-center p-4">
-              <div className="flex gap-4">
-                <Autocomplete
-                  className="mt-4"
-                  label="Sucursal"
-                  labelPlacement="outside"
-                  placeholder="Selecciona la sucursal"
-                  variant="bordered"
+        <div className="flex flex-col items-center ">
+          <div className="flex gap-4 ">
+            <Autocomplete
+              className="mt-4"
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+            >
+              {branch_list.map((item) => (
+                <AutocompleteItem
+                  key={item.id}
+                  onPress={() => {
+                    setBranchId(item.id);
+                    setBranch(item)
+
+                  }}
                 >
-                  {branch_list.map((item) => (
-                    <AutocompleteItem
-                      key={item.id}
-                      onClick={() => {
-                        setBranchId(item.id);
-                        setBranchName(item.name);
-                        setBranchAdress(item.address);
-                      }}
-                    >
-                      {item.name}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-                <Autocomplete
-                  className="mt-4"
-                  label="Punto de Venta"
-                  labelPlacement="outside"
-                  placeholder="Selecciona el punto de venta"
-                  variant="bordered"
-                >
-                  {codeSale
-                    .filter((item) => item.typeVoucher === 'FE')
-                    .map((item) => (
-                      <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
-                        {item.code}
-                      </AutocompleteItem>
-                    ))}
-                </Autocomplete>
-              </div>
-
-              <div className="flex flex-col items-center w-full h-full p-4 mt-4  rounded-md">
-                <div className="mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full max-w-lg h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl">
-                  <h1 className="text-black dark:text-white">{transmitter.nombre}</h1>
-                  <h1 className="text-black dark:text-white">{branchName}</h1>
-
-                  <h1 className="text-black dark:text-white">{branchAdress}</h1>
-                  <h1 className="text-black dark:text-white">GIRO: VENTA AL POR MENOR DE ROPA</h1>
-                  <h1 className="text-black dark:text-white">
-                    FECHA: {dateInitial} - {dateEnd}
-                  </h1>
-                  <h1 className="text-black dark:text-white">
-                    PUNTO DE VENTA: {codeSelected ? codeSelected : 'GENERAL'}
-                  </h1>
-                  <br />
-                  <br />
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">VENTAS CON FACTURA</h1>
-                    <h1 className="text-black dark:text-white">
-                      N. INICIAL: {data?.Factura?.inicio}
-                    </h1>
-                    <h1 className="text-black dark:text-white">N. FINAL: {data?.Factura?.fin}</h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(Number(data?.Factura?.total) / 1.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA:{' '}
-                      {formatCurrency(
-                        Number(data?.Factura?.total) - Number(data?.Factura?.total) / 1.13
-                      )}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB_TOTAL: {formatCurrency(Number(data?.Factura?.total))}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(Number(data?.Factura?.total.toFixed(2)))}
-                    </h1>
-                  </div>
-                  <br />
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">VENTAS CON CRÉDITO FISCAL</h1>
-                    <h1 className="text-black dark:text-white">
-                      N. INICIAL: {data?.CreditoFiscal?.inicio}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      N. FINAL: {data?.CreditoFiscal?.fin}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(Number(data?.CreditoFiscal?.total) / 1.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA:{' '}
-                      {formatCurrency(
-                        Number(data?.CreditoFiscal?.total) - Number(data?.CreditoFiscal?.total) / 1.13
-                      )}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB_TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(Number(data?.CreditoFiscal?.total))}
-                    </h1>
-                  </div>
-                  <br />
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <div className="w-full">
-                    <h1 className="text-black dark:text-white">DEVOLUCIONES CON NOTA DE CRÉDITO</h1>
-                    <h1 className="text-black dark:text-white">
-                      N. INICIAL: {data?.DevolucionNC?.inicio}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      N. FINAL: {data?.DevolucionNC?.fin}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      GRAVADAS: {formatCurrency(Number(data?.DevolucionNC?.total) / 1.13)}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      IVA:{' '}
-                      {formatCurrency(
-                        Number(data?.DevolucionNC?.total) -
-                          Number(data?.DevolucionNC?.total) / 1.13
-                      )}
-                    </h1>
-                    <h1 className="text-black dark:text-white">
-                      SUB_TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
-                    </h1>
-                    <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                    <h1 className="text-black dark:text-white">
-                      TOTAL: {formatCurrency(Number(data?.DevolucionNC?.total.toFixed(2)))}
-                    </h1>
-                  </div>
-                  <br />
-                  <h1 className="text-black dark:text-white">
-                    ---------------------------------------------------------------------
-                  </h1>
-                  <br />
-                  {(() => {
-                    const ivaFactura = Number(data?.Factura?.total) - Number(data?.Factura?.total) / 1.13;
-                    const ivaCreditoFiscal =
-                      Number(data?.CreditoFiscal?.total) - Number(data?.CreditoFiscal?.total) / 1.13;
-                    const ivaDevolucionNC =
-                      Number(data?.DevolucionNC?.total) - Number(data?.DevolucionNC?.total) / 1.13;
-                    const ivaDevolucionT =
-                      Number(data?.DevolucionT?.total) - Number(data?.DevolucionT?.total) / 1.13;
-
-                    const totalIVA =
-                      ivaFactura + ivaCreditoFiscal + ivaDevolucionNC + ivaDevolucionT;
-
-                    return (
-                      <>
-                        <div className="w-full">
-                          <h1 className="text-black dark:text-white">TOTAL GENERAL</h1>
-                          <h1 className="text-black dark:text-white">
-                            GRAVADAS: {formatCurrency(totalGeneral / 1.13)}
-                          </h1>
-                          <h1 className="text-black dark:text-white">
-                            IVA: {formatCurrency(totalIVA)}
-                          </h1>
-                          <h1 className="text-black dark:text-white">
-                            SUB-TOTAL: {formatCurrency(totalGeneral)}
-                          </h1>
-                          <h1 className="text-black dark:text-white">EXENTAS: $0.00</h1>
-                          <h1 className="text-black dark:text-white">NO SUJETAS: $0.00</h1>
-                          <h1 className="text-black dark:text-white">RETENCIONES: $0.00</h1>
-                          <h1 className="text-black dark:text-white">
-                            TOTAL: {formatCurrency(totalGeneral)}
-                          </h1>
-                        </div>
-                      </>
-                    );
-                  })()}
-                  <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
-                    {actionsView.includes('Exportar Excel') && (
-                      <Button
-                        className="w-full"
-                        color="success"
-                        startContent={<PiMicrosoftExcelLogoBold className="text-white" size={25} />}
-                        onClick={exportDataToExcel}
-                      >
-                        <p className="text-white"> Exportar a excel</p>{' '}
-                      </Button>
-                    )}
-                    {actionsView.includes('Imprimir') && (
-                      <Button
-                        className="w-full"
-                        startContent={<IoPrintSharp size={25} />}
-                        style={global_styles().secondaryStyle}
-                        onClick={() => printCutX()}
-                      >
-                        Imprimir y cerrar
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+            <Autocomplete
+              className="mt-4"
+              label="Punto de Venta"
+              labelPlacement="outside"
+              placeholder="Selecciona el punto de venta"
+              variant="bordered"
+            >
+              {codeSale
+                .filter((item) => item.typeVoucher === 'FE')
+                .map((item) => (
+                  <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
+                    {item.code}
+                  </AutocompleteItem>
+                ))}
+            </Autocomplete>
           </div>
-        </DivGlobal>
+
+          <CashCutComponent
+            branch={branch}
+            buttons={
+              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
+                {actionsView.includes('Exportar Excel') && (
+                  <ButtonUi
+                    className="w-full"
+                    startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                    theme={Colors.Success}
+                    onPress={exportDataToExcel}
+                  >
+                    <p> Exportar a excel</p>{' '}
+                  </ButtonUi>
+                )}
+                {actionsView.includes('Imprimir') && (
+                  <ButtonUi
+                    className="w-full"
+                    startContent={<IoPrintSharp size={25} />}
+                    theme={Colors.Secondary}
+                    onPress={() => printCutX()}
+                  >
+                    Imprimir
+                  </ButtonUi>
+                )}
+              </div>
+            }
+            data={data!}
+            params={{ startDate: dateInitial, endDate: dateEnd, pointCode: codeSelected }}
+            totalGeneral={totalGeneral}
+          />
+        </div>
+      </DivGlobal>
     </Layout>
   );
 };
