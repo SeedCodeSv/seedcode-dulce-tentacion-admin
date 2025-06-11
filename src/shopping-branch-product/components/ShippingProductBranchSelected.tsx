@@ -127,6 +127,8 @@ function ShippingProductBranchSelected(props: Props) {
     }
   })
 
+
+
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectProduct, setSelectedProduct] = useState(0)
@@ -163,6 +165,25 @@ function ShippingProductBranchSelected(props: Props) {
     }
   });
 
+  useHotkeys('Enter', () => {
+    if (modalDelete.isOpen) {
+      handleDeleteProduct()
+    }
+    if (closeModal) {
+      handleClosed()
+    }
+  })
+
+  const handleDeleteProduct = () => {
+    OnClearProductSelected(selectProduct)
+    modalDelete.onClose()
+  }
+
+  const handleClosed = () => {
+    setIsModalOpen(false)
+    setCloseModal(false)
+  }
+
 
   return (
     <>
@@ -183,8 +204,7 @@ function ShippingProductBranchSelected(props: Props) {
               <ButtonUi
                 theme={Colors.Success}
                 onPress={() => {
-                  OnClearProductSelected(selectProduct)
-                  modalDelete.onClose()
+                  handleDeleteProduct()
                 }}
               >
                 Aceptar
@@ -210,8 +230,7 @@ function ShippingProductBranchSelected(props: Props) {
               <ButtonUi
                 theme={Colors.Success}
                 onPress={() => {
-                  setIsModalOpen(false)
-                  setCloseModal(false)
+                  handleClosed()
                 }}
               >
                 Aceptar
@@ -328,7 +347,10 @@ function ShippingProductBranchSelected(props: Props) {
                       key={item.id}
                       ref={(el) => (rowRefs.current[index] = el)}
                       animate={{ opacity: 1, x: 0 }}
-                      className={`transition-colors ${index === selectedIndex ? 'ring-2 ring-emerald-500 rounded-lg' : ''}`}
+                      className={`transition-colors
+                        focus:outline-none ${index === selectedIndex ? 'ring-2 ring-emerald-500 rounded-lg' : ''
+                        }`}
+
                       initial={{ opacity: 0, x: -20 }}
                       tabIndex={-1}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
@@ -400,6 +422,7 @@ function ShippingProductBranchSelected(props: Props) {
           scrollBehavior="inside"
           size="xl"
           onClose={() => setCloseModal(true)
+
           }
         >
           <ModalContent>
