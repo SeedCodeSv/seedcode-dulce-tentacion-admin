@@ -4,7 +4,7 @@ import { Socket } from 'socket.io-client'
 import { DocumentoNoteOfRemission } from '@/shopping-branch-product/types/notes_of_remision.types';
 import { PayloadMH } from '@/types/DTE/credito_fiscal.types';
 import { ITransmitter } from '@/types/transmitter.types';
-import { User, UserLogin } from '@/types/auth.types';
+import { User } from '@/types/auth.types';
 import { Correlativo } from '@/types/correlatives_dte.types';
 
 export interface IPropSendToMhShippingNote {

@@ -26,10 +26,7 @@ export const HandleSendToMhShippingNote = ({
   receivingEmployeeId,
   socket,
   branchIssuingId,
-  orderId,
-  transmitter,
-  user,
-  correlatives
+  orderId
 }: IPropSendToMhShippingNote) => {
   setCurrentState(steps[1].title);
 
