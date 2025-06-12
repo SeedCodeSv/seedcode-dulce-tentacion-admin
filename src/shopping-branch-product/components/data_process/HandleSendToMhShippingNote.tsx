@@ -26,7 +26,10 @@ export const HandleSendToMhShippingNote = ({
   receivingEmployeeId,
   socket,
   branchIssuingId,
-  orderId
+  orderId,
+  transmitter,
+  user,
+  correlatives
 }: IPropSendToMhShippingNote) => {
   setCurrentState(steps[1].title);
 
@@ -52,7 +55,7 @@ export const HandleSendToMhShippingNote = ({
           json,
           firma,
           respuestaMH,
-orderId,
+          orderId,
           OnClearProductSelectedAll,
           closeModal() {
             closeModal();
@@ -68,35 +71,73 @@ orderId,
           employeeId,
           receivingBranchId,
           receivingEmployeeId,
-          socket:socket,
-          branchIssuingId:branchIssuingId
+          socket: socket,
+          branchIssuingId: branchIssuingId
         });
       })
       .catch(async (error: AxiosError<SendMHFailed>) => {
         clearTimeout(timeout);
+        // const { nombre } = transmitter
+        // const { numeroControl } = json.dteJson.identificacion
+
         if (axios.isCancel(error)) {
           setErrors(() => ['El tiempo de espera ha expirado']);
           setTitleMessage('El tiempo de espera ha expirado');
         }
         if (error.response?.data) {
           if (error && error.response && error.response.data && error.response.data.observaciones) {
-            setTitleMessage(error.response.data.descripcionMsg);
-            setErrors(() => [
-              ...(error.response!.data.observaciones.length > 0
-                ? error.response!.data.observaciones
-                : ['Error al enviar el documento']),
-            ]);
 
-            
-            return;
+            // const { descripcionMsg } = error.response.data
+
+            // if (descripcionMsg === "[identificacion.numeroControl] YA EXISTE UN REGISTRO CON ESE VALOR") {
+            //   await handleNumeroControlDuplicado(
+            //     numeroControl,
+            //     transmitter,
+            //     branchIssuingId,
+            //     token_mh,
+            //     customerId!,
+            //     receivingBranchId!,
+            //     employeeId!,
+            //     pointOfSaleId,
+            //     user,
+            //     json,
+            //     correlatives,
+            //     socket,
+            //     setCurrentState,
+            //     OnClearProductSelectedAll,
+            //     closeModal
+            //   )
+
+            //   return
+            // } else {
+              setErrors(() => [
+                ...(error.response!.data.observaciones.length > 0
+                  ? error.response!.data.observaciones
+                  : ['Error al enviar el documento']),
+              ]);
+
+
+              return;
+            // }
+
+
+            // setTitleMessage(error.response.data.descripcionMsg);
+            // setErrors(() => [
+            //   ...(error.response!.data.observaciones.length > 0
+            //     ? error.response!.data.observaciones
+            //     : ['Error al enviar el documento']),
+            // ]);
+
+
+            // return;
           } else {
             setTitleMessage('Error al enviar el documento');
-            
+
           }
         } else {
           setTitleMessage('Error al enviar el documento ');
           setErrors(() => ['Error al enviar el documento ']);
-          
+
         }
       });
   } catch (error) {
