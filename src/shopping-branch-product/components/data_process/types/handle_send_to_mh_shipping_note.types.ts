@@ -3,6 +3,9 @@ import { Socket } from 'socket.io-client'
 
 import { DocumentoNoteOfRemission } from '@/shopping-branch-product/types/notes_of_remision.types';
 import { PayloadMH } from '@/types/DTE/credito_fiscal.types';
+import { ITransmitter } from '@/types/transmitter.types';
+import { User } from '@/types/auth.types';
+import { Correlativo } from '@/types/correlatives_dte.types';
 
 export interface IPropSendToMhShippingNote {
   data_send: PayloadMH;
@@ -20,5 +23,8 @@ export interface IPropSendToMhShippingNote {
   receivingEmployeeId?: number;
     socket:Socket;
   branchIssuingId:number
-  orderId?: number
+  orderId?: number,
+  transmitter:ITransmitter | undefined
+user:User | undefined
+correlatives:Correlativo | undefined
 }

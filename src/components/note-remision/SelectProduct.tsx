@@ -147,7 +147,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
         <DrawerContent>
           <DrawerBody className="p-0">
             <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-gray-100 ">
-              <div className="bg-white/80 dark:bg-black backdrop-blur-xl border-b dark:border-gray-200/50 border-rose-200 px-6 py-6">
+              <div className="bg-white/80 dark:bg-black backdrop-blur-xl dark:border-gray-200/50 px-6 py-6 h-auto">
                 <button className='flex flex-row gap-2 items-center mb-4 p-2 rounded-xl'
                   onClick={() => {
                     modalProducts.onClose()
@@ -292,11 +292,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                   <>
                     {view === 'grid' && (
                       <section
-                        className={`
-                                                    w-full max-h-[200px] lg:max-h-[422px] 
-                                                2xl:max-h-[600px] p-6  
-                                                dark:bg-gray-900F
-                                                `}
+                        className={`w-full max-h-[200px] lg:max-h-[422px] 2xl:max-h-[600px] p-6 dark:bg-gray-900`}
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {branchProducts.map((bp, index) => {
@@ -311,28 +307,23 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                               <div
                                 key={bp.id}
                                 ref={(el) => (productRefs.current[index] = el)}
-                                className={`
-                                                                 mb-2 relative cursor-pointer transition-all duration-200 border-2 hover:shadow-xl hover:-translate-y-1 rounded-xl
-                                                                 focus:outline-none focus:ring-4 } dark:focus:ring-rose-400
-                                                                  ${isFocused ? `ring-4  dark:ring-rose-400 ` : ""}
-                                                                  ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 bg-white dark:bg-gray-800`}
-                                                                   ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}
-                                                                 `}
+                                className={` mb-2 relative cursor-pointer transition-all duration-200 border-2 hover:shadow-xl hover:-translate-y-1 rounded-xl
+                                             focus:outline-none focus:ring-4 } dark:focus:ring-rose-400
+                                             ${isFocused ? `ring-4  dark:ring-rose-400 ` : ""}
+                                             ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 bg-white dark:bg-gray-800`}
+                                             ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}
+                                              `}
                                 role="button"
                                 tabIndex={0}
                                 onClick={() => {
                                   setSelectedIndex(index)
                                   handleSelect(bp.id)
-                                }
-
-                                }
-
+                                }}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') {
                                     handleSelect(bp.id);
                                     setSelectedIndex(index);
-                                  }
-                                }}
+                                  }}}
 
                               >
                                 {isSelected && (
@@ -340,7 +331,6 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                     <Check className="w-5 h-5 text-white" />
                                   </div>
                                 )}
-
                                 {isOutOfStock && (
                                   <div className="absolute top-3 right-3">
                                     <Badge className="text-xs font-semibold">
@@ -348,12 +338,10 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                     </Badge>
                                   </div>
                                 )}
-
                                 <div className="p-6">
                                   <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-3 leading-tight">
                                     {bp.product.name}
                                   </h3>
-
                                   <div className="space-y-3">
                                     <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                                       <Hash className="w-4 h-4" />
@@ -375,7 +363,6 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                       <span className="text-xl font-bold text-rose-500">{bp.price}</span>
                                     </div>
                                   </div>
-
                                   <div className={`text-xs font-medium ${isSelected ? `text-rose-600` : "text-gray-400"}`}>
                                     {isSelected ? "✓ Seleccionado" : "Click para seleccionar"}
                                   </div>

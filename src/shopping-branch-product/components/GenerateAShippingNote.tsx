@@ -14,6 +14,7 @@ import { useCorrelativesDteStore } from '@/store/correlatives_dte.store';
 import { ambiente } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { useAuthStore } from '@/store/auth.store';
 
 
 
@@ -33,6 +34,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
 
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByBranch } = useCorrelativesDteStore();
+  const {user} = useAuthStore()
 
   useEffect(() => {
     gettransmitter();
@@ -96,7 +98,11 @@ function GenerateAShippingNote(props: IPropCustomer) {
                 customerId: customer?.id,
                 employeeId: employee?.id,
                 socket:socket,
-                branchIssuingId:branchIssuingId
+                branchIssuingId:branchIssuingId,
+                transmitter,
+                user,
+                correlatives,
+
               });
             } else {
               props.setTitleString('Error al firmar el documento 222');
