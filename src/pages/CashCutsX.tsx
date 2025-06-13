@@ -320,7 +320,7 @@ const CashCutsX = () => {
               {codeSale
                 .filter((item) => item.typeVoucher === 'FE')
                 .map((item) => (
-                  <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
+                  <AutocompleteItem key={item.code} onPress={() => setCodeSelected(item.code)}>
                     {item.code}
                   </AutocompleteItem>
                 ))}

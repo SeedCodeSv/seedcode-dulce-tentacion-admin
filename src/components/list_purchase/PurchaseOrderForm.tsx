@@ -269,7 +269,6 @@ const PurchaseOrderForm = () => {
                                 } else {
                                   handleProductClick(branch_product?.suppliers[0]);
                                 }
-
                               }
                               }
                             >
