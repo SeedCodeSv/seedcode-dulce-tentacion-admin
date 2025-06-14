@@ -8,6 +8,7 @@ export interface PointOfSale {
   id: number;
   code: string;
   typeVoucher: string;
+  description: string;
   resolution: string;
   serie: string;
   from: string;

@@ -1,4 +1,4 @@
-import { Branches } from '../types/branches.types';
+import { PointOfSale } from './point-of-sales.types';
 export interface Box {
   id: number;
   start: number;
@@ -6,11 +6,11 @@ export interface Box {
   totalSales: number;
   totalExpense: number;
   totalIva: number;
-  date: Date;
-  time: Date;
+  date: string;
+  time: string;
   isActive?: boolean;
-  branch: Branches;
-  branchId: number;
+  pointOfSale: PointOfSale;
+  pointOfSaleId: number;
 }
 export interface IGetBoxList {
   ok: boolean;

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { ICutReportStore } from "./types/cashCuts.store.types";
 
-import { get_cuts_report, get_cuts_report_summary } from "@/services/facturation/cashCuts.service";
+import { get_cuts_report, get_cuts_report_summary, get_data_box } from "@/services/facturation/cashCuts.service";
 import { initialPagination } from "@/utils/utils";
 
 export const useCutReportStore = create<ICutReportStore>((set) => ({
@@ -16,6 +16,8 @@ export const useCutReportStore = create<ICutReportStore>((set) => ({
     },
     loadindSummary: false,
     loadingDetailed: false,
+    dataBox: [],
+    loadingDataBox: false,
     onGetCashCutReportDetailed(params) {
         set({ loadingDetailed: true })
 
@@ -46,5 +48,14 @@ export const useCutReportStore = create<ICutReportStore>((set) => ({
             })
         })
     },
-
+  onGetDataBox(branchId, date) {
+    set({ loadingDataBox: true });
+    get_data_box(branchId, date)
+      .then(({ data }) => {
+        set({ dataBox: data.dataBoxes, loadingDataBox: false });
+      })
+      .catch(() => {
+        set({ dataBox: [], loadingDataBox: false });
+      });
+  },
 }));
