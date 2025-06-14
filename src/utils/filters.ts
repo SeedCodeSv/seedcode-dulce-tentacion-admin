@@ -27,13 +27,13 @@ export const groupBySupplier = (
   const supplierMap = new Map<number, SupplierProducts>();
 
   items.forEach((item) => {
-    if (!supplierMap.has(item.supplierId)) {
-      supplierMap.set(item.supplierId, {
+    if (!supplierMap.has(item.supplier?.id)) {
+      supplierMap.set(item.supplier.id, {
         supplier: item.supplier,
         products: [],
       });
     }
-    supplierMap.get(item.supplierId)!.products.push(item);
+    supplierMap.get(item.supplier.id)!.products.push(item);
   });
 
   return Array.from(supplierMap.values());

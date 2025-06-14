@@ -1,8 +1,9 @@
 import ExcelJS from 'exceljs';
 
-import { ZCashCutsResponse } from "@/types/cashCuts.types";
+import { DataBox } from "@/types/cashCuts.types";
 import { Branches } from "@/types/branches.types";
 import { ITransmitter } from '@/types/transmitter.types';
+import { formatCurrency } from '@/utils/dte';
 
 interface PropsCashCut {
     branch: Branches | undefined
@@ -12,7 +13,7 @@ interface PropsCashCut {
         pointCode: string
     }
     totalGeneral: number
-    data: ZCashCutsResponse
+    data: DataBox
     transmitter: ITransmitter
 }
 
@@ -92,29 +93,21 @@ export const exportToExcel = async ({ branch, params, totalGeneral, data, transm
             total: 0,
         },
         {
-            descripcion: `No. INICIAL: ${data?.Factura.inicio}`,
+            descripcion: `No. INICIAL: ${data?.firtsSale}`,
             cantidad: 0,
             total: 0,
         },
         {
-            descripcion: `No. FINAL: ${data?.Factura.fin}`,
+            descripcion: `No. FINAL: ${data?.lastSale}`,
             cantidad: 0,
             total: 0,
         },
         {
             descripcion: `GRAVADAS:`,
             cantidad: 0,
-            total: Number(data?.Factura.total) - Number(data?.Factura.total) * 0.13,
-        },
-        {
-            descripcion: `IVA:`,
-            cantidad: 0,
-            total: Number(data?.Factura.total) * 0.13,
-        },
-        {
-            descripcion: `SUB-TOTAL:`,
-            cantidad: 0,
-            total: Number(data?.Factura.total),
+            total: formatCurrency(
+            Number(data.totalSales01Card ?? 0) + Number(data.totalSales01Cash ?? 0)
+          ),
         },
         {
             descripcion: `EXENTAS:`,
@@ -129,7 +122,9 @@ export const exportToExcel = async ({ branch, params, totalGeneral, data, transm
         {
             descripcion: `TOTAL:`,
             cantidad: 0,
-            total: data?.Factura.total,
+            total:formatCurrency(
+            Number(data.totalSales01Card ?? 0) + Number(data.totalSales01Cash ?? 0)
+          ),
         },
         {
             descripcion: '',
@@ -142,29 +137,21 @@ export const exportToExcel = async ({ branch, params, totalGeneral, data, transm
             total: 0,
         },
         {
-            descripcion: `No. INICIAL: ${data?.CreditoFiscal.inicio}`,
+            descripcion: `No. INICIAL: ${data?.firtsSale03}`,
             cantidad: 0,
             total: 0,
         },
         {
-            descripcion: `No. FINAL: ${data?.CreditoFiscal.fin}`,
+            descripcion: `No. FINAL: ${data?.lastSale03}`,
             cantidad: 0,
             total: 0,
         },
         {
             descripcion: `GRAVADAS:`,
             cantidad: 0,
-            total: Number(data?.CreditoFiscal.total) - Number(data?.CreditoFiscal.total) * 0.13,
-        },
-        {
-            descripcion: `IVA:`,
-            cantidad: 0,
-            total: Number(data?.CreditoFiscal.total) * 0.13,
-        },
-        {
-            descripcion: `SUB-TOTAL:`,
-            cantidad: 0,
-            total: Number(data?.CreditoFiscal.total),
+            total:formatCurrency(
+            Number(data.totalSales03Card ?? 0) + Number(data.totalSales03Cash ?? 0)
+          ),
         },
         {
             descripcion: `EXENTAS:`,
@@ -179,57 +166,9 @@ export const exportToExcel = async ({ branch, params, totalGeneral, data, transm
         {
             descripcion: `TOTAL:`,
             cantidad: 0,
-            total: data?.CreditoFiscal.total,
-        },
-        {
-            descripcion: '',
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: 'DEVOLUCIONES CON NOTA DE CRÉDITO',
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: `No. INICIAL: ${data?.DevolucionNC.inicio}`,
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: `No. FINAL: ${data?.DevolucionNC.fin}`,
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: `GRAVADAS:`,
-            cantidad: 0,
-            total: Number(data?.DevolucionNC.total) - Number(data?.DevolucionNC.total) * 0.13,
-        },
-        {
-            descripcion: `IVA:`,
-            cantidad: 0,
-            total: Number(data?.DevolucionNC.total) * 0.13,
-        },
-        {
-            descripcion: `SUB-TOTAL:`,
-            cantidad: 0,
-            total: Number(data?.DevolucionNC.total),
-        },
-        {
-            descripcion: `EXENTAS:`,
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: `NO-SUJETAS:`,
-            cantidad: 0,
-            total: 0,
-        },
-        {
-            descripcion: `TOTAL:`,
-            cantidad: 0,
-            total: data?.DevolucionNC.total,
+            total: formatCurrency(
+            Number(data.totalSales03Card ?? 0) + Number(data.totalSales03Cash ?? 0)
+          ),
         },
         {
             descripcion: '',
@@ -239,7 +178,12 @@ export const exportToExcel = async ({ branch, params, totalGeneral, data, transm
         {
             descripcion: `TOTAL GENERAL:`,
             cantidad: 0,
-            total: 0,
+            total: formatCurrency(
+            Number(data.totalSales01Cash ?? 0) +
+              Number(data.totalSales03Cash ?? 0) +
+              Number(data.totalSales01Card ?? 0) +
+              Number(data.totalSales03Card ?? 0)
+          ),
         },
         {
             descripcion: `EXENTAS:`,

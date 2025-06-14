@@ -1,3 +1,4 @@
+import { Box } from "./box.types";
 import { Employee } from "./employees.types";
 
 export interface ZCashCutsResponse {
@@ -118,5 +119,43 @@ export interface SearchCutReport {
     dateFrom?: string;
     dateTo?: string;
     employee?: string;
+}
+
+export interface IGetDataBox {
+  dataBoxes: DataBox[];
+  ok: boolean;
+  status: number;
+  message: string;
+}
+
+export interface DataBox {
+  box: Box;
+  totalSales01Cash?: number;
+  totalSales01Card?: number;
+  firtsSale: string;
+  lastSale: string;
+  totalSales03Cash: number | null;
+  totalSales03Card: number | null;
+  firtsSale03: string | null;
+  lastSale03: string | null;
+  invalidation01: number | null;
+  invalidation03: number | null;
+  firstInvalidation01: string | null;
+  firstInvalidation03: string | null;
+  lastInvalidation01: string | null;
+  lastInvalidation03: string | null;
+  categories: Categories;
+}
+
+export interface Categories {
+  list: List[];
+  totalGeneral?: number;
+  totalQuantityGeneral?: number;
+}
+
+export interface List {
+  category: string;
+  quantity: number;
+  total: number;
 }
   

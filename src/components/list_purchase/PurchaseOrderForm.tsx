@@ -269,7 +269,6 @@ const PurchaseOrderForm = () => {
                                 } else {
                                   handleProductClick(branch_product?.suppliers[0]);
                                 }
-
                               }
                               }
                             >
@@ -323,7 +322,7 @@ const PurchaseOrderForm = () => {
           <ModalGlobal
             isBlurred={true}
             isOpen={modalSelect.isOpen}
-            size='w-[40vw]'
+            size='w-[30vw]'
             title='Seleccionar proveedor'
             onClose={() => {
               if (supplierSelected && branchProduct) {

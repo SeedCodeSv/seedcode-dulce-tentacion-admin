@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Autocomplete, AutocompleteItem } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { IoPrintSharp } from 'react-icons/io5';
 import { saveAs } from 'file-saver';
 import { toast } from 'sonner';
 
-import { ZCashCutsResponse } from '../types/cashCuts.types';
-import { fechaActualString } from '../utils/dates';
-import { get_cashCuts_x } from '../services/facturation/cashCuts.service';
+import { DataBox } from '../types/cashCuts.types';
+import { fechaActualString, getElSalvadorDateTime } from '../utils/dates';
 import { useBranchesStore } from '../store/branches.store';
-import { get_correlatives } from '../services/correlatives.service';
-import { Correlatives } from '../types/correlatives.types';
 import { formatCurrency } from '../utils/dte';
 
 import Layout from '@/layout/Layout';
@@ -22,52 +19,44 @@ import { Branches } from '@/types/branches.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { exportToExcel } from '@/components/cash-cuts/CashCutsExcellExport';
+import { useCutReportStore } from '@/store/reports/cashCuts.store';
 
 const CashCutsX = () => {
   const { actions } = useViewsStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
   const [branch, setBranch] = useState<Branches>()
-
+  const [selectedBranch, setSelectedBranch] = useState<Branches>();
   const x = actions.find((view) => view.view.name === 'Corte X');
   const actionsView = x?.actions?.name || [];
-  const [data, setData] = useState<ZCashCutsResponse | null>(null);
   const [dateInitial] = useState(fechaActualString);
   const [dateEnd] = useState(fechaActualString);
-  const [branchId, setBranchId] = useState(0);
-  const [codeSale, setCodeSale] = useState<Correlatives[]>([]);
-  const [codeSelected, setCodeSelected] = useState('');
+  // const [codeSelected, setCodeSelected] = useState('');
+  const { onGetDataBox, dataBox } = useCutReportStore();
+  const [selectedBox, setSelectedBox] = useState<DataBox | null>();
 
+  const [params, setParams] = useState(
+    {
+      date: getElSalvadorDateTime().fecEmi,
+      branch: {} as Branches
+    }
+  )
 
-  useEffect(() => {
-    const getBranchId = () => { };
-
-    getBranchId();
-    const getIdBranch = async () => {
-      try {
-        const response = await get_cashCuts_x(branchId, codeSelected);
-
-        setData(response.data.data);
-      } catch (error) {
-        toast.error('Error al cargar los cortes de caja');
-      }
-      if (branchId > 0) {
-        const data = await get_correlatives(branchId);
-
-        setCodeSale(data.data.pointOfSales);
-      }
-    };
-
-    getIdBranch();
-  }, [dateInitial, dateEnd, branchId, codeSelected]);
+  const calcTotal = (...numbers: number[]) => {
+    return numbers.reduce((acc, num) => acc + Number(num ?? 0), 0);
+  };
 
   const totalGeneral = useMemo(() => {
-    const totalFactura = Number(data?.Factura?.total ?? 0);
-    const totalCreditoFiscal = Number(data?.CreditoFiscal?.total ?? 0);
-    const totalDevolucionNC = Number(data?.DevolucionNC?.total ?? 0);
-    const totalDevolucionT = Number(data?.DevolucionT?.total ?? 0);
+    const total = calcTotal(
+      selectedBox?.totalSales01Card ?? 0,
+      selectedBox?.totalSales03Card ?? 0
+    ) +
+      calcTotal(
+        selectedBox?.totalSales01Cash ?? 0,
+        selectedBox?.totalSales03Cash ?? 0
+      )
 
-    return totalFactura + totalCreditoFiscal + totalDevolucionNC + totalDevolucionT;
-  }, [data]);
+    return total ?? 0;
+  }, [selectedBox]);
 
   const { getBranchesList, branch_list } = useBranchesStore();
 
@@ -77,6 +66,12 @@ const CashCutsX = () => {
   }, []);
 
   const printCutX = () => {
+    if (!selectedBranch) {
+      toast.warning("Debes seleccionar una sucursal")
+
+      return
+    }
+
     const iframe = document.createElement('iframe');
 
     iframe.style.height = '0';
@@ -130,7 +125,6 @@ const CashCutsX = () => {
             <div>Dirección: ${branch?.address ?? ''}</div>
             <div>Actividad Económica: ${transmitter?.descActividad ?? ''}</div>
             <div>Fecha: ${date} - ${time} ${Am}</div>
-            <div>Punto de venta: ${codeSelected || 'GENERAL'}</div>
           </div>
       
           <br />
@@ -179,15 +173,18 @@ const CashCutsX = () => {
             <strong style="text-align: center; margin: 10px">FACTURA CONSUMIDOR FIINAL</strong><br />
         <div style="display: flex; justify-content: space-between; margin-top: 10px;">
           <span>N. INICIAL:</span>
-          <span>${data?.Factura?.inicio}</span>
+          <span>${selectedBox?.firtsSale}</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>N. FINAL:</span>
-        <span>${data?.Factura?.fin}</span>
+        <span>${selectedBox?.lastSale}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
-        <span> ${formatCurrency(Number(data?.Factura?.total))}</span>
+        <span> ${formatCurrency(
+        Number(selectedBox?.totalSales01Card ?? 0) +
+        Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -199,7 +196,10 @@ const CashCutsX = () => {
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
-        <span><strong>  ${formatCurrency(Number(data?.Factura?.total))}</strong></span>
+        <span><strong>  ${formatCurrency(
+        Number(selectedBox?.totalSales01Card ?? 0) +
+        Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -208,15 +208,18 @@ const CashCutsX = () => {
             <strong>COMPROBANTE DE CRÉDITO FISCAL</strong><br />
             <div style="display: flex; justify-content: space-between; margin-top: 10px;">
           <span>N. INICIAL:</span>
-          <span>${data?.CreditoFiscal?.inicio}</span>
+          <span>${selectedBox?.firtsSale03}</span>
         </div>
         <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>N. FINAL:</span>
-        <span>${data?.CreditoFiscal?.fin}</span>
+        <span>${selectedBox?.lastSale03}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
-        <span> ${formatCurrency(Number(data?.CreditoFiscal?.total))}</span>
+        <span> ${formatCurrency(
+        Number(selectedBox?.totalSales03Card ?? 0) +
+        Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -228,7 +231,10 @@ const CashCutsX = () => {
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
-        <span><strong>  ${formatCurrency(Number(data?.CreditoFiscal?.total))}</strong></span>
+        <span><strong>  ${formatCurrency(
+        Number(selectedBox?.totalSales03Card ?? 0) +
+        Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -268,7 +274,7 @@ const CashCutsX = () => {
   };
 
   const exportDataToExcel = async () => {
-    if (!branch) {
+    if (!selectedBranch) {
       toast.warning("Debes seleccionar una sucursal")
 
       return
@@ -276,8 +282,8 @@ const CashCutsX = () => {
 
     const blob = await exportToExcel({
       branch,
-      params: { startDate: dateInitial, endDate: dateEnd, pointCode: codeSelected },
-      data: data!,
+      params: { startDate: dateInitial, endDate: dateEnd, pointCode: '' },
+      data: selectedBox!,
       totalGeneral,
       transmitter
     })
@@ -285,79 +291,120 @@ const CashCutsX = () => {
     saveAs(blob, `Corte_x_${branch?.name ?? ''}_${Date.now()}.xlsx`);
   };
 
+  useEffect(() => {
+    if (dataBox.length > 0) {
+      setSelectedBox(dataBox[0]);
+    }
+  }, [dataBox]);
+
+  const handleSearch = async () => {
+    if (!branch) {
+      toast.warning('Selecciona una sucursal');
+    }
+    if (branch) {
+      setSelectedBranch(branch);
+      onGetDataBox(branch.id ?? 0, params.date);
+    }
+  };
+
   return (
     <Layout title="Corte de X">
-      <DivGlobal>
-        <div className="flex flex-col items-center ">
-          <div className="flex gap-4 ">
-            <Autocomplete
-              className="mt-4"
-              label="Sucursal"
-              labelPlacement="outside"
-              placeholder="Selecciona la sucursal"
-              variant="bordered"
-            >
-              {branch_list.map((item) => (
-                <AutocompleteItem
-                  key={item.id}
-                  onPress={() => {
-                    setBranchId(item.id);
-                    setBranch(item)
+      <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
 
-                  }}
-                >
-                  {item.name}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
-            <Autocomplete
-              className="mt-4"
-              label="Punto de Venta"
-              labelPlacement="outside"
-              placeholder="Selecciona el punto de venta"
-              variant="bordered"
-            >
-              {codeSale
-                .filter((item) => item.typeVoucher === 'FE')
-                .map((item) => (
-                  <AutocompleteItem key={item.code} onClick={() => setCodeSelected(item.code)}>
-                    {item.code}
-                  </AutocompleteItem>
-                ))}
-            </Autocomplete>
-          </div>
-
-          <CashCutComponent
-            branch={branch}
-            buttons={
-              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
-                {actionsView.includes('Exportar Excel') && (
-                  <ButtonUi
-                    className="w-full"
-                    startContent={<PiMicrosoftExcelLogoBold size={25} />}
-                    theme={Colors.Success}
-                    onPress={exportDataToExcel}
-                  >
-                    <p> Exportar a excel</p>{' '}
-                  </ButtonUi>
-                )}
-                {actionsView.includes('Imprimir') && (
-                  <ButtonUi
-                    className="w-full"
-                    startContent={<IoPrintSharp size={25} />}
-                    theme={Colors.Secondary}
-                    onPress={() => printCutX()}
-                  >
-                    Imprimir
-                  </ButtonUi>
-                )}
-              </div>
-            }
-            data={data!}
-            params={{ startDate: dateInitial, endDate: dateEnd, pointCode: codeSelected }}
-            totalGeneral={totalGeneral}
+        <div className="flex w-full items-end w-full max-w-lg gap-4">
+          <Input
+            className="dark:text-white"
+            classNames={{ base: 'font-semibold' }}
+            label="Fecha"
+            labelPlacement="outside"
+            type="date"
+            value={params.date}
+            variant="bordered"
+            onChange={(e) => {
+              setParams({ ...params, date: e.target.value });
+            }}
           />
+          <Autocomplete
+            className="font-semibold"
+            label="Sucursal"
+            labelPlacement="outside"
+            placeholder="Selecciona la sucursal"
+            variant="bordered"
+          >
+            {branch_list.map((item) => (
+              <AutocompleteItem
+                key={item.id}
+                onPress={() => {
+                  setBranch(item)
+                }}
+              >
+                {item.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
+          <ButtonUi theme={Colors.Info} onPress={handleSearch}>
+            Buscar
+          </ButtonUi>
         </div>
+        <div className="grid grid-cols-1 gap-4 w-full max-w-lg mt-4 items-end">
+          {dataBox.length > 0 && branch && (
+            <Select
+              className="w-full"
+              classNames={{ base: 'font-semibold' }}
+              defaultSelectedKeys={[String(branch?.id)]}
+              label="Caja"
+              labelPlacement="outside"
+              placeholder="hr 00.00"
+              selectedKeys={[
+                String(dataBox.findIndex((box) => box.box.id === selectedBox?.box.id)),
+              ]}
+              variant="bordered"
+              onSelectionChange={(keys) => {
+                if (keys) {
+                  const selected = dataBox[Number(keys.currentKey)];
+
+                  setSelectedBox(selected);
+                }
+              }}
+            >
+              {dataBox.map((item, index) => (
+                <SelectItem key={index}>{item.box.time}</SelectItem>
+              ))}
+            </Select>
+          )}
+        </div>
+
+
+        <CashCutComponent
+          branch={branch}
+          buttons={
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
+              {actionsView.includes('Exportar Excel') && (
+                <ButtonUi
+                  className="w-full"
+                  startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                  theme={Colors.Success}
+                  onPress={exportDataToExcel}
+                >
+                  <p> Exportar a excel</p>{' '}
+                </ButtonUi>
+              )}
+              {actionsView.includes('Imprimir') && (
+                <ButtonUi
+                  className="w-full"
+                  startContent={<IoPrintSharp size={25} />}
+                  theme={Colors.Secondary}
+                  onPress={() => printCutX()}
+                >
+                  Imprimir
+                </ButtonUi>
+              )}
+            </div>
+          }
+          data={selectedBox!}
+          params={{ startDate: dateInitial, endDate: dateEnd, pointCode: '' }}
+          totalGeneral={totalGeneral}
+        />
       </DivGlobal>
     </Layout>
   );

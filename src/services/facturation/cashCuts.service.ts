@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { CloseZ, IGetCutsReport, IGetCutsReportSummary, SearchCutReport, ZCashCutsRequest } from '../../types/cashCuts.types';
+import { CloseZ, IGetCutsReport, IGetCutsReportSummary, IGetDataBox, SearchCutReport, ZCashCutsRequest } from '../../types/cashCuts.types';
 
 import { get_token } from '@/storage/localStorage';
 export const get_cashCuts = (id?: number, startDate?: string, endDate?: string, code?: string) => {
@@ -54,3 +54,13 @@ export const get_cuts_report_summary = async (params: SearchCutReport) => {
 
   return response.data;
 }
+
+export const get_data_box = (branchId: number, date: string) => {
+  const token = get_token();
+
+  return axios.get<IGetDataBox>(import.meta.env.VITE_API_URL + `/sales/boxes-by-branch/${branchId}?startDate=${date}`,{
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
