@@ -30,7 +30,6 @@ const CashCutsX = () => {
   const actionsView = x?.actions?.name || [];
   const [dateInitial] = useState(fechaActualString);
   const [dateEnd] = useState(fechaActualString);
-  // const [codeSelected, setCodeSelected] = useState('');
   const { onGetDataBox, dataBox } = useCutReportStore();
   const [selectedBox, setSelectedBox] = useState<DataBox | null>();
 
@@ -282,7 +281,7 @@ const CashCutsX = () => {
 
     const blob = await exportToExcel({
       branch,
-      params: { startDate: dateInitial, endDate: dateEnd, pointCode: '' },
+      params: { startDate: dateInitial, endDate: dateEnd},
       data: selectedBox!,
       totalGeneral,
       transmitter
@@ -310,8 +309,7 @@ const CashCutsX = () => {
   return (
     <Layout title="Corte de X">
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
-
-        <div className="flex w-full items-end w-full max-w-lg gap-4">
+        <div className="flex w-full items-end max-w-lg gap-4">
           <Input
             className="dark:text-white"
             classNames={{ base: 'font-semibold' }}
@@ -373,8 +371,6 @@ const CashCutsX = () => {
             </Select>
           )}
         </div>
-
-
         <CashCutComponent
           branch={branch}
           buttons={
@@ -401,8 +397,9 @@ const CashCutsX = () => {
               )}
             </div>
           }
+          cutType='Corte X'
           data={selectedBox!}
-          params={{ startDate: dateInitial, endDate: dateEnd, pointCode: '' }}
+          params={{ startDate: dateInitial, endDate: dateEnd, date: params.date }}
           totalGeneral={totalGeneral}
         />
       </DivGlobal>
