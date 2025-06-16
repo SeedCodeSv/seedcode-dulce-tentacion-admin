@@ -7,15 +7,26 @@ import { PayloadMH } from '@/types/DTE/credito_fiscal.types';
 import { ResponseMHSuccess } from '@/types/DTE/contingencia.types';
 
 
-export const send_to_mh = (payload: PayloadMH, token: string, cancelToken: CancelTokenSource) => {
-  return axios.post<ResponseMHSuccess>(MH_DTE, payload, {
+export const send_to_mh = (
+  payload: PayloadMH,
+  token: string,
+  cancelToken?: CancelTokenSource | null,
+  abortController?: AbortController
+) => {
+  const config: any = {
     headers: {
       Authorization: token,
     },
-    cancelToken: cancelToken.token,
-  });
-};
+  };
 
+  if (cancelToken) {
+    config.cancelToken = cancelToken.token;
+  } else if (abortController) {
+    config.signal = abortController.signal;
+  }
+
+  return axios.post<ResponseMHSuccess>(MH_DTE, payload, config);
+};
 export const firmarNotaDeEnvio = (payload: DocumentoNoteOfRemission) => {
   return axios.post<{ body: string }>(API_FIRMADOR, payload);
 };

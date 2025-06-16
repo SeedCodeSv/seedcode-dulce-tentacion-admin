@@ -1,5 +1,16 @@
-import { Branches, BranchProduct } from './shipping_branch_product.types';
-import { CuerpoDocumento, Direccion, DocumentoNoteOfRemission } from './notes_of_remision.types';
+import { Socket } from 'socket.io-client';
+import { toast } from 'sonner';
+import { PutObjectCommandInput } from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
+import { AxiosResponse } from 'axios';
+
+import { check_if_numcontrol_exist, check_sale_numControl, generate_a_shipping_note } from '../service/generate_a_shipping_note.service';
+import { steps } from '../components/process/types/process.types';
+import { update_correlativo } from '../service/shipping_branch_product.service';
+import { firmarNotaDeEnvio, send_to_mh } from '../service/dte_shipping_note.service';
+
+import { BodyNote, Branches, BranchProduct } from './shipping_branch_product.types';
+import { CuerpoDocumento, Direccion, DocumentoNoteOfRemission, Emisor, Extension, Identificacion, Receptor, Resumen } from './notes_of_remision.types';
 
 import { generate_uuid } from '@/utils/random/random';
 import { Correlativo } from '@/types/correlatives_dte.types';
@@ -7,9 +18,15 @@ import { getElSalvadorDateTime } from '@/utils/dates';
 import { ITransmitter } from '@/types/transmitter.types';
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
-import { ambiente } from '@/utils/constants';
+import { ambiente, SPACES_BUCKET } from '@/utils/constants';
 import { generate_control } from '@/utils/dte';
 import { formatearNumero } from '@/utils/make-dte';
+import { User, UserLogin } from '@/types/auth.types';
+import { s3Client } from '@/plugins/s3';
+import { get_correlatives_dte } from '@/services/correlatives_dte.service';
+import { PayloadMH } from '@/types/DTE/DTE.types';
+import { ResponseMHSuccess } from '@/types/DTE/contingencia.types';
+
 
 const total = (productsCarts: BranchProduct[]) => {
   const total = productsCarts
@@ -106,6 +123,7 @@ export const generateJsonNoteRemision = (
   };
 };
 
+
 export const generateEmployeeReceptor = (transmitter: ITransmitter) => {
   return {
     bienTitulo: '04',
@@ -128,7 +146,237 @@ export const generateEmployeeReceptor = (transmitter: ITransmitter) => {
   };
 };
 
+export const handleNumeroControlDuplicado = async (
+  numeroControl: string,
+  transmitter: ITransmitter,
+  branchIssuingId: number,
+  token_mh: string,
+  customerId: number,
+  receivingBranchId: number,
+  employeeId: number,
+  pointOfSaleId: number,
+  user: User | undefined,
+  json: DocumentoNoteOfRemission,
+  correlatives: Correlativo | undefined,
+  socket: Socket,
+  setCurrentState: (slep: string) => void,
+  OnClearProductSelectedAll: () => void,
+  closeModal: () => void
+) => {
+  const result = await check_sale_numControl(numeroControl)
 
+  if (!result.data.ok) {
+    const res = await check_if_numcontrol_exist(
+      numeroControl,
+      transmitter.nit,
+      '',
+      token_mh
+    )
+
+    if (res.data.body.length > 0 && res.data.body !== '') {
+      setCurrentState(steps[1].title);
+
+      await generateProcess04(
+        res.data.body as BodyNote[],
+        customerId,
+        branchIssuingId,
+        receivingBranchId,
+        employeeId,
+        pointOfSaleId,
+        socket,
+        setCurrentState,
+        OnClearProductSelectedAll,
+        closeModal
+      )
+    }
+  } else {
+    const newCorrelativo = { prev: correlatives!.prev + 1, next: correlatives!.next + 1 }
+
+    await update_correlativo(correlatives!.id, newCorrelativo)
+  }
+
+  const point = await get_correlatives_dte(
+    Number(user?.id), 'NRE'
+  )
+
+  if (!point) {
+    toast.error('No se encontraron correlativos')
+  }
+
+  // const data = 
+  await generateProcessAddCorrelativeNRE(json, token_mh, point.data.correlativo!)
+  // if(data.success){
+
+  // }
+}
+const generateProcess04 = async (
+  note: BodyNote[],
+  customerId: number,
+  branchIssuingId: number,
+  receivingBranchId: number,
+  employeeId: number,
+  pointOfSaleId: number,
+  socket: Socket,
+  setCurrentState: (slep: string) => void,
+  OnClearProductSelectedAll: () => void,
+  closeModal: () => void
+) => {
+  try {
+    setCurrentState(steps[2].title);
+    const json_url = generateUrlJson(
+      note[0].documento.emisor.nombre,
+      note[0].documento.identificacion.codigoGeneracion,
+      'json',
+      note[0].tipoDte,
+      note[0].documento.identificacion.fecEmi
+    )
+
+    const firmado = {
+      ...note[0].documento,
+      respuestaMH: { selloRecibido: note[0].selloRecibido },
+      firma: note[0].firma
+    }
+    const JSON_DTE = JSON.stringify(firmado, null, 2)
+    const json_blob = new Blob([JSON_DTE], {
+      type: "application/json"
+    })
+
+    const uploadParams: PutObjectCommandInput = {
+      Bucket: SPACES_BUCKET,
+      Key: json_url,
+      Body: json_blob
+    }
+    const upload = new Upload({
+      client: s3Client,
+      params: uploadParams
+    })
+
+    await upload.done()
+
+    await generate_a_shipping_note({
+      pointOfSaleId: pointOfSaleId,
+      employeeId: employeeId,
+      sello: true,
+      customerId: customerId,
+      dte: json_url,
+      receivingBranchId,
+    })
+      .then((res) => {
+        if (res.data.ok) {
+          setCurrentState(steps[3].title);
+          const targetSucursalId = receivingBranchId ?? 0
+
+          toast.success('Nota de envío creada con éxito', { position: 'top-right' });
+          socket.emit('new-referal-note-client', 'NUEVA NOTA DE REMISION REALIZADA')
+          socket.emit('new-referal-note-find-client', {
+            targetSucursalId,
+            note: {
+              descripcion: "Enviado desde la sucursal" + " " + branchIssuingId,
+              fecha: new Date().toISOString(),
+            }
+          })
+          OnClearProductSelectedAll();
+          closeModal();
+          window.location.reload();
+        } else {
+          toast.error('Error al crear la nota de envió');
+
+        }
+      })
+      .catch(() => {
+        toast.error('Error al crear la nota de envió');
+      });
+
+
+
+  } catch (error) {
+    toast.error("Error al subir a la BD")
+
+  }
+}
+
+type GenerateProcessResult =
+  | { success: true; resMH: AxiosResponse<ResponseMHSuccess>; generate: DocumentoNoteOfRemission, firma: string }
+  | { success: false; title: string; errors: string[] }
+
+
+
+const generateProcessAddCorrelativeNRE = async (
+  gen: DocumentoNoteOfRemission,
+  mh_token: string,
+  // transmitter:ITransmitter,
+  correlative: Correlativo
+): Promise<GenerateProcessResult> => {
+  try {
+
+    const { nit, dteJson, passwordPri } = gen
+    const dteJsonFormat: DocumentoNoteOfRemission = {
+      nit,
+      passwordPri,
+      dteJson: {
+        identificacion: {
+          ...dteJson.identificacion,
+          numeroControl: generate_control(
+            '04',
+            correlative.codEstable!,
+            correlative.codPuntoVenta!,
+            formatearNumero(correlative.next)
+          )
+        } as Identificacion,
+        documentoRelacionado: null,
+        emisor: dteJson.emisor as Emisor,
+        receptor: dteJson.receptor as Receptor,
+        ventaTercero: null,
+        cuerpoDocumento: dteJson.cuerpoDocumento as CuerpoDocumento[],
+        resumen: dteJson.resumen as Resumen,
+        extension: dteJson.extension as Extension,
+        apendice: null
+      }
+
+    };
+
+
+    const firmador = await firmarNotaDeEnvio(dteJsonFormat)
+
+    const data_send: PayloadMH = {
+      ambiente: ambiente,
+      idEnvio: 1,
+      version: 3,
+      tipoDte: '04',
+      documento: firmador.data.body
+    }
+
+    const abortController = new AbortController()
+    const timeoutId = setTimeout(() => {
+      abortController.abort()
+    }, 1000)
+
+    try {
+      const resMH = await send_to_mh(data_send, mh_token, null, abortController)
+
+      clearTimeout(timeoutId)
+
+      return { success: true, resMH, generate: dteJsonFormat, firma: firmador.data.body }
+    } catch (error: any) {
+      clearTimeout(timeoutId)
+
+      const title = abortController.signal.aborted
+        ? 'El tiempo de espera ah expirado'
+        : error?.response?.data?.descripcionMsg ?? 'Error al eviar el DTE a Hacienda'
+
+
+      const errors = error?.response?.data?.observaciones ?? [title, error.message]
+
+      return { success: false, title, errors }
+    }
+
+  } catch (error: any) {
+    const title = error?.response?.data?.descripcionMsg ?? "Error al firmar el DTE"
+    const errors = error?.response?.data?.observaciones ?? [title, error.message]
+
+    return { success: false, title, errors }
+  }
+}
 
 export const generateUrlJson = (
   name: string,
@@ -158,8 +406,7 @@ export const generate_emisor = (
         departamento: transmitter.direccion.departamento,
         municipio: transmitter.direccion.municipio,
         complemento: transmitter.direccion.complemento,
-      } as Direccion)
-      : branch.address,
+      } as Direccion) : {} as Direccion,
     telefono: transmitter.telefono,
     correo: transmitter.correo,
     codEstable: correlative.codEstable,

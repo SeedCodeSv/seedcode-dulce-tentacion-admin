@@ -10,6 +10,8 @@ export const MH_URL = import.meta.env.VITE_MH_URL;
 export const AUTH_MH = import.meta.env.VITE_AUTH_MH;
 export const CHECK_URL = import.meta.env.VITE_CHECK_URL;
 export const SPACES_BUCKET = import.meta.env.VITE_SPACES_BUCKET;
+export const VITE_MH_FILTERS = import.meta.env.VITE_MH_FILTERS
+
 export const messages = {
   error: 'Ocurrió un error al procesar la petición',
   success: 'Petición procesada con éxito',

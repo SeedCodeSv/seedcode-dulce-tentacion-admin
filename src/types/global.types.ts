@@ -22,7 +22,7 @@ export interface IPagination {
 }
 
 
-export interface BasicResponse{
+export interface BasicResponse {
   ok: boolean;
   message: string;
   status: number
@@ -30,10 +30,10 @@ export interface BasicResponse{
 
 
 export interface SearchGlobal {
-    branchId: number;
-    page: number;
-    limit: number;
-    startDate?: string;
-    endDate?: string;
-    status?: string
+  branchId: number;
+  page: number;
+  limit: number;
+  startDate?: string;
+  endDate?: string;
+  status?: string
 }

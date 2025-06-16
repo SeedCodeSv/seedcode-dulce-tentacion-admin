@@ -156,3 +156,9 @@ export interface IGetPointOfSaleCorrelative {
 	status: number;
 	correlativo: IPointOfSaleCorrelativo;
 }
+
+
+export interface PayloadPoint {
+  prev: number;
+  next: number;
+}

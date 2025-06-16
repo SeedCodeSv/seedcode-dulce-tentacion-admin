@@ -9,6 +9,7 @@ import { HandleUploadFile } from './HandleUploadFile';
 import { SendMHFailed } from '@/types/transmitter.types';
 import { send_to_mh } from '@/shopping-branch-product/service/dte_shipping_note.service';
 import { return_mh_token } from '@/storage/localStorage';
+import { handleNumeroControlDuplicado } from '@/shopping-branch-product/types/format_of_the_json_for_sending_a_referral';
 
 export const HandleSendToMhShippingNote = ({
   data_send,
@@ -26,7 +27,10 @@ export const HandleSendToMhShippingNote = ({
   receivingEmployeeId,
   socket,
   branchIssuingId,
-  orderId
+  orderId,
+  transmitter,
+  user, 
+  correlatives
 }: IPropSendToMhShippingNote) => {
   setCurrentState(steps[1].title);
 
@@ -72,71 +76,138 @@ export const HandleSendToMhShippingNote = ({
           branchIssuingId: branchIssuingId
         });
       })
-      .catch(async (error: AxiosError<SendMHFailed>) => {
+      .
+      catch(async (error: AxiosError<SendMHFailed>) => {
         clearTimeout(timeout);
         // const { nombre } = transmitter
-        // const { numeroControl } = json.dteJson.identificacion
+        const { 
+          numeroControl,
+          //  codigoGeneracion, 
+          //  tipoDte 
+          } = json.dteJson.identificacion
 
         if (axios.isCancel(error)) {
           setErrors(() => ['El tiempo de espera ha expirado']);
           setTitleMessage('El tiempo de espera ha expirado');
         }
+        // const errors = ['Tiempo de espera agotado']
+        // const title = 'Error al procesar venta'
+
         if (error.response?.data) {
           if (error && error.response && error.response.data && error.response.data.observaciones) {
+            const { descripcionMsg } = error.response.data
 
-            // const { descripcionMsg } = error.response.data
+            if (
+              descripcionMsg === "[identificacion.numeroControl] YA EXISTE UN REGISTRO CON ESE VALOR") {
+              await handleNumeroControlDuplicado(
+                numeroControl,
+                transmitter!,
+                branchIssuingId,
+                token_mh,
+                customerId!,
+                receivingBranchId!,
+                employeeId!,
+                pointOfSaleId,
+                user,
+                json,
+                correlatives,
+                socket,
+                setCurrentState,
+                OnClearProductSelectedAll,
+                closeModal
+              )
 
-            // if (descripcionMsg === "[identificacion.numeroControl] YA EXISTE UN REGISTRO CON ESE VALOR") {
-            //   await handleNumeroControlDuplicado(
-            //     numeroControl,
-            //     transmitter,
-            //     branchIssuingId,
-            //     token_mh,
-            //     customerId!,
-            //     receivingBranchId!,
-            //     employeeId!,
-            //     pointOfSaleId,
-            //     user,
-            //     json,
-            //     correlatives,
-            //     socket,
-            //     setCurrentState,
-            //     OnClearProductSelectedAll,
-            //     closeModal
-            //   )
-
-            //   return
-            // } else {
+              return
+            } else {
+              setTitleMessage(error.response.data.descripcionMsg);
               setErrors(() => [
                 ...(error.response!.data.observaciones.length > 0
                   ? error.response!.data.observaciones
                   : ['Error al enviar el documento']),
               ]);
-
+              // notify_error_telegram(nombre, title, errors, numeroControl, codigoGeneracion, tipoDte)
 
               return;
-            // }
+            }
 
 
-            // setTitleMessage(error.response.data.descripcionMsg);
-            // setErrors(() => [
-            //   ...(error.response!.data.observaciones.length > 0
-            //     ? error.response!.data.observaciones
-            //     : ['Error al enviar el documento']),
-            // ]);
-
-
-            // return;
           } else {
             setTitleMessage('Error al enviar el documento');
 
           }
+
         } else {
-          setTitleMessage('Error al enviar el documento ');
-          setErrors(() => ['Error al enviar el documento ']);
+
+          setTitleMessage('Error al enviar el documento');
+          setErrors(() => [`Error al enviar el documento`]);
 
         }
       });
+    // catch(async (error: AxiosError<SendMHFailed>) => {
+    //   clearTimeout(timeout);
+    //   // const { nombre } = transmitter
+    //   // const { numeroControl } = json.dteJson.identificacion
+
+    //   if (axios.isCancel(error)) {
+    //     setErrors(() => ['El tiempo de espera ha expirado']);
+    //     setTitleMessage('El tiempo de espera ha expirado');
+    //   }
+    //   if (error.response?.data) {
+    //     if (error && error.response && error.response.data && error.response.data.observaciones) {
+
+    //       // const { descripcionMsg } = error.response.data
+
+    //       // if (descripcionMsg === "[identificacion.numeroControl] YA EXISTE UN REGISTRO CON ESE VALOR") {
+    //       //   await handleNumeroControlDuplicado(
+    //       //     numeroControl,
+    //       //     transmitter,
+    //       //     branchIssuingId,
+    //       //     token_mh,
+    //       //     customerId!,
+    //       //     receivingBranchId!,
+    //       //     employeeId!,
+    //       //     pointOfSaleId,
+    //       //     user,
+    //       //     json,
+    //       //     correlatives,
+    //       //     socket,
+    //       //     setCurrentState,
+    //       //     OnClearProductSelectedAll,
+    //       //     closeModal
+    //       //   )
+
+    //       //   return
+    //       // } else {
+    //         setErrors(() => [
+    //           ...(error.response!.data.observaciones.length > 0
+    //             ? error.response!.data.observaciones
+    //             : ['Error al enviar el documento']),
+    //         ]);
+
+
+    //         return;
+    //       // }
+
+
+    //       // setTitleMessage(error.response.data.descripcionMsg);
+    //       // setErrors(() => [
+    //       //   ...(error.response!.data.observaciones.length > 0
+    //       //     ? error.response!.data.observaciones
+    //       //     : ['Error al enviar el documento']),
+    //       // ]);
+
+
+    //       // return;
+    //     } else {
+    //       setTitleMessage('Error al enviar el documento');
+
+    //     }
+    //   } else {
+    //     setTitleMessage('Error al enviar el documento ');
+    //     setErrors(() => ['Error al enviar el documento ']);
+
+    //   }
+    // });
   } catch (error) {
   }
 

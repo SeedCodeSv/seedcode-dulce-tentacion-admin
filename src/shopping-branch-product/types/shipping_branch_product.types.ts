@@ -1,5 +1,6 @@
 import { Transmitter } from '@/types/categories.types';
 import { OrderProductDetail } from '@/types/order-products.types';
+import { Emisor, Receptor } from './notes_of_remision.types';
 
 export interface IResponseBranchProductPaginatedSent {
   ok?: boolean;
@@ -86,7 +87,7 @@ export interface IShippingProductBranchStore {
   branchProducts: BranchProduct[];
   branchDestiny: Branches;
   product_selected: BranchProduct[];
-  onAddBydetail: (order:OrderProductDetail[] ) => void;
+  onAddBydetail: (order: OrderProductDetail[]) => void;
   OnAddProductSelected: (product: BranchProduct) => void;
   OnPlusProductSelected: (productId: number) => void;
   OnMinusProductSelected: (productId: number) => void;
@@ -96,8 +97,8 @@ export interface IShippingProductBranchStore {
   OnChangeQuantityManual: (productId: number, quantity: number) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
   OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
-onAddBranchDestiny: (branch: Branches) => void
-onAddOrderId:(id: number) => void
+  onAddBranchDestiny: (branch: Branches) => void
+  onAddOrderId: (id: number) => void
   OnClearDataShippingProductBranch: () => void;
   OnGetShippinProductBranch: (
     branchId: number,
@@ -129,4 +130,114 @@ export interface Branches {
   tipoEstablecimiento: string;
   isActive: boolean;
   transmitter?: Transmitter;
+}
+
+
+export interface BasicResponse {
+  ok: boolean;
+  message: string;
+  status: number
+}
+
+
+export interface CHECK_NUM_EXIST {
+  status: string;
+  body: BodyNote[] | string;
+}
+export interface BodyNote {
+  codigoGeneracion: string;
+  fechaRegistro: string;
+  fechaEmision: string;
+  tipoDte: string;
+  tipoDgii: string;
+  nitEmision: string;
+  tipoIdenRec: number;
+  numeIdenRec: string;
+  documento: Documento;
+  numeroValidacion: string;
+  selloRecibido: string;
+  estado: string;
+  observaciones: string[];
+  firma: string;
+}
+
+export interface Identificacion {
+  codigoGeneracion: string;
+  tipoContingencia: string;
+  numeroControl: string;
+  tipoOperacion: number;
+  ambiente: string;
+  fecEmi: string;
+  tipoModelo: number;
+  tipoDte: string;
+  version: number;
+  tipoMoneda: string;
+  motivoContin: string;
+  horEmi: string;
+}
+
+export interface Pagos {
+  codigo: string;
+  periodo: string;
+  plazo: string;
+  montoPago: number;
+  referencia: string;
+}
+
+export interface Resumen {
+  totalNoSuj: number;
+  descuNoSuj: number;
+  totalIva: number;
+  totalLetras: string;
+  ivaRete1: number;
+  subTotalVentas: number;
+  subTotal: number;
+  reteRenta: number;
+  tributos: string;
+  pagos: Pagos[];
+  descuExenta: number;
+  totalDescu: number;
+  numPagoElectronico: string;
+  descuGravada: number;
+  porcentajeDescuento: number;
+  totalGravada: number;
+  montoTotalOperacion: number;
+  totalNoGravado: number;
+  saldoFavor: number;
+  totalExenta: number;
+  totalPagar: number;
+  condicionOperacion: number;
+}
+
+export interface CuerpoDocumento {
+  descripcion: string;
+  montoDescu: number;
+  codigo: string;
+  ventaGravada: number;
+  ivaItem: number;
+  ventaNoSuj: number;
+  ventaExenta: number;
+  tributos: string;
+  numItem: number;
+  noGravado: number;
+  psv: number;
+  tipoItem: number;
+  uniMedida: number;
+  codTributo: string;
+  numeroDocumento: string;
+  cantidad: number;
+  precioUni: number;
+}
+
+export interface Documento {
+  extension: string;
+  receptor: Receptor;
+  identificacion: Identificacion;
+  resumen: Resumen;
+  cuerpoDocumento: CuerpoDocumento[];
+  otrosDocumentos: string;
+  ventaTercero: string;
+  apendice: string;
+  documentoRelacionado: string;
+  emisor: Emisor;
 }

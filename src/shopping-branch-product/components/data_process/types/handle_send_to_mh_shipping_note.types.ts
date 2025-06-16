@@ -10,6 +10,7 @@ import { Correlativo } from '@/types/correlatives_dte.types';
 export interface IPropSendToMhShippingNote {
   data_send: PayloadMH;
   json: DocumentoNoteOfRemission;
+
   firma: string;
   OnClearProductSelectedAll: () => void;
   setCurrentState: (slep: string) => void;
@@ -21,10 +22,10 @@ export interface IPropSendToMhShippingNote {
   employeeId?: number;
   receivingBranchId?: number;
   receivingEmployeeId?: number;
-    socket:Socket;
-  branchIssuingId:number
+  socket: Socket;
+  branchIssuingId: number
   orderId?: number,
-  transmitter:ITransmitter | undefined
-user:User | undefined
-correlatives:Correlativo | undefined
+  transmitter: ITransmitter | undefined
+  user: User | undefined
+  correlatives: Correlativo | undefined
 }

@@ -74,6 +74,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
             if (res.data.body && generatedJson) {
               HandleSendToMhShippingNote({
                 orderId,
+                user,
                 data_send,
                 json: generatedJson,
                 firma,
@@ -100,7 +101,6 @@ function GenerateAShippingNote(props: IPropCustomer) {
                 socket:socket,
                 branchIssuingId:branchIssuingId,
                 transmitter,
-                user,
                 correlatives,
 
               });
