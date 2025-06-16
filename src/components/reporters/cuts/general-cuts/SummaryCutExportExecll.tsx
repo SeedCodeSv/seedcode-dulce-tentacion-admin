@@ -8,6 +8,7 @@ import { Colors } from "@/types/themes.types";
 import { formatDateSimple, getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToARGB } from "@/utils/utils";
 import { useCutReportStore } from "@/store/reports/cashCuts.store";
+import { formatCurrency } from "@/utils/dte";
 
 interface Props {
     branch: string;
@@ -21,7 +22,7 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
 
     const styles = useGlobalStyles();
 
-    const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
+    const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#CDCDCD');
     const fontColor = hexToARGB(styles.darkStyle.color);
 
 
@@ -79,14 +80,36 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
         cashCutsSummary.cash_cuts_summary.forEach((item) => {
             worksheet.addRow([
                 formatDateSimple(item.date),
-                Number(item.sumTotalSales ?? 0),
-                Number(item.sumTotalCash ?? 0),
-                Number(item.sumTotalCard ?? 0),
-                Number(item.sumTotalOthers ?? 0),
-                Number(item.sumCashDelivered ?? 0),
-                Number(item.sumExpenses ?? 0),
+                formatCurrency(item.sumTotalSales ?? 0),
+                formatCurrency(item.sumTotalCash ?? 0),
+                formatCurrency(item.sumTotalCard ?? 0),
+                formatCurrency(item.sumTotalOthers ?? 0),
+                formatCurrency(item.sumCashDelivered ?? 0),
+                formatCurrency(item.sumExpenses ?? 0),
             ]);
         });
+       const total = worksheet.addRow([
+          'Total General',
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalSales ?? 0), 0)),
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCash ?? 0), 0)),
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCard ?? 0), 0)),
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalOthers ?? 0), 0)),
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumCashDelivered ?? 0), 0)),
+          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumExpenses ?? 0), 0)),
+        ])   
+        
+        total.eachCell((cell) => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'EEEEEE' },
+            };
+            cell.font = {
+                bold: true,
+                color: { argb: '000000' },
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'left'};
+        })
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
