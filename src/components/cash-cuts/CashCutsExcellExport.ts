@@ -6,25 +6,26 @@ import { ITransmitter } from '@/types/transmitter.types';
 import { formatCurrency } from '@/utils/dte';
 
 interface PropsCashCut {
-    branch: Branches | undefined
-    params: {
-        startDate: string,
-        endDate: string,
-    }
-    totalGeneral: number
-    data: DataBox
-    transmitter: ITransmitter
+  branch: Branches | undefined
+  params: {
+    date: string,
+  }
+  totalGeneral: number
+  data: DataBox
+  transmitter: ITransmitter,
+  bgHeader: string
+  fontColor: string
 }
 
-export const exportToExcel = async ({ branch, params, data, transmitter }: PropsCashCut) => {
-   const workbook = new ExcelJS.Workbook();
+export const exportToExcel = async ({ branch, params, data, transmitter, bgHeader, fontColor }: PropsCashCut) => {
+  const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet('Corte');
 
   const infoHeader = [
     transmitter.nombre,
     transmitter.nombreComercial,
     branch?.name ?? '',
-    `Fecha: ${params.startDate}`,
+    `Fecha: ${params.date}`,
   ];
 
   infoHeader.forEach((text) => {
@@ -42,7 +43,7 @@ export const exportToExcel = async ({ branch, params, data, transmitter }: Props
   worksheet.addRow([]);
 
   // Tabla de ventas por tipo de documento
-  worksheet.addRow([
+  const header = worksheet.addRow([
     'Descripción',
     'N° Inicial',
     'N° Final',
@@ -50,7 +51,20 @@ export const exportToExcel = async ({ branch, params, data, transmitter }: Props
     'No sujetas',
     'Exentas',
     'Total',
-  ]).font = { bold: true };
+  ]);
+
+  header.eachCell((cell) => {
+    cell.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: bgHeader },
+    };
+    cell.font = {
+      bold: true,
+      color: { argb: fontColor },
+    };
+    cell.alignment = { vertical: 'middle', horizontal: 'left' };
+  });
 
   const ventasRows = [
     {
@@ -103,67 +117,77 @@ export const exportToExcel = async ({ branch, params, data, transmitter }: Props
     ]);
   });
 
-  worksheet.addRow([
-  'TOTAL GENERAL',
-  '',        
-  '',         
-  '',         
-  '',        
-  '',        
-  formatCurrency(
+ const tableTotals = worksheet.addRow([
+    'TOTAL GENERAL',
+    '',
+    '',
+    '',
+    '',
+    '',
+    formatCurrency(
+      [
+        data.totalSales01Card,
+        data.totalSales03Card,
+        data.totalSales01Cash,
+        data.totalSales03Cash,
+      ].reduce((acc: number, val) => acc + (Number(val) || 0), 0)
+    ),
+  ]);
+
+    tableTotals.eachCell((cell) => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'EEEEEE' },
+            };
+            cell.font = {
+                bold: true,
+                color: { argb: '000000' },
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'left' };
+        });
+
+  worksheet.addRow([]);
+
+  const startRow = worksheet.rowCount + 2;
+
+  worksheet.getCell(`A${startRow}`).value = 'Totales Generales';
+  worksheet.getCell(`A${startRow}`).font = { bold: true };
+
+  worksheet.getCell(`D${startRow}`).value = 'Formas de pago';
+  worksheet.getCell(`D${startRow}`).font = { bold: true };
+
+  const rows = [
     [
-      data.totalSales01Card,
-      data.totalSales03Card,
-      data.totalSales01Cash,
-      data.totalSales03Cash,
-    ].reduce((acc: number, val) => acc + (Number(val) || 0), 0)
-  ),
-]).font = { bold: true };
+      'Monto inicial caja', formatCurrency(data.box.start ?? 0),
+      '',
+      'Efectivo', formatCurrency(data.totalSales01Cash),
+    ],
+    [
+      'Gastos', formatCurrency(0),
+      '',
+      'Tarjeta', formatCurrency(data.totalSales01Card),
+    ],
+  ];
+
+  rows.forEach((rowData) => {
+    worksheet.addRow(rowData);
+  });
 
 
-  worksheet.addRow([]); // Espacio
-
-const startRow = worksheet.rowCount + 2;
-
-worksheet.getCell(`A${startRow}`).value = 'Totales Generales';
-worksheet.getCell(`A${startRow}`).font = { bold: true };
-
-worksheet.getCell(`D${startRow}`).value = 'Formas de pago';
-worksheet.getCell(`D${startRow}`).font = { bold: true };
-
-// Contenido: 3 filas lado a lado
-const rows = [
-  [
-    'Monto inicial caja', formatCurrency(data.box.start ?? 0),
-    '',
-    'Efectivo', formatCurrency(data.totalSales01Cash),
-  ],
-  [
-    'Gastos', formatCurrency(0),
-    '',
-    'Tarjeta', formatCurrency(data.totalSales01Card),
-  ],
-];
-
-rows.forEach((rowData) => {
-  worksheet.addRow(rowData);
-});
-
-
-  // Ajuste de columnas
   worksheet.columns = [
     { width: 35 },
-    { width: 15 },
-    { width: 15 },
+    { width: 35 },
+    { width: 35 },
     { width: 15 },
     { width: 15 },
     { width: 15 },
     { width: 15 },
   ];
 
-    const buffer = await workbook.xlsx.writeBuffer();
+  const buffer = await workbook.xlsx.writeBuffer();
 
-    return new Blob([buffer], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    });
+  return new Blob([buffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  });
 };

@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { DataBox } from '../types/cashCuts.types';
 import { useBranchesStore } from '../store/branches.store';
-import { fechaActualString, getElSalvadorDateTime } from '../utils/dates';
+import { getElSalvadorDateTime } from '../utils/dates';
 import { formatCurrency } from '../utils/dte';
 
 import Layout from '@/layout/Layout';
@@ -20,21 +20,25 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { exportToExcel } from '@/components/cash-cuts/CashCutsExcellExport';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCutReportStore } from '@/store/reports/cashCuts.store';
+import { hexToARGB } from '@/utils/utils';
+import useGlobalStyles from '@/components/global/global.styles';
 
 const CushCatsBigZ = () => {
   const { actions } = useViewsStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  const [branch, setBranch] = useState<Branches>();
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
   const bigz = actions.find((view) => view.view.name === 'Corte Gran Z');
   const actionsView = bigz?.actions?.name || [];
   const { onGetDataBox, dataBox } = useCutReportStore();
   const [selectedBox, setSelectedBox] = useState<DataBox | null>();
+  const styles = useGlobalStyles();
+
+  const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
+  const fontColor = hexToARGB(styles.darkStyle.color);
 
   const [params, setParams] = useState({
     date: getElSalvadorDateTime().fecEmi,
     branch: {} as Branches,
-    dateInitial: getElSalvadorDateTime().fecEmi,
     dateEnd: getElSalvadorDateTime().fecEmi,
   });
 
@@ -113,8 +117,8 @@ const CushCatsBigZ = () => {
       <div style="text-align: center; font-family: sans-serif; margin-left: 60px; margin-right: 60px;">
           <div>
             <div><strong>${transmitter.nombreComercial}</strong></div>
-            <div>Sucursal: ${branch?.name ?? ''}</div>
-            <div>Dirección: ${branch?.address ?? ''}</div>
+            <div>Sucursal: ${selectedBranch?.name ?? ''}</div>
+            <div>Dirección: ${selectedBranch?.address ?? ''}</div>
             <div>Actividad Económica: ${transmitter?.descActividad ?? ''}</div>
             <div>Fecha: ${date} - ${time} ${Am}</div>
           </div>
@@ -174,8 +178,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-        )}</span>
+        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -188,8 +192,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-        )}</strong></span>
+        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -207,8 +211,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-        )}</span>
+        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -221,8 +225,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-        )}</strong></span>
+        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -269,14 +273,16 @@ const CushCatsBigZ = () => {
     }
 
     const blob = await exportToExcel({
-      branch,
-      params: { startDate: params.dateInitial, endDate: params.dateEnd },
+      branch: selectedBranch,
+      params: { date: params.date },
       data: selectedBox!,
       totalGeneral,
       transmitter,
+      bgHeader: fillColor,
+      fontColor: fontColor
     });
 
-    saveAs(blob, `Corte_x_${branch?.name ?? ''}_${Date.now()}.xlsx`);
+    saveAs(blob, `Corte_bigZ_${selectedBranch?.name ?? ''}_${Date.now()}.xlsx`);
   };
 
   useEffect(() => {
@@ -286,27 +292,27 @@ const CushCatsBigZ = () => {
   }, [dataBox]);
 
   const handleSearch = async () => {
-    if (!branch) {
+    if (!params.branch.id) {
       toast.warning('Selecciona una sucursal');
+
+      return
     }
-    if (branch) {
-      setSelectedBranch(branch);
-      onGetDataBox(branch.id ?? 0, params.date);
-    }
+      setSelectedBranch(params.branch);
+      onGetDataBox(params.branch.id ?? 0, params.date);
   };
 
   return (
     <Layout title="Corte Gran Z">
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
-          <div className="flex w-full items-end max-w-4xl gap-4">
-            <Input
+        <div className="flex w-full items-end max-w-4xl gap-4">
+          {/* <Input
               className="mt-4"
               defaultValue={fechaActualString}
               label="Fecha Inicio"
               labelPlacement="outside"
               type="date"
               variant="bordered"
-              onChange={(e) => setParams({ ...params, dateInitial: e.target.value })}
+              onChange={(e) => setParams({ ...params, date: e.target.value })}
             />
             <Input
               className="mt-4"
@@ -316,60 +322,72 @@ const CushCatsBigZ = () => {
               type="date"
               variant="bordered"
               onChange={(e) => setParams({ ...params, dateEnd: e.target.value })}
-            />
-            <Autocomplete
-              label="Sucursal"
-              labelPlacement="outside"
-              placeholder="Selecciona la sucursal"
-              variant="bordered"
-            >
-              {branch_list.map((item) => (
-                <AutocompleteItem
-                  key={item.id}
-                  onPress={() => {
-                    setBranch(item);
-                  }}
-                >
-                  {item.name}
-                </AutocompleteItem>
-              ))}
-            </Autocomplete>
-            <ButtonUi theme={Colors.Info} onPress={handleSearch}>
-              Buscar
-            </ButtonUi>
-          </div>
-
-          <CashCutComponent
-          branch={branch}
-            buttons={
-              <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
-                {actionsView.includes('Exportar Excel') && (
-                  <ButtonUi
-                    className="w-full"
-                    startContent={<PiMicrosoftExcelLogoBold size={25} />}
-                    theme={Colors.Success}
-                    onPress={exportDataToExcel}
-                  >
-                    <p> Exportar a excel</p>{' '}
-                  </ButtonUi>
-                )}
-                {actionsView.includes('Imprimir') && (
-                  <ButtonUi
-                    className="w-full"
-                    startContent={<IoPrintSharp size={25} />}
-                    theme={Colors.Secondary}
-                    onPress={() => printBigZ()}
-                  >
-                    Imprimir y cerrar
-                  </ButtonUi>
-                )}
-              </div>
-            }
-            cutType='Corte Big Z'
-            data={selectedBox!}
-            params={{ startDate: params.dateInitial, endDate: params.dateEnd, date: params.date }}
-            totalGeneral={totalGeneral}
+            /> */}
+          <Input
+            className="dark:text-white"
+            classNames={{ base: 'font-semibold' }}
+            label="Fecha"
+            labelPlacement="outside"
+            type="date"
+            value={params.date}
+            variant="bordered"
+            onChange={(e) => {
+              setParams({ ...params, date: e.target.value });
+            }}
           />
+          <Autocomplete
+            label="Sucursal"
+            labelPlacement="outside"
+            placeholder="Selecciona la sucursal"
+            variant="bordered"
+          >
+            {branch_list.map((item) => (
+              <AutocompleteItem
+                key={item.id}
+                onPress={() => {
+                  setParams({...params, branch: item})
+                }}
+              >
+                {item.name}
+              </AutocompleteItem>
+            ))}
+          </Autocomplete>
+          <ButtonUi theme={Colors.Info} onPress={handleSearch}>
+            Buscar
+          </ButtonUi>
+        </div>
+
+        <CashCutComponent
+          branch={selectedBranch}
+          buttons={
+            <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
+              {actionsView.includes('Exportar Excel') && (
+                <ButtonUi
+                  className="w-full"
+                  startContent={<PiMicrosoftExcelLogoBold size={25} />}
+                  theme={Colors.Success}
+                  onPress={exportDataToExcel}
+                >
+                  <p> Exportar a excel</p>{' '}
+                </ButtonUi>
+              )}
+              {actionsView.includes('Imprimir') && (
+                <ButtonUi
+                  className="w-full"
+                  startContent={<IoPrintSharp size={25} />}
+                  theme={Colors.Secondary}
+                  onPress={() => printBigZ()}
+                >
+                  Imprimir y cerrar
+                </ButtonUi>
+              )}
+            </div>
+          }
+          cutType='Corte Big Z'
+          data={selectedBox!}
+          params={{ date: params.date }}
+          totalGeneral={totalGeneral}
+        />
       </DivGlobal>
     </Layout>
   );

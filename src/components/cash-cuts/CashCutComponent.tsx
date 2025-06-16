@@ -5,12 +5,11 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { Branches } from '@/types/branches.types';
 import { formatCurrency } from '@/utils/dte';
 import { DataBox } from '@/types/cashCuts.types';
+import { useCutReportStore } from '@/store/reports/cashCuts.store';
 
 interface PropsCashCut {
   branch: Branches | undefined;
   params: {
-    startDate: string;
-    endDate: string;
     date: string;
   };
   totalGeneral: number;
@@ -21,6 +20,7 @@ interface PropsCashCut {
 
 export default function CashCutComponent({ branch, params, data, buttons, cutType }: PropsCashCut) {
   const { transmitter } = useTransmitterStore();
+  const { dataBox } = useCutReportStore();
 
   const calcTotal = (...numbers: number[]) => {
     return numbers.reduce((acc, num) => acc + Number(num ?? 0), 0);
@@ -29,11 +29,20 @@ export default function CashCutComponent({ branch, params, data, buttons, cutTyp
   return (
     <div className="flex flex-col items-center w-full h-full p-2 rounded-md">
       <div
-        className={`mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl ${
-          cutType === 'Corte Big Z' ? 'max-w-4xl' : 'max-w-lg'
-        }`}
+        className={`mt-4 bg-white border border-gray-200 dark:bg-gray-800 w-full h-full overflow-y-auto flex flex-col items-center p-5 rounded-2xl ${cutType === 'Corte Big Z' ? 'max-w-4xl' : 'max-w-lg'
+          }`}
       >
-        {data ? (
+        {!branch ? (
+          <div className="flex flex-col items-center">
+            <CiWarning className="text-4xl" />
+            <p className="text-center mt-4">Por favor, selecciona una sucursal</p>
+          </div>
+        ) : !data || dataBox.length === 0 ? (
+          <div className="flex flex-col items-center">
+            <CiWarning className="text-4xl" />
+            <p className="text-center mt-4">No se entraron resultados</p>
+          </div>
+        ) : (
           <>
             <h1 className="text-black dark:text-white">{transmitter.nombre}</h1>
             <h1 className="text-black dark:text-white">{transmitter.nombreComercial}</h1>
@@ -42,10 +51,7 @@ export default function CashCutComponent({ branch, params, data, buttons, cutTyp
               {branch?.address}
             </h1>
             <h1 className="text-black dark:text-white">
-              FECHA:{' '}
-              {cutType === 'Corte Big Z'
-                ? ` ${params.startDate} - ${params.endDate}`
-                : `${params.date}`}
+              FECHA:{' '} {params.date}
             </h1>
             <h1 className="text-black dark:text-white">
               PUNTO DE VENTA: {data.box.pointOfSale.code ? data.box.pointOfSale.code : 'GENERAL'}
@@ -95,7 +101,7 @@ export default function CashCutComponent({ branch, params, data, buttons, cutTyp
                   <td className="text-right">
                     {formatCurrency(
                       calcTotal(data.totalSales01Card ?? 0, data.totalSales03Card ?? 0) +
-                        calcTotal(data.totalSales01Cash ?? 0, data.totalSales03Cash ?? 0)
+                      calcTotal(data.totalSales01Cash ?? 0, data.totalSales03Cash ?? 0)
                     )}
                   </td>
                 </tr>
@@ -288,7 +294,7 @@ export default function CashCutComponent({ branch, params, data, buttons, cutTyp
                   <td className="text-sm text-right">
                     {formatCurrency(
                       calcTotal(data.totalSales01Card ?? 0, data.totalSales03Card ?? 0) +
-                        calcTotal(data.totalSales01Cash ?? 0, data.totalSales03Cash ?? 0)
+                      calcTotal(data.totalSales01Cash ?? 0, data.totalSales03Cash ?? 0)
                     )}
                   </td>
                 </tr>
@@ -296,11 +302,6 @@ export default function CashCutComponent({ branch, params, data, buttons, cutTyp
             </table>
             {buttons}
           </>
-        ) : (
-          <div className="flex flex-col items-center">
-            <CiWarning className="text-4xl" />
-            <p className="text-center mt-4">Por favor, selecciona una sucursal</p>
-          </div>
         )}
       </div>
     </div>

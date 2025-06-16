@@ -6,7 +6,7 @@ import { IoPrintSharp } from 'react-icons/io5';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 import { DataBox } from '../types/cashCuts.types';
-import { fechaActualString, getElSalvadorDateTime } from '../utils/dates';
+import { getElSalvadorDateTime } from '../utils/dates';
 import { useBranchesStore } from '../store/branches.store';
 import { formatCurrency } from '../utils/dte';
 
@@ -20,18 +20,21 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { exportToExcel } from '@/components/cash-cuts/CashCutsExcellExport';
 import { useCutReportStore } from '@/store/reports/cashCuts.store';
+import { hexToARGB } from '@/utils/utils';
+import useGlobalStyles from '@/components/global/global.styles';
 
 const CushCatsZ = () => {
   const { actions } = useViewsStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  const [branch, setBranch] = useState<Branches>()
   const [selectedBranch, setSelectedBranch] = useState<Branches>();
   const z = actions.find((view) => view.view.name === 'Corte Z');
   const actionsView = z?.actions?.name || [];
-  const [dateInitial] = useState(fechaActualString);
-  const [dateEnd] = useState(fechaActualString);
   const { onGetDataBox, dataBox } = useCutReportStore();
   const [selectedBox, setSelectedBox] = useState<DataBox | null>();
+      const styles = useGlobalStyles();
+
+    const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
+    const fontColor = hexToARGB(styles.darkStyle.color);
 
   const [params, setParams] = useState(
     {
@@ -120,8 +123,8 @@ const CushCatsZ = () => {
       <div style="text-align: center; font-family: sans-serif; margin-left: 60px; margin-right: 60px;">
           <div>
             <div><strong>${transmitter.nombreComercial}</strong></div>
-            <div>Sucursal: ${branch?.name ?? ''}</div>
-            <div>Dirección: ${branch?.address ?? ''}</div>
+            <div>Sucursal: ${selectedBranch?.name ?? ''}</div>
+            <div>Dirección: ${selectedBranch?.address ?? ''}</div>
             <div>Actividad Económica: ${transmitter?.descActividad ?? ''}</div>
             <div>Fecha: ${date} - ${time} ${Am}</div>
           </div>
@@ -280,14 +283,16 @@ const CushCatsZ = () => {
     }
 
     const blob = await exportToExcel({
-      branch,
-      params: { startDate: dateInitial, endDate: dateEnd},
+      branch: selectedBranch,
+      params: { date: params.date},
       data: selectedBox!,
       totalGeneral,
-      transmitter
+      transmitter,
+      bgHeader: fillColor,
+      fontColor: fontColor
     })
 
-    saveAs(blob, `Corte_x_${branch?.name ?? ''}_${Date.now()}.xlsx`);
+    saveAs(blob, `Corte_z_${selectedBranch?.name ?? ''}_${Date.now()}.xlsx`);
   };
 
   useEffect(() => {
@@ -297,13 +302,13 @@ const CushCatsZ = () => {
   }, [dataBox]);
 
   const handleSearch = async () => {
-    if (!branch) {
+    if (!params.branch.id) {
       toast.warning('Selecciona una sucursal');
+    
+      return;
     }
-    if (branch) {
-      setSelectedBranch(branch);
-      onGetDataBox(branch.id ?? 0, params.date);
-    }
+      setSelectedBranch(params.branch);
+      onGetDataBox(params.branch.id ?? 0, params.date);
   };
 
   return (
@@ -333,7 +338,7 @@ const CushCatsZ = () => {
               <AutocompleteItem
                 key={item.id}
                 onPress={() => {
-                  setBranch(item)
+                 setParams({...params, branch: item})
                 }}
               >
                 {item.name}
@@ -345,11 +350,11 @@ const CushCatsZ = () => {
           </ButtonUi>
         </div>
         <div className="grid grid-cols-1 gap-4 w-full max-w-lg mt-4 items-end">
-          {dataBox.length > 0 && branch && (
+          {dataBox.length > 0 && selectedBranch && (
             <Select
               className="w-full"
               classNames={{ base: 'font-semibold' }}
-              defaultSelectedKeys={[String(branch?.id)]}
+              defaultSelectedKeys={[String(params.branch?.id)]}
               label="Caja"
               labelPlacement="outside"
               placeholder="hr 00.00"
@@ -372,7 +377,7 @@ const CushCatsZ = () => {
           )}
         </div>
           <CashCutComponent
-            branch={branch}
+            branch={selectedBranch}
             buttons={
               <div className="grid grid-cols-1 md:grid-cols-2 mt-4 gap-4 w-full">
                 {actionsView.includes('Exportar Excel') && (
@@ -399,7 +404,7 @@ const CushCatsZ = () => {
             }
             cutType='Corte Z'
             data={selectedBox!}
-            params={{ startDate: dateInitial, endDate: dateEnd, date: params.date }}
+            params={{date: params.date }}
             totalGeneral={totalGeneral}
           />
       </DivGlobal>
