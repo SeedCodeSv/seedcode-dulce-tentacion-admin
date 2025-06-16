@@ -1,6 +1,6 @@
 import { Menu } from 'lucide-react';
 import { ReactNode, useContext, useEffect, useState } from 'react';
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
+import { Button, Checkbox, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@heroui/react';
 import { useNavigate } from 'react-router';
 import classNames from 'classnames';
 
@@ -25,7 +25,8 @@ export const SideBar = (props: Props) => {
   const { theme, context } = useContext(ThemeContext);
 
   const { user, makeLogout } = useAuthStore();
-  const { setIsAuth, setToken, setMode } = useContext(SessionContext);
+  const { setIsAuth, setToken, setMode, setContingence, contingence } = useContext(SessionContext);
+
 
   const [isOpen, setIsOpen] = useState<boolean>(
     () => JSON.parse(localStorage.getItem('sidebarState') || 'true') // Recupera el estado al cargar.
@@ -152,6 +153,19 @@ export const SideBar = (props: Props) => {
                   onPress={() => navigate('/configuration')}
                 >
                   Configuración
+                </DropdownItem>
+                <DropdownItem
+                  key="contingence"
+                  color="primary"
+                >
+                  <div className='flex justify-between'>
+                    <span className="text-sm dark:text-white">
+                      Contingencia
+                    </span>
+
+                    <Checkbox isSelected={contingence} onValueChange={(value) => setContingence(value)} />
+
+                  </div>
                 </DropdownItem>
                 <DropdownItem
                   key="logout"

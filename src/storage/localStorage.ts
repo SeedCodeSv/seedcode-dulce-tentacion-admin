@@ -15,6 +15,18 @@ export const get_token = () => {
   return localStorage.getItem('_NTE');
 };
 
+export const get_contingence = () => {
+  const contingence = localStorage.getItem('contingence')
+
+  if (contingence) {
+    return contingence === '1'
+  }
+
+  return false
+}
+export const save_contingence = (contingence: boolean) => {
+  return localStorage.setItem('contingence', contingence ? '1' : '0')
+}
 export const is_expired_token = () => {
   const token = get_token();
 
@@ -155,7 +167,7 @@ interface SearchItem {
   startDate: string;
   endDate: string;
   typeItem: string;
-  typeOrder: string;  
+  typeOrder: string;
 }
 
 export const get_accounting_item_search = () => {
