@@ -9,7 +9,7 @@ import { steps } from '../components/process/types/process.types';
 import { update_correlativo } from '../service/shipping_branch_product.service';
 import { firmarNotaDeEnvio, send_to_mh } from '../service/dte_shipping_note.service';
 
-import { BodyNote, Branches, BranchProduct } from './shipping_branch_product.types';
+import { BodyNote, BranchProduct } from './shipping_branch_product.types';
 import { CuerpoDocumento, Direccion, DocumentoNoteOfRemission, Emisor, Extension, Identificacion, Receptor, Resumen } from './notes_of_remision.types';
 
 import { generate_uuid } from '@/utils/random/random';
@@ -21,7 +21,7 @@ import { Employee } from '@/types/employees.types';
 import { ambiente, SPACES_BUCKET } from '@/utils/constants';
 import { generate_control } from '@/utils/dte';
 import { formatearNumero } from '@/utils/make-dte';
-import { User, UserLogin } from '@/types/auth.types';
+import { User } from '@/types/auth.types';
 import { s3Client } from '@/plugins/s3';
 import { get_correlatives_dte } from '@/services/correlatives_dte.service';
 import { PayloadMH } from '@/types/DTE/DTE.types';
@@ -63,9 +63,7 @@ export const generateJsonNoteRemision = (
   transmitter: ITransmitter,
   correlative: Correlativo,
   product_selected: BranchProduct[],
-  branch: Branches,
   observation = '',
-
   ivaRete1 = 0,
   employeeReceptor?: Employee
 ): DocumentoNoteOfRemission => {
@@ -92,7 +90,7 @@ export const generateJsonNoteRemision = (
         ...getElSalvadorDateTime(),
       },
       documentoRelacionado: null,
-      emisor: generate_emisor(transmitter, correlative, branch),
+      emisor: generate_emisor(transmitter, correlative),
       receptor: generateEmployeeReceptor(transmitter),
       ventaTercero: null,
       cuerpoDocumento: make_cuerpo_documento(product_selected),
@@ -391,7 +389,6 @@ export const generateUrlJson = (
 export const generate_emisor = (
   transmitter: ITransmitter,
   correlative: Correlativo,
-  branch: Branches
 ) => {
   return {
     nit: transmitter.nit,

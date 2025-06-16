@@ -1,6 +1,7 @@
+import { Emisor, Receptor } from './notes_of_remision.types';
+
 import { Transmitter } from '@/types/categories.types';
 import { OrderProductDetail } from '@/types/order-products.types';
-import { Emisor, Receptor } from './notes_of_remision.types';
 
 export interface IResponseBranchProductPaginatedSent {
   ok?: boolean;
