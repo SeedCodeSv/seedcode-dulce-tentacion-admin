@@ -60,7 +60,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
       observation,
       false,
       0,
-
+      employeeReceptor
     );
 
     try {
@@ -166,10 +166,10 @@ function GenerateAShippingNote(props: IPropCustomer) {
       socket,
       pointOfSaleId,
       employee?.id ?? 0,
-      customer?.id ?? 0,
       branchLlegada?.id ?? 0,
       user?.branchId ?? 0,
-      handleReload
+      handleReload,
+      employeeReceptor!
     )
 
   }

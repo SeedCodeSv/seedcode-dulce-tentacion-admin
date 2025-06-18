@@ -119,7 +119,6 @@ export interface ICreateShippingProducts {
   pointOfSaleId: number;
   employeeId: number;
   sello: boolean;
-  customerId?: number;
   receivingBranchId?: number;
 }
 

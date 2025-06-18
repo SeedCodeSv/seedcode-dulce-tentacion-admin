@@ -32,10 +32,10 @@ export const singInvoiceContingence04 = async (
     socket: Socket,
     pointOfSaleId: number,
     employeeId: number,
-    customerId: number,
     receivingBranchId: number,
     branchIssuingId: number,
-    handleRefresh: () => void
+    handleRefresh: () => void,
+    employeeReceptor: Employee
 ) => {
     try {
         const generatedJson = generateJsonNoteRemision(
@@ -47,7 +47,7 @@ export const singInvoiceContingence04 = async (
             observation,
             true,
             val,
-
+            employeeReceptor
         );
 
 
@@ -55,7 +55,6 @@ export const singInvoiceContingence04 = async (
             handleRefresh,
             pointOfSaleId,
             employeeId,
-            customerId,
             receivingBranchId,
             branchIssuingId,
             socket,
@@ -70,7 +69,6 @@ const uploadAndSaveDTE04 = async (
     handleRefresh: () => void,
     pointOfSaleId: number,
     employeeId: number,
-    customerId: number,
     receivingBranchId: number,
     branchIssuingId: number,
     socket: Socket,
@@ -96,19 +94,16 @@ const uploadAndSaveDTE04 = async (
         const upload = new Upload({ client: s3Client, params: uploadParams })
 
         await upload.done()
-        
+
         await generate_a_shipping_note({
             pointOfSaleId: pointOfSaleId,
             employeeId: employeeId,
             sello: false,
-            customerId: customerId,
             dte: uploadParams.Key!,
             receivingBranchId,
         }).then(async () => {
 
             toast.success('Se completo con éxito la nota')
-            // setLoading(false)
-            // setCurrentStep(0)
             handleRefresh()
             const targetSucursalId = receivingBranchId ?? 0
 

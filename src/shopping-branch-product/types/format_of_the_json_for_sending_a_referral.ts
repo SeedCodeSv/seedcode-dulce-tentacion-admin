@@ -14,7 +14,7 @@ import { CuerpoDocumento, Direccion, DocumentoNoteOfRemission, Emisor, Extension
 
 import { generate_uuid } from '@/utils/random/random';
 import { Correlativo } from '@/types/correlatives_dte.types';
-import { getElSalvadorDateTime } from '@/utils/dates';
+import { formatEmployee, getElSalvadorDateTime, numbDocument } from '@/utils/dates';
 import { ITransmitter } from '@/types/transmitter.types';
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
@@ -46,18 +46,18 @@ const calDiscount = (productsCarts: BranchProduct[]) => {
   return productsCarts.map(() => 0).reduce((a, b) => a + b, 0);
 };
 
-function formatName(payload: Employee) {
-  const fullName =
-    payload?.firstName +
-    ' ' +
-    payload?.secondName +
-    ' ' +
-    payload?.firstLastName +
-    ' ' +
-    payload?.secondLastName;
+// function formatName(payload: Employee) {
+//   const fullName =
+//     payload?.firstName +
+//     ' ' +
+//     payload?.secondName +
+//     ' ' +
+//     payload?.firstLastName +
+//     ' ' +
+//     payload?.secondLastName;
 
-  return fullName;
-}
+//   return fullName;
+// }
 export const generateJsonNoteRemision = (
   employee: Employee,
   transmitter: ITransmitter,
@@ -65,7 +65,7 @@ export const generateJsonNoteRemision = (
   product_selected: BranchProduct[],
   branch: Branches,
   observation = '',
-  contingence?:boolean,
+  contingence?: boolean,
   ivaRete1 = 0,
   employeeReceptor?: Employee
 ): DocumentoNoteOfRemission => {
@@ -84,7 +84,7 @@ export const generateJsonNoteRemision = (
           formatearNumero(correlative.next)
         ),
         codigoGeneracion: generate_uuid().toUpperCase(),
-        tipoModelo: contingence ? 2 : 1 ,
+        tipoModelo: contingence ? 2 : 1,
         tipoOperacion: contingence ? 2 : 1,
         tipoContingencia: null,
         motivoContin: null,
@@ -112,10 +112,10 @@ export const generateJsonNoteRemision = (
         totalLetras: convertCurrencyFormat((total(product_selected) - ivaRete1).toFixed(2)),
       },
       extension: {
-        nombEntrega: formatName(employee ?? ({} as Employee)),
-        docuEntrega: employee?.dui ?? employee?.nit,
-        nombRecibe: formatName(employeeReceptor ?? ({} as Employee)),
-        docuRecibe: employeeReceptor?.dui ?? employee?.nit,
+        nombEntrega: formatEmployee(employee ?? ({} as Employee)),
+        docuEntrega: numbDocument(employee ?? ({} as Employee)).toString(),
+        nombRecibe: formatEmployee(employeeReceptor ?? ({} as Employee)),
+        docuRecibe: numbDocument(employeeReceptor ?? ({} as Employee)).toString(),
         observaciones: observation,
       },
       apendice: null,
@@ -257,7 +257,6 @@ const generateProcess04 = async (
       pointOfSaleId: pointOfSaleId,
       employeeId: employeeId,
       sello: true,
-      customerId: customerId,
       dte: json_url,
       receivingBranchId,
     })
@@ -388,33 +387,7 @@ export const generateUrlJson = (
   return `NOTAS-REMISION/${name
     }/${new Date().getFullYear()}/NOTAS-REMISION/${typeDte}/${fecEmi}/${generation}/${generation}.${format}`;
 };
-// export const generate_emisor = (
-//   transmitter: ITransmitter,
-//   correlative: Correlativo,
-//   branch:Branches
-// ) => {
-//   return {
-//     nit: transmitter.nit,
-//     nrc: transmitter.nrc,
-//     nombre: transmitter.nombre,
-//     nombreComercial: transmitter.nombreComercial,
-//     codActividad: transmitter.codActividad,
-//     descActividad: transmitter.descActividad,
-//     tipoEstablecimiento: correlative.tipoEstablecimiento,
-//     direccion: transmitter
-//       ? ({
-//         departamento: transmitter.direccion.departamento,
-//         municipio: transmitter.direccion.municipio,
-//         complemento: transmitter.direccion.complemento,
-//       } as Direccion) : branch.address,
-//     telefono: transmitter.telefono,
-//     correo: transmitter.correo,
-//     codEstable: correlative.codEstable,
-//     codEstableMH: correlative.codEstableMH === '0' ? '' : correlative.codEstableMH,
-//     codPuntoVenta: correlative.codPuntoVenta,
-//     codPuntoVentaMH: correlative.codPuntoVentaMH === '0' ? '' : correlative.codPuntoVentaMH,
-//   };
-// };
+
 export const generate_emisor = (
   transmitter: ITransmitter,
   correlative: Correlativo,
@@ -428,13 +401,6 @@ export const generate_emisor = (
     codActividad: transmitter.codActividad,
     descActividad: transmitter.descActividad,
     tipoEstablecimiento: correlative.tipoEstablecimiento,
-    // direccion: transmitter
-    //   ? ({
-    //     departamento: transmitter.direccion.departamento,
-    //     municipio: transmitter.direccion.municipio,
-    //     complemento: transmitter.direccion.complemento,
-    //   } as Direccion)
-    //   : branch.address,
     direccion: transmitter
       ? ({
         departamento: transmitter.direccion.departamento,

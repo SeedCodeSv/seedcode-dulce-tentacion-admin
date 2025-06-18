@@ -12,7 +12,6 @@ export const HandleSaveShippingNote = ({
   setCurrentState,
   pointOfSaleId,
   employeeId,
-  customerId,
   handleDownload,
   receivingBranchId,
   closeModal,
@@ -27,7 +26,6 @@ export const HandleSaveShippingNote = ({
     pointOfSaleId: pointOfSaleId,
     employeeId: employeeId,
     sello: true,
-    customerId: customerId,
     dte: json_url,
     receivingBranchId,
   })
