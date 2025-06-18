@@ -17,9 +17,9 @@ import { UpdateBranchProductOrder, UpdateSuppliersBranchP } from '@/types/produc
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { Supplier } from '@/types/supplier.types';
-import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { formatSuppliers } from '@/utils/formatters';
 import { IGetBranchProduct } from '@/types/branches.types';
+import { useSubCategoryStore } from '@/store/sub-category';
 
 
 interface Props {
@@ -54,7 +54,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
 
 
     const [category, setCategory] = useState<string | null>(branch_products?.product?.subCategory.categoryProductId.toString() || null)
-    const { getSubcategories, subcategories } = useSubCategoriesStore();
+    const { getSubcategories, subcategories } = useSubCategoryStore();
 
     const [initialValues, setInitialValues] = useState<UpdateBranchProductOrder | null>(null);
     const [search, setSearch] = useState('');

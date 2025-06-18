@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import {
   ICheckStockResponse,
-  IGetBranchProductByCode,
   IGetBranchProductOrder,
   IGetBranchProductPaginated,
 } from '../types/branch_products.types';
@@ -24,30 +23,7 @@ export const get_branch_product = (id: number, page = 1, limit = 5, name = '', c
     }
   );
 };
-export const get_product_by_code = (transmitter_id: number, code: string) => {
-  const token = get_token() ?? '';
 
-  return axios.get<IGetBranchProductByCode>(
-    `${API_URL}/branch-products/get-code/${transmitter_id}?code=${code}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-};
-
-// export const get_branch_product_orders = (branch: string, supplier = '', name = '', code = '') => {
-//   const token = get_token() ?? '';
-//   return axios.get<IGetBranchProductOrder>(
-//     `${API_URL}/branch-products/get-products?branch=${branch}&supplier=${supplier}&name=${name}&code=${code}`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     }
-//   );
-// };
 export const get_branch_product_orders = (
   branch: string,
   supplier = '',

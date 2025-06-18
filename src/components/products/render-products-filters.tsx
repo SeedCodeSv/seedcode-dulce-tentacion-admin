@@ -13,7 +13,6 @@ import { Filter, SearchIcon } from 'lucide-react';
 import React, { useEffect } from 'react';
 
 import { useCategoriesStore } from '@/store/categories.store';
-import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useSubCategoryStore } from '@/store/sub-category';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -45,8 +44,7 @@ function RenderProductsFilters(props: Props) {
     setSubcategory,
   } = props;
 
-  const { sub_categories, getSubCategoriesList } = useSubCategoryStore();
-  const { getSubcategories, subcategories } = useSubCategoriesStore();
+  const { sub_categories, getSubCategoriesList, getSubcategories, subcategories} = useSubCategoryStore();
   const { list_categories, getListCategories } = useCategoriesStore();
 
   useEffect(() => {

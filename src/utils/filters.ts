@@ -1,8 +1,6 @@
 import { RoleViewAction } from "../types/actions_rol.types";
-import {
-  IBranchProductOrderQuantity,
-  SupplierProducts,
-} from "../types/branch_products.types";
+
+import { IBranchProductOrderQuantity, SupplierProducts } from "@/types/branch_product_order.types";
 
 export const is_admin = (rol: string) => {
   const patron = /administrador/i;
@@ -27,13 +25,13 @@ export const groupBySupplier = (
   const supplierMap = new Map<number, SupplierProducts>();
 
   items.forEach((item) => {
-    if (!supplierMap.has(item.supplier?.id)) {
-      supplierMap.set(item.supplier.id, {
-        supplier: item.supplier,
+    if (!supplierMap.has(item.supplierId)) {
+      supplierMap.set(item.supplierId, {
+        supplier: item.supplier!,
         products: [],
       });
     }
-    supplierMap.get(item.supplier.id)!.products.push(item);
+    supplierMap.get(item.supplierId)!.products.push(item);
   });
 
   return Array.from(supplierMap.values());

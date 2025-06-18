@@ -54,14 +54,12 @@ const Filters = (props: FiltersProps) => {
     return [];
   }, [point_of_sales_list]);
 
-  const handleSearch = () => {
-      getPointOfSalesList(props.branch);
-  }
+
 
   return (
    <ResponsiveFilterWrapper classButtonLg="w-1/3"
    classLg="w-full grid grid-cols-3 gap-5"
-    onApply={handleSearch}
+    withButton={false}
     >
       <Input
         className="z-0"
@@ -105,8 +103,10 @@ const Filters = (props: FiltersProps) => {
             const branchId = Number(new Set(key).values().next().value);
 
             props.setBranch(branchId);
+            getPointOfSalesList(branchId);
           } else {
             props.setBranch(0);
+             getPointOfSalesList(0);
           }
         }}
       >

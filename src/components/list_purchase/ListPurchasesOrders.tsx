@@ -1,6 +1,4 @@
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
   Input,
   Select,
@@ -14,7 +12,6 @@ import { useEffect, useState } from 'react';
 import AddButton from '../global/AddButton';
 import { usePurchaseOrdersStore } from '../../store/purchase_orders.store';
 import Pagination from '../global/Pagination';
-import { useSupplierStore } from '../../store/supplier.store';
 import TooltipGlobal from '../global/TooltipGlobal';
 import LoadingTable from '../global/LoadingTable';
 import EmptyTable from '../global/EmptyTable';
@@ -23,7 +20,6 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import { limit_options } from '@/utils/constants';
 import { formatDate } from '@/utils/dates';
-import { useDebounce } from '@/hooks/useDebounce';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 
@@ -34,9 +30,6 @@ function ListPurchasesOrders({ actions }: Props) {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [limit, setLimit] = useState(5);
-  const [supplier, setSupplier] = useState('');
-  const [searchSupplier, setSearchSupplier] = useState('')
-  const debName = useDebounce(searchSupplier, 300)
 
   const [showState, setShowState] = useState('');
   const {
@@ -45,12 +38,11 @@ function ListPurchasesOrders({ actions }: Props) {
     pagination_purchase_orders,
     pagination_purchase_orders_loading,
   } = usePurchaseOrdersStore();
-  const { getSupplierList, supplier_list } = useSupplierStore();
 
   const styles = useGlobalStyles();
 
   useEffect(() => {
-    getPurchaseOrders(startDate, endDate, 1, limit, supplier, showState);
+    getPurchaseOrders(startDate, endDate, 1, limit, '', showState);
   }, [limit, showState]);
 
   const handleSearch = (searchParam: string | undefined) => {
@@ -59,14 +51,10 @@ function ListPurchasesOrders({ actions }: Props) {
       searchParam ?? endDate,
       1,
       limit,
-      supplier,
+      '',
       showState
     );
   };
-
-  useEffect(() => {
-    getSupplierList(String(debName ?? ''));
-  }, [debName]);
 
   const [isOpen, setIsOpen] = useState({
     isOpen: false,
@@ -117,33 +105,25 @@ function ListPurchasesOrders({ actions }: Props) {
                   onChange={(e) => setEndDate(e.target.value)}
                 />
               </div>
-              <div className="w-full">
-                <Autocomplete
-                  className="font-semibold dark:text-white"
-                  clearButtonProps={{
-                    onClick: () => setSupplier(''),
-                  }}
-                  label="Proveedor"
+               <Select
+                  className="font-semibold w-full"
+                  label="Mostrar por estado"
                   labelPlacement="outside"
-                  placeholder="Selecciona un proveedor"
+                  placeholder="Selecciona un estado"
                   variant="bordered"
-                  onInputChange={(e) => setSearchSupplier(e)}
-                  onSelect={(e) => {
-                    setSupplier(e.currentTarget.value);
-                  }}
+                  onChange={(e) => setShowState(e.target.value ? e.target.value : '')}
                 >
-                  {supplier_list.map((branch) => (
-                    <AutocompleteItem
-                      key={branch.id}
-                      className="dark:text-white"
-                      onPress={() => setSupplier(branch.nombre)}
-                    >
-                      {branch.nombre}
-                    </AutocompleteItem>
-                  ))}
-                </Autocomplete>
-              </div>
-              <div className="flex lg:hidden">
+                  <SelectItem key={''} className="dark:text-white" >
+                    Mostrar todos
+                  </SelectItem>
+                  <SelectItem key={'false'} className="dark:text-white" >
+                    Pendientes
+                  </SelectItem>
+                  <SelectItem key={'true'} className="dark:text-white" >
+                    Completados
+                  </SelectItem>
+                </Select>
+                <div className="flex lg:hidden">
                 <Select
                   className="w-full dark:text-white"
                   classNames={{
@@ -191,25 +171,6 @@ function ListPurchasesOrders({ actions }: Props) {
               </div>
 
               <div className="flex justify-end gap-4">
-                <Select
-                  className="font-semibold w-44"
-                  label="Mostrar por estado"
-                  labelPlacement="outside"
-                  placeholder="Selecciona un estado"
-                  variant="bordered"
-
-                  onChange={(e) => setShowState(e.target.value ? e.target.value : '')}
-                >
-                  <SelectItem key={''} className="dark:text-white" >
-                    Mostrar todos
-                  </SelectItem>
-                  <SelectItem key={'false'} className="dark:text-white" >
-                    Pendientes
-                  </SelectItem>
-                  <SelectItem key={'true'} className="dark:text-white" >
-                    Completados
-                  </SelectItem>
-                </Select>
 
                 <div className="flex justify-end mt-6 ">
                   {actions.includes('Agregar') && (
@@ -225,7 +186,7 @@ function ListPurchasesOrders({ actions }: Props) {
           </div>
           <>
              <TableComponent
-              headers={["Nº", "Fecha", "Proveedor", "Sucursal",'Estado','Acciones']}
+              headers={["Nº", "Fecha", "Sucursal",'Estado','Acciones']}
             >
                   {pagination_purchase_orders_loading ? (
                     <tr>
@@ -244,9 +205,6 @@ function ListPurchasesOrders({ actions }: Props) {
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {product.date}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {product.supplier.nombre}
                               </td>
                               <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
                                 {product.branch.name}

@@ -1,19 +1,10 @@
+import { Branches } from "./branches.types";
+import { Product } from "./products.types";
+
 export enum TypeOfProduct {
   Standard = 'Estandar',
   Service = 'Servicio',
   Combo = 'Combo',
-}
-
-export interface Branch {
-  id: number;
-  name: string;
-  address: string;
-   phone: string;
-  codEstableMH: string;
-  codEstable: string;
-  tipoEstablecimiento: string;
-  isActive: boolean;
-  transmitterId: number;
 }
 
 export interface BranchProduct {
@@ -26,7 +17,7 @@ export interface BranchProduct {
   minimumStock: number;
   costoUnitario: string;
   product: Product;
-  branch: Branch;
+  branch: Branches;
   branchId: number;
   productId: number;
   suppliers: Supplier[]
@@ -40,7 +31,7 @@ export interface BranchProduct {
 
 export interface BProductPlusQuantity extends BranchProduct {
   quantity?: string
-  completedRequest?:boolean
+  completedRequest?: boolean
   finalQuantitySend?: string
 }
 
@@ -55,57 +46,11 @@ export interface IGetBranchProductPaginated {
   status: number;
 }
 
-export interface ICartProduct extends BranchProduct {
-  quantity: number;
-  discount: number;
-  porcentaje: number;
-  total: number;
-  base_price: number;
-}
-
-export interface IGetBranchProductByCode {
-  ok: boolean;
-  message: string;
-  product: BranchProduct;
-}
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  tipoItem: string;
-  tipoDeItem: string;
-  uniMedida: string;
-  unidaDeMedida: string;
-  productType: string;
-  code: string;
-  isActive: boolean;
-  subCategory: SubCategory;
-  subCategoryId: number;
-}
-export interface SubCategory {
-  id: number;
-  name: string;
-  isActive: boolean;
-  categoryProduct: CategoryProduct;
-  categoryProductId: number;
-}
-
 export interface CategoryProduct {
   id: number;
   name: string;
   isActive: boolean;
 }
-
-export interface Branch {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  isActive: boolean;
-  transmitterId: number;
-}
-
 export interface Supplier {
   id: number;
   nombre: string;
@@ -128,7 +73,7 @@ export interface Supplier {
 export interface IBranchProductOrder {
   id: number;
   stock: number;
-  price: number;
+  price: number | string;
   priceA: string;
   priceB: string;
   priceC: string;
@@ -136,17 +81,13 @@ export interface IBranchProductOrder {
   costoUnitario: string;
   isActive: boolean;
   product: Product;
-  branch: Branch;
-  supplier: Supplier;
+  branch: Branches;
+  supplier?: Supplier;
+  suppliers: Supplier[]
   branchId: number;
   productId: number;
   supplierId: number;
 }
-
-export interface IBranchProductOrderQuantity extends IBranchProductOrder {
-  quantity: number;
-}
-
 export interface IGetBranchProductOrder {
   ok: boolean;
   message: string;
@@ -158,12 +99,6 @@ export interface IGetBranchProductOrder {
   prevPag: number;
   status: number;
 }
-
-export interface SupplierProducts {
-  supplier: Supplier;
-  products: IBranchProductOrderQuantity[];
-}
-
 export interface IPayloadBranchProduct {
   productId: number;
   branchId: number;
@@ -177,16 +112,16 @@ export interface IPayloadBranchProduct {
 }
 
 export interface ICheckStockResponse {
-  ok:      boolean;
+  ok: boolean;
   results: Result[];
 }
 
 export interface Result {
-  productId:   number;
+  productId: number;
   productName: string;
-  status:      string;
-  stock?:      string;
-  required?:   number;
-  message:     string;
+  status: string;
+  stock?: string;
+  required?: number;
+  message: string;
 }
 

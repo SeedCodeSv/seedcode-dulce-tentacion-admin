@@ -24,8 +24,6 @@ export interface CategoryProduct {
   name: string;
   isActive: boolean;
   showSale: boolean;
-  transmitter: Transmitter;
-  transmitterId: number;
 }
 
 export interface GetListCategories {
@@ -55,11 +53,5 @@ export interface IGetCategories {
 export interface IGetCategoriesList {
   ok: boolean;
   message: string;
-  categoryProducts: CategoryProductList[];
-}
-
-export interface CategoryProductList {
-  id: number;
-  name: string;
-  isActive: boolean;
+  categoryProducts: CategoryProduct[];
 }

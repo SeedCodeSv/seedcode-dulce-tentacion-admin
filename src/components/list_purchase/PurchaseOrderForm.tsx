@@ -44,7 +44,6 @@ const PurchaseOrderForm = () => {
   const {
     getBranchProductOrders,
     branch_product_order_paginated,
-    // addProductOrder,
     branch_product_order_paginated_loading,
   } = useBranchProductStore();
 
@@ -66,7 +65,7 @@ const PurchaseOrderForm = () => {
 
   const branchProducts = useBranchProductStore((state) => state.order_branch_products);
   const addProductOrder = useBranchProductStore((state) => state.addProductOrder);
-  const deleteProductOrder = useBranchProductStore((state) => state.deleteProductOrder);
+  const deleteProductOrder = useBranchProductStore((state) => state.removeProductOrder);
 
   const modalSelect = useDisclosure()
   const [branchProduct, setBranchProduct] = useState<IBranchProductOrder>()
