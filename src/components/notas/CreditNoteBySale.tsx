@@ -17,6 +17,7 @@ import { formatCurrency } from '@/utils/dte';
 import { useReportNoteSalesStore } from '@/store/report_notes_sale.store';
 import { get_sale_pdf_credit_note } from '@/services/sales.service';
 import Layout from '@/layout/Layout';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function NotesCreditBySale() {
   const { id } = useParams();
@@ -41,7 +42,7 @@ function NotesCreditBySale() {
   return (
     <Layout title="NOTAS DE CRÉDITO">
       <>
-        <div className="flex flex-col p-10 overflow-x-hidden bg-gray-50 dark:bg-gray-800">
+        <div className="flex flex-col p-10 overflow-x-hidden">
           <div className="grid w-full grid-cols-3 gap-5">
             <button
               className="flex items-center gap-3 cursor-pointer"
@@ -51,34 +52,9 @@ function NotesCreditBySale() {
               <p className=" whitespace-nowrap">Volver a ventas</p>
             </button>
           </div>
-          <div className="overflow-x-auto custom-scrollbar mt-10">
-            <table className="w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    No.
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Fecha - Hora
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Número de control
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Sello recibido
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Estado
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    SubTotal
-                  </th>
-                  <th className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                    Acciones
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="max-h-[600px] w-full overflow-y-auto">
+          <TableComponent
+          headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
+          >
                 {notasCreditos.map((sale, index) => (
                   <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
@@ -157,9 +133,7 @@ function NotesCreditBySale() {
                     </td>
                   </tr>
                 ))}
-              </tbody>
-            </table>
-          </div>
+             </TableComponent>
           {loadingPdf && (
             <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
               <div className="flex flex-col items-center justify-center w-full h-full">

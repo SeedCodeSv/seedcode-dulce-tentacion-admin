@@ -225,7 +225,7 @@ function ListPurchasesOrders({ actions }: Props) {
           </div>
           <>
              <TableComponent
-              headers={["Nº", "Fecha", "Proveedor", "Sucursal",'Estado','Acciones']}
+              headers={["Nº", "Fecha", "Sucursal",'Estado','Acciones']}
             >
                   {pagination_purchase_orders_loading ? (
                     <tr>
@@ -244,9 +244,6 @@ function ListPurchasesOrders({ actions }: Props) {
                               </td>
                               <td className="p-3 text-sm text-slate-500 dark:text-slate-100 whitespace-nowrap">
                                 {product.date}
-                              </td>
-                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                {product.supplier.nombre}
                               </td>
                               <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
                                 {product.branch.name}

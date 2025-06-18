@@ -5,6 +5,7 @@ import {
   IAddProductOrder,
   PurchaseOrder,
   PurchaseOrderPayload,
+  Supplier,
   UpdatePurchaseItems,
 } from '../../types/purchase_orders.types';
 
@@ -33,10 +34,12 @@ export interface PurchaseOrderStore {
  deleteProductDetail: (item: DetailPurchaseOrder) => void;
   addProductToOrder: (product: BranchProduct) => void;
   deleteProductOrder: (id: number) => void;
-  updateQuantityOrder: (id: number, quantity: number) => void;
+  updateQuantityOrder: (numItem: string, quantity: number) => void;
   updatePriceOrder: (id: number, price: number) => void;
   clearProductOrder: () => void;
   updatePurchaseOrder: (id: number, details: UpdatePurchaseItems[]) => Promise<{ ok: boolean }>;  
   OnAddProductOrder: (purchaseId: number, data: IAddProductOrder) => Promise<{ ok: boolean }>;
+  onUpdateSupplier: (numItem: string, supplier: Supplier) => void;
+  duplicateProduct: (item: DetailPurchaseOrder) => void;
 
 }

@@ -14,6 +14,7 @@ import { PurchaseOrderStore } from './types/purchase_orders.types';
 
 import { PurchaseOrder } from '@/types/purchase_orders.types';
 import { BranchProduct } from '@/types/branch_products.types';
+import { generateUniqueId } from '@/utils/utils';
 
 export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => ({
   purchase_orders: [],
@@ -37,6 +38,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
         set({
           details_order_purchase: res.data.detailPurchaseOrders.map((detail) => ({
             id: detail.id,
+             numItem: generateUniqueId(),
             sellingPrice: detail.sellingPrice,
             isActive: detail.isActive,
             subtractedProduct: detail.subtractedProduct,
@@ -58,6 +60,8 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
             iva: false,
             profit: 0,
             purchaseOrderId: detail.purchaseOrder.id,
+            supplier: detail.supplier,
+            supplierId: detail.supplierId
           })),
         });
       })
@@ -192,13 +196,13 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
       });
     }
   },
-  updateQuantityOrder(id, quantity) {
-    const product = get().details_order_purchase.find((cp) => cp.branchProductId === id);
+  updateQuantityOrder(numItem, quantity) {
+    const product = get().details_order_purchase.find((cp) => cp.numItem === numItem);
 
     if (product) {
       set({
         details_order_purchase: get().details_order_purchase.map((cp) =>
-          cp.branchProductId === id
+          cp.numItem === numItem
             ? {
               ...cp,
               quantity,
@@ -279,7 +283,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
       toast.error('Ocurrio un error');
     }
   },
-   async OnAddProductOrder(purchaseId, data): Promise<{ ok: boolean }> {
+  async OnAddProductOrder(purchaseId, data): Promise<{ ok: boolean }> {
     try {
       if (data.stock! <= 0) {
         toast.error('Stock insuficiente');
@@ -292,8 +296,27 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
       return { ok: true };
     } catch (error) {
       toast.error('Error al agregar el producto');
-      
+
       return { ok: false };
     }
   },
+  onUpdateSupplier(numItem, supplier) {
+    set((state) => ({
+      details_order_purchase: state.details_order_purchase.map((cp) =>
+        cp.numItem === numItem && cp.isNew ? { ...cp, supplier, supplierId: Number(supplier.id) } : cp
+      ),
+    }));
+  },
+   duplicateProduct(item) {
+          const { details_order_purchase } = get();
+
+          set({
+            details_order_purchase: [
+              ...details_order_purchase,
+              { ...item, isNew: true,
+                numItem: generateUniqueId(),
+               }
+            ]
+          });
+        },
 }));

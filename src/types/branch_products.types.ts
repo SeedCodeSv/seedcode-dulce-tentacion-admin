@@ -8,7 +8,7 @@ export interface Branch {
   id: number;
   name: string;
   address: string;
-   phone: string;
+  phone: string;
   codEstableMH: string;
   codEstable: string;
   tipoEstablecimiento: string;
@@ -40,7 +40,7 @@ export interface BranchProduct {
 
 export interface BProductPlusQuantity extends BranchProduct {
   quantity?: string
-  completedRequest?:boolean
+  completedRequest?: boolean
   finalQuantitySend?: string
 }
 
@@ -128,7 +128,7 @@ export interface Supplier {
 export interface IBranchProductOrder {
   id: number;
   stock: number;
-  price: number;
+  price: number | string;
   priceA: string;
   priceB: string;
   priceC: string;
@@ -137,16 +137,12 @@ export interface IBranchProductOrder {
   isActive: boolean;
   product: Product;
   branch: Branch;
-  supplier: Supplier;
+  supplier?: Supplier;
+  suppliers: Supplier[]
   branchId: number;
   productId: number;
   supplierId: number;
 }
-
-export interface IBranchProductOrderQuantity extends IBranchProductOrder {
-  quantity: number;
-}
-
 export interface IGetBranchProductOrder {
   ok: boolean;
   message: string;
@@ -158,12 +154,6 @@ export interface IGetBranchProductOrder {
   prevPag: number;
   status: number;
 }
-
-export interface SupplierProducts {
-  supplier: Supplier;
-  products: IBranchProductOrderQuantity[];
-}
-
 export interface IPayloadBranchProduct {
   productId: number;
   branchId: number;
@@ -177,16 +167,16 @@ export interface IPayloadBranchProduct {
 }
 
 export interface ICheckStockResponse {
-  ok:      boolean;
+  ok: boolean;
   results: Result[];
 }
 
 export interface Result {
-  productId:   number;
+  productId: number;
   productName: string;
-  status:      string;
-  stock?:      string;
-  required?:   number;
-  message:     string;
+  status: string;
+  stock?: string;
+  required?: number;
+  message: string;
 }
 

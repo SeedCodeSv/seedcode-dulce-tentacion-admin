@@ -13,8 +13,13 @@ import {
 import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import { toast } from "sonner";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+import axios from "axios";
 
 import Pagination from '../global/Pagination';
+import ResendEmail from "../reporters/ResendEmail";
 
 import Filters from "./filterSales";
 
@@ -23,9 +28,14 @@ import { formatDate } from '@/utils/dates';
 import { global_styles } from '@/styles/global.styles';
 import { useSalesStore } from '@/store/sales.store';
 import { get_sale_pdf } from '@/services/sales.service';
-import { limit_options } from '@/utils/constants';
+import { limit_options, SPACES_BUCKET } from '@/utils/constants';
 import DivGlobal from "@/themes/ui/div-global";
 import { TableComponent } from "@/themes/ui/table-ui";
+import { s3Client } from "@/plugins/s3";
+import { SaleDates } from "@/types/sales.types";
+import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
+import { get_pdf_fe_cfe } from "@/services/pdf.service";
+import { useAuthStore } from "@/store/auth.store";
 
 function ListSales() {
   const styles = global_styles();
@@ -40,6 +50,10 @@ function ListSales() {
     debits: 0,
     credits: 0,
   });
+  const [unseen, setUnseen] = useState(false)
+  const { user } = useAuthStore()
+  const isMovil = useIsMobileOrTablet();
+
 
   const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
     useSalesStore();
@@ -80,6 +94,56 @@ function ListSales() {
       return;
     });
     setNotes({ debits: 0, credits: 0 });
+  };
+
+  const downloadJSON = async (sale: SaleDates) => {
+    try {
+      const url = await getSignedUrl(
+        s3Client,
+        new GetObjectCommand({
+          Bucket: SPACES_BUCKET,
+          Key: sale.pathJson,
+        })
+      );
+      const response = await axios.get(url, { responseType: 'json' });
+
+      const jsonBlob = new Blob([JSON.stringify(response.data, null, 2)], {
+        type: 'application/json',
+      });
+
+      const link = document.createElement('a');
+
+      link.href = URL.createObjectURL(jsonBlob);
+      link.download = `${sale.numeroControl}_document.json`;
+      link.click();
+    } catch (error) {
+      toast.error('No se pudo descargar el JSON');
+    }
+  };
+
+
+  const downloadPDF = async (sale: SaleDates): Promise<void> => {
+    setLoadingPdf(true);
+
+    try {
+      const res = await get_pdf_fe_cfe(sale.codigoGeneracion);
+      const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+      const pdfUrl = URL.createObjectURL(pdfBlob);
+
+      const link = document.createElement('a');
+
+      link.href = pdfUrl;
+      link.download = `${sale.codigoGeneracion}.pdf`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(pdfUrl);
+    } catch (error) {
+      toast.error('No se pudo descargar el PDF');
+    } finally {
+      setLoadingPdf(false);
+    }
   };
 
   return (
@@ -158,126 +222,129 @@ function ListSales() {
             </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {!pdfPath && (
-                <Popover showArrow>
+                <Popover
+                  classNames={{
+                    content: unseen
+                      ? 'opacity-0 invisible pointer-events-none'
+                      : 'bg-white',
+                  }}
+                  showArrow={!unseen}
+                  onOpenChange={(isOpen) => {
+                    if (isOpen && sale.tipoDte === '03') {
+                      verifyNotes(sale.id);
+                    }
+                  }}
+                >
                   <PopoverTrigger>
-                    <Button isIconOnly onClick={() => verifyNotes(sale.id)}>
+                    <Button isIconOnly>
                       <EllipsisVertical size={20} />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="p-1">
-                    {sale.salesStatus.name === 'CONTINGENCIA' ? (
-                      <>
-                        <Listbox
-                          aria-label="Actions"
-                          className="dark:text-white"
-                        >
+                    {sale.salesStatus.name === 'PROCESADO' && sale.tipoDte === '03' && (
+                      <Listbox
+                        aria-label="Actions"
+                        className="dark:text-white"
+                        onAction={(key) => {
+                          const routeMap: Record<string, string> = {
+                            'debit-note': `/debit-note/${sale.id}`,
+                            'show-debit-note': `/get-debit-note/${sale.id}`,
+                            'credit-note': `/credit-note/${sale.id}`,
+                            'show-credit-note': `/get-credit-note/${sale.id}`,
+                          };
+
+                          if (key in routeMap) {
+                            navigation(routeMap[key]);
+                          }
+                        }}
+                      >
+                        {notes.debits > 0 ? (
                           <ListboxItem
-                            key="show-pdf"
+                            key="show-debit-note"
+                            classNames={{ base: 'font-semibold' }}
+                            color="primary"
+                            variant="flat"
+                          >
+                            Ver notas de débito
+                          </ListboxItem>
+                        ) : (
+                          <ListboxItem
+                            key="debit-note"
                             classNames={{ base: 'font-semibold' }}
                             color="danger"
                             variant="flat"
-                            onPress={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
                           >
-                            Ver comprobante
+                            Nota de débito
                           </ListboxItem>
-                        </Listbox>
-                      </>
-                    ) : (
-                      <>
-                        {sale.salesStatus.name === 'PROCESADO' ? (
-                          <>
-                            {sale.tipoDte === '03' ? (
-                              <>
-                                <Listbox
-                                  aria-label="Actions"
-                                  className="dark:text-white"
-                                  onAction={(key) => {
-                                    switch (key) {
-                                      case 'debit-note':
-                                        navigation('/debit-note/' + sale.id);
-                                        break;
-                                      case 'show-debit-note':
-                                        navigation('/get-debit-note/' + sale.id);
-                                        break;
-                                      case 'credit-note':
-                                        navigation('/credit-note/' + sale.id);
-                                        break;
-                                      case 'show-credit-note':
-                                        navigation('/get-credit-note/' + sale.id);
-                                        break;
-                                      default:
-                                        break;
-                                    }
-                                  }}
-                                >
-                                  {notes.debits > 0 ? (
-                                    <ListboxItem
-                                      key="show-debit-note"
-                                      classNames={{ base: 'font-semibold' }}
-                                      color="primary"
-                                      variant="flat"
-                                    >
-                                      Ver notas de débito
-                                    </ListboxItem>
-                                  ) : (
-                                    <ListboxItem
-                                      key="debit-note"
-                                      classNames={{ base: 'font-semibold' }}
-                                      color="danger"
-                                      variant="flat"
-                                    >
-                                      Nota de débito
-                                    </ListboxItem>
-                                  )}
-
-                                  {notes.credits > 0 ? (
-                                    <ListboxItem
-                                      key="show-credit-note"
-                                      classNames={{ base: 'font-semibold' }}
-                                      color="primary"
-                                      variant="flat"
-                                    >
-                                      Ver notas de crédito
-                                    </ListboxItem>
-                                  ) : (
-                                    <ListboxItem
-                                      key="credit-note"
-                                      classNames={{ base: 'font-semibold' }}
-                                      color="danger"
-                                      variant="flat"
-                                    >
-                                      Nota de crédito
-                                    </ListboxItem>
-                                  )}
-                                </Listbox>
-                              </>
-                            ) : (
-                              <></>
-                            )}
-                            <Listbox
-                              aria-label="Actions"
-                              className="dark:text-white"
-                            >
-                              <ListboxItem
-                                key="show-pdf"
-                                classNames={{ base: 'font-semibold' }}
-                                color="danger"
-                                variant="flat"
-                                onClick={handleShowPdf.bind(null, sale.id, sale.tipoDte)}
-                              >
-                                Ver comprobante
-                              </ListboxItem>
-                            </Listbox>
-                          </>
-                        ) : (
-                          <></>
                         )}
-                      </>
+
+                        {notes.credits > 0 ? (
+                          <ListboxItem
+                            key="show-credit-note"
+                            classNames={{ base: 'font-semibold' }}
+                            color="primary"
+                            variant="flat"
+                          >
+                            Ver notas de crédito
+                          </ListboxItem>
+                        ) : (
+                          <ListboxItem
+                            key="credit-note"
+                            classNames={{ base: 'font-semibold' }}
+                            color="danger"
+                            variant="flat"
+                          >
+                            Nota de crédito
+                          </ListboxItem>
+                        )}
+                      </Listbox>
                     )}
+
+                    {['PROCESADO'].includes(sale.salesStatus.name) && (
+                      <Listbox aria-label="Actions" className="dark:text-white">
+                        <ListboxItem
+                          key="show-pdf"
+                          classNames={{ base: 'font-semibold' }}
+                          color="danger"
+                          variant="flat"
+                          onPress={() => {
+                            isMovil ? downloadPDF(sale) :
+                              handleShowPdf(sale.id, sale.tipoDte)
+                          }}
+                        >
+                          Ver comprobante
+                        </ListboxItem>
+                        <ListboxItem
+                          key="download-json"
+                          classNames={{ base: 'font-semibold' }}
+                          color="danger"
+                          variant="flat"
+                          onPress={() => downloadJSON(sale)}
+                        >
+                          Descargar JSON
+                        </ListboxItem>
+                        <ListboxItem key="resend-email"
+                          onPress={() =>
+                            setUnseen(true)
+                          }
+                        >
+                          <ResendEmail
+                            customerId={sale.customerId}
+                            id={user!.transmitterId}
+                            path={sale.pathJson}
+                            tipoDte={sale.tipoDte}
+                            onClose={() => {
+                              setUnseen(false)
+                            }}
+                          />
+                        </ListboxItem>
+                      </Listbox>
+                    )}
+
                     {sale.salesStatus.name === 'INVALIDADO' && (
                       <Listbox aria-label="Actions" className="dark:text-white">
                         <ListboxItem
-                          key=""
+                          key="invalid"
                           classNames={{ base: 'font-semibold' }}
                           color="danger"
                           variant="flat"
@@ -287,6 +354,7 @@ function ListSales() {
                       </Listbox>
                     )}
                   </PopoverContent>
+
                 </Popover>
               )}
             </td>

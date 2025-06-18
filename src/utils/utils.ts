@@ -414,3 +414,8 @@ export const initialPagination: IPagination = {
   status: 0,
   ok: false,
 };
+
+export const generateUniqueId = () => {
+  return `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+};
+

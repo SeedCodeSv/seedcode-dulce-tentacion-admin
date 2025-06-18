@@ -3,10 +3,11 @@ import { ITransmitter } from '../types/transmitter.types';
 import { Customer } from '../types/customers.types';
 import { ResponseMHSuccess } from '../types/DTE/contingencia.types';
 import { ISendMHFiscal } from '../types/DTE/credito_fiscal.types';
-import { ICartProduct } from '../types/branch_products.types';
 import { FC_CuerpoDocumentoItems } from '../types/svf_dte/fc.types';
 
 import { convertCurrencyFormat } from './money';
+
+import { ICartProduct } from '@/types/branch_products.types';
 
 export const generate_emisor = (transmitter: ITransmitter) => {
   return {

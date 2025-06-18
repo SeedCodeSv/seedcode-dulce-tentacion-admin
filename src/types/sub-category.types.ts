@@ -1,10 +1,10 @@
-import { CategoryProductList } from "./categories.types";
+import { CategoryProduct } from "./categories.types";
 
 export interface SubCategory {
     id: number;
     name: string;
     isActive: boolean;
-    categoryProduct: CategoryProductList;
+    categoryProduct: CategoryProduct;
     categoryProductId: number;
   }
 

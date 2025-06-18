@@ -1,11 +1,5 @@
+import { BranchProduct, Product } from "./branch_products.types";
 import { Branches } from "./branches.types";
-
-export interface CategoryProduct {
-  id: number
-  name: string
-  isActive: boolean
-
-}
 
 export interface IGetBranchProductOrderPaginated {
   ok: boolean;
@@ -16,51 +10,6 @@ export interface IGetBranchProductOrderPaginated {
   nextPag: number;
   prevPag: number;
   status: number;
-}
-
-
-export interface Product {
-  id: number;
-  name: string;
-  description: string;
-  tipoItem: string;
-  tipoDeItem: string;
-  uniMedida: string;
-  unidaDeMedida: string;
-  productType: string;
-  code: string;
-  isActive: boolean;
-  subCategory: SubCategory;
-  subCategoryId: number;
-}
-export interface SubCategory {
-  id: number;
-  name: string;
-  isActive: boolean;
-  categoryProduct: CategoryProduct;
-  categoryProductId: number;
-}
-
-
-export interface BranchProduct {
-  id: number
-  stock: number
-  price: string
-  priceA: string
-  priceB: string
-  priceC: string
-  minimumStock: number
-  costoUnitario: string
-  product: Product
-  branch: Branches
-  branchId: number
-  productId: number
-  supplierId: number
-  fixedPrice: string
-  maximum: number
-  porcentaje: number
-  minimum: number
-  days: string
 }
 
 export interface BranchProductOrder {
@@ -108,28 +57,11 @@ export interface IGetBranchProductPaginated {
   prevPag: number
   status: number
 }
-
-export interface ICartProduct extends BranchProduct {
-  quantity: number
-  discount: number
-  porcentaje: number
-  total: number
-  base_price: number
-}
-
 export interface IGetBranchProductByCode {
   ok: boolean
   message: string
   product: BranchProduct
 }
-
-export interface CategoryProduct {
-  id: number
-  name: string
-  isActive: boolean
-
-}
-
 export interface Supplier {
   id: number
   nombre: string
@@ -152,7 +84,7 @@ export interface Supplier {
 export interface IBranchProductOrder {
   id: number
   stock: number
-  price: number
+    price: number | string;
   priceA: string
   priceB: string
   priceC: string
@@ -164,10 +96,12 @@ export interface IBranchProductOrder {
   branchId: number
   productId: number
   suppliers: Supplier[]
+    supplier?: Supplier;
   supplierId: number
 }
 
 export interface IBranchProductOrderQuantity extends IBranchProductOrder {
+    numItem: string
   quantity: number
 }
 
