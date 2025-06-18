@@ -98,15 +98,78 @@ function SocketContext() {
         setHasNewNotification(false)
       }, 3000)
     };
+    // const handleNoteContingence = (note: any) => {
+    //   if (Number(note.targetSucursalId) === user?.branchId) return;
+
+    //   const setHasNewNotification = useReferalNote.getState().setHasNewNotification
+
+    //   setHasNewNotification(true)
+    //   getReferalNoteByBranch(user?.branchId ?? 0, 1, 5, false)
+    //   onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', Number(user?.branchId))
+    //   setTimeout(() => {
+    //     setHasNewNotification(false)
+    //   }, 3000)
+    // };
+
 
     socket.on('new-referal-note-admin', handleReferal);
     socket.on('new-referal-note-find-admin', handleReferalNote);
+    // socket.on('processed-contingence-note-admin', handleContingence)
 
     return () => {
       socket.off('new-referal-note-admin', handleReferal);
       socket.off('new-referal-note-find-admin', handleReferalNote);
+      // socket.on('processed-contingence-note-admin', handleContingence)
+
     };
   }, [socket, user?.branchId]);
+
+  // useEffect(() => {
+  //   const handleContingence = (note: any) => {
+  //     toast.warning(`${note.descripcion} - ${note.fecha}`)
+  //     const newNotification = {
+  //       ...note,
+  //       descripcion: note?.descripcion ?? "N/A",
+  //       time
+  //         : Date.now()
+  //     };
+
+  //     getReferalNoteByBranch(user?.branchId ?? 0, 1, 5, false)
+  //     onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', Number(user?.branchId))
+  //     const previous = useReferalNoteStore.getState().OTHERS_NOTIFICATIONS;
+
+  //     useReferalNoteStore.getState().saveOthersNotifications([...previous, newNotification]);
+  //   }
+
+  //   socket.on('processed-contingence-note-admin', handleContingence)
+
+  //   return () => {
+  //     socket.on('processed-contingence-note-admin', handleContingence)
+  //   }
+  // }, [])
+  useEffect(() => {
+    const handleContingence = (note: any) => {
+      toast.warning(`${note.descripcion} - ${note.fecha}`)
+      const newNotification = {
+        ...note,
+        descripcion: note?.descripcion ?? "N/A",
+        time
+          : Date.now()
+      };
+
+      getReferalNoteByBranch(user?.branchId ?? 0, 1, 5, false)
+      onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', Number(user?.branchId))
+      const previous = useReferalNoteStore.getState().OTHERS_NOTIFICATIONS;
+
+      useReferalNoteStore.getState().saveOthersNotifications([...previous, newNotification]);
+    }
+
+    socket.on('processed-contingence-note-admin', handleContingence)
+
+    return () => {
+      socket.off('processed-contingence-note-admin', handleContingence)
+    }
+  }, [socket, user])
 
   useEffect(() => {
     const handleAnulation = (note: any) => {
@@ -129,6 +192,23 @@ function SocketContext() {
       socket.off(`new-invalidate-note-find-client`, handleAnulation)
     }
   }, [socket, user?.branchId])
+
+  useEffect(() => {
+    const handleAnulation = (note: any) => {
+      toast.warning(`${note.descripcion} - ${note.fecha}`)
+
+
+
+
+    }
+
+    socket.on(`new-invalidate-note-find-admin`, handleAnulation)
+
+    return () => {
+      socket.off(`new-invalidate-note-find-client`, handleAnulation)
+    }
+  }, [socket, user?.branchId])
+
 
   return <></>;
 }

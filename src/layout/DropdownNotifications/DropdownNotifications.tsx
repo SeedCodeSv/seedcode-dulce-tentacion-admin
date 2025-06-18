@@ -17,7 +17,7 @@ import { toast } from 'sonner'
 import { useAuthStore } from '../../store/auth.store'
 
 import { useReferalNote, useReferalNoteStore } from '@/store/referal-notes'
-import { ReferalNote } from '@/types/referal-note.types'
+import { Notifications_Referal, ReferalNote } from '@/types/referal-note.types'
 import { IPagination } from '@/types/global.types'
 import { formatDate } from '@/utils/dates'
 import { DataNotification } from '@/store/types/referal-notes.types.store'
@@ -34,7 +34,7 @@ const DropdownNotifications = () => {
         limit: 5,
         important: false
     })
-    const { INVALIDATIONS_NOTIFICATIONS } = useReferalNoteStore()
+    const { INVALIDATIONS_NOTIFICATIONS, OTHERS_NOTIFICATIONS } = useReferalNoteStore()
 
     useEffect(() => {
         if (hasNewNotification) {
@@ -46,8 +46,11 @@ const DropdownNotifications = () => {
         getReferalNoteByBranch(user?.branchId ?? 0, search.page, search.limit, search.important)
     }, [user?.branchId, search.page, search.limit, search.important])
 
-    const total = Number(pagination_referal_notesNot?.total ?? 0) + Number(INVALIDATIONS_NOTIFICATIONS?.length ?? 0)
-
+    const total = Number(pagination_referal_notesNot?.total ?? 0) + Number(INVALIDATIONS_NOTIFICATIONS?.length ?? 0) + (OTHERS_NOTIFICATIONS?.length ?? 0)
+    const data_notifications: Notifications_Referal = {
+        referalNote: referalNote,
+        others: OTHERS_NOTIFICATIONS
+    }
 
     return (
         <Popover showArrow backdrop="blur" placement="bottom" >
@@ -82,7 +85,7 @@ const DropdownNotifications = () => {
                     getReferalNoteByBranch={getReferalNoteByBranch}
                     limit={search}
                     pagination_referal_notesNot={pagination_referal_notesNot}
-                    referalNote={referalNote}
+                    referalNote={data_notifications}
                     setSearch={setSearch}
                 />
             </PopoverContent>
@@ -96,7 +99,7 @@ export const UserTwitterCard = ({
     referalNote, limit, setSearch,
     INVALIDATIONS_NOTIFICATIONS,
 }: {
-    referalNote: ReferalNote[]
+    referalNote: Notifications_Referal
     pagination_referal_notesNot: IPagination
     getReferalNoteByBranch: (id: number, page: number, limit: number, important: boolean) => void
     branchId: number,
@@ -117,7 +120,7 @@ export const UserTwitterCard = ({
     const navigate = useNavigate()
 
     function validation(value: ReferalNote) {
-        const data = value.fecEmi !== formatDate()
+        const data = value?.fecEmi !== formatDate()
 
         if (data) {
             return `border border-red-400`
@@ -127,7 +130,7 @@ export const UserTwitterCard = ({
     }
 
     function validationDate(value: ReferalNote) {
-        const data = value.fecEmi !== formatDate()
+        const data = value?.fecEmi !== formatDate()
 
         if (data) {
             return <AlertTriangle className="w-4 h-4" color={'orange'} />
@@ -267,29 +270,54 @@ export const UserTwitterCard = ({
                                     className="max-h-[160px] overflow-y-auto mt-4 pr-2 space-y-2 scroll-smooth"
                                 >
 
-                                    {referalNote.length > 0 ? (<> {referalNote.slice(0, 20).map((item, index) => (
-                                        <div
-                                            key={index}
-                                            className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item) : `border border-teal-400 `} hover:shadow-lg transition-all`}
-                                        >
-                                            <div className="text-emerald-500 mt-1">
-                                                {validationDate(item)}
-                                            </div>
-                                            <div className="text-[12px]">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <p className="text-gray-700 dark:text-white">
-                                                        <strong>Código:</strong> {item.codigoGeneracion}
-                                                    </p>
-                                                    <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full ">
-                                                        Entrantes
-                                                    </span>
+                                    {/* {referalNote.referalNote.length > 0 ? ( */}
+                                    {/* <> */}
+                                    {referalNote.referalNote.length > 0 ? (
+                                        <>
+                                            {referalNote.referalNote.slice(0, 20).map((item, index) => (
+                                                <div
+                                                    key={`referal-${index}`}
+                                                    className={`flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md ${limit.important ? validation(item) : 'border border-teal-400'
+                                                        } hover:shadow-lg transition-all`}
+                                                >
+                                                    <div className="text-emerald-500 mt-1">{validationDate(item)}</div>
+                                                    <div className="text-[12px]">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <p className="text-gray-700 dark:text-white">
+                                                                <strong>Código:</strong> {item?.codigoGeneracion}
+                                                            </p>
+                                                            <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full">
+                                                                Entrantes
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-gray-500 dark:text-white">
+                                                            <strong>Fecha:</strong> {item?.fecEmi} - {item?.horEmi}
+                                                        </p>
+                                                    </div>
                                                 </div>
-                                                <p className="text-gray-500 dark:text-white">
-                                                    <strong>Fecha:</strong> {item.fecEmi} - {item.horEmi}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}</>) : (<p className='dark:text-white'>No hay datos</p>)}
+                                            ))}
+
+                                            {referalNote.others.map((dat, index) => (
+                                                <div
+                                                    key={`other-${index}`}
+                                                    className="flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md border border-teal-400 hover:shadow-lg transition-all"
+                                                >
+                                                    <div className="text-emerald-500 mt-1">{/* Puedes agregar algo aquí */}</div>
+                                                    <div className="text-[12px]">
+                                                        <div className="flex items-center gap-2 mb-1">
+                                                            <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full">
+                                                                Entrantes
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-gray-500 dark:text-white">
+                                                            <strong>Descripcion:</strong> {dat?.descripcion}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </>
+                                        // )}
+                                    ) : (<p className='dark:text-white'>No hay datos</p>)}
                                 </div>)}
                             {typeNoti === 'salida' && (
                                 <div

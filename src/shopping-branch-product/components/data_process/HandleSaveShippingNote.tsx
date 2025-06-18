@@ -18,7 +18,8 @@ export const HandleSaveShippingNote = ({
   closeModal,
   socket,
   branchIssuingId,
-  orderId
+  orderId,
+  
 }: IPropSaveShippingNote) => {
   setCurrentState(steps[3].title);
   generate_a_shipping_note({

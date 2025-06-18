@@ -1,9 +1,11 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
+import { toast } from 'sonner';
 
 import { IPropCustomer } from '../types/notes_of_remision.types';
 import { useShippingBranchProductBranch } from '../store/shipping_branch_product.store';
 import { generateJsonNoteRemision } from '../types/format_of_the_json_for_sending_a_referral';
 import { firmarNotaDeEnvio } from '../service/dte_shipping_note.service';
+import { singInvoiceContingence04 } from '../types/contingence_actions';
 
 import { steps } from './process/types/process.types';
 import { HandleSendToMhShippingNote } from './data_process/HandleSendToMhShippingNote';
@@ -15,6 +17,7 @@ import { ambiente } from '@/utils/constants';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useAuthStore } from '@/store/auth.store';
+import { SessionContext } from '@/hooks/useSession';
 
 
 
@@ -34,7 +37,9 @@ function GenerateAShippingNote(props: IPropCustomer) {
 
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByBranch } = useCorrelativesDteStore();
-  const {user} = useAuthStore()
+  const { user } = useAuthStore()
+  const { contingence } = useContext(SessionContext)
+  const handleReload = () => { }
 
   useEffect(() => {
     gettransmitter();
@@ -53,6 +58,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
       product_selected,
       branch,
       observation,
+      false,
       0,
 
     );
@@ -98,8 +104,8 @@ function GenerateAShippingNote(props: IPropCustomer) {
                 pointOfSaleId,
                 customerId: customer?.id,
                 employeeId: employee?.id,
-                socket:socket,
-                branchIssuingId:branchIssuingId,
+                socket: socket,
+                branchIssuingId: branchIssuingId,
                 transmitter,
                 correlatives,
 
@@ -122,7 +128,51 @@ function GenerateAShippingNote(props: IPropCustomer) {
         });
     } catch (error) {
     }
-  };
+  }
+  const handleContingence = async () => {
+    const correlatives = await getCorrelativesByBranch(Number(branch?.id), 'NRE');
+
+    if (!correlatives) {
+      toast('No se realizo el proceso')
+
+      return
+    }
+    if (!correlatives) {
+      toast.error('Error al obtener correlativos', {
+        description: 'No se encontraron los correlativos solicitados'
+      })
+
+      return
+    }
+
+
+    // const { singInvoiceContingence04 } = useMhActions({
+    //   steps,
+    //   setSteps,
+    //   transmitter,
+    //   setCurrentStep,
+    //   customer: {} as Customer,
+    //   boxId: {} as BoxData
+    // })
+
+    singInvoiceContingence04(
+      employee,
+      { ...transmitter },
+      correlatives!,
+      product_selected,
+      branch,
+      observation,
+      0,
+      socket,
+      pointOfSaleId,
+      employee?.id ?? 0,
+      customer?.id ?? 0,
+      branchLlegada?.id ?? 0,
+      user?.branchId ?? 0,
+      handleReload
+    )
+
+  }
 
   return (
     <div>
@@ -131,8 +181,14 @@ function GenerateAShippingNote(props: IPropCustomer) {
         isDisabled={pointOfSaleId === 0}
         // variant="light"
 
-        theme={Colors.Success} 
-        onPress={generateJson}
+        theme={Colors.Success}
+        onPress={() => {
+          if (contingence) {
+            handleContingence()
+          } else {
+            generateJson()
+          }
+        }}
       >
         Guardar
       </ButtonUi>

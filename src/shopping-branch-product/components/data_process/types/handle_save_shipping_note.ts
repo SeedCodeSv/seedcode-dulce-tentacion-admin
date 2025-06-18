@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io-client'
 
+
 export interface IPropSaveShippingNote {
   json_url: string;
   closeModal: () => void;

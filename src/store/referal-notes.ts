@@ -6,7 +6,7 @@ import { persist } from 'zustand/middleware'
 
 import { IReferalNoteStore, ReferalNoteStore } from './types/referal-notes.types.store';
 
-import { complete_referal_note, detail_referal_note, get_list_referal_note, get_referal_note_recent, get_referal_notes } from '@/services/referal-notes.service';
+import { complete_referal_note, detail_referal_note, get_list_referal_note, get_referal_in_contingence, get_referal_note_recent, get_referal_notes } from '@/services/referal-notes.service';
 import { s3Client } from '@/plugins/s3';
 import { SPACES_BUCKET } from '@/utils/constants';
 import { SVFC_NRE_Firmado } from '@/types/svf_dte/nre.types';
@@ -30,7 +30,20 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
   json_referal_note_copy: undefined,
   json_referal_note: undefined,
   recentReferalNote: [],
+
   pagination_referal_notesNot: {} as IPagination,
+  contingence_referal_note: [],
+  getReferalNoteContingence(id) {
+    get_referal_in_contingence(id).then(({ data }) => {
+      set({
+        contingence_referal_note: data.contingence_referal
+      })
+    }).catch(() => {
+      set({
+        contingence_referal_note: []
+      })
+    })
+  },
   onGetReferalNotes: (id, page, limit, startDate, endDate, state, branchId) => {
     set({ loading: true });
     get_referal_notes(id, page, limit, startDate, endDate, state, branchId)
@@ -177,11 +190,20 @@ export const useReferalNoteStore = create<IReferalNoteStore>()(
   persist(
     (set) => ({
       INVALIDATIONS_NOTIFICATIONS: [],
+      OTHERS_NOTIFICATIONS: [],
+      saveOthersNotifications: (data) => {
+        const oneDay = 1000 * 60 * 60 * 24;
+        const now = Date.now();
+        const filtered = data.filter(n => now - Number(n?.time ?? 0) < oneDay);
+
+        set({ OTHERS_NOTIFICATIONS: filtered });
+      },
+
       saveNotifications: (data) => {
         const oneDay = 1000 * 60 * 60 * 24;
         const now = Date.now();
         const filtered = data.filter(n => now - n.timestamp < oneDay);
-        
+
         set({ INVALIDATIONS_NOTIFICATIONS: filtered });
       },
     }),
