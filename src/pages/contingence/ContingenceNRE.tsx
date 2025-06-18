@@ -40,8 +40,8 @@ function ContingenceNRE() {
     const [nombreRes, setNombreRes] = useState('');
     const [tipoDocumento, setTipoDocumento] = useState('');
     const [numeroDocumento, setNumeroDocumento] = useState('');
-    const [title, setTitle] = useState('');
-    const [errorMessage, setErrorMessage] = useState('Error de firma');
+    const [title, ] = useState('');
+    const [errorMessage, ] = useState('Error de firma');
     const [loading, setLoading] = useState(false);
     const service = new SeedcodeCatalogosMhService();
     const { getCorrelativesByDte } = useCorrelativesDteStore();
