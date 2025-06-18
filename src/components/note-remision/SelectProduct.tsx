@@ -217,7 +217,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                           {list_categories.map((b) => (
                             <AutocompleteItem
                               key={b.name}
-                              className="py-2 px-3 text-gray-700 dark:text-white data-[hover=true]:bg-purple-100 data-[hover=true]:text-purple-800 rounded-lg"
+                              className="py-2 px-3 text-gray-700 dark:text-white data-[hover=true]:bg-gray-200 dark:data-[hover=true]:bg-gray-700 data-[hover=true]:text-black-800 rounded-lg"
                             >
                               {b.name}
                             </AutocompleteItem>
@@ -411,14 +411,13 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   key={bp.id}
                                   ref={(el) => (productRefs.current[index] = el)}
                                   className={classNames(
-                                    'text-left text-gray-600 dark:text-white hover:cursor-pointer hover:bg-gray-200 focus:outline-none',
-                                    isFocused && 'bg-blue-100 dark:bg-blue-600'
+                                    'text-left text-gray-600 dark:text-white focus:outline-none',
+                                    isFocused && 'bg-blue-100 dark:bg-gray-800'
                                   )}
                                   tabIndex={0}
                                   onClick={() => {
                                     setSelectedIndex(index);
                                     handleSelect(bp.id)
-                                    // OnAddProductSelected(bp);
                                   }
 
                                   }
@@ -426,8 +425,6 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                     if (e.key === 'Enter') {
                                       setSelectedIndex(index);
                                       handleSelect(bp.id)
-
-                                      // OnAddProductSelected(bp);
                                     }
                                   }}
                                 >
@@ -454,24 +451,27 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
             </div>
           </DrawerBody>
           <DrawerFooter>
-            <Pagination
-              currentPage={pagination_shippin_product_branch.currentPag}
-              nextPage={pagination_shippin_product_branch.nextPag}
-              previousPage={pagination_shippin_product_branch.prevPag}
-              totalItems={pagination_shippin_product_branch.total}
-              totalPages={pagination_shippin_product_branch.totalPag}
-              onPageChange={(page) => {
-                OnGetShippinProductBranch(
-                  selectedBranch?.id ?? 0,
-                  page,
-                  10,
-                  filter.name,
-                  filter.category,
-                  filter.supplier,
-                  filter.code
-                );
-              }}
-            />
+            {pagination_shippin_product_branch.total > 0 && (
+              <Pagination
+                currentPage={pagination_shippin_product_branch.currentPag}
+                nextPage={pagination_shippin_product_branch.nextPag}
+                previousPage={pagination_shippin_product_branch.prevPag}
+                totalItems={pagination_shippin_product_branch.total}
+                totalPages={pagination_shippin_product_branch.totalPag}
+                onPageChange={(page) => {
+                  OnGetShippinProductBranch(
+                    selectedBranch?.id ?? 0,
+                    page,
+                    10,
+                    filter.name,
+                    filter.category,
+                    filter.supplier,
+                    filter.code
+                  );
+                }}
+              />
+            )}
+
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
