@@ -99,3 +99,15 @@ export interface CustomerDirection {
     status: number;
     customer: Customer;
   }
+
+  export interface IGetCustomerInfo {
+  ok: true
+  status: number
+  customer: CustomerInfo
+}
+
+export interface CustomerInfo {
+  id: number,
+  nombre: string,
+  correo: string
+}

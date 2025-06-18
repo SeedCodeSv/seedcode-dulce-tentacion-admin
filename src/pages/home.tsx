@@ -55,6 +55,7 @@ function Home() {
   const showPdf = useDisclosure();
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [unseen, setUnseen] = useState(false)
 
 
   const [openPopover, setOpenPopover] = useState<string | null>(null)
@@ -156,6 +157,10 @@ function Home() {
       case 'download-json':
         downloadJSON(sale);
         break;
+      case 'resend-email':
+        setUnseen(true)
+
+        return;
       default:
         toast.error(`Acción desconocida:${key}`);
     }
@@ -197,6 +202,9 @@ function Home() {
               id={user!.transmitterId}
               path={sale.pathJson}
               tipoDte={sale.tipoDte}
+              onClose={() => {
+                setUnseen(false)
+              }}
             />
           </ListboxItem>
 
@@ -239,7 +247,7 @@ function Home() {
                   ) : (
                     <div>
                       <TableComponent
-                      className='pt-0'
+                        className='pt-0'
                         headers={["Nº", "Nombre", "Total"]}
                       >
                         {sales_table_day.map((sl, index) => (
@@ -264,61 +272,68 @@ function Home() {
             <Tab key='Details' title="Ventas detalladas">
               {loading_sales_by_table_details ? (
                 <>
-                  <LoadingTable/>
+                  <LoadingTable />
                 </>
               ) : (
-                 <TableComponent
-              headers={['Nº de control', 'Sucursal', 'Estado', 'Total', 'Acciones']}
-            >
-                      {sales_table_day_details.map((sale, index) => (
-                        <>
+                <TableComponent
+                  headers={['Nº de control', 'Sucursal', 'Estado', 'Total', 'Acciones']}
+                >
+                  {sales_table_day_details.map((sale, index) => (
+                    <>
 
-                          <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.numeroControl}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sale.employee.branch.name}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              <>
-                                <Chip
-                                  classNames={{
-                                    content: 'text-white text-sm !font-bold px-3',
-                                  }}
-                                  color={
-                                    sale.salesStatus.name === 'CONTINGENCIA'
-                                      ? 'warning'
-                                      : sale.salesStatus.name === 'PROCESADO'
-                                        ? 'success'
-                                        : 'danger'
-                                  }
-                                >
-                                  {sale.salesStatus.name}
-                                </Chip>
-                              </>
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              ${sale.montoTotalOperacion}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              <Popover showArrow
-                                isOpen={openPopover === sale.pathJson}
-                                onOpenChange={() => togglePopover(sale.pathJson)}>
-                                <PopoverTrigger>
-                                  <Button isIconOnly onPress={() => togglePopover(sale.pathJson)}>
-                                    <EllipsisVertical size={20} />
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-1">
-                                  {renderSaleActions(sale)}
-                                </PopoverContent>
-                              </Popover>
-                            </td>
-                          </tr>
-                        </>
-                      ))}
-                   </TableComponent>)}
+                      <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {sale.numeroControl}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {sale.employee.branch.name}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          <>
+                            <Chip
+                              classNames={{
+                                content: 'text-white text-sm !font-bold px-3',
+                              }}
+                              color={
+                                sale.salesStatus.name === 'CONTINGENCIA'
+                                  ? 'warning'
+                                  : sale.salesStatus.name === 'PROCESADO'
+                                    ? 'success'
+                                    : 'danger'
+                              }
+                            >
+                              {sale.salesStatus.name}
+                            </Chip>
+                          </>
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          ${sale.montoTotalOperacion}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          <Popover
+                            classNames={{
+                              content: unseen
+                                ? 'opacity-0 invisible pointer-events-none'
+                                : 'bg-white',
+                            }}
+                            isOpen={openPopover === sale.pathJson}
+                            showArrow={!unseen}
+                            onOpenChange={() => togglePopover(sale.pathJson)}
+                          >
+                            <PopoverTrigger>
+                              <Button isIconOnly onPress={() => togglePopover(sale.pathJson)}>
+                                <EllipsisVertical size={20} />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="p-1">
+                              {renderSaleActions(sale)}
+                            </PopoverContent>
+                          </Popover>
+                        </td>
+                      </tr>
+                    </>
+                  ))}
+                </TableComponent>)}
             </Tab>
           </Tabs>
         </div>
