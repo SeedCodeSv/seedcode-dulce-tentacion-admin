@@ -7,15 +7,15 @@ export interface Product {
   id: number;
   name: string;
   description: string;
-  code: string;
-  isActive: boolean;
-  tipoDeItem: string;
   tipoItem: string;
+  tipoDeItem: string;
   uniMedida: string;
   unidaDeMedida: string;
+  productType: string,
+  code: string;
+  isActive: boolean;
   subCategoryId: number;
   subCategory: SubCategory;
-  productType: string,
   recipeBook?:  RecipeBook ;
 }
 

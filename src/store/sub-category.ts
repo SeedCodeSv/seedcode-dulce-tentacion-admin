@@ -9,6 +9,7 @@ import {
   delete_sub_category,
   get_sub_categories_list,
   get_sub_categories_paginated,
+  get_subcategories,
   update_sub_category,
 } from '../services/sub_categories.service';
 import { ISubCategoryPayload } from '../types/sub_categories.types';
@@ -28,6 +29,16 @@ export const useSubCategoryStore = create<SubCategoryStore>((set, get) => ({
   },
   loading_sub_categories: false,
   sub_categories: [],
+  subcategories: [],
+  getSubcategories(id) {
+    get_subcategories(id)
+      .then((subcategories) =>
+        set({ subcategories: subcategories.data.subCategories })
+      )
+      .catch(() => {
+        set({ subcategories: [] });
+      });
+  },
   getSubCategoriesList() {
     get_sub_categories_list()
       .then(({ data }) => set({ sub_categories: data.subCategories }))

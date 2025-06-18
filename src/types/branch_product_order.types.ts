@@ -1,5 +1,6 @@
-import { BranchProduct, Product } from "./branch_products.types";
+import { BranchProduct } from "./branch_products.types";
 import { Branches } from "./branches.types";
+import { Product } from "./products.types";
 
 export interface IGetBranchProductOrderPaginated {
   ok: boolean;
@@ -57,11 +58,7 @@ export interface IGetBranchProductPaginated {
   prevPag: number
   status: number
 }
-export interface IGetBranchProductByCode {
-  ok: boolean
-  message: string
-  product: BranchProduct
-}
+
 export interface Supplier {
   id: number
   nombre: string

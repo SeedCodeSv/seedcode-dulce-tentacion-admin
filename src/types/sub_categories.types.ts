@@ -35,6 +35,12 @@ export interface CategoryProduct {
   name: string
   isActive?: boolean
 }
+
+ export interface IGetSubCategory {
+    ok: boolean;
+    status: number;
+    subCategories: ISubCategory[];
+  }
 export interface PropsUpdateEmployee {
   data?: Employee | undefined;
 

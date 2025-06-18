@@ -20,10 +20,10 @@ import * as yup from 'yup';
 import { useCategoriesStore } from '../../store/categories.store';
 import { Product } from '../../types/products.types';
 import { useProductsStore } from '../../store/products.store';
-import { useSubCategoriesStore } from '../../store/sub-categories.store';
 
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
+import { useSubCategoryStore } from '@/store/sub-category';
 
 interface Props {
   product?: Product;
@@ -35,7 +35,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
   const service = new SeedcodeCatalogosMhService();
   const unidadDeMedidaList = service.get014UnidadDeMedida();
   const itemTypes = service.get011TipoDeItem();
-  const { getSubcategories, subcategories } = useSubCategoriesStore();
+  const { getSubcategories, subcategories } = useSubCategoryStore();
 
   const { list_categories, getListCategories } = useCategoriesStore();
   const { patchProducts } = useProductsStore();

@@ -8,6 +8,8 @@ export interface SubCategoryStore {
   sub_categories: ISubCategory[];
   sub_categories_paginated: IGetSubCategoriesPaginated;
   loading_sub_categories: boolean;
+   subcategories: ISubCategory[];
+    getSubcategories: (id:number) => void;
   getSubCategoriesList: () => void;
   getSubCategoriesPaginated: (page: number, limit: number, name: string, isActive?: number) => void;
   postSubCategory: (payload: ISubCategoryPayload) => Promise<{ ok: boolean }>;
@@ -15,4 +17,9 @@ export interface SubCategoryStore {
   deleteSubCategory: (id: number) => Promise<boolean>;
   activateSubCategory: (id: number) => Promise<boolean>;
   activateSubCategories: (id: number) => Promise<void>;
+}
+
+export interface ISubCategoryStore{
+    subcategories: ISubCategory[];
+    getSubcategories: (id:number) => void;
 }

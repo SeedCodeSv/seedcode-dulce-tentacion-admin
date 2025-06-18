@@ -5,6 +5,7 @@ import { get_token } from '../storage/localStorage';
 import {
   IGetListSubCategories,
   IGetSubCategoriesPaginated,
+  IGetSubCategory,
   ISubCategoryPayload,
 } from '../types/sub_categories.types';
 
@@ -89,3 +90,13 @@ export const activate_subCategory = (id: number) => {
     }
   );
 };
+
+export const get_subcategories = (id: number) => {
+    const token = get_token();
+
+    return axios.get<IGetSubCategory>(API_URL + `/sub-categories/by-category/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };

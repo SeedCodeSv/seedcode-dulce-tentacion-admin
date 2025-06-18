@@ -27,10 +27,10 @@ import { verify_code_product } from '@/services/products.service';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useCategoriesStore } from '@/store/categories.store';
-import { useSubCategoriesStore } from '@/store/sub-categories.store';
 import { useProductsStore } from '@/store/products.store';
 import { preventLetters } from '@/utils';
 import { typesProduct } from '@/utils/constants';
+import { useSubCategoryStore } from '@/store/sub-category';
 
 type ProductOrder = Product & { quantity: number; performanceQuantity: string; cost: number };
 
@@ -61,7 +61,7 @@ function GeneralProductInfo({
   const [includeReceipt, setIncludeReceipt] = useState(false);
 
   const { list_categories } = useCategoriesStore();
-  const { getSubcategories, subcategories } = useSubCategoriesStore();
+  const { getSubcategories, subcategories } = useSubCategoryStore();
 
   const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
 
