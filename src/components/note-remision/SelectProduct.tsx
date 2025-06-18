@@ -10,7 +10,7 @@ import {
   Input,
   useDisclosure,
 } from '@heroui/react';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ArrowLeft, Badge, BarChart3, Barcode, Check, CreditCard, DollarSign, Grid3X3, Hash, Package, Search, Sparkles, Table, Tag } from 'lucide-react';
 import classNames from 'classnames';
@@ -24,6 +24,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import TdGlobal from '@/themes/ui/td-global';
+import { ThemeContext } from '@/hooks/useTheme';
 
 type DisclosureProps = ReturnType<typeof useDisclosure>;
 
@@ -60,7 +61,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     OnClearProductSelected
   } = useShippingBranchProductBranch();
   const { list_categories, getListCategories } = useCategoriesStore();
-
+  const { context, theme } = useContext(ThemeContext)
   const productRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -132,7 +133,8 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
 
     OnAddProductSelected(selectedProduct!)
   }
-
+  const colorfrom = theme.colors[context].buttons.colors.secondary
+  const colorPrim = theme.colors[context].buttons.colors.primary
 
   return (
     <>
@@ -152,11 +154,11 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                   onClick={() => {
                     modalProducts.onClose()
                   }}
-               
+
                 >
                   <ArrowLeft size={24}
                   />
-                  <p className='dark:text-white' 
+                  <p className='dark:text-white'
                   >Regresar</p>
 
                 </button>
@@ -166,7 +168,15 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       {/* Icono y Título */}
                       <div className="flex items-center gap-4 flex-shrink-0">
                         <div className="relative">
-                          <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
+                          <div
+                            className={
+                              `w-12 h-12
+                                                            rounded-2xl flex items-center justify-center shadow-lg`
+                            }
+                            style={{
+                              background: `linear-gradient(to bottom right, ${colorPrim}, ${colorfrom})`
+                            }}
+                          >
                             <Package className="w-6 h-6 text-white" />
                           </div>
                           <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
@@ -303,7 +313,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                             const colorFocus3 = Colors.Secondary
 
                             return (
-                             
+
                               <div
                                 key={bp.id}
                                 ref={(el) => (productRefs.current[index] = el)}
@@ -323,7 +333,8 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   if (e.key === 'Enter') {
                                     handleSelect(bp.id);
                                     setSelectedIndex(index);
-                                  }}}
+                                  }
+                                }}
 
                               >
                                 {isSelected && (

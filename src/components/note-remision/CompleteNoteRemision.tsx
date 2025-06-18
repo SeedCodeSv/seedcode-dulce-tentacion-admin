@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {
   Button,
   Input,
@@ -24,6 +24,7 @@ import { get_employee_by_code } from '@/services/employess.service'
 import { formatSimpleDate, getElSalvadorDateTime } from '@/utils/dates'
 import { useEmployeeStore } from '@/store/employee.store'
 import { Motivos_Complet } from '@/utils/constants'
+import { ThemeContext } from '@/hooks/useTheme'
 
 interface Props {
   visibled: UseDisclosureProps
@@ -37,6 +38,7 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
   const globalStyles = useGlobalStyles()
   const [isLoading, setIsLoading] = useState(false)
   const { user } = useAuthStore()
+  const { context, theme } = useContext(ThemeContext)
   const [employeeCode, setEmployeeCode] = useState('')
   const { getEmployeesByBranch, employee_list } = useEmployeeStore()
   const [motivoComplet, setMotivoComplet] = useState('')
@@ -234,10 +236,23 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
                   {editableDetails.map((item, index) => (
                     <div
                       key={index}
-                      className="bg-white dark:bg-gray-800 border border-emerald-300 shadow-sm hover:shadow-md transition-all rounded-xl p-4 flex flex-col gap-3"
+                      className={`bg-white dark:bg-gray-800
+                         shadow-sm hover:shadow-md transition-all rounded-xl 
+                         p-4 flex flex-col gap-3`}
+                      style={{
+                        borderColor: theme.colors[context].buttons.colors.primary,
+                        borderWidth: 1,
+                      }}
+
                     >
                       <div className="flex justify-between items-center">
-                        <h3 className="text-base font-semibold text-emerald-600 truncate max-w-full">
+                        <h3
+                          className="text-base font-semibold text-emerald-600 truncate max-w-full"
+                          style={{
+                            color: theme.colors[context].buttons.colors.primary
+                          }}
+
+                        >
                           {item.branchProduct.product.name} - {item?.branchProduct?.product?.code ?? 'N/A'}
                         </h3>
                         <span className="text-xs text-gray-500 dark:text-gray-400">Máx: {item.cantidadItem}</span>
@@ -273,7 +288,17 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
                             setEditableDetails(newDetails);
                           }}
                         />
-                        <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700">
+                        <span
+                          className="text-xs px-2 py-1 rounded-full text-emerald-700"
+                          style={{
+                            backgroundColor: theme.colors[context].buttons.colors.primary,
+                            color: theme.colors[context].buttons.textColor
+                          }}
+
+                        >
+
+
+
                           {item.cantidadItemEditada === 0
                             ? 'Sin productos'
                             : item.cantidadItemEditada === item.cantidadItem
@@ -288,9 +313,19 @@ export const CompleteNoteModal = ({ visibled, note, onClose, reload }: Props) =>
             </ModalBody>
             <ModalFooter>
               <Button
-                className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-6 py-2 rounded-xl shadow-lg"
+                // className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-6 py-2 rounded-xl shadow-lg"
                 isDisabled={isLoading}
                 isLoading={isLoading}
+                style={{
+                  backgroundImage: `linear-gradient(to right,
+                  ${theme.colors[context].buttons.colors.primary}, 
+                  ${theme.colors[context].buttons.colors.secondary})`,
+                  color: theme.colors[context].buttons.textColor,
+                  fontWeight: 600,
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: '0.75rem',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                }}
                 onClick={() => handleCompleteNote()}
               >
                 Completar Nota
