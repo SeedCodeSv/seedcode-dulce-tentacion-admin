@@ -14,7 +14,7 @@ export interface Identificacion {
   codigoGeneracion: string;
   tipoModelo: number;
   tipoOperacion: number;
-  tipoContingencia: string | null;
+  tipoContingencia: string | number| null;
   motivoContin: string | null;
   fecEmi: string;
   horEmi: string;
@@ -100,7 +100,6 @@ export interface Extension {
 export interface DocumentoNoteOfRemission {
   nit: string;
   passwordPri: string;
-
   dteJson: {
     identificacion: Identificacion;
     documentoRelacionado: string | null;

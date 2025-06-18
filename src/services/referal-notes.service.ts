@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IExportExcel, IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
+import { IExportExcel, IGetNoteReferalContingence, IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -59,4 +59,9 @@ export const get_invalidate_note_referaL = (id: number, page: number, limit: num
 
 export const detail_referal_note = (id: number) => {
   return axios.get<IResponseDetailNote>(`${API_URL}/referal-note/detail-note/${id}`)
+}
+
+
+export const get_referal_in_contingence=(id:number)=>{
+  return axios.get<IGetNoteReferalContingence>(API_URL+ `/referal-note/referal-contingence/${id}`)
 }

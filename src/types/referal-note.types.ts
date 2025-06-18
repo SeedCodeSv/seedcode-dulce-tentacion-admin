@@ -63,8 +63,18 @@ export interface ReferalNote {
   statusId: number;
   isCompleted?: boolean
   receivingEmployeeId?: number
+  receivingBranchId?: number,
+
 }
 
+export interface Notifications_Referal {
+  others:Others[],
+  referalNote:ReferalNote[]
+}
+export interface Others {
+  descripcion: string;
+  time?: number
+}
 export interface IExportNote extends ReferalNote {
   receivingBranchName?: string
 }
@@ -79,6 +89,10 @@ export interface IGetReferalNotes {
   status: number;
 }
 
+export interface IGetNoteReferalContingence {
+  ok: boolean
+  contingence_referal: ReferalNote[]
+}
 export interface IExportExcel {
   ok: boolean;
   referalNotes: IExportNote[];

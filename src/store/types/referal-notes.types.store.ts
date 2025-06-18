@@ -1,5 +1,5 @@
 import { IPagination } from '@/types/global.types';
-import { DetailNote, IReferal_JSON_Note, PayloadReferel, ReferalNote } from '@/types/referal-note.types';
+import { DetailNote, IReferal_JSON_Note, Others, PayloadReferel, ReferalNote } from '@/types/referal-note.types';
 import { SVFC_NRE_Firmado } from '@/types/svf_dte/nre.types';
 
 export interface ReferalNoteStore {
@@ -13,6 +13,8 @@ export interface ReferalNoteStore {
   pagination_referal_notesNot: IPagination
   detailNoteReferal: DetailNote[]
   hasNewNotification: boolean
+  contingence_referal_note: ReferalNote[]
+
   onGetReferalNotes: (
     id: number,
     page: number,
@@ -29,6 +31,7 @@ export interface ReferalNoteStore {
   getReferalNoteByBranch: (id: number, page: number, limit: number, important: boolean) => void
   getDetailNote: (id: number) => void
   setHasNewNotification: (value: boolean) => void
+  getReferalNoteContingence: (id: number) => void
 
 }
 
@@ -41,5 +44,7 @@ export interface DataNotification {
 
 export interface IReferalNoteStore {
   INVALIDATIONS_NOTIFICATIONS: DataNotification[]
+  OTHERS_NOTIFICATIONS: Others[]
+  saveOthersNotifications: (data: Others[]) => void
   saveNotifications: (data: DataNotification[]) => void
 }
