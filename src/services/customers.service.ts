@@ -5,7 +5,7 @@ import { IGetCustomerPagination, IGetCustomers, PayloadCustomer } from '../types
 import { get_token, get_user } from '../storage/localStorage';
 
 import { IGetUserById } from '@/types/user_by_id.types';
-import { IGetCustomerById } from '@/types/customer.types';
+import { IGetCustomerById, IGetCustomerInfo } from '@/types/customer.types';
 
 export const get_customers_pagination = (
   page = 1,
@@ -22,7 +22,7 @@ export const get_customers_pagination = (
 
   return axios.get<IGetCustomerPagination>(
     API_URL +
-      `/customers/all-paginated/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}` +
+      `/customers/all-paginated/${user?.pointOfSale?.branch.transmitterId ?? 0}` +
       '?page=' +
       page +
       '&limit=' +
@@ -81,7 +81,7 @@ export const get_customer = () => {
 
   return axios.get<IGetCustomers>(
     API_URL +
-      `/customers/list-by-transmitter/${user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0}`,
+      `/customers/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -96,7 +96,7 @@ export const get_customer_by_branch = () => {
 
   return axios.get<IGetCustomers>(
     API_URL +
-      `/customers/list-by-branch/${user?.correlative?.branch?.id ?? user?.pointOfSale?.branch?.id ?? 0}`,
+      `/customers/list-by-branch/${user?.pointOfSale?.branch?.id ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -127,3 +127,14 @@ export const get_customer_by_id = (id: number) => {
     },
   });
 };
+
+export const get_customer_email = (id: number) => {
+  const token = get_token() ?? ''
+
+  return axios.get<IGetCustomerInfo>(API_URL + `/customers/email/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}
+

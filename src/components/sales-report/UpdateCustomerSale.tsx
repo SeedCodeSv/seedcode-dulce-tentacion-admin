@@ -130,7 +130,6 @@ const UpdateCustomerSales = (props: Props) => {
       //---------------------------------------
     };
 
-    // console.log("sales", sale)
     props.handleSendToContingencia(sale, sale);
     props.onClose();
   };
