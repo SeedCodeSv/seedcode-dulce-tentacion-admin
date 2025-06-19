@@ -36,6 +36,7 @@ import { SaleDates } from "@/types/sales.types";
 import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
 import { get_pdf_fe_cfe } from "@/services/pdf.service";
 import { useAuthStore } from "@/store/auth.store";
+import { verifyApplyAnulation } from "@/utils/filters";
 
 function ListSales() {
   const styles = global_styles();
@@ -337,6 +338,25 @@ function ListSales() {
                               setUnseen(false)
                             }}
                           />
+                        </ListboxItem>
+                        <ListboxItem key="annulation"
+                          onPress={() => {
+                            const value = verifyApplyAnulation(
+                              sale.tipoDte,
+                              sale.fecEmi
+                            )
+
+                            if (value && sale.tipoDte === '03') {
+                              navigation('/annulation/03/' + sale.id)
+                            }
+
+                            if (value && sale.tipoDte === '01') {
+                              navigation('/annulation/01/' + sale.id)
+                            }
+                          }
+                          }
+                        >
+                          Invalidar
                         </ListboxItem>
                       </Listbox>
                     )}

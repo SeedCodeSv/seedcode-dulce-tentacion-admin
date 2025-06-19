@@ -29,6 +29,8 @@ import ProductSelledReportPage from '@/pages/ProductsSelledReport';
 import ProductOrderPage from '@/pages/product-order';
 import NotaRemisionProdutOrder from '@/components/product-order/note-refeal/nota-remision-product-order';
 import OrderProductionProductOrder from '@/components/product-order/production-order/order-production-product-order';
+import CreditNotePage from '@/pages/notes/CreditNotePage';
+import DebitNotePage from '@/pages/notes/DebitNotePage';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -252,6 +254,22 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/add-employee"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Notas de crédito') ? <CreditNotePage /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/credit-notes"
+      />
+        <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Notas de débito') ? <DebitNotePage /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/debit-notes"
       />
       <Route
         element={

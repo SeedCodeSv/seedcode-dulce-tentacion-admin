@@ -1,3 +1,6 @@
+import { IPagination } from "./global.types";
+import { Sale } from "./sales.types";
+
 export interface CreditContingence {
     id: number;
     numeroControl: string;
@@ -29,6 +32,9 @@ export interface CreditContingence {
     salesStatusId: number;
 }
 
+export interface SaleId {
+    id: number;
+}
 export interface IGetAllCreditNotes {
     ok: boolean;
     status: number;
@@ -38,9 +44,7 @@ export interface IGetAllCreditNotes {
 export interface Credit {
     id: number;
     pathJson: string;
-    sale: {
-        id: number;
-    }
+    sale: SaleId
 }
 
 export interface IGetCreditNote {
@@ -49,17 +53,13 @@ export interface IGetCreditNote {
     notaDeCredito: Credit;
 }
 
-export interface Sale {
-    id: number;
-}
-
 export interface NotaCredito {
     id: number;
     numeroControl: string;
     codigoGeneracion: string;
     fecEmi: string;
     horEmi: string;
-    sale: Sale;
+    sale: SaleId;
 }
 
 export interface IRecentCreditNotes {
@@ -76,3 +76,13 @@ export interface AnnulationSalePayload {
     typeDocResponsible: string;
     typeDocApplicant: string;
 }
+
+export interface CreditNote extends Sale {
+    sale: Sale;
+    saleId: number;
+}
+
+export interface IGetListCreditNotes extends IPagination {
+    credit_notes: CreditNote[]
+}
+

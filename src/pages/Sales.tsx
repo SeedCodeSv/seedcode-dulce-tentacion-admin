@@ -5,7 +5,7 @@ import ListSales from '@/components/sales-report/ListSales';
 function SalesPage() {
   return (
     <div>
-      <Layout title="Ventas por facturación electronica">
+      <Layout title="Ventas">
         <>
           <ListSales />
         </>

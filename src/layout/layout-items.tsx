@@ -32,7 +32,10 @@ import {
   FileCog,
   ClipboardList,
   FileBox,
-  ScanBarcode
+  ScanBarcode,
+  ScrollText,
+  Scroll,
+  StickyNote
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -208,6 +211,12 @@ export const LayoutItems = (props: Props) => {
   ];
   const linkReports = [
     {
+      viewName: 'Ventas',
+      to: '/sales',
+      icon: Tag,
+      label: 'Ventas',
+    },
+    {
       viewName: 'Ventas por Periodo',
       to: '/sales-by-period',
       icon: Calendar,
@@ -220,18 +229,12 @@ export const LayoutItems = (props: Props) => {
       label: 'Ventas por Productos',
     },
     {
-      viewName: 'Ventas',
-      to: '/sales',
-      icon: Tag,
-      label: 'Ventas facturación electronica',
-    },
-    {
       viewName: 'Contingencias',
       to: '/contingence-section',
       icon: DatabaseBackup,
       label: 'Contingencias',
     },
-     {
+    {
       viewName: 'Reporte ordenes de producción',
       to: '/OP-report',
       icon: ClipboardList,
@@ -249,7 +252,7 @@ export const LayoutItems = (props: Props) => {
       icon: ArrowDownUp,
       label: 'Movimientos',
     },
-     {
+    {
       viewName: 'Kardex',
       to: '/kardex',
       label: 'Kardex',
@@ -291,6 +294,22 @@ export const LayoutItems = (props: Props) => {
       label: 'Estados del Empleado',
     },
   ];
+
+  const linkNotes = [
+    {
+      viewName: 'Notas de crédito',
+      to: '/credit-notes',
+      icon: Scroll,
+      label: 'Notas de crédito',
+    },
+    {
+      viewName: 'Notas de débito',
+      to: '/debit-notes',
+      icon: StickyNote,
+      label: 'Notas de débito',
+    },
+  ];
+
   const linkAccounting = [
     {
       viewName: 'Corte Gran Z',
@@ -558,7 +577,6 @@ export const LayoutItems = (props: Props) => {
               </SidebarLinkGroup>
             </ul>
           </>
-
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup
@@ -605,7 +623,58 @@ export const LayoutItems = (props: Props) => {
               </SidebarLinkGroup>
             </ul>
           </>
-
+<ul className="flex flex-col gap-1.5">
+            <SidebarLinkGroup
+              activeCondition={
+                validate_pathname(pathname, [
+                  'debit-notes',
+                  'credit-notes'
+                ]) && openGroup === 'notas'
+              }
+              isOpen={openGroup === 'notas'}
+              onGroupClick={() => handleGroupClick('notas')}
+            >
+              {(handleClick, open) => (
+                <>
+                  <button
+                    className={classNames(
+                      'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
+                    )}
+                    style={{
+                      backgroundColor: validate_pathname(pathname, [
+                        'debit-notes',
+                        'credit-notes'
+                      ])
+                        ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
+                        : theme.colors[context].menu.background,
+                      color: theme.colors[context].menu.textColor,
+                    }}
+                    onClick={handleClick}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <ScrollText size={iconSize} />
+                      Notas
+                    </div>
+                    <ChevronDown
+                      className={classNames(open && ' rotate-180', 'items-end justify-end ')}
+                      size={iconSize}
+                    />
+                  </button>
+                  <motion.div
+                    animate={{
+                      opacity: open ? 1 : 0,
+                      height: open ? 'auto' : 0,
+                    }}
+                    className="overflow-hidden transform translate"
+                    initial={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <SidebarLinkList links={linkNotes} />
+                  </motion.div>
+                </>
+              )}
+            </SidebarLinkGroup>
+          </ul>
           <>
             <ul className="flex flex-col gap-1.5">
               <SidebarLinkGroup

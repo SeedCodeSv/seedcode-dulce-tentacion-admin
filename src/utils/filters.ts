@@ -1,3 +1,6 @@
+import moment from "moment";
+import { toast } from "sonner";
+
 import { RoleViewAction } from "../types/actions_rol.types";
 
 import { IBranchProductOrderQuantity, SupplierProducts } from "@/types/branch_product_order.types";
@@ -84,4 +87,42 @@ export const validate_pathname = (pathname: string, array_pathnames: string[]) =
   const validation = array_pathnames.some((item) => pathname.includes(item));
 
   return validation
+}
+
+export function verifyApplyAnulation(tipoDte: string, date: string) {
+  const fechaDTEParseada = moment(date, 'YYYY-MM-DD')
+
+  if (!fechaDTEParseada.isValid()) {
+    toast.error('Fecha inválida')
+
+    return false
+  }
+  const fechaActual = moment()
+  const daysDiference = fechaActual.diff(fechaDTEParseada, 'days')
+
+  if (tipoDte === '01') {
+    const daysLimit = 90
+
+    if (daysDiference > daysLimit) {
+      toast.error('DTE fuera del plazo de disponibilidad (3 meses)')
+
+      return false
+    }
+
+    return true
+  } else if (tipoDte === '03' || tipoDte === '06' || tipoDte === '05') {
+    const daysLimit = 1
+
+    if (daysDiference > daysLimit) {
+      toast.error('DTE fuera del plazo de disponibilidad (1 día)')
+
+      return false
+    }
+
+    return true
+  } else {
+    toast.error('Tipo de DTE inválido')
+
+    return false
+  }
 }

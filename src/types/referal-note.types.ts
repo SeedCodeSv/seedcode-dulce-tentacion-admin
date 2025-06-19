@@ -1,4 +1,4 @@
-import { Branch } from './branch_products.types';
+import { Branches } from './branches.types';
 import { Customer } from './customers.types';
 import { NRE_CuerpoDocumento, SVFC_NRE_Firmado } from './svf_dte/nre.types';
 
@@ -55,7 +55,7 @@ export interface ReferalNote {
   isActive: boolean;
   customer?: Customer;
   employee: Employee;
-  branch: Branch;
+  branch: Branches;
   status: Status;
   branchId: number;
   customerId?: any;

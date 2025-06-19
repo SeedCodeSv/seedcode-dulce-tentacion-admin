@@ -21,11 +21,13 @@ import { salesStore } from './types/sales.store.types';
 
 import { s3Client } from '@/plugins/s3';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
+import { get_recent_sales } from '@/services/report_contigence.service';
 export const useSalesStore = create<salesStore>((set, get) => ({
   sale_details: undefined,
   loading_creditos: false,
   creditos_by_month: [],
   factura_totals: 0,
+  recentSales: [],
   facturacion_ccfe: [],
   facturas_by_month: [],
   loading_sale: false,
@@ -233,5 +235,14 @@ export const useSalesStore = create<salesStore>((set, get) => ({
           contingence_sales: [],
         });
       });
+  },
+  async getRecentSales(id) {
+    await get_recent_sales(id)
+      .then((res) => {
+        set({ recentSales: res.data.sales })
+      })
+      .catch(() => {
+        set({ recentSales: [] })
+      })
   },
 }));

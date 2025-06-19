@@ -14,7 +14,7 @@ import { useNavigate, useParams } from 'react-router';
 import useGlobalStyles from '../global/global.styles';
 
 import { formatCurrency } from '@/utils/dte';
-import { useReportNoteSalesStore } from '@/store/report_notes_sale.store';
+import { useReportNoteSalesStore } from '@/store/reports/report_notes_sale.store';
 import { get_sale_pdf_credit_note } from '@/services/sales.service';
 import Layout from '@/layout/Layout';
 import { TableComponent } from '@/themes/ui/table-ui';
@@ -53,87 +53,87 @@ function NotesCreditBySale() {
             </button>
           </div>
           <TableComponent
-          headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
+            headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
           >
-                {notasCreditos.map((sale, index) => (
-                  <tr key={index} className="border-b border-slate-200">
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      {sale.fecEmi} - {sale.horEmi}
-                    </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      {sale.numeroControl}
-                    </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      {sale.selloRecibido}
-                    </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      <Chip
-                        classNames={{
-                          content: 'text-white text-sm !font-bold px-3',
-                        }}
-                        color={(() => {
-                          switch (sale.salesStatus.name) {
-                            case 'PROCESADO':
-                              return 'success';
-                            case 'ANULADA':
-                              return 'danger';
-                            case 'CONTINGENCIA':
-                              return 'warning';
-                            default:
-                              return 'default';
-                          }
-                        })()}
-                      >
-                        {sale.salesStatus.name}
-                      </Chip>
-                    </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      {formatCurrency(Number(sale.montoTotalOperacion))}
-                    </td>
-                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                      {!pdfPath && (
-                        <Popover showArrow>
-                          <PopoverTrigger>
-                            <Button isIconOnly>
-                              <EllipsisVertical size={20} />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="p-1">
-                            <Listbox
-                              aria-label="Actions"
-                              className="dark:text-white"
-                            >
+            {notasCreditos.map((sale, index) => (
+              <tr key={index} className="border-b border-slate-200">
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  {sale.fecEmi} - {sale.horEmi}
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  {sale.numeroControl}
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  {sale.selloRecibido}
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <Chip
+                    classNames={{
+                      content: 'text-white text-sm !font-bold px-3',
+                    }}
+                    color={(() => {
+                      switch (sale.salesStatus.name) {
+                        case 'PROCESADO':
+                          return 'success';
+                        case 'ANULADA':
+                          return 'danger';
+                        case 'CONTINGENCIA':
+                          return 'warning';
+                        default:
+                          return 'default';
+                      }
+                    })()}
+                  >
+                    {sale.salesStatus.name}
+                  </Chip>
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  {formatCurrency(Number(sale.montoTotalOperacion))}
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  {!pdfPath && (
+                    <Popover showArrow>
+                      <PopoverTrigger>
+                        <Button isIconOnly>
+                          <EllipsisVertical size={20} />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-1">
+                        <Listbox
+                          aria-label="Actions"
+                          className="dark:text-white"
+                        >
+                          <ListboxItem
+                            key="show-pdf"
+                            classNames={{ base: 'font-semibold' }}
+                            color="danger"
+                            variant="flat"
+                            onPress={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
+                          >
+                            Ver comprobante
+                          </ListboxItem>
+                          <>
+                            {sale.salesStatus.name === "PROCESADO" &&
                               <ListboxItem
-                                key="show-pdf"
+                                key="invalidate"
                                 classNames={{ base: 'font-semibold' }}
                                 color="danger"
                                 variant="flat"
-                                onClick={handleGetPDF.bind(null, sale.id, sale.tipoDte)}
+                                onPress={() => navigation('/annulation/05/' + sale.id)}
                               >
-                                Ver comprobante
+                                Invalidar
                               </ListboxItem>
-                              <>
-                                {sale.salesStatus.name === "PROCESADO" &&
-                                  <ListboxItem
-                                    key="invalidate"
-                                    classNames={{ base: 'font-semibold' }}
-                                    color="danger"
-                                    variant="flat"
-                                    onClick={() => navigation('/annulation/05/' + sale.id)}
-                                  >
-                                    Invalidar
-                                  </ListboxItem>
-                                }
-                              </>
-                            </Listbox>
-                          </PopoverContent>
-                        </Popover>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-             </TableComponent>
+                            }
+                          </>
+                        </Listbox>
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </TableComponent>
           {loadingPdf && (
             <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
               <div className="flex flex-col items-center justify-center w-full h-full">

@@ -1,4 +1,5 @@
 import { SaleEmployee } from "./sales.types";
+import { ISalesStatus } from "./sales_status.types";
 import { Supplier } from "./supplier.types";
 
 export interface IExcludedSubjects {
@@ -9,7 +10,7 @@ export interface IExcludedSubjects {
     boxId: number;
     employee: SaleEmployee;
     employeeId: number;
-    status: SalesStatus;
+    status: ISalesStatus;
     statusId: number;
     numeroControl: string;
     codigoGeneracion: string;
@@ -31,13 +32,6 @@ export interface IExcludedSubjects {
     totalLetras: string;
     isActive: boolean;
 }
-
-export interface SalesStatus {
-    id: number;
-    name: string;
-    isActive: boolean;
-}
-
 export interface Box {
     id: number;
     start: string;

@@ -2,6 +2,7 @@ import { useParams } from 'react-router';
 
 import Annulation05 from './anulaciones/Annulation05';
 import Annulation06 from './anulaciones/Annulation06';
+import Invalidation01 from './anulaciones/Invalidation01';
 
 import Layout from '@/layout/Layout';
 
@@ -16,8 +17,8 @@ function Annulation() {
             return 'Anulación de Nota de Débito';
           case '05':
             return 'Anulación de Nota de Crédito';
-          //   case '01':
-          //     return 'Anulación de Factura';
+          case '03':
+            return 'Anulación de Credito';
           default:
             return 'Anulación de Factura';
         }
@@ -32,8 +33,10 @@ function Annulation() {
                   return <Annulation06 id={params.id ?? ''} />;
                 case '05':
                   return <Annulation05 id={params.id ?? ''} />;
-                // case '01':
-                //   return <Invalidation01 id={params.id ?? ''} />;
+                case '03':
+                  return <Invalidation01 id={params.id ?? ''} />;
+                case '01':
+                  return <Invalidation01 id={params.id ?? ''} />;
                 default:
                   return 'Anulación de Factura';
               }

@@ -411,6 +411,18 @@
       ]
     },
     {
+      "view": "Notas de crédito",
+      "actions": [
+        "Mostrar"
+      ]
+    },
+    {
+      "view": "Notas de débito",
+      "actions": [
+        "Mostrar"
+      ]
+    },
+    {
       "view": "Ver invalidaciones",
       "actions": [
         "Mostrar",

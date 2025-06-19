@@ -1,4 +1,6 @@
+import { Employee } from './employees.types';
 import { IPagination } from './global.types';
+import { ISalesStatus } from './sales_status.types';
 
 export interface IResponseContigence {
   ok: boolean;
@@ -29,6 +31,7 @@ export interface Sale {
   horEmi: string;
   selloRecibido: string;
   sello: boolean;
+  selloInvalidation: string;
   codeEmployee: string;
   totalNoSuj: string;
   totalExenta: string;
@@ -51,17 +54,14 @@ export interface Sale {
   customerId: number;
   customer: Customer;
   employee: Employee;
-  direccion: Direccion;
-  salesStatus: {
-    id: number
-    isActive: boolean
-    name: string
-  }
   employeeId: number;
-  selloInvalidation: string;
+  salesStatus: ISalesStatus
+  salesStatusId: number;
   tipoItem?: number;
   uniMedida?: number;
   tipoDocumento?: string;
+    typeVoucher: string;
+
 }
 export interface Direccion {
   id: number;
@@ -92,13 +92,7 @@ export interface Customer {
   direccionId: number;
   transmitterId: number;
 }
-export interface Employee {
-  id: number;
-  fullName: string;
-  phone: string;
-  isActive: boolean;
-  branchId: number;
-}
+
 
 export interface OnGetSalesContigence {
   (id: number, page: number, limit: number, startDate: string, endDate: string): void;

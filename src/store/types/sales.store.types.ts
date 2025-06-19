@@ -1,4 +1,4 @@
-import { ISale_JSON_Debito, ISaleByItem, SaleContingence, SaleDates, SaleDetails } from '../../types/sales.types';
+import { ISale_JSON_Debito, ISaleByItem, Sale, SaleContingence, SaleDates, SaleDetails } from '../../types/sales.types';
 
 import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
 import { SalesByDay } from '@/types/iva_fe';
@@ -20,9 +20,10 @@ export interface salesStore {
   contingence_sales: SaleContingence[];
   saleByItem: ISaleByItem[],
   loadingSalesByItem: boolean,
+  recentSales: Sale[]
   getSaleByItem: (transId: number, startDate: string, endDate: string, branches: number[] | undefined) => void;
   getFeMonth: (branchId: number, month: number, year: number) => void;
-  getCffMonth: (branchId: number, month: string, year:number) => void;
+  getCffMonth: (branchId: number, month: string, year: number) => void;
   postSales: (
     pdf: string,
     dte: string,
@@ -46,4 +47,6 @@ export interface salesStore {
   getNotesOfSale: (id: number) => Promise<{ debits: number; credits: number }>;
   getJsonSale: (path: string) => void;
   getSalesInContingence: (id: number) => void;
+  getRecentSales: (id: number) => Promise<void>
+
 }

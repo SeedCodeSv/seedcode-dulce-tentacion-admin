@@ -1,6 +1,7 @@
 import { Branches } from './branches.types';
 import { Employee } from './employees.types';
-import { Customer, Direccion } from './report_contigence';
+import { Customer } from './report_contigence';
+import { ISalesStatus } from './sales_status.types';
 import { CF_CuerpoDocumentoItems, SVFC_CF_Firmado } from './svf_dte/cf.types';
 
 export interface IGetSales {
@@ -19,12 +20,11 @@ export interface Sale {
   numeroControl: string;
   codigoGeneracion: string;
   tipoDte: string;
-  typeVoucher: string;
   fecEmi: string;
   horEmi: string;
   selloRecibido: string;
-  selloInvalidation: string;
   sello: boolean;
+  selloInvalidation: string;
   codeEmployee: string;
   totalNoSuj: string;
   totalExenta: string;
@@ -47,18 +47,11 @@ export interface Sale {
   customerId: number;
   customer: Customer;
   employee: Employee;
-  direccion: Direccion;
   employeeId: number;
   salesStatusId: number;
-  salesStatus: SaleStatus;
+  salesStatus: ISalesStatus;
+  typeVoucher: string;
 }
-
-interface SaleStatus {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
-
 export interface Product {
   id: number;
   name: string;
@@ -189,12 +182,6 @@ export interface SaleEmployee {
   };
 }
 
-export interface SalesStatu {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
-
 export interface Box {
   id: number;
   start: string;
@@ -240,7 +227,7 @@ export interface SaleDates {
   employee: SaleEmployee;
   box: Box;
   customer: Customer;
-  salesStatus: SalesStatu;
+  salesStatus: ISalesStatus;
   boxId: number;
   customerId: number;
   employeeId: number;

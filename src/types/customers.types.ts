@@ -1,3 +1,4 @@
+
 export interface CustomerDirection {
   id: number;
   departamento: string;
@@ -71,10 +72,20 @@ export interface PayloadCustomer {
   branchId?: number;
 }
 
-export interface CustomerDirection {
-  municipio: string;
-  nombreMunicipio: string;
-  departamento: string;
-  nombreDepartamento: string;
-  complemento: string;
+ export interface IGetCustomerById {
+    ok: true;
+    status: number;
+    customer: Customer;
+  }
+
+  export interface IGetCustomerInfo {
+  ok: true
+  status: number
+  customer: CustomerInfo
+}
+
+export interface CustomerInfo {
+  id: number,
+  nombre: string,
+  correo: string
 }

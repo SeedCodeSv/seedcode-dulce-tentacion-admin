@@ -1,3 +1,6 @@
+import { IPagination } from "./global.types";
+import { Sale } from "./sales.types";
+
 export interface Debit {
     id: number;
     pathJson: string;
@@ -12,7 +15,7 @@ export interface Debit {
     debit: Debit;
   }
   
-  export interface Sale {
+  export interface SaleId {
     id: number;
   }
   
@@ -22,7 +25,7 @@ export interface Debit {
     codigoGeneracion: string;
     fecEmi: string;
     horEmi: string;
-    sale: Sale;
+    sale: SaleId;
   }
   
   export interface IRecentDebitNotes {
@@ -75,5 +78,14 @@ export interface IGetAllDebitNotes {
 	ok: boolean;
 	status: number;
 	debits: DebitContingence[];
+}
+
+export interface DebitNote extends Sale {
+    sale: Sale;
+    saleId: number;
+}
+
+export interface IGetListDebitNotes extends IPagination {
+    debit_notes: DebitNote[]
 }
   

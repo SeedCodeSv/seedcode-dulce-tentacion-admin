@@ -70,3 +70,25 @@ export function formatAnnulations05(values: SVFE_InvalidacionCredito_SEND, sello
 
     return annulations_data
 }
+
+export function formatAnnulations01(values: SVFE_InvalidacionCredito_SEND, selloInvalidation: string, employeeId: number, motivo: string) {
+    const annulations_data: Annulations = {
+        codigoGeneracion: values.dteJson.documento?.codigoGeneracion ?? "N/A",
+        numeroControl: values.dteJson.documento?.numeroControl ?? "N/A",
+        selloRecibido: values.dteJson.documento?.selloRecibido ?? "N/A",
+        selloInvalidacion: selloInvalidation ?? 'N/A',
+        employeeId: employeeId ?? 0,
+        nombreSolicita: values?.dteJson?.motivo?.nombreSolicita ?? 'N/A',
+        tipoDocumentoSolicita: values?.dteJson?.motivo?.tipDocSolicita ?? 'N/A',
+        numDocumentoSolicita: values?.dteJson?.motivo?.numDocSolicita ?? 'N/A',
+        tipoDte: values?.dteJson?.documento.tipoDte ?? "N/A",
+        tipoAnulacion: motivo ?? 'N/A',
+        fecAnula: getElSalvadorDateTime().fecEmi,
+        horAnula: getElSalvadorDateTime().horEmi,
+        nombreResponsable: values?.dteJson?.motivo?.nombreResponsable ?? 'N/A',
+        tipoDocumentoResponsable: values?.dteJson?.motivo?.tipDocResponsable ?? 'N/A',
+        numDocumentoResponsable: values?.dteJson?.motivo?.numDocResponsable ?? 'N/A',
+    }
+
+    return annulations_data
+}

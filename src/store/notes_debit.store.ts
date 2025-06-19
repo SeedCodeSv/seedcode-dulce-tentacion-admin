@@ -6,10 +6,11 @@ import { toast } from "sonner";
 
 import { IDebitNotes } from "./types/notas_debito.store.types";
 
-import { get_contingence_debit_notes, get_debit_notes_by_id, get_recent_debit_notes } from "@/services/debit_notes.service";
+import { get_contingence_debit_notes, get_debit_notes, get_debit_notes_by_id, get_recent_debit_notes } from "@/services/debit_notes.service";
 import { s3Client } from "@/plugins/s3";
 import { SPACES_BUCKET } from "@/utils/constants";
 import { SVFE_ND_Firmado } from "@/types/svf_dte/nd.types";
+import { initialPagination } from "@/utils/utils";
 
 
 export const useDebitNotes = create<IDebitNotes>((set, get) => ({
@@ -18,6 +19,11 @@ export const useDebitNotes = create<IDebitNotes>((set, get) => ({
     debit_note: undefined,
     recent_debit_notes: [],
     contingence_debits: [],
+     debit_notes_list: {
+        debit_notes: [],
+        ...initialPagination
+      },
+      loading: false,
     onGetContingenceNotes(id) {
         get_contingence_debit_notes(id)
             .then((res) => {
@@ -67,5 +73,20 @@ export const useDebitNotes = create<IDebitNotes>((set, get) => ({
                 toast.error("Error al cargar la nota de débito");
                 set({ json_debit: undefined, loading_debit: false})
             })
+    },
+    onGetDebitNotesPaginated(params) {
+         set({loading: true})
+            get_debit_notes(params).then(({ data }) => {
+              set({ debit_notes_list: data, loading: false});
+            })
+              .catch(() => {
+                set({
+                  debit_notes_list: {
+                    debit_notes: [],
+                    ...initialPagination
+                  },
+                  loading: false
+                });
+              });
     },
 }))

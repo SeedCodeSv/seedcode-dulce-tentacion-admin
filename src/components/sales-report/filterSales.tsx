@@ -32,11 +32,8 @@ const Filters = (props: FiltersProps) => {
     getBranchesList();
   }, []);
 
-//   useEffect(() => {
-//     getPointOfSalesList(props.branch);
-//   }, [props.branch]);
-
   const estadosV = [
+    { label: 'TODOS', value: '' },
     { label: 'PROCESADO', value: 'PROCESADO' },
     { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
     { label: 'INVALIDADO', value: 'INVALIDADO' },
@@ -55,11 +52,10 @@ const Filters = (props: FiltersProps) => {
   }, [point_of_sales_list]);
 
 
-
   return (
-   <ResponsiveFilterWrapper classButtonLg="w-1/3"
-   classLg="w-full grid grid-cols-3 gap-5"
-    withButton={false}
+    <ResponsiveFilterWrapper classButtonLg="w-1/3"
+      classLg="w-full grid grid-cols-3 gap-5"
+      withButton={false}
     >
       <Input
         className="z-0"
@@ -90,7 +86,7 @@ const Filters = (props: FiltersProps) => {
         onChange={(e) => props.setEndDate(e.target.value)}
       />
       <Select
-        className ="z-0"
+        className="z-0"
         classNames={{
           label: 'text-sm font-semibold dark:text-white',
         }}
@@ -106,7 +102,7 @@ const Filters = (props: FiltersProps) => {
             getPointOfSalesList(branchId);
           } else {
             props.setBranch(0);
-             getPointOfSalesList(0);
+            getPointOfSalesList(0);
           }
         }}
       >
@@ -150,6 +146,9 @@ const Filters = (props: FiltersProps) => {
         variant="bordered"
         onChange={(e) => props.setTypeVoucher(e.target.value)}
       >
+         <SelectItem key="">
+          Todos
+        </SelectItem>
         <SelectItem key="01">
           FE - Factura Comercial
         </SelectItem>
@@ -165,6 +164,7 @@ const Filters = (props: FiltersProps) => {
         label="Mostrar por estado"
         labelPlacement="outside"
         placeholder="Selecciona un estado"
+        selectedKeys={[props.state.toString()]}
         value={props.state}
         variant="bordered"
         onChange={(e) => props.setState(e.target.value)}

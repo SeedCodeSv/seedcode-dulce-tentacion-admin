@@ -1,4 +1,5 @@
 import { IExcludedSubjects } from "./excluded_subjects.types"
+import { ISalesStatus } from "./sales_status.types"
 import { Supplier } from "./supplier.types"
 
 export interface SaleEmployee {
@@ -66,7 +67,7 @@ export interface IExcludedSubJects {
   employee: SaleEmployee
   box: Box
   subject: Supplier
-  status: SalesStatu
+  status: ISalesStatus
   boxId: number
   subjectId: number
   employeeId: number
@@ -75,11 +76,7 @@ export interface IExcludedSubJects {
   details: Detail[]
   selloInvalidation: string
 }
-export interface SalesStatu {
-  id: number
-  name: string
-  isActive: boolean
-}
+
 export interface Box {
   id: number
   start: string

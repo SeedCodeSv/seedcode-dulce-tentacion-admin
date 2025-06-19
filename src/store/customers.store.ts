@@ -16,7 +16,7 @@ import { messages } from '../utils/constants';
 
 import { IUseCustomersStore } from './types/customers.store';
 
-import { IGetUserById } from '@/types/user_by_id.types';
+import { IGetCustomerById } from '@/types/customers.types';
 
 export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   loading: false,
@@ -33,7 +33,7 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
   customer: undefined,
   loading_customer: false,
   customer_list: [],
-  user_by_id: {} as IGetUserById,
+  user_by_id: {} as IGetCustomerById,
   loading_save: false,
   customer_type: '',
   saveCustomersPagination: (customer_pagination) => set({ customer_pagination }),
@@ -66,23 +66,6 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         set((state) => ({ ...state, customer_list: [] }));
       });
   },
-  // postCustomer: (payload) => {
-  //   return save_customers(payload)
-  //     .then(({ data }) => {
-  //       if (data) {
-  //         get().getCustomersPagination(1, 5, '', '', '', '');
-  //         toast.success(messages.success);
-  //         return true;
-  //       } else {
-  //         toast.warning(messages.error);
-  //         return false;
-  //       }
-  //     })
-  //     .catch(() => {
-  //       toast.warning(messages.error);
-  //       return false;
-  //     });
-  // },
   postCustomer: (payload) => {
     set({ loading_save: true });
 
@@ -108,20 +91,6 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         return false;
       });
   },
-  // patchCustomer: (payload, id) => {
-  //   update_customers(payload, id)
-  //     .then(({ data }) => {
-  //       if (data) {
-  //         get().getCustomersPagination(1, 5, '', '', '', '');
-  //         toast.success(messages.success);
-  //       } else {
-  //         toast.warning(messages.error);
-  //       }
-  //     })
-  //     .catch(() => {
-  //       toast.warning(messages.error);
-  //     });
-  // },
   patchCustomer: (payload, id) => {
     set({ loading_save: true });
 
@@ -173,17 +142,6 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
         return false;
       });
   },
-
-  // save_active_customer(id) {
-  //   activate_customer(id).then(({ data }) => {
-  //     if (data.ok) {
-  //       toast.success(messages.success);
-  //     } else {
-  //       toast.warning(messages.error);
-  //     }
-  //   });
-  // },
-
   save_active_customer(id) {
     return activate_customer(id)
       .then(() => {
@@ -201,7 +159,6 @@ export const useCustomerStore = create<IUseCustomersStore>((set, get) => ({
       return data;
     });
   },
-
   getCustomerById(id: number) {
     set((state) => ({ ...state, loading: true}))
     get_customer_by_id(id)
