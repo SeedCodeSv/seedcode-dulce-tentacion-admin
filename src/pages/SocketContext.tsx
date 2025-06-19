@@ -124,29 +124,6 @@ function SocketContext() {
     };
   }, [socket, user?.branchId]);
 
-  // useEffect(() => {
-  //   const handleContingence = (note: any) => {
-  //     toast.warning(`${note.descripcion} - ${note.fecha}`)
-  //     const newNotification = {
-  //       ...note,
-  //       descripcion: note?.descripcion ?? "N/A",
-  //       time
-  //         : Date.now()
-  //     };
-
-  //     getReferalNoteByBranch(user?.branchId ?? 0, 1, 5, false)
-  //     onGetReferalNotes(Number(user?.transmitterId), 1, 5, formatDate(), formatDate(), '', Number(user?.branchId))
-  //     const previous = useReferalNoteStore.getState().OTHERS_NOTIFICATIONS;
-
-  //     useReferalNoteStore.getState().saveOthersNotifications([...previous, newNotification]);
-  //   }
-
-  //   socket.on('processed-contingence-note-admin', handleContingence)
-
-  //   return () => {
-  //     socket.on('processed-contingence-note-admin', handleContingence)
-  //   }
-  // }, [])
   useEffect(() => {
     const handleContingence = (note: any) => {
       toast.warning(`${note.descripcion} - ${note.fecha}`)
@@ -174,7 +151,6 @@ function SocketContext() {
   useEffect(() => {
     const handleAnulation = (note: any) => {
       toast.warning(`${note.descripcion} - ${note.fecha}`)
-
       const newNotification = {
         ...note,
         data: note.data as ReferalNote,
@@ -186,28 +162,12 @@ function SocketContext() {
       useReferalNoteStore.getState().saveNotifications([...previous, newNotification]);
     }
 
-    socket.on(`new-invalidate-note-find-admin`, handleAnulation)
+    socket.on('new-invalidate-note-find-admin', handleAnulation)
 
     return () => {
-      socket.off(`new-invalidate-note-find-client`, handleAnulation)
+      socket.off('new-invalidate-note-find-admin', handleAnulation)
     }
-  }, [socket, user?.branchId])
-
-  useEffect(() => {
-    const handleAnulation = (note: any) => {
-      toast.warning(`${note.descripcion} - ${note.fecha}`)
-
-
-
-
-    }
-
-    socket.on(`new-invalidate-note-find-admin`, handleAnulation)
-
-    return () => {
-      socket.off(`new-invalidate-note-find-client`, handleAnulation)
-    }
-  }, [socket, user?.branchId])
+  }, [socket, user])
 
 
   return <></>;

@@ -185,30 +185,108 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
 }));
 
 
+const MAX_NOTIFICATIONS = 50;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 
 export const useReferalNoteStore = create<IReferalNoteStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       INVALIDATIONS_NOTIFICATIONS: [],
       OTHERS_NOTIFICATIONS: [],
+
       saveOthersNotifications: (data) => {
-        const oneDay = 1000 * 60 * 60 * 24;
         const now = Date.now();
-        const filtered = data.filter(n => now - Number(n?.time ?? 0) < oneDay);
+        const existing = get().OTHERS_NOTIFICATIONS;
+
+        const combined = [...data, ...existing];
+
+        // Elimina duplicados por contenido (usando JSON.stringify)
+        const unique = Array.from(
+          new Map(
+            combined.map((n) => [JSON.stringify(n), n])
+          ).values()
+        );
+
+        // Filtro por tiempo + límite
+        const filtered = unique
+          .filter((n) => now - Number(n?.time ?? 0) < ONE_DAY)
+          .slice(0, MAX_NOTIFICATIONS);
 
         set({ OTHERS_NOTIFICATIONS: filtered });
       },
 
       saveNotifications: (data) => {
-        const oneDay = 1000 * 60 * 60 * 24;
         const now = Date.now();
-        const filtered = data.filter(n => now - n.timestamp < oneDay);
+        const existing = get().INVALIDATIONS_NOTIFICATIONS;
+
+        const combined = [...data, ...existing];
+
+        const unique = Array.from(
+          new Map(
+            combined.map((n) => [JSON.stringify(n), n])
+          ).values()
+        );
+
+        const filtered = unique
+          .filter((n) => now - n.timestamp < ONE_DAY)
+          .slice(0, MAX_NOTIFICATIONS);
 
         set({ INVALIDATIONS_NOTIFICATIONS: filtered });
       },
+
+      clearNotifications: () => {
+        set({
+          INVALIDATIONS_NOTIFICATIONS: [],
+          OTHERS_NOTIFICATIONS: [],
+        });
+      }
     }),
     {
       name: 'referal-note-storage',
     }
   )
 );
+
+// export const useReferalNoteStore = create<IReferalNoteStore>()(
+//   persist(
+//     (set) => ({
+//       INVALIDATIONS_NOTIFICATIONS: [],
+//       OTHERS_NOTIFICATIONS: [],
+//       // saveOthersNotifications: (data) => {
+//       //   const oneDay = 1000 * 60 * 60 * 24;
+//       //   const now = Date.now();
+//       //   const filtered = data.filter(n => now - Number(n?.time ?? 0) < oneDay);
+
+//       //   set({ OTHERS_NOTIFICATIONS: filtered });
+//       // },
+//       saveOthersNotifications: (data) => {
+//         set((state) => {
+//           const oneDay = 1000 * 60 * 60 * 24;
+//           const now = Date.now();
+//           const combined = [...data, ...state.OTHERS_NOTIFICATIONS];
+
+//           const unique = Array.from(
+//             new Map(combined.map(n => [n.id, n])).values()
+//           );
+
+//           const filtered = unique
+//             .filter(n => now - Number(n?.time ?? 0) < oneDay)
+//             .slice(0, 50); // limitar cantidad
+
+//           return { OTHERS_NOTIFICATIONS: filtered };
+//         });
+//       }
+//       ,
+//       saveNotifications: (data) => {
+//         const oneDay = 1000 * 60 * 60 * 24;
+//         const now = Date.now();
+//         const filtered = data.filter(n => now - n.timestamp < oneDay);
+
+//         set({ INVALIDATIONS_NOTIFICATIONS: filtered });
+//       },
+//     }),
+//     {
+//       name: 'referal-note-storage',
+//     }
+//   )
+// );
