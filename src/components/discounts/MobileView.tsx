@@ -124,7 +124,7 @@ const ListItem = (props: GridProps) => {
             <Button
               isIconOnly
               style={global_styles().secondaryStyle}
-              onClick={() => openEditModal({ ...promotion, id: promotion.id })}
+              onPress={() => openEditModal({ ...promotion, id: promotion.id })}
             >
               <Edit size={15} />
             </Button>

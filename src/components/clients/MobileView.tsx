@@ -109,7 +109,7 @@ const GridItem = (props: GridProps) => {
                           <Button
                             isIconOnly
                             style={global_styles().thirdStyle}
-                            onClick={() => handleChangeCustomer(customers, 'change')}
+                            onPress={() => handleChangeCustomer(customers, 'change')}
                           >
                             <Repeat size={20} />
                           </Button>
@@ -129,7 +129,7 @@ const GridItem = (props: GridProps) => {
                     <Button
                       isIconOnly
                       style={global_styles().secondaryStyle}
-                      onClick={() => {
+                      onPress={() => {
                         handleActive(customers.id);
                       }}
                     >
@@ -188,7 +188,7 @@ const ListItem = (props: GridProps) => {
                   <Button
                     isIconOnly
                     style={global_styles().secondaryStyle}
-                    onClick={() => handleChangeCustomer(customers, 'edit')}
+                    onPress={() => handleChangeCustomer(customers, 'edit')}
                   >
                     <EditIcon size={20} />
                   </Button>
@@ -203,7 +203,7 @@ const ListItem = (props: GridProps) => {
                         <Button
                           isIconOnly
                           style={global_styles().thirdStyle}
-                          onClick={() => handleChangeCustomer(customers, 'change')}
+                          onPress={() => handleChangeCustomer(customers, 'change')}
                         >
                           <Repeat size={20} />
                         </Button>
@@ -221,7 +221,7 @@ const ListItem = (props: GridProps) => {
                   <Button
                     isIconOnly
                     style={global_styles().secondaryStyle}
-                    onClick={() => {
+                    onPress={() => {
                       handleActive(customers.id);
                     }}
                   >

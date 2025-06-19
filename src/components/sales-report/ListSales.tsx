@@ -227,7 +227,7 @@ function ListSales() {
                   classNames={{
                     content: unseen
                       ? 'opacity-0 invisible pointer-events-none'
-                      : 'bg-white',
+                      : 'bg-white dark:bg-gray-800',
                   }}
                   showArrow={!unseen}
                   onOpenChange={(isOpen) => {
@@ -241,7 +241,7 @@ function ListSales() {
                       <EllipsisVertical size={20} />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="p-1 dark:bg-gray-800">
+                  <PopoverContent className="p-1 ">
                     {sale.salesStatus.name === 'PROCESADO' && sale.tipoDte === '03' && (
                       <Listbox
                         aria-label="Actions"

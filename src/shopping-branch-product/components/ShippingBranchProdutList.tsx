@@ -66,10 +66,10 @@ const ShippingProductBranchList = () => {
                   {item?.product?.name}
                 </td>
                 <td className="px-6 py-4 dark:text-white">
-                  {item?.product?.subCategoryProduct?.categoryProduct?.name}
+                  {item?.product?.subCategory?.categoryProduct?.name}
                 </td>
                 <td className="px-6 py-4 dark:text-white">
-                  {item?.product?.subCategoryProduct?.name}
+                  {item?.product?.subCategory?.name}
                 </td>
                 <td className="px-6 py-4 dark:text-white">${item.price}</td>
                 <td className="px-6 py-4 dark:text-white">{item.stock}</td>
@@ -77,7 +77,7 @@ const ShippingProductBranchList = () => {
                   <Button
                     isIconOnly
                     style={{ backgroundColor: global_styles().darkStyle.backgroundColor }}
-                    onClick={() => OnAddProductSelected(item)}
+                    onPress={() => OnAddProductSelected(item)}
                   >
                     <Plus color="white" />
                   </Button>

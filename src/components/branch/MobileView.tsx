@@ -103,12 +103,7 @@ const GridItem = (props: GridProps) => {
                   handleActive(branch.id);
                 }}
               >
-                <BadgeCheck
-                  size={20}
-                  onClick={() => {
-                    handleActive(branch.id);
-                  }}
-                />
+                <BadgeCheck size={20} />
               </ButtonUi>
             )}
             {deletePopover({ branch })}
@@ -172,12 +167,7 @@ const ListItem = (props: GridProps) => {
                 handleActive(branch.id);
               }}
             >
-              <BadgeCheck
-                size={20}
-                onClick={() => {
-                  handleActive(branch.id);
-                }}
-              />
+              <BadgeCheck size={20} />
             </ButtonUi>
           )}
           {deletePopover({ branch })}

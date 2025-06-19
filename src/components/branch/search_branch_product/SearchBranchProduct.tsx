@@ -34,7 +34,7 @@ function SearchBranchProduct() {
             className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
             type="button"
-            onClick={() => setOpenVaul(true)}
+            onPress={() => setOpenVaul(true)}
           >
             <Filter />
           </Button>
@@ -101,8 +101,7 @@ function SearchBranchProduct() {
               theme={Colors.Primary}
               onPress={() => {
                 getUsersPaginated(
-                  user?.correlative?.branch.transmitterId ??
-                    user?.pointOfSale?.branch.transmitterId ??
+                  user?.pointOfSale?.branch.transmitterId ??
                     0,
                   1,
                   5,

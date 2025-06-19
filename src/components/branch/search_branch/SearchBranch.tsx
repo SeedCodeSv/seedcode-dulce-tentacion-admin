@@ -32,7 +32,7 @@ function SearchBranch(props: IPropsSearchBranch) {
             className="border border-white rounded-xl"
             style={global_styles().thirdStyle}
             type="button"
-            onClick={() => setOpenVaul(true)}
+            onPress={() => setOpenVaul(true)}
           >
             <Filter />
           </Button>

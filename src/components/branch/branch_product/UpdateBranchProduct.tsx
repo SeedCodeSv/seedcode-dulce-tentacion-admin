@@ -347,8 +347,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
 
                                             <Button
                                                 className="text-sm font-semibold w-fulL xl:mt-6"
-
-                                                onClick={async () => {
+                                                onPress={async () => {
                                                     await Promise.resolve();
                                                     const code = await generarCodigo(values.name);
 

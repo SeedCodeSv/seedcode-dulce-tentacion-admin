@@ -482,7 +482,7 @@ export const ColorForm = (props: IPropsColorPicker) => {
             onChange={setColor}
           />
         </div>
-        <Button className="w-full  mt-4" onClick={handleColor}>
+        <Button className="w-full  mt-4" onPress={handleColor}>
           Aplicar
         </Button>
       </HeadlessModal>

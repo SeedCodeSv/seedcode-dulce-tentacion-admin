@@ -84,7 +84,7 @@ const GridItem = (props: GridProps) => {
                   <Button
                     isIconOnly
                     style={global_styles().thirdStyle}
-                    onClick={() => handleActive(charges.id)}
+                    onPress={() => handleActive(charges.id)}
                   >
                     <RefreshCcw />
                   </Button>
@@ -125,7 +125,7 @@ const ListItem = (props: GridProps) => {
             <Button
               isIconOnly
               style={global_styles().secondaryStyle}
-              onClick={() => handleEdit(charges)}
+              onPress={() => handleEdit(charges)}
             >
               <EditIcon size={20} />
             </Button>
@@ -139,7 +139,7 @@ const ListItem = (props: GridProps) => {
                 <Button
                   isIconOnly
                   style={global_styles().thirdStyle}
-                  onClick={() => handleActive(charges.id)}
+                  onPress={() => handleActive(charges.id)}
                 >
                   <RefreshCcw />
                 </Button>

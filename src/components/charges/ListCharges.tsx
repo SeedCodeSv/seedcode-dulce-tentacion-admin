@@ -134,7 +134,7 @@ function ListCharges({ actions }: IProps) {
                     isIconOnly
                     style={global_styles().thirdStyle}
                     type="button"
-                    onClick={() => setOpenVaul(true)}
+                    onPress={() => setOpenVaul(true)}
                   >
                     <Filter />
                   </Button>

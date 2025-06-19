@@ -99,7 +99,7 @@ function UpdateRecipeBook({ menuDetails, setSelecteMenu }: Props) {
                 unidaDeMedida: prd.unidaDeMedida,
                 code: prd.code,
                 isActive: true,
-                productType: prd.type,
+                productType: prd.productType,
                 subCategoryId: prd.subCategory.id,
                 quantity: 1,
                 uniMedidaExtra

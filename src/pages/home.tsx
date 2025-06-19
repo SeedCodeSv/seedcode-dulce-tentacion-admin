@@ -314,7 +314,7 @@ function Home() {
                             classNames={{
                               content: unseen
                                 ? 'opacity-0 invisible pointer-events-none'
-                                : 'bg-white',
+                                : 'bg-white dark:bg-gray-800',
                             }}
                             isOpen={openPopover === sale.pathJson}
                             showArrow={!unseen}
@@ -325,7 +325,7 @@ function Home() {
                                 <EllipsisVertical size={20} />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="p-1 dark:bg-gray-800">
+                            <PopoverContent className="p-1">
                               {renderSaleActions(sale)}
                             </PopoverContent>
                           </Popover>

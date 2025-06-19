@@ -32,6 +32,7 @@ import ThGlobal from '@/themes/ui/th-global';
 import { useBranchesStore } from '@/store/branches.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
@@ -106,8 +107,7 @@ function List() {
 
   return (
     <>
-      <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full p-5 flex flex-col mt-2 rounded-xl overflow-y-auto bg-white custom-scrollbar shadow border dark:border-gray-700 dark:bg-gray-900">
+      <DivGlobal>
           <div className="grid grid-cols-3 gap-5">
             <Input
               classNames={{ label: 'font-semibold dark:text-white', input: 'dark:text-white' }}
@@ -431,7 +431,6 @@ function List() {
               </div>
             </>
           )}
-        </div>
 
         {modalPdf.isOpen && (
           <div className="fixed inset-0 z-50">
@@ -471,7 +470,7 @@ function List() {
             }}
           />
         )}
-      </div>
+     </DivGlobal>
       <InvalidateNoteReferal
         item={items}
         modalInvalidate={modalInvalidate}

@@ -148,7 +148,7 @@ function NotesCreditBySale() {
                 isIconOnly
                 className="fixed bg-red-600 bottom-10 left-10"
                 style={styles.dangerStyles}
-                onClick={() => {
+                onPress={() => {
                   setPdfPath('');
                 }}
               >

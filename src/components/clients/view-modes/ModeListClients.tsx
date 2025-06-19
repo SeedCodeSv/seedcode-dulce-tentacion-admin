@@ -74,7 +74,7 @@ function ModeListClients(props: PropsCustomersModes) {
                 <Button
                   isIconOnly
                   style={styles.secondaryStyle}
-                  onClick={() =>
+                  onPress={() =>
                     navigate(`/add-customer/${c.id}/${c.esContribuyente ? 'tribute' : 'normal'}`)
                   }
                 >
@@ -93,7 +93,7 @@ function ModeListClients(props: PropsCustomersModes) {
                     <Button
                       isIconOnly
                       style={styles.thirdStyle}
-                      onClick={() => navigate(`/add-customer/${c.id}/tribute`)}
+                      onPress={() => navigate(`/add-customer/${c.id}/tribute`)}
                     >
                       <Repeat size={20} />
                     </Button>
@@ -109,7 +109,7 @@ function ModeListClients(props: PropsCustomersModes) {
                     <Button
                       isIconOnly
                       style={styles.thirdStyle}
-                      onClick={() => {
+                      onPress={() => {
                         props.handleActivate(c.id);
                       }}
                     >

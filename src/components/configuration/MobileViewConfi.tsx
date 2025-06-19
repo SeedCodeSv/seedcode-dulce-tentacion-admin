@@ -54,7 +54,7 @@ const GridItem = (props: GridProps) => {
           <div className="flex justify-center mt-5 w-ful">
             <Image preview alt={configuration.name} src={configuration.logo} width="90" />
           </div>
-          <Button className='mt-3' style={global_styles().darkStyle} onClick={() => handleEdit(configuration)}>
+          <Button className='mt-3' style={global_styles().darkStyle} onPress={() => handleEdit(configuration)}>
             Actualizar
           </Button>
         </div>

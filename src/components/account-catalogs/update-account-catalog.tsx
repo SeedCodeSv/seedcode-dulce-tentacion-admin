@@ -130,7 +130,7 @@ function UpdateAccountCatalogs() {
               <div className="">
                 <Button
                   className="bg-transparent dark:text-white flex"
-                  onClick={() => navigate('/account-catalogs')}
+                  onPress={() => navigate('/account-catalogs')}
                 >
                   <ArrowLeft /> Regresar
                 </Button>

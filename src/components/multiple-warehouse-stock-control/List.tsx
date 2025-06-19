@@ -277,7 +277,7 @@ function List() {
                                                                                 ? styles.darkStyle
                                                                                 : { backgroundColor: '#2E8B57', color: 'white' }
                                                                         }
-                                                                        onClick={() => {
+                                                                        onPress={() => {
                                                                             setSelectedNote(item)
                                                                             modalComplete.onOpen()
                                                                         }}

@@ -196,7 +196,7 @@ function AddBranch(props: Props) {
                     className="w-full font-semibold"
                     style={global_styles().thirdStyle}
                     type="submit"
-                    onClick={() => handleSubmit()}
+                    onPress={() => handleSubmit()}
                   >
                     {props.branch ? 'Guardar cambios' : 'Crear sucursal'}
                   </Button>
