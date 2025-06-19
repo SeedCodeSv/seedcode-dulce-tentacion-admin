@@ -347,8 +347,8 @@ export const UserTwitterCard = ({
                                                         <strong>Fecha:</strong> {item?.data?.fecEmi} - {item?.data?.horEmi}
                                                     </p>
                                                     <p className="text-gray-500 dark:text-white">
-                                                        {item?.descripcion.length > 48
-                                                            ? item.descripcion.slice(0, 48) + '...'
+                                                        {item?.descripcion.length > 65
+                                                            ? item.descripcion.slice(0, 65) + '...'
                                                             : item.descripcion}
                                                     </p>
                                                 </div>

@@ -241,7 +241,7 @@ function ListSales() {
                       <EllipsisVertical size={20} />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="p-1">
+                  <PopoverContent className="p-1 dark:bg-gray-800">
                     {sale.salesStatus.name === 'PROCESADO' && sale.tipoDte === '03' && (
                       <Listbox
                         aria-label="Actions"
