@@ -184,7 +184,7 @@ function Home() {
       return (
         <Listbox
           aria-label="Actions"
-          className="dark:text-white"
+          className="dark:text-white "
           onAction={(key) => handleAction(String(key), sale)}
         >
           <ListboxItem
@@ -325,7 +325,7 @@ function Home() {
                                 <EllipsisVertical size={20} />
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="p-1">
+                            <PopoverContent className="p-1 dark:bg-gray-800">
                               {renderSaleActions(sale)}
                             </PopoverContent>
                           </Popover>
