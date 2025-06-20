@@ -1,4 +1,5 @@
 import { Box } from "./box.types";
+import { CreditNote } from "./credit_notes.types";
 import { Customer } from "./report_contigence";
 
 export interface SalesCcf {
@@ -109,16 +110,15 @@ export interface Sale {
 	salesStatusId: number;
 }
 
-export interface FacturacionCcfe {
-	code: string;
-	sales: Sale[];
-	sales_facturacion: number;
-}
 
 export interface IGetSalesCCF {
-	ok: boolean;
-	totalFe: number;
-	salesCcf: SalesCcf[];
-	facturacionCcfe: FacturacionCcfe[];
-	status: number;
+  ok: boolean
+  totalFe: {
+    sales_exentas: number
+    sales_no_sujetas: number
+    sales_gravadas: number
+  }
+  salesCcfe: SalesCcf[]
+  notasCreditos: CreditNote[]
+  status: number
 }

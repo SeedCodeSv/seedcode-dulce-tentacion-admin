@@ -1,16 +1,20 @@
 import { ISale_JSON_Debito, ISaleByItem, Sale, SaleContingence, SaleDates, SaleDetails } from '../../types/sales.types';
 
-import { FacturacionCcfe, SalesCcf } from '@/types/sales_cff.types';
+import { SalesCcf } from '@/types/sales_cff.types';
 import { SalesByDay } from '@/types/iva_fe';
 import { IPagination } from '@/types/global.types';
 import { SVFC_CF_Firmado } from '@/types/svf_dte/cf.types';
+import { CreditNote } from '@/types/credit_notes.types';
 
 export interface salesStore {
   facturas_by_month: SalesByDay[];
   loading_facturas: boolean;
   creditos_by_month: SalesCcf[];
-  facturacion_ccfe: FacturacionCcfe[];
-  factura_totals: number;
+  factura_totals: {
+    sales_exentas: number
+    sales_no_sujetas: number
+    sales_gravadas: number
+  }
   loading_sale: boolean;
   json_sale: ISale_JSON_Debito | undefined;
   json_sale_copy: SVFC_CF_Firmado | undefined;
@@ -21,6 +25,7 @@ export interface salesStore {
   saleByItem: ISaleByItem[],
   loadingSalesByItem: boolean,
   recentSales: Sale[]
+  notas_credito_by_month: CreditNote[]
   getSaleByItem: (transId: number, startDate: string, endDate: string, branches: number[] | undefined) => void;
   getFeMonth: (branchId: number, month: number, year: number) => void;
   getCffMonth: (branchId: number, month: string, year: number) => void;

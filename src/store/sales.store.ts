@@ -26,9 +26,12 @@ export const useSalesStore = create<salesStore>((set, get) => ({
   sale_details: undefined,
   loading_creditos: false,
   creditos_by_month: [],
-  factura_totals: 0,
+  factura_totals: {
+    sales_exentas: 0,
+    sales_no_sujetas: 0,
+    sales_gravadas: 0
+  },
   recentSales: [],
-  facturacion_ccfe: [],
   facturas_by_month: [],
   loading_sale: false,
   json_sale: undefined,
@@ -47,6 +50,8 @@ export const useSalesStore = create<salesStore>((set, get) => ({
   contingence_sales: [],
   saleByItem: [],
   loadingSalesByItem: false,
+  notas_credito_by_month: [],
+
   getSaleByItem(transId, startDate, endDate, branches) {
     set({ loadingSalesByItem: true });
     get_sales_by_item(transId, startDate, endDate, branches)
@@ -58,24 +63,28 @@ export const useSalesStore = create<salesStore>((set, get) => ({
       });
   },
   getCffMonth(branchId, month, year) {
-    set({ loading_creditos: false });
+    set({ loading_creditos: false })
     get_sales_by_ccf(branchId, month, year)
       .then(({ data }) => {
         set({
-          creditos_by_month: data.salesCcf,
+          creditos_by_month: data.salesCcfe,
+          notas_credito_by_month: data.notasCreditos,
           factura_totals: data.totalFe,
-          facturacion_ccfe: data.facturacionCcfe,
-          loading_creditos: false,
-        });
+          loading_creditos: false
+        })
       })
       .catch(() => {
         set({
           creditos_by_month: [],
-          facturacion_ccfe: [],
-          factura_totals: 0,
-          loading_creditos: false,
-        });
-      });
+          notas_credito_by_month: [],
+          factura_totals: {
+            sales_exentas: 0,
+            sales_no_sujetas: 0,
+            sales_gravadas: 0
+          },
+          loading_creditos: false
+        })
+      })
   },
   getFeMonth(branchId, month, year) {
     set({ loading_facturas: true });
