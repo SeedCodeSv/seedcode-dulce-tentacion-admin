@@ -1,5 +1,5 @@
 import { Button, Select, SelectItem } from '@heroui/react';
-import { Fragment, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { toast } from 'sonner';
 import saveAs from 'file-saver';
@@ -16,12 +16,15 @@ import { formatDateMMDDYYYY } from '@/utils/dates';
 import { formatCurrency } from '@/utils/dte';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
+import EmptyTable from '@/components/global/EmptyTable';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function FEBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
   const [branchId, setBranchId] = useState(0);
   const { transmitter, gettransmitter } = useTransmitterStore();
   const { branch_list, getBranchesList } = useBranchesStore();
+  const [branchName, setBranchName] = useState('');
 
   useEffect(() => {
     gettransmitter();
@@ -49,47 +52,26 @@ function FEBookIVA() {
 
       return;
     }
-    const vouchers: Array<{ name: string; items: Array<Array<string | number>> }> = [];
-
-    facturas_by_month.forEach((voucher) => {
-      const formatName = (type: string) => {
-        switch (type) {
-          case 'T':
-            return 'Tickets';
-          case 'F':
-            return 'Facturas';
-          case 'FE':
-            return 'Facturas Electrónicas';
-        }
-      };
-
-      vouchers.push({
-        name: formatName(voucher.typeVoucher) + ' ' + `(${voucher.code})`,
-        items: voucher.sales.map((venta) => {
-          return [
-            formatDateMMDDYYYY(venta.day, monthSelected, yearSelected),
-            venta.firstCorrelativ!,
-            venta.lastCorrelative!,
-            venta.firstNumeroControl!,
-            venta.lastNumeroControl!,
-            venta.firstSelloRecibido,
-            venta.lastSelloRecibido,
-            '',
-            Number(venta.totalSales),
-            '',
-            Number(venta.totalSales),
-            '',
-          ];
-        }),
-      });
-    });
-
+    const data = facturas_by_month.map((factura) => {
+      return [
+        formatDateMMDDYYYY(factura.day, monthSelected, yearSelected),
+        factura.firstNumeroControl!.replace(/-/g, ""),
+        factura.lastNumeroControl!.replace(/-/g, ""),
+        Number(factura.totalExenta) + Number(factura.totalNoSuj),
+        Number(factura.totalGravado),
+        0,
+        Number(factura.totalNoSuj) + Number(factura.totalExenta) + Number(factura.totalGravado),
+        0
+      ];
+    })
+    
     const month = months.find((month) => month.value === monthSelected)?.name || '';
 
     const blob = await export_excel_facturacion({
+      branch: branchName,
       transmitter,
       month,
-      items: vouchers,
+      items: data,
       year: yearSelected,
     });
 
@@ -100,210 +82,178 @@ function FEBookIVA() {
 
   const actionView = viewName?.actions.name || [];
 
+   const total = useMemo(() => {
+    return facturas_by_month
+      .map((factura) => {
+        return Number(factura.totalGravado)
+      })
+      .reduce((a, b) => a + b, 0)
+  }, [facturas_by_month])
+
+  const iva_total = useMemo(() => {
+    return total / 1.13
+  }, [total])
+
+  const iva_result = useMemo(() => {
+    return iva_total * 0.13
+  }, [total])
+
+  const $calcExenta = useMemo(() => {
+    return facturas_by_month.reduce((a, b) => a + Number(b.totalExenta), 0)
+  }, [facturas_by_month])
+
+  const $calcNoSuj = useMemo(() => {
+    return facturas_by_month.reduce((a, b) => a + Number(b.totalNoSuj), 0)
+  }, [facturas_by_month])
+
+
   return (
     <Layout title="IVA - FE">
       <DivGlobal>
-          <div className="w-full flex flex-col lg:flex-row gap-5">
-            <div className="w-full">
-              <Select
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                defaultSelectedKeys={`${monthSelected}`}
-                label="Meses"
-                labelPlacement="outside"
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setMonthSelected(Number(new Set(key).values().next().value));
-                  }
-                }}
-              >
-                {months.map((month) => (
-                  <SelectItem key={month.value}>{month.name}</SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-full">
-              <Select
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                label="Año"
-                labelPlacement="outside"
-                selectedKeys={[`${yearSelected}`]}
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setYearSelected(Number(new Set(key).values().next().value));
-                  }
-                }}
-              >
-                {years.map((years) => (
-                  <SelectItem key={years.value}>{years.name}</SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="w-full">
-              <Select
-                className="w-full"
-                classNames={{ label: 'font-semibold' }}
-                defaultSelectedKeys={`${branchId}`}
-                label="Sucursal"
-                labelPlacement="outside"
-                placeholder="Selecciona la sucursal"
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setBranchId(Number(new Set(key).values().next().value));
-                  }
-                }}
-              >
-                {branch_list.map((branch) => (
-                  <SelectItem key={branch.id}>{branch.name}</SelectItem>
-                ))}
-              </Select>
-            </div>
-            <div className="flex justify-end items-end mt-3 md:mt-0">
-              {/* <Button onClick={handleExportPDF} color="danger">
+        <div className="w-full flex flex-col lg:flex-row gap-5">
+          <div className="w-full">
+            <Select
+              className="w-full"
+              classNames={{ label: 'font-semibold' }}
+              defaultSelectedKeys={`${monthSelected}`}
+              label="Meses"
+              labelPlacement="outside"
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value}>{month.name}</SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-full">
+            <Select
+              className="w-full"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
+              selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value}>{years.name}</SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="w-full">
+            <Select
+              className="w-full"
+              classNames={{ label: 'font-semibold' }}
+              defaultSelectedKeys={`${branchId}`}
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+             onSelectionChange={(key) => {
+                if (key) {
+                  const id = Number(new Set(key).values().next().value);
+
+                  setBranchId(id);
+                  const branch = branch_list.find((branch) => branch.id == id);
+
+                  if (branch) setBranchName(branch.name);
+                }
+              }}
+            >
+              {branch_list.map((branch) => (
+                <SelectItem key={branch.id}>{branch.name}</SelectItem>
+              ))}
+            </Select>
+          </div>
+          <div className="flex justify-end items-end mt-3 md:mt-0">
+            {/* <Button onClick={handleExportPDF} color="danger">
                 Exportar a PDF
               </Button> */}
-              {actionView.includes('Exportar Excel') && (
-                <Button
-                  className="text-white font-semibold"
-                  color="success"
-                  style={styles.thirdStyle}
-                  onClick={handleExportExcel}
-                >
-                  Exportar a excel
-                  <PiMicrosoftExcelLogoBold size={25} />
-                </Button>
-              )}
-            </div>
+            {actionView.includes('Exportar Excel') && (
+              <Button
+                className="text-white font-semibold"
+                color="success"
+                style={styles.thirdStyle}
+                onClick={handleExportExcel}
+              >
+                Exportar a excel
+                <PiMicrosoftExcelLogoBold size={25} />
+              </Button>
+            )}
           </div>
+        </div>
 
-          <div className="max-w-full overflow-x-auto">
-            <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-              {loading_facturas ? (
-                <div className="w-full flex justify-center p-20 items-center flex-col">
-                  <div className="loader" />
-                  <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
+        <div className="max-w-full overflow-x-auto">
+          <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+            {loading_facturas ? (
+              <div className="w-full flex justify-center p-20 items-center flex-col">
+                <div className="loader" />
+                <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
+              </div>
+            ) : facturas_by_month.length === 0 ? (
+              <>
+                <div className="p-10">
+                  <EmptyTable />
                 </div>
-              ) : (
-                <>
-                  {facturas_by_month.map((facturas, index) => (
-                    <Fragment key={index}>
-                      {facturas.sales.length > 0 ? (
-                        <>
-                          <div className="w-full py-10">
-                            <p>
-                              {facturas.typeVoucher === 'F' && `Facturas (${facturas.resolution})`}
-                              {facturas.typeVoucher === 'FE' &&
-                                `Facturas Electrónicas (${facturas.code})`}
-                              {facturas.typeVoucher === 'T' && `Tickets (${facturas.code})`}
-                            </p>
-                          </div>
-                          <table className="w-full">
-                            <thead className="sticky top-0 z-20 bg-white">
-                              <tr>
-                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Fecha
-                                </th>
-                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Correlativo Inicial
-                                </th>
-                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Correlativo Final
-                                </th>
-                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Numero Control Inicial
-                                </th>
-                                <th className="p-3 text-xs font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Numero Control Final
-                                </th>
-                                <th className="p-3 text-xs font-semibold text-left whitespace-nowrap text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                                  Total
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {facturas.sales.map((factura, index) => (
-                                <tr key={index} className="border-b border-slate-200">
-                                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                    {formatDateMMDDYYYY(factura.day, monthSelected, yearSelected)}
-                                  </td>
-                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                    {factura.firstCorrelativ!}
-                                  </td>
-                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                    {factura.lastCorrelative!}
-                                  </td>
-                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                    {factura.firstNumeroControl!}
-                                  </td>
-                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                    {factura.lastNumeroControl!}
-                                  </td>
-                                  {/* <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
-                                    <p className="truncate w-44">{factura.firstSelloRecibido!}</p>
-                                  </td>
-                                  <td className="p-3 w-32 text-xs text-slate-500 dark:text-slate-100">
-                                  <p className="truncate w-44">{factura.lastSelloRecibido!}</p>
-                                  </td> */}
-                                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                    {formatCurrency(Number(factura.totalSales))}
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                          <div>
-                            <p className="mt-5">
-                              /1.13 = VENTAS NETAS GRAVADAS:{' '}
-                              {formatCurrency(
-                                facturas.sales
-                                  .map((factura) => Number(factura.totalSales))
-                                  .reduce((a, b) => a + b, 0) / 1.13
-                              )}
-                            </p>
-                            <p className="mt-2">
-                              POR 13% IMPUESTO (DEBITO FISCAL):{' '}
-                              {formatCurrency(
-                                (facturas.sales
-                                  .map((factura) => Number(factura.totalSales))
-                                  .reduce((a, b) => a + b, 0) /
-                                  1.13) *
-                                  0.13
-                              )}
-                            </p>
-                            <p className="mt-2">
-                              TOTAL VENTAS GRAVADAS:{' '}
-                              {formatCurrency(
-                                facturas.sales
-                                  .map((factura) => Number(factura.totalSales))
-                                  .reduce((a, b) => a + b, 0)
-                              )}
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="w-full h-full flex dark:bg-gray-600 p-10 flex-col justify-center items-center">
-                            <p>
-                              {index === 0
-                                ? 'FACTURAS(' + facturas.resolution + ')'
-                                : 'Punto de Venta(' + facturas.code + ')'}
-                            </p>
-                            <p className="mt-5 dark:text-white text-gray-600 text-xl">
-                              No se encontraron resultados
-                            </p>
-                          </div>
-                        </>
-                      )}
-                    </Fragment>
+              </>
+            ) : (
+              <>
+                <TableComponent
+                  headers={['Fecha', 'Cód. Generación Inicial', 'Cód. Generación Final', 'Numero Control Inicial', 'Numero Control Final', 'Total gravado','Total Exento', 'Total no sujeto']}
+                >
+                  {facturas_by_month.map((factura, index) => (
+                    <tr key={index} className="border-b border-slate-200">
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {formatDateMMDDYYYY(factura.day, monthSelected, yearSelected)}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {factura.firstCorrelative!}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {factura.lastCorrelative!}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {factura.firstNumeroControl!}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {factura.lastNumeroControl!}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(factura.totalGravado))}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(factura.totalExenta))}
+                      </td>
+                      <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(factura.totalNoSuj))}
+                      </td>
+                    </tr>
                   ))}
-                </>
-              )}
-            </div>
+                </TableComponent>
+                <div className="grid grid-cols-2">
+                  <div>
+                    <p className="mt-5">/1.13 = VENTAS NETAS GRAVADAS: {formatCurrency(iva_total)}</p>
+                    <p className="mt-2">POR 13% IMPUESTO (DEBITO FISCAL): {formatCurrency(iva_result)}</p>
+                    <p className="mt-2">TOTAL VENTAS GRAVADAS: {formatCurrency(total)}</p>
+                  </div>
+                  <div>
+                    <p className="mt-5">VENTA NO SUJETA: {formatCurrency($calcExenta)}</p>
+                    <p className="mt-2">VENTA EXENTA: {formatCurrency($calcNoSuj)}</p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
+        </div>
       </DivGlobal>
     </Layout>
   );

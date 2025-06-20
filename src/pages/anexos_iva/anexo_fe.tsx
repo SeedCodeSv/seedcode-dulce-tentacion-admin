@@ -126,16 +126,16 @@ function AnexoFe() {
                               Fecha
                             </th>
                             <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Resolución
-                            </th>
-                            <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
-                              Series
-                            </th>
-                            <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero control del
                             </th>
                             <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Numero control al
+                            </th>
+                             <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Cod. Generación Inicial
+                            </th>
+                            <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
+                              Cod. Generación Final
                             </th>
                             <th className="p-3 text-[9px] uppercase font-black text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200">
                               Total
@@ -159,7 +159,7 @@ function AnexoFe() {
                                 </td>
                                 <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                                   {shopping.typeVoucher === 'FE'
-                                    ? shopping.firstSelloRecibido
+                                    ? shopping.lastNumeroControl
                                     : shopping.series}
                                 </td>
                                 <td className="p-3 text-xs text-slate-500 dark:text-slate-100">

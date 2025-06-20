@@ -63,7 +63,7 @@ export const useSalesStore = create<salesStore>((set, get) => ({
       });
   },
   getCffMonth(branchId, month, year) {
-    set({ loading_creditos: false })
+    set({ loading_creditos: true })
     get_sales_by_ccf(branchId, month, year)
       .then(({ data }) => {
         set({

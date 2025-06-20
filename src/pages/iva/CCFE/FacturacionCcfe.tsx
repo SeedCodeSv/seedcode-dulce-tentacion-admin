@@ -75,9 +75,6 @@ function FacturacionCcfeItem() {
 
   return (
     <>
-      <p className="py-3 text-lg font-semibold">
-        CRÉDITOS FISCALES ELECTRÓNICOS
-      </p>
       <TableComponent headers={['Fecha', 'No. Comp', 'Tipo Comp.', 'No. Reg.', 'Nombre del Cliente', 'Exenta', 'Gravada', 'Iva', 'Total']}>
         {creditos_by_month.map((factura, index) => (
           <tr key={index} className="border-b border-slate-200">

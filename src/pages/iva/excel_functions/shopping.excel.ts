@@ -210,7 +210,8 @@ interface FCF {
 export const export_excel_factura = async (
   factura_data: Array<Array<number | string>>,
   month: string,
-  transmitter: ITransmitter
+  transmitter: ITransmitter,
+  // year: number
 ) => {
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Ventas FACT.")

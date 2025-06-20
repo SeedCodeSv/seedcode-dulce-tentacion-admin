@@ -1,20 +1,22 @@
-export interface Sale {
+export interface SalesByDay {
 	day: number;
-	firstCorrelativ: string;
+	firstCorrelative: string;
 	lastCorrelative: string;
 	firstNumeroControl: string;
 	lastNumeroControl: string;
 	firstSelloRecibido: string;
 	lastSelloRecibido: string;
-	totalSales: number;
+	totalGravado: number
+	totalExenta: number
+	totalNoSuj: number
 }
 
-export interface SalesByDay {
-	typeVoucher: string;
-	code: string;
-	resolution: string;
-	sales: Sale[];
-}
+// export interface SalesByDay {
+// 	typeVoucher: string;
+// 	code: string;
+// 	resolution: string;
+// 	sales: Sale[];
+// }
 
 export interface IGetFeMonth {
 	ok: boolean;

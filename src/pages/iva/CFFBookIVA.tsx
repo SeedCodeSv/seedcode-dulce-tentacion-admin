@@ -16,6 +16,8 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { months } from '@/utils/constants';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
+import LoadingTable from '@/components/global/LoadingTable';
+import EmptyTable from '@/components/global/EmptyTable';
 
 function CFFBookIVA() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -31,7 +33,7 @@ function CFFBookIVA() {
     getBranchesList();
   }, []);
 
-  const { getCffMonth, creditos_by_month, factura_totals } =
+  const { getCffMonth, creditos_by_month, factura_totals, loading_creditos } =
     useSalesStore();
 
   useEffect(() => {
@@ -155,11 +157,21 @@ function CFFBookIVA() {
               </Button> */}
           </div>
         </div>
-        <div className="overflow-y-auto">
-          <div className="mt-4">
-            <FacturacionCcfeItem />
+        {loading_creditos ? (
+          <div>
+            <LoadingTable />
           </div>
-        </div>
+        ) : creditos_by_month.length === 0 ? (
+          <div className='p-10'>
+            <EmptyTable />
+          </div>
+        ) : (
+          <div className="overflow-y-auto">
+            <div className="mt-4">
+              <FacturacionCcfeItem />
+            </div>
+          </div>
+        )}
       </DivGlobal>
     </Layout>
   );
