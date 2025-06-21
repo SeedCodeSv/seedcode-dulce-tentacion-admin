@@ -62,6 +62,7 @@ import { get_supplier_by_nit } from '@/services/supplier.service';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
+import DivGlobal from '@/themes/ui/div-global';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -72,8 +73,7 @@ function CreateShopping() {
     <>
       {actionView.includes('Agregar') ? (
         <Layout title="Agregar">
-          <div className="">
-            <div className="w-full h-full border border-white p-5 overflow-y-auto bg-white dark:bg-gray-900">
+          <DivGlobal>
               <Tabs
                 aria-label="Dynamic tabs"
                 classNames={{
@@ -90,14 +90,13 @@ function CreateShopping() {
               >
                 {(item) => (
                   <Tab key={item.id} title={item.label}>
-                    <Card className="bg-white border border-white dark:bg-gray-900">
+                    <Card className="bg-white dark:bg-gray-900">
                       <CardBody>{item.content}</CardBody>
                     </Card>
                   </Tab>
                 )}
               </Tabs>
-            </div>
-          </div>
+            </DivGlobal>
         </Layout>
       ) : (
         <NoAuthorization />

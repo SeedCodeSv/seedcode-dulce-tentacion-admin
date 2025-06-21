@@ -964,7 +964,6 @@ export const export_excel_facturacion = async (props: ExportProp) => {
 
   worksheet.getCell('D3').value = {
     richText: [
-      { text: 'ESTABLECIMIENTO: ' },
       { text: transmitter.nombre, font: { bold: true } },
     ],
   };
@@ -1000,7 +999,7 @@ export const export_excel_facturacion = async (props: ExportProp) => {
     ['E6', 'GRAVADAS LOCALES'],
     ['F6', 'EXPORTACIONES'],
     ['G6', 'VENTAS TOTALES'],
-    ['H6', 'VENTAS POR CUENTAS DE TERCEROS'],
+    ['H6', 'VENTAS A CUENTAS DE TERCEROS'],
   ];
 
   headers_cell.forEach(([cell, text]) => {

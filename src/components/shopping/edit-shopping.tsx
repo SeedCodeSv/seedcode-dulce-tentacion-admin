@@ -66,7 +66,7 @@ function EditShopping() {
     getShoppingDetails(Number(id));
     getBranchesList();
     const transmitterId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+      user?.pointOfSale?.branch.transmitterId ?? 0;
 
     getAccountCatalogs(transmitterId, '', '');
 
@@ -273,7 +273,7 @@ function EditShopping() {
       }
 
       const transId =
-        user?.correlative?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id ?? 0;
+      user?.pointOfSale?.branch.transmitter.id ?? 0;
       const payload = {
         supplierId: 0,
         branchId: values.branchId,

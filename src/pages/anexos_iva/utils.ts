@@ -382,6 +382,16 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
             width: 18
         },
         {
+            title: "TIPO DE OPERACIÓN (Renta)",
+            column: "U",
+            width: 26
+        },
+        {
+            title: "TIPO DE INGRESO (Renta) ",
+            column: "V",
+            width: 26
+        },
+        {
             title: 'NUMERO DEL ANEXO',
             column: 'U',
             width: 24.71

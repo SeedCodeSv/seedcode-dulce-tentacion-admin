@@ -20,6 +20,7 @@ export const useIvaFeStore = create<IvaFeStore>((set) => ({
                     series: sale.series,
                     typeVoucher: sale.typeVoucher,
                     code: sale.code,
+                    
                 }));
             });
 
