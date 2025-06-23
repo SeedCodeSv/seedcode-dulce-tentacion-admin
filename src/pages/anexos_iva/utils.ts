@@ -393,7 +393,7 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
         },
         {
             title: 'NUMERO DEL ANEXO',
-            column: 'U',
+            column: 'W',
             width: 24.71
         }
     ];
@@ -433,7 +433,10 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
         worksheet.getCell(`T${nextLine}`).value = {
             formula: `SUM(K${nextLine}:Q${nextLine})`
         }
-        worksheet.getCell(`U${nextLine}`).value = 2
+        worksheet.getCell(`U${nextLine}`).value = (`${line.operationTypeCode} ${line.operationTypeValue}`)
+        worksheet.getCell(`V${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+
+        worksheet.getCell(`W${nextLine}`).value = 2
 
         if (line.type !== "DTE") {
             worksheet.getCell(`K${nextLine}`).numFmt = '0';

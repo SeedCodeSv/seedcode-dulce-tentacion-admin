@@ -42,7 +42,7 @@ export default function OrderProductionProductOrder() {
     const { getBranchesList, branch_list } = useBranchesStore();
 
 
-    const OnVerifyProduct = async (id: number) => {
+    const OnVerifyProduct = async (id: number, quantity: string) => {
 
         const res = await handleVerifyProduct({
             branchDestinationId: branchDestiny.id,
@@ -68,16 +68,30 @@ export default function OrderProductionProductOrder() {
             return
         }
 
-        await handleAddProductRecipe(res)
+        await handleAddProductRecipe(res, quantity)
     }
 
-    const handleAddProductRecipe = async (recipe: ResponseVerifyProduct): Promise<void> => {
-        setSelectedProduct(
-            {
-                ...recipe,
-                quantity: 1,
+    const handleAddProductRecipe = async (recipe: ResponseVerifyProduct, quantity?: string): Promise<void> => {
+        const performance = quantity ? Number(quantity) : recipe.recipeBook.performance;
+
+        const updatedProductDetails = recipe.recipeBook.productRecipeBookDetails.map((item) => ({
+            ...item,
+            quantityPerPerformance: quantity
+                ? String(Number(quantity) * Number(item.quantity))
+                : item.quantityPerPerformance,
+        }));
+
+
+        setSelectedProduct({
+            ...recipe,
+            quantity: 1,
+            recipeBook: {
+                ...recipe.recipeBook,
+                performance,
+                productRecipeBookDetails: updatedProductDetails,
             },
-        );
+        });
+
         toast.success(`Se agregó ${recipe.branchProduct?.product?.name} con éxito`);
     };
 
@@ -131,7 +145,7 @@ export default function OrderProductionProductOrder() {
                                     </div>
                                     <div>
                                         <TableComponent
-                                            headers={['Producto', 'Cant. Solicitada','Cant. Entregada', 'Seleccionar']}
+                                            headers={['Producto', 'Cant. Solicitada', 'Cant. Entregada', 'Seleccionar']}
                                         >
                                             {selectedProducts.length > 0 && selectedProducts.map((item) => (
                                                 <tr key={item.id}>
@@ -146,7 +160,7 @@ export default function OrderProductionProductOrder() {
                                                             isDisabled={selectedBranch === undefined || item.completedRequest}
                                                             size="sm"
                                                             variant="bordered"
-                                                            onPress={() => OnVerifyProduct(item.product.id)}
+                                                            onPress={() => OnVerifyProduct(item.product.id, item.quantity ?? '')}
                                                         >
                                                             {selectedProduct?.branchProduct.id === item.id ?
                                                                 <Check className="text-white-500" /> : ''
@@ -212,7 +226,7 @@ export default function OrderProductionProductOrder() {
 
                                             return
                                         }
-                                        handleAddProductRecipe(verified_product)
+                                        handleAddProductRecipe(verified_product,)
                                         modalError.onClose()
                                     }}
                                 >

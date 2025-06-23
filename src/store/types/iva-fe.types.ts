@@ -6,18 +6,13 @@ export interface Sale {
     firstNumeroControl: string;
     lastNumeroControl: string;
     totalSales: number;
-
-
-
     firstSelloRecibido?: string
-   
-
- 
-
     lastSelloRecibido?: string
+    incomeTypeCode: string
+    incomeTypeValue: string
+    operationTypeCode: string
+    operationTypeValue: string
 
-   
- 
 }
 
 export interface SalesByDay {
