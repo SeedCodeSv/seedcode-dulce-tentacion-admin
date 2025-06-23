@@ -30,6 +30,7 @@ type ProductOrder = Product & { quantity: number; extraUniMedida: string };
 function AddRecipeBook({ id }: { id: number }) {
   const { productsDetails, loadingProductsDetails, getProductsDetails } = useProductsStore();
   const [loadingSave, setLoadingSave] = useState(false);
+const [performance, setPerformance] = useState('')
 
   useEffect(() => {
     getProductsDetails(id);
@@ -45,7 +46,7 @@ function AddRecipeBook({ id }: { id: number }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    getPaginatedProducts(1, 20, '', '', '', '', 1);
+    getPaginatedProducts(1, 20,0,0, '', '', 1);
   }, []);
 
   const [productsRecipe, setProductsRecipe] = useState<ProductOrder[]>([]);
@@ -77,8 +78,8 @@ function AddRecipeBook({ id }: { id: number }) {
     getPaginatedProducts(
       page,
       20,
-      '',
-      '',
+      0,
+      0,
       selectedTypeSearch === 'NOMBRE' ? name : '',
       selectedTypeSearch === 'CODIGO' ? name : '',
       1
@@ -106,6 +107,7 @@ function AddRecipeBook({ id }: { id: number }) {
   const handle_save_recipe = () => {
     const recipe = {
       productId: id,
+      performance: Number(performance ?? '1'),
       recipe: productsRecipe.map((pr) => ({
         productId: pr.id,
         quantity: pr.quantity,
@@ -140,11 +142,22 @@ function AddRecipeBook({ id }: { id: number }) {
           <p className="text-lg font-semibold dark:text-white">{productsDetails?.name}</p>
           <div className="grid grid-cols-2 gap-5 mt-7">
             <div>
-              <p>
-                <span className="font-semibold">Código:</span> {productsDetails?.code}{' '}
-              </p>
+              <Input
+              className="dark:text-white font-semibold max-w-72"
+              classNames={{ label: 'font-semibold' }}
+              label="Rendimiento"
+              labelPlacement="outside"
+              placeholder="Ingresa la receta de preparación"
+              value={performance}
+              variant="bordered"
+              onKeyDown={preventLetters}
+              onValueChange={(value) => setPerformance(value)}
+            />
             </div>
             <div>
+               <p>
+                <span className="font-semibold">Código:</span> {productsDetails?.code}{' '}
+              </p>
               <p>
                 <span className="font-semibold">Categoría:</span>{' '}
                 {productsDetails?.subCategory.name}{' '}
@@ -298,8 +311,8 @@ function AddRecipeBook({ id }: { id: number }) {
                     />
                   </div>
                   <div className="w-full dark:text-white flex flex-col justify-start text-left mt-2">
-                    <p className="w-full dark:text-white">Correo: {bpr.code}</p>
-                    <p className="w-full dark:text-white">NRC: {bpr.subCategory.name}</p>
+                    <p className="w-full dark:text-white">Código: {bpr.code}</p>
+                    <p className="w-full dark:text-white">Subcategoría: {bpr.subCategory.name}</p>
                   </div>
                 </button>
               ))}
