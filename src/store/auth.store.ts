@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
-import { AxiosError } from 'axios';
+import { Axios, AxiosError } from 'axios';
 
 import {
   get_token,
@@ -57,10 +57,12 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
 
         return data;
       })
-      .catch(() => {
+      .catch((error: AxiosError) => {
         delete_token();
         delete_user();
-        toast.error('Datos incorrectos');
+        toast.error('Datos incorrectos', {
+          description: JSON.stringify(error.response?.data ?? error.message)
+        });
 
         return null;
       });
