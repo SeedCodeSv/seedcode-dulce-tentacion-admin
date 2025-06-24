@@ -44,7 +44,7 @@ interface Props {
   setCurrentStep: Dispatch<SetStateAction<string>>;
   openModalSteps: () => void;
   titleError: string;
-  response: ICheckStockResponse | undefined
+  // response: ICheckStockResponse | undefined
   setResponse: (response: ICheckStockResponse) => void
   children?: ReactNode
 }
@@ -66,6 +66,7 @@ export default function BranchProductSelectedOrder(props: Props) {
     OnChangeQuantityManual,
     OnUpdateCosteManual,
     OnClearDataShippingProductBranch,
+    response
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -277,6 +278,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                     onChange={(e) => {
                       OnChangeQuantityManual(
                         item.id,
+                        item.product.id,
                         Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                       );
                     }}
@@ -575,9 +577,9 @@ export default function BranchProductSelectedOrder(props: Props) {
             <TriangleAlert className='text-orange-500' size={26} /> Advertencia
           </ModalHeader>
           <ModalBody className='pb-4'>
-            {props.response && props.response.results.length > 0 && (
+            {response && response.results.length > 0 && (
               <div className='text-[14px]'>
-                {props.response.results.filter((item) => item.status !== 'ok').map((item) => {
+                {response.results.filter((item) => item.status !== 'ok').map((item) => {
                   let icon, color, message;
 
                   switch (item.status) {

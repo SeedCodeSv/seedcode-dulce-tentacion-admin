@@ -42,7 +42,7 @@ interface Props {
   setSelectedProduct: (product: ProductRecipe | undefined) => void
 }
 
-export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct }: Props) {
+export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct }: Props) {  
 
   const handleChangePerformance = (performance: string) => {
     const performanceNumber = Number(performance);
@@ -71,7 +71,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
   const isMovil = useIsMobileOrTablet();
   const { show, close } = useAlert()
 
-  const { branchDestiny } = useShippingBranchProductBranch();
+  const { branchDestiny , orderId} = useShippingBranchProductBranch();
   const [selectedEmployee, setSelectedEmployee] = useState<Selection>(new Set([]));
   const [observation, setObservation] = useState('Orden de producción a partir de orden de productos');
   
@@ -191,7 +191,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
     };
 
     axios
-      .post(API_URL + '/production-orders', payload)
+      .post(API_URL + `/production-orders/by-order-product/${orderId}`, payload)
       .then(() => {
         toast.success('Orden de producción creada exitosamente', {
           position: isMovil ? 'bottom-right' : 'top-center',
@@ -387,7 +387,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                         <TdGlobal className="p-3">{r.quantity}</TdGlobal>
                         <TdGlobal className="p-3">{r.branchProduct?.costoUnitario}
                         </TdGlobal>
-                        <TdGlobal className="p-3">{r.quantityPerPerformance}</TdGlobal>
+                        <TdGlobal className="p-3">{Number(r.quantityPerPerformance).toFixed(4)}</TdGlobal>
                         <TdGlobal className="p-3">
                           {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
                             4

@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Tooltip, useDisclosure } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {MdWarning } from "react-icons/md";
 
 import BranchProductSelectedOrder from "./branch-product-selected-order";
@@ -9,7 +9,6 @@ import { Branches } from "@/types/branches.types";
 import { useBranchesStore } from "@/store/branches.store";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 import { verify_products_stock } from "@/services/branch_product.service";
-import { ICheckStockResponse, Result } from "@/types/branch_products.types";
 import { SigningProcess } from "@/shopping-branch-product/components/process/SingningProcess";
 import Layout from "@/layout/Layout";
 import DivGlobal from "@/themes/ui/div-global";
@@ -22,13 +21,12 @@ interface Product {
 
 export default function NotaRemisionProdutOrder() {
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { product_selected, branchDestiny } = useShippingBranchProductBranch();
+    const { product_selected, branchDestiny, setResponse, response } = useShippingBranchProductBranch();
     const [branchData, setBranchData] = useState<Branches>();
     const modalLoading = useDisclosure();
     const [currentState, setCurrentState] = useState(steps[0].title);
     const [titleError, setTitleError] = useState('');
     const [messageError, setMessageError] = useState<string[]>([]);
-    const [response, setResponse] = useState<ICheckStockResponse>()
 
     useEffect(() => {
         getBranchesList()
@@ -52,7 +50,8 @@ export default function NotaRemisionProdutOrder() {
         })
     }
 
-    const getProblemSummary = (results: Result[]) => {
+    const getProblemSummary = useMemo(() => {
+        const results = response.results
         const notFound = results.filter((item) => item.status === 'not_found');
         const insufficient = results.filter((item) => item.status === 'insufficient_stock');
 
@@ -83,7 +82,7 @@ export default function NotaRemisionProdutOrder() {
             hasIssues: notFound.length > 0 || insufficient.length > 0,
             tooltipContent
         };
-    };
+    },[response]);
 
     return (
         <Layout title="Nota de Remisón">
@@ -93,7 +92,6 @@ export default function NotaRemisionProdutOrder() {
                     branchData={branchData!}
                     branchDestiny={branchDestiny}
                     openModalSteps={modalLoading.onOpenChange}
-                    response={response}
                     setCurrentStep={setCurrentState}
                     setErrors={setMessageError}
                     setResponse={setResponse}
@@ -133,7 +131,7 @@ export default function NotaRemisionProdutOrder() {
                             ))}
                         </Autocomplete>
                         {response && response?.results?.length > 0 && (() => {
-                            const { hasIssues, tooltipContent } = getProblemSummary(response.results);
+                            const { hasIssues, tooltipContent } = getProblemSummary;
 
                             if (!hasIssues) return null;
 

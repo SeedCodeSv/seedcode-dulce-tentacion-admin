@@ -5,11 +5,16 @@ import { BranchProduct, IResponseBranchProductPaginatedSent, IShippingProductBra
 import { get_shopping_products_branch } from '../service/shipping_branch_product.service';
 
 import { Branches } from '@/types/branches.types';
+import { verify_products_stock } from '@/services/branch_product.service';
 export const useShippingBranchProductBranch = create<IShippingProductBranchStore>((set, get) => ({
   orderId: 0,
   branchProducts: [],
   pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
   branchDestiny: {} as Branches,
+  response: {
+    results: [],
+    ok: false
+  },
   OnGetShippinProductBranch(
     branchId: number,
     page: number,
@@ -133,10 +138,18 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       });
     }
   },
-  OnChangeQuantityManual(productId, quantity) {
+  OnChangeQuantityManual(branchProductId,prdId, quantity) {
+    const { response } = get()
+    const updatedProducts = response.results.map((cp) =>
+      cp.productId === prdId ? { ...cp, required: quantity, status: quantity > Number(cp.stock)? 'insufficient_stock': 'ok'  } : cp
+    )
+
+    set({ response: { ...response, results: updatedProducts } });
+
+
     set((state) => ({
       product_selected: state.product_selected.map((cp) =>
-        cp.id === productId ? { ...cp, total: Number(cp.price) * quantity, quantity } : cp
+        cp.id === branchProductId ? { ...cp, total: Number(cp.price) * quantity, quantity } : cp
       ),
     }));
   },
@@ -160,7 +173,7 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       pagination_shippin_product_branch: {} as IResponseBranchProductPaginatedSent,
     });
   },
- onAddBydetail(details) {
+  onAddBydetail(details) {
     get().OnClearDataShippingProductBranch()
     get().OnClearProductSelectedAll()
     const products = [] as BranchProduct[]
@@ -169,19 +182,34 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       const branchProduct = detail.branchProduct
       const pendingQuantity = Number(detail.pendingQuantity)
 
-      if(detail.completedRequest === false)
-      products.push({...branchProduct,
-        quantity: pendingQuantity
-      })
+      if (detail.completedRequest === false)
+        products.push({
+          ...branchProduct,
+          quantity: pendingQuantity
+        })
     }
 
     set({ product_selected: products })
   },
-onAddBranchDestiny(branch) {
-  set({branchDestiny: branch})
-},
-onAddOrderId(id) {
-  set({orderId: id})
-},
-
+  onAddBranchDestiny(branch) {
+    set({ branchDestiny: branch })
+  },
+  onAddOrderId(id) {
+    set({ orderId: id })
+  },
+  async onVerifyStockProducts(id, products) {
+    await verify_products_stock(id, products).then(({ data }) => {
+      set({ response: data })
+    }).catch(() => {
+      set({
+        response: {
+          results: [],
+          ok: false
+        },
+      })
+    })
+  },
+  setResponse(data) {
+    set({ response: data })
+  }
 }));

@@ -1,3 +1,4 @@
+import { ICheckStockResponse, ProductQuery } from '@/types/branch_products.types';
 import { Emisor, Receptor } from './notes_of_remision.types';
 
 import { Transmitter } from '@/types/categories.types';
@@ -88,6 +89,8 @@ export interface IShippingProductBranchStore {
   branchProducts: BranchProduct[];
   branchDestiny: Branches;
   product_selected: BranchProduct[];
+  response: ICheckStockResponse;
+  setResponse: (data: ICheckStockResponse) => void
   onAddBydetail: (order: OrderProductDetail[]) => void;
   OnAddProductSelected: (product: BranchProduct) => void;
   OnPlusProductSelected: (productId: number) => void;
@@ -95,7 +98,7 @@ export interface IShippingProductBranchStore {
   pagination_shippin_product_branch: IResponseBranchProductPaginatedSent;
   OnClearProductSelected: (productId: number) => void;
   OnClearProductSelectedAll: () => void;
-  OnChangeQuantityManual: (productId: number, quantity: number) => void;
+  OnChangeQuantityManual: (branchProductId: number,prdId:number, quantity: number) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
   OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
   onAddBranchDestiny: (branch: Branches) => void
@@ -110,6 +113,7 @@ export interface IShippingProductBranchStore {
     supplier: string,
     code: string
   ) => void;
+  onVerifyStockProducts: (id: number, data: ProductQuery[]) => void
 }
 export interface FilterShippingProductBranch {
   branchId: number;

@@ -117,11 +117,18 @@ export interface ICheckStockResponse {
 }
 
 export interface Result {
+  branchProductId?: number,
   productId: number;
   productName: string;
   status: string;
   stock?: string;
   required?: number;
   message: string;
+}
+
+export interface ProductQuery {
+  id: number,
+  name: string,
+  quantity: number
 }
 

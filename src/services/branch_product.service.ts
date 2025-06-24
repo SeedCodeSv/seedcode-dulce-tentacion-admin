@@ -4,6 +4,7 @@ import {
   ICheckStockResponse,
   IGetBranchProductOrder,
   IGetBranchProductPaginated,
+  ProductQuery,
 } from '../types/branch_products.types';
 import { API_URL } from '../utils/constants';
 import { get_token, get_user } from '../storage/localStorage';
@@ -84,9 +85,7 @@ export const get_branch_product_list = async ({
   ).data;
 };
 
-export const verify_products_stock = async ( branchId: number, products: {id: number,
-    name: string,
-    quantity: number}[] ) => {
+export const verify_products_stock = async ( branchId: number, products: ProductQuery[] ) => {
   const data = axios.post<ICheckStockResponse>(`${API_URL}/branch-products/check-stock/${branchId}`, products)
 
   return data
