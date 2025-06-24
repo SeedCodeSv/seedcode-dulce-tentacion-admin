@@ -58,6 +58,7 @@ export const useAuthStore = create<IAuthStore>((set, get) => ({
         return data;
       })
       .catch((error: AxiosError) => {
+        console.log(error)
         delete_token();
         delete_user();
         toast.error('Datos incorrectos', {
