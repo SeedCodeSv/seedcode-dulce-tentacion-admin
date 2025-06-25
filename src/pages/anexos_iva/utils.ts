@@ -433,8 +433,8 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
         worksheet.getCell(`T${nextLine}`).value = {
             formula: `SUM(K${nextLine}:Q${nextLine})`
         }
-        worksheet.getCell(`U${nextLine}`).value = (`${line.operationTypeCode} ${line.operationTypeValue}`)
-        worksheet.getCell(`V${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`U${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`V${nextLine}`).value = (`${line.operationTypeRentaCode} ${line.operationTypeRentaValue}`)
 
         worksheet.getCell(`W${nextLine}`).value = 2
 
@@ -558,6 +558,8 @@ export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
             0.00,
             0.00,
             Number(line.totalSales),
+            line.incomeTypeCode,
+            line.operationTypeRentaCode,
             2
         ]
     })
@@ -655,9 +657,19 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
             width: 26.14
         },
         {
-            title: 'NÚMERO DEL ANEXO',
-            column: 'R',
-            width: 18
+            title: "TIPO DE OPERACIÓN (Renta)",
+            column: "R",
+            width: 26
+        },
+        {
+            title: "TIPO DE INGRESO (Renta) ",
+            column: "S",
+            width: 26
+        },
+        {
+            title: 'NUMERO DEL ANEXO',
+            column: 'T',
+            width: 24.71
         }
     ];
 
@@ -680,7 +692,7 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
         worksheet.getCell(`E${nextLine}`).value = line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie
         worksheet.getCell(`F${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
         worksheet.getCell(`G${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
-        worksheet.getCell(`H${nextLine}`).value = line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : ""
+        worksheet.getCell(`H${nextLine}`).value = line.customer.nit.length === 9 || 14 ? line.customer.nit.replace(/-/g, "") : ""
         worksheet.getCell(`I${nextLine}`).value = line.customer.nombre
         worksheet.getCell(`J${nextLine}`).value = Number(line.totalExenta)
         worksheet.getCell(`K${nextLine}`).value = Number(line.totalNoSuj)
@@ -690,7 +702,9 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
         worksheet.getCell(`O${nextLine}`).value = 0.00
         worksheet.getCell(`P${nextLine}`).value = Number(line.montoTotalOperacion)
         worksheet.getCell(`Q${nextLine}`).value = line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : ""
-        worksheet.getCell(`R${nextLine}`).value = 1
+        worksheet.getCell(`R${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`S${nextLine}`).value = (`${line.operationTypeRentaCode} ${line.operationTypeRentaValue}`)
+        worksheet.getCell(`T${nextLine}`).value = 1
 
         worksheet.getCell(`J${nextLine}`).numFmt = '#,##0.00';
         worksheet.getCell(`K${nextLine}`).numFmt = '#,##0.00';
@@ -720,7 +734,7 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie,
             line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
             line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
-            line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : "",
+            line.customer.nit.length === 9 || 14 ? line.customer.nit.replace(/-/g, "") : "",
             line.customer.nombre,
             Number(line.totalExenta),
             Number(line.totalNoSuj),
@@ -730,6 +744,8 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             0.00,
             Number(line.montoTotalOperacion),
             line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : "",
+            line.incomeTypeCode,
+            line.operationTypeRentaCode,
             1
         ]
     })

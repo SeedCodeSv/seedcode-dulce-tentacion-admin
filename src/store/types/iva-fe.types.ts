@@ -10,9 +10,8 @@ export interface Sale {
     lastSelloRecibido?: string
     incomeTypeCode: string
     incomeTypeValue: string
-    operationTypeCode: string
-    operationTypeValue: string
-
+    operationTypeRentaCode: string
+    operationTypeRentaValue: string
 }
 
 export interface SalesByDay {
