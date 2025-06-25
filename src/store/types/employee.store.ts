@@ -23,9 +23,10 @@ export interface IEmployeeStore {
   patchEmployee: (payload: EmployeePayload, id: number) => Promise<boolean>;
   deleteEmployee: (id: number) => Promise<boolean>;
   getEmployeesList: () => void;
+  generateCode: (id: number, time:number) => Promise<string | null>;
   activateEmployee: (id: number) => Promise<void>;
   verifyCode: (code: string) => Promise<boolean>;
   OnGetBirthDays: () => void;
-  getEmployeesByBranch:(branchId: number)=> void
+  getEmployeesByBranch: (branchId: number) => void
 
 }
