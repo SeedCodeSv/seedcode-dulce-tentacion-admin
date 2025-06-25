@@ -17,7 +17,7 @@ export const get_credit_notes_by_id = (id: number) => {
   };
 
     export const get_credit_notes = (params: SearchGlobal) => {
-    return axios.get<IGetListCreditNotes>(API_URL + `/nota-de-credito/list/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}`);
+    return axios.get<IGetListCreditNotes>(API_URL + `/nota-de-credito/list/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&status=${params.status}`);
   };
 
 

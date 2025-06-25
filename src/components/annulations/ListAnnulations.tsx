@@ -208,7 +208,7 @@ function ListAnnulations(): JSX.Element {
                                                         </td>
 
                                                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                            {item?.tipoDte === "04" && 'NOTA DE REMISIÓN' || item?.tipoDte === "05" && 'NOTA DE CRÉDITO' || item?.tipoDte === '06' && 'NOTA DE DÉBITO' || item?.tipoDte === "14" && "SUJETO EXCLUIDO" || item?.tipoDte === "01" && 'FACTURA COMERCIAL' || item?.tipoDte === "03" && "CRÉDITO FISCAL"}
+                                                            {item?.tipoDte === "04" && 'NOTA DE REMISIÓN' || item?.tipoDte === "05" && 'NOTA DE CRÉDITO' || item?.tipoDte === '06' && 'NOTA DE DÉBITO' || item?.tipoDte === "14" && "SUJETO EXCLUIDO" || item?.tipoDte === "01" && 'FACTURA' || item?.tipoDte === "03" && "CRÉDITO FISCAL"}
                                                         </td>
                                                         <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
 

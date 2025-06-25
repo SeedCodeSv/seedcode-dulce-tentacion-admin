@@ -4,6 +4,7 @@ import { SaleAnnexe } from '@/store/types/iva-ccfe.types';
 import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
+import { Sale } from '@/types/sales.types';
 
 const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-');
@@ -747,6 +748,110 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             line.incomeTypeCode,
             line.operationTypeRentaCode,
             1
+        ]
+    })
+
+    return payload.map((row) => row.join(';')).join('\n');
+}
+
+export const formatTypeDte = (type: string) => {
+    switch (type) {
+        case "01":
+            return { code: "01", desc: ". FACTURA" }
+        case "03":
+            return { code: "03", desc: ". COMPROBANTE DE CRÉDITO FISCAL" };
+        case "04":
+            return { code: "04", desc: ". NOTA DE REMISIÓN" };
+        case "05":
+            return { code: "05", desc: ". NOTA DE CRÉDITO" };
+        case "06":
+            return { code: "06", desc: ". NOTA DE DÉBITO " };
+        default:
+            return { code: "", desc: "" }
+    }
+}
+
+export const exportExcellAnulated = async (tableData: Sale[]) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Detalle Documentos Anulados');
+
+    const headers = [
+        'NÚMERO DE RESOLUCIÓN',
+        'CLASE DE DOCUMENTO',
+        'DESDE (PREIMPRESO)',
+        'HASTA (PREIMPRESO)',
+        'TIPO DE DOCUMENTO',
+        'TIPO DE DETALLE',
+        'NÚMERO DE SERIE',
+        'DESDE',
+        'HASTA',
+        'CÓDIGO DE GENERACIÓN'
+    ]
+
+    const headerRow = worksheet.addRow(headers);
+
+    headerRow.eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF5b9bd5' },
+        };
+        cell.font = {
+            bold: true,
+            color: { argb: 'FFFFFFFF' },
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+
+    worksheet.columns = [
+        { width: 31 },
+        { width: 40 },
+        { width: 15 },
+        { width: 15 },
+        { width: 34 },
+        { width: 30 },
+        { width: 25 },
+        { width: 10 },
+         { width: 10 },
+          { width: 40 }
+    ];
+
+    tableData.forEach((item) => {
+        worksheet.addRow([
+            item.numeroControl,
+            '4. DOCUMENTO TRIBUTARIO ELECTRÓNICO DTE',
+            0,
+            0,
+            `${formatTypeDte(item.tipoDte).code} ${formatTypeDte(item.tipoDte).desc}`,
+            'D. DOCUMENNTO DTE INVALIDADO',
+            item.selloRecibido,
+            0,
+            0,
+            item.codigoGeneracion
+        ]);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+    return blob;
+}
+
+export const csvmakeranulateds = (annexe_fe: Sale[]) => {
+
+    const payload = annexe_fe.map((line) => {
+        return [
+            line.numeroControl,
+            '4',
+            0,
+            0,
+            formatTypeDte(line.tipoDte).code,
+            'D',
+            line.selloRecibido,
+            0,
+            0,
+            line.codigoGeneracion
         ]
     })
 

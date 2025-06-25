@@ -7,6 +7,7 @@ import { useBranchesStore } from "@/store/branches.store";
 import { usePointOfSales } from "@/store/point-of-sales.store";
 import { PointOfSale } from '@/types/point-of-sales.types';
 import { formatDate } from "@/utils/dates";
+import { estadosV } from "@/utils/utils";
 
 
 interface FiltersProps {
@@ -31,13 +32,6 @@ const Filters = (props: FiltersProps) => {
   useEffect(() => {
     getBranchesList();
   }, []);
-
-  const estadosV = [
-    { label: 'TODOS', value: '' },
-    { label: 'PROCESADO', value: 'PROCESADO' },
-    { label: 'CONTINGENCIA', value: 'CONTINGENCIA' },
-    { label: 'INVALIDADO', value: 'INVALIDADO' },
-  ];
 
   const filteredPoints = useMemo(() => {
     if (point_of_sales_list.pointOfSales) {

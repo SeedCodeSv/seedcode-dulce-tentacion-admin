@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Chip, Input, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Button, Chip, Input, Listbox, ListboxItem, Popover, PopoverContent, PopoverTrigger, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { EllipsisVertical, LoaderCircle, X } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -16,6 +16,7 @@ import LoadingTable from "@/components/global/LoadingTable";
 import { get_sale_pdf_credit_note } from "@/services/sales.service";
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
+import { estadosV } from "@/utils/utils";
 
 export default function ListCreditNoteComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
@@ -31,6 +32,7 @@ export default function ListCreditNoteComponent() {
             startDate: getElSalvadorDateTime().fecEmi,
             endDate: getElSalvadorDateTime().fecEmi,
             branchId: 0,
+            status: ''
         }
     )
 
@@ -50,6 +52,10 @@ export default function ListCreditNoteComponent() {
             setLoadingPdf(false);
         });
     };
+
+    useEffect(() => {
+        onGetCreditNotesPaginated(params)
+    }, [params.status])
 
     return (
         <DivGlobal>
@@ -97,6 +103,25 @@ export default function ListCreditNoteComponent() {
                     ))}
                 </Autocomplete>
             </ResponsiveFilterWrapper>
+            <Select
+                className="dark:text-white py-4 w-1/4"
+                classNames={{
+                    label: 'text-sm font-semibold dark:text-white',
+                }}
+                label="Mostrar por estado"
+                labelPlacement="outside"
+                placeholder="Selecciona un estado"
+                selectedKeys={[params.status.toString()]}
+                value={params.status}
+                variant="bordered"
+                onChange={(e) => setParams({...params, status: e.target.value})}
+            >
+                {estadosV.map((e) => (
+                    <SelectItem key={e.value} className="dark:text-white">
+                        {e.label}
+                    </SelectItem>
+                ))}
+            </Select>
             <TableComponent
                 headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
             >

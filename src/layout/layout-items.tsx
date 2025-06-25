@@ -404,6 +404,12 @@ export const LayoutItems = (props: Props) => {
       icon: HandCoins,
       label: 'Anexos ventas a contribuyentes',
     },
+     {
+      viewName: 'Anexos documentos anulados',
+      to: '/anexos-doc-anulados',
+      icon: HandCoins,
+      label: 'Anexos documentos anulados',
+    },
   ];
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const handleGroupClick = (group: string) => {
