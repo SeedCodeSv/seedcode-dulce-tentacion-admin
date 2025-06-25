@@ -31,6 +31,7 @@ import NotaRemisionProdutOrder from '@/components/product-order/note-refeal/nota
 import OrderProductionProductOrder from '@/components/product-order/production-order/order-production-product-order';
 import CreditNotePage from '@/pages/notes/CreditNotePage';
 import DebitNotePage from '@/pages/notes/DebitNotePage';
+import AnexoAnulados from '@/pages/anexos_iva/anexo_anulados';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -702,6 +703,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/anexos-fe"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            <AnexoAnulados />
+          </AnimatedRoute>
+        }
+        path="/anexos-doc-anulados"
       />
       <Route
         element={

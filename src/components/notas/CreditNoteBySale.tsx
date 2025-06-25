@@ -40,7 +40,7 @@ function NotesCreditBySale() {
   };
 
   return (
-    <Layout title="NOTAS DE CRÉDITO">
+    <Layout title="NOTAS DE CRÉDITO DE LA VENTA">
       <>
         <div className="flex flex-col p-10 overflow-x-hidden">
           <div className="grid w-full grid-cols-3 gap-5">

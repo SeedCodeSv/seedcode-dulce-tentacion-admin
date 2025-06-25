@@ -1,4 +1,4 @@
-import { Input, Autocomplete, AutocompleteItem, Chip, Popover, PopoverTrigger, Button, PopoverContent, Listbox, ListboxItem } from "@heroui/react";
+import { Input, Autocomplete, AutocompleteItem, Chip, Popover, PopoverTrigger, Button, PopoverContent, Listbox, ListboxItem, SelectItem, Select } from "@heroui/react";
 import { EllipsisVertical, X, LoaderCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -16,6 +16,7 @@ import { Colors } from "@/types/themes.types";
 import { getElSalvadorDateTime } from "@/utils/dates";
 import { formatCurrency } from "@/utils/dte";
 import { useDebitNotes } from "@/store/notes_debit.store";
+import { estadosV } from "@/utils/utils";
 
 export default function ListDebitNoteComponent() {
    const { getBranchesList, branch_list } = useBranchesStore();
@@ -31,6 +32,7 @@ export default function ListDebitNoteComponent() {
          startDate: getElSalvadorDateTime().fecEmi,
          endDate: getElSalvadorDateTime().fecEmi,
          branchId: 0,
+         status: ''
       }
    )
 
@@ -50,6 +52,10 @@ export default function ListDebitNoteComponent() {
          setLoadingPdf(false);
       });
    };
+
+   useEffect(() => {
+           onGetDebitNotesPaginated(params)
+       }, [params.status])
 
    return (
       <DivGlobal>
@@ -97,6 +103,25 @@ export default function ListDebitNoteComponent() {
                ))}
             </Autocomplete>
          </ResponsiveFilterWrapper>
+         <Select
+                className="dark:text-white py-4 w-1/4"
+                classNames={{
+                    label: 'text-sm font-semibold dark:text-white',
+                }}
+                label="Mostrar por estado"
+                labelPlacement="outside"
+                placeholder="Selecciona un estado"
+                selectedKeys={[params.status.toString()]}
+                value={params.status}
+                variant="bordered"
+                onChange={(e) => setParams({...params, status: e.target.value})}
+            >
+                {estadosV.map((e) => (
+                    <SelectItem key={e.value} className="dark:text-white">
+                        {e.label}
+                    </SelectItem>
+                ))}
+            </Select>
          <TableComponent
             headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
          >

@@ -4,6 +4,7 @@ import { SaleAnnexe } from '@/store/types/iva-ccfe.types';
 import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
+import { Sale } from '@/types/sales.types';
 
 const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-');
@@ -433,8 +434,8 @@ export const annexes_iva_fe = async (annexe_fe: IvaSale[]) => {
         worksheet.getCell(`T${nextLine}`).value = {
             formula: `SUM(K${nextLine}:Q${nextLine})`
         }
-        worksheet.getCell(`U${nextLine}`).value = (`${line.operationTypeCode} ${line.operationTypeValue}`)
-        worksheet.getCell(`V${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`U${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`V${nextLine}`).value = (`${line.operationTypeRentaCode} ${line.operationTypeRentaValue}`)
 
         worksheet.getCell(`W${nextLine}`).value = 2
 
@@ -558,6 +559,8 @@ export const csvmaker_fe = (annexe_fe: IvaSale[]) => {
             0.00,
             0.00,
             Number(line.totalSales),
+            line.incomeTypeCode,
+            line.operationTypeRentaCode,
             2
         ]
     })
@@ -655,9 +658,19 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
             width: 26.14
         },
         {
-            title: 'NÚMERO DEL ANEXO',
-            column: 'R',
-            width: 18
+            title: "TIPO DE OPERACIÓN (Renta)",
+            column: "R",
+            width: 26
+        },
+        {
+            title: "TIPO DE INGRESO (Renta) ",
+            column: "S",
+            width: 26
+        },
+        {
+            title: 'NUMERO DEL ANEXO',
+            column: 'T',
+            width: 24.71
         }
     ];
 
@@ -680,7 +693,7 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
         worksheet.getCell(`E${nextLine}`).value = line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie
         worksheet.getCell(`F${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
         worksheet.getCell(`G${nextLine}`).value = line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl
-        worksheet.getCell(`H${nextLine}`).value = line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : ""
+        worksheet.getCell(`H${nextLine}`).value = line.customer.nit.length === 9 || 14 ? line.customer.nit.replace(/-/g, "") : ""
         worksheet.getCell(`I${nextLine}`).value = line.customer.nombre
         worksheet.getCell(`J${nextLine}`).value = Number(line.totalExenta)
         worksheet.getCell(`K${nextLine}`).value = Number(line.totalNoSuj)
@@ -690,7 +703,9 @@ export const export_annexes_iva_ccfe = async (annexe_ccfe: SaleAnnexe[]) => {
         worksheet.getCell(`O${nextLine}`).value = 0.00
         worksheet.getCell(`P${nextLine}`).value = Number(line.montoTotalOperacion)
         worksheet.getCell(`Q${nextLine}`).value = line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : ""
-        worksheet.getCell(`R${nextLine}`).value = 1
+        worksheet.getCell(`R${nextLine}`).value = (`${line.incomeTypeCode} ${line.incomeTypeValue}`)
+        worksheet.getCell(`S${nextLine}`).value = (`${line.operationTypeRentaCode} ${line.operationTypeRentaValue}`)
+        worksheet.getCell(`T${nextLine}`).value = 1
 
         worksheet.getCell(`J${nextLine}`).numFmt = '#,##0.00';
         worksheet.getCell(`K${nextLine}`).numFmt = '#,##0.00';
@@ -720,7 +735,7 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             line.tipoDte === "03" ? line.selloRecibido.replace(/-/g, "") : line.box.correlative.serie,
             line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
             line.tipoDte === "03" ? line.codigoGeneracion.replace(/-/g, "") : line.numeroControl,
-            line.customer.nit.length === 14 ? line.customer.nit.replace(/-/g, "") : "",
+            line.customer.nit.length === 9 || 14 ? line.customer.nit.replace(/-/g, "") : "",
             line.customer.nombre,
             Number(line.totalExenta),
             Number(line.totalNoSuj),
@@ -730,7 +745,113 @@ export const csvmaker_ccfe = (annexe_ccfe: SaleAnnexe[]) => {
             0.00,
             Number(line.montoTotalOperacion),
             line.customer.nit.length >= 9 && line.customer.nit.length <= 10 ? line.customer.nit.replace(/-/g, "") : "",
+            line.incomeTypeCode,
+            line.operationTypeRentaCode,
             1
+        ]
+    })
+
+    return payload.map((row) => row.join(';')).join('\n');
+}
+
+export const formatTypeDte = (type: string) => {
+    switch (type) {
+        case "01":
+            return { code: "01", desc: ". FACTURA" }
+        case "03":
+            return { code: "03", desc: ". COMPROBANTE DE CRÉDITO FISCAL" };
+        case "04":
+            return { code: "04", desc: ". NOTA DE REMISIÓN" };
+        case "05":
+            return { code: "05", desc: ". NOTA DE CRÉDITO" };
+        case "06":
+            return { code: "06", desc: ". NOTA DE DÉBITO " };
+        default:
+            return { code: "", desc: "" }
+    }
+}
+
+export const exportExcellAnulated = async (tableData: Sale[]) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Detalle Documentos Anulados');
+
+    const headers = [
+        'NÚMERO DE RESOLUCIÓN',
+        'CLASE DE DOCUMENTO',
+        'DESDE (PREIMPRESO)',
+        'HASTA (PREIMPRESO)',
+        'TIPO DE DOCUMENTO',
+        'TIPO DE DETALLE',
+        'NÚMERO DE SERIE',
+        'DESDE',
+        'HASTA',
+        'CÓDIGO DE GENERACIÓN'
+    ]
+
+    const headerRow = worksheet.addRow(headers);
+
+    headerRow.eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF5b9bd5' },
+        };
+        cell.font = {
+            bold: true,
+            color: { argb: 'FFFFFFFF' },
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+    });
+
+    worksheet.columns = [
+        { width: 31 },
+        { width: 40 },
+        { width: 15 },
+        { width: 15 },
+        { width: 34 },
+        { width: 30 },
+        { width: 25 },
+        { width: 10 },
+         { width: 10 },
+          { width: 40 }
+    ];
+
+    tableData.forEach((item) => {
+        worksheet.addRow([
+            item.numeroControl,
+            '4. DOCUMENTO TRIBUTARIO ELECTRÓNICO DTE',
+            0,
+            0,
+            `${formatTypeDte(item.tipoDte).code} ${formatTypeDte(item.tipoDte).desc}`,
+            'D. DOCUMENNTO DTE INVALIDADO',
+            item.selloRecibido,
+            0,
+            0,
+            item.codigoGeneracion
+        ]);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+    return blob;
+}
+
+export const csvmakeranulateds = (annexe_fe: Sale[]) => {
+
+    const payload = annexe_fe.map((line) => {
+        return [
+            line.numeroControl,
+            '4',
+            0,
+            0,
+            formatTypeDte(line.tipoDte).code,
+            'D',
+            line.selloRecibido,
+            0,
+            0,
+            line.codigoGeneracion
         ]
     })
 

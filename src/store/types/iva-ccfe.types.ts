@@ -95,6 +95,10 @@ export interface SaleAnnexe {
 	boxId: number;
 	customerId: number;
 	employeeId: number;
+	 incomeTypeCode: string
+    incomeTypeValue: string
+    operationTypeRentaCode: string
+    operationTypeRentaValue: string
 	salesStatusId?: any;
 }
 

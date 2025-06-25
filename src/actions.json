@@ -322,6 +322,14 @@
       ]
     },
     {
+      "view": "Anexos documentos anulados",
+      "actions": [
+        "Mostrar",
+        "Exportar",
+        "Exportar CSV"
+      ]
+    },
+    {
       "view": "Anexos de consumidor final",
       "actions": [
         "Mostrar",

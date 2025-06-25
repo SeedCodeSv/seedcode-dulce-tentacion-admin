@@ -18,5 +18,5 @@ export const get_contingence_debit_notes = (branchId: number) => {
 }
 
   export const get_debit_notes = (params: SearchGlobal) => {
-    return axios.get<IGetListDebitNotes>(API_URL + `/nota-de-debitos/list/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}`);
+    return axios.get<IGetListDebitNotes>(API_URL + `/nota-de-debitos/list/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&status=${params.status}`);
   };
