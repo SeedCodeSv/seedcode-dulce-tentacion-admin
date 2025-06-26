@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { global_styles } from "@/styles/global.styles";
 import { useEmployeeStore } from "@/store/employee.store";
+import { GenerateCodeCut } from "@/types/employees.types";
 
 interface Props {
   id: number;
@@ -12,8 +13,15 @@ interface Props {
 
 function GenerateCodeEmployee(props: Props) {
   const { generateCode } = useEmployeeStore()
-  const [code, setCode] = useState('');
-  const [time, setTime] = useState(5)
+  const [code, setCode] = useState({
+    codeX: '',
+    codeZ: ''
+  });
+  const [payload, setPayload] = useState<GenerateCodeCut>({
+    time: 5,
+    cutX: true,
+    cutZ: false
+  })
   const [loading, setLoading] = useState(false);
 
 
@@ -25,10 +33,17 @@ function GenerateCodeEmployee(props: Props) {
     }
     setLoading(true);
     try {
-      const response = await generateCode(props.id, time);
+
+      const response = await generateCode(props.id, payload);
 
       if (response) {
-        setCode(response);
+        if (payload.cutX) {
+          setCode({ ...code, codeX: response });
+
+        }
+        if (payload.cutZ) {
+          setCode({ ...code, codeZ: response })
+        }
         toast.success('Código generado con éxito');
       } else {
         toast.error('Error al generar el código');
@@ -43,26 +58,61 @@ function GenerateCodeEmployee(props: Props) {
   const styles = global_styles()
 
 
-
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(code).then(() => {
+    const currentCode = payload.cutX ? code.codeX : code.codeZ;
+
+    navigator.clipboard.writeText(currentCode || '').then(() => {
       toast.success('Código copiado al portapapeles');
     }).catch(() => {
       toast.error('Error al copiar el código');
     });
   };
 
+
   return (
     <div className='w-full h-full'>
+      <div className="flex flex-row justify-center gap-6 mt-4">
+        <button
+          className={`
+            rounded-xl p-2 flex justify-center border ${payload.cutX ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
+          onClick={() => {
+            setPayload({ ...payload, cutX: true, cutZ: false })
+          }}
+        >
+          Corte de caja x
+        </button>
+        <button
+          className={`
+          rounded-xl p-2 flex justify-center border ${payload.cutZ ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
+
+          onClick={() => {
+            setPayload({ ...payload, cutZ: true, cutX: false })
+          }}
+        >
+          Corte de caja z
+        </button>
+      </div>
       <div className='flex mt-6 gap-4'>
-        <Input
-          readOnly
-          className='bg-red'
-          label="Codigo"
-          labelPlacement='outside'
-          placeholder='Codigo para el empleado'
-          value={code}
-        />
+        {payload.cutX ? (
+          <Input
+            readOnly
+            className='bg-red'
+            label="Codigo"
+            labelPlacement='outside'
+            placeholder='Codigo para el empleado'
+            value={code.codeX}
+          />
+        ) : (
+          <Input
+            readOnly
+            className='bg-red'
+            label="Codigo"
+            labelPlacement='outside'
+            placeholder='Codigo para el empleado'
+            value={code.codeZ}
+          />
+        )}
+
         <Tooltip content="Copiar al portapapeles">
           <Button
             isIconOnly
@@ -79,9 +129,9 @@ function GenerateCodeEmployee(props: Props) {
           label="Tiempo de expiracion"
           labelPlacement='outside'
           placeholder='5'
-          value={time.toString()}
+          value={payload.time.toString()}
           onChange={(e) => {
-            setTime(Number(e.currentTarget.value))
+            setPayload({ ...payload, time: Number(e.currentTarget.value) })
           }} />
         <span className='mt-6 ml-10 rounded-xl border-sky-400 border p-2'
         >minutos</span>

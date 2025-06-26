@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from '../utils/constants';
 import {
   EmployeePayload,
+  GenerateCodeCut,
   GetEmployeeByCode,
   // GetEmployeeContingence,
   GetEmployeeList,
@@ -161,12 +162,12 @@ export const get_employee_by_code = (code: string) => {
 
 
 
-export const generate_code = (id: number, time: number) => {
+export const generate_code = (id: number, payload: GenerateCodeCut) => {
   const token = get_token() ?? '';
 
   return axios.patch<{ ok: boolean; code: string }>(
     `${API_URL}/employees/generate-code/${id}`,
-    { time },
+    payload,
     {
       headers: {
         Authorization: `Bearer ${token}`,

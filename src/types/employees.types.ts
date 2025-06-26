@@ -79,7 +79,11 @@ export interface EmployeePayload {
   complement?: string;
   dateOfExit: string;
 }
-
+export interface GenerateCodeCut {
+  time: number;
+  cutX: boolean;
+  cutZ: boolean
+}
 interface Address {
   departamento: string;
   nombreDepartamento: string;
