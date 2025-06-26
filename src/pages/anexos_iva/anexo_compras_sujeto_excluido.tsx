@@ -59,7 +59,7 @@ export default function AnexoComprasSujetoExcluido() {
   };
 
   return (
-    <Layout title="DETALLE DE DOCUMENTOS ANULADOS">
+    <Layout title="Compras a sujetos excluidos">
       <DivGlobal>
         <div className="w-full flex justify-between gap-5">
           <Select
