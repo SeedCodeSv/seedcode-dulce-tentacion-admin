@@ -2,10 +2,10 @@ import { Dispatch, SetStateAction } from "react"
 
 import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 
-export interface ICreateShopping {
-  branchId: number
-  json?: File | Blob | null
-}
+// export interface ICreateShopping {
+//   branchId: number
+//   json?: File | Blob | null
+// }
 
 export interface ICreateShoppingManual {
   branchId: number
@@ -45,11 +45,6 @@ export interface Detail {
   ventaGravada: number
   totalItem: number
 }
-
-export interface IShoppinStore {
-  OnCreateShopping: (payload: ICreateShopping) => void
-}
-
 export interface IGetShoppingPaginated {
   ok: boolean
   compras: IGetShopping[]
@@ -202,6 +197,7 @@ export interface ShoppingReport {
   montoTotalOperacion: string;
   totalPagar: string;
   totalLetras: string;
+  totalCompra: string;
   pathPdf: string;
   pathJson: string;
   isActivated: boolean;

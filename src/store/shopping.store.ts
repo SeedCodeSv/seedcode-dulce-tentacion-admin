@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { IShoppingStore } from './types/shopping.store';
 
 import {
+  get_branch_shopping_annexes,
   get_shopping_by_id,
   get_shopping_by_month,
   get_shopping_excluded_subject,
@@ -11,6 +12,7 @@ import {
 import { formatDate } from '@/utils/dates';
 
 export const useShoppingStore = create<IShoppingStore>((set) => ({
+  annexes_list: [],
   shoppingList: [],
   shopping_excluded_subject: [],
   pagination_shopping: {
@@ -112,5 +114,14 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
       .catch(() => {
         set({ shopping_excluded_subject: [], loading: false });
       });
+  },
+  onGetAnnexesShoppingByMonth(transmitterId, month, year) {
+    set({ loading_shopping: true });
+
+    get_branch_shopping_annexes(transmitterId, month, year).then((response) => {
+      set({ annexes_list: response.data.shoppings, loading_shopping: false });
+    }).catch(() => {
+      set({ annexes_list: [], loading_shopping: false  });
+    });
   },
 }));

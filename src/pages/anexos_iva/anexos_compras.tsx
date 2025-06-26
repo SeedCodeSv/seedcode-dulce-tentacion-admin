@@ -2,11 +2,10 @@ import { Button, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from 'react';
 import { PiFileCsv, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
-import { csvmaker } from './utils';
+import { annexes_iva_shopping, csvmaker } from './utils';
 
 import Layout from '@/layout/Layout';
 import { formatCurrency } from '@/utils/dte';
-import { generate_anexe_shopping } from '@/utils/utils';
 import { months } from '@/utils/constants';
 import { useShoppingStore } from '@/store/shopping.store';
 import { get_user } from '@/storage/localStorage';
@@ -17,7 +16,7 @@ import { TableComponent } from "@/themes/ui/table-ui";
 
 function AnexosCompras() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1)
-  const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore()
+  const { annexes_list, onGetAnnexesShoppingByMonth, loading_shopping } = useShoppingStore()
 
   const transmiter = get_user();
 
@@ -29,7 +28,7 @@ function AnexosCompras() {
   const [yearSelected, setYearSelected] = useState(currentYear);
 
   useEffect(() => {
-    onGetShoppingByMonth(
+    onGetAnnexesShoppingByMonth(
       Number(transmiter?.pointOfSale?.branch.transmitter.id),
       monthSelected <= 9 ? "0" + monthSelected : monthSelected.toString(), yearSelected
     )
@@ -37,7 +36,7 @@ function AnexosCompras() {
 
   const exportAnnexes = async () => {
     const month = months.find((month) => month.value === monthSelected)?.name || ""
-    const blob = await generate_anexe_shopping(shopping_by_months)
+    const blob = await annexes_iva_shopping(annexes_list)
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement("a")
 
@@ -48,7 +47,7 @@ function AnexosCompras() {
 
   const exportAnnexesCSV = () => {
     const month = months.find((month) => month.value === monthSelected)?.name || ""
-    const csv = csvmaker(shopping_by_months)
+    const csv = csvmaker(annexes_list)
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
     const url = URL.createObjectURL(blob)
     const link = document.createElement("a")
@@ -124,7 +123,7 @@ function AnexosCompras() {
         </div>
           {loading_shopping ? (
             <LoadingTable />
-          ) : shopping_by_months.length > 0 ? (
+          ) : annexes_list.length > 0 ? (
             <>
               <TableComponent headers={[
                 'Fecha de emisión del documento',
@@ -137,7 +136,7 @@ function AnexosCompras() {
                 'Total'
               ]}
               >
-                {shopping_by_months.map((shopping, index) => (
+                {annexes_list.map((shopping, index) => (
                   <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
                       {shopping.fecEmi}

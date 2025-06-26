@@ -77,4 +77,8 @@ export const get_shopping_excluded_subject = (transmitterId: number, month: stri
   );
 };
 
+export const get_branch_shopping_annexes = (transmitterId: number, month: string, year: number) => {
+  return axios.get<IGetShoppingReport>(API_URL + `/reports/anexos-compras/${transmitterId}?month=${month}&year=${year}`);
+};
+
 

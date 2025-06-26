@@ -5,13 +5,7 @@ import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
 import { Sale } from '@/types/sales.types';
-import { typesDocumento } from '@/utils/constants';
-
-const formatDate = (dateString: string) => {
-    const [year, month, day] = dateString.split('-');
-
-    return `${day}/${month}/${year}`;
-};
+import { formatDate, formatDteType, formatNit } from '@/utils/utils';
 
 export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => {
     const workbook = new ExcelJS.Workbook();
@@ -142,7 +136,7 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
         worksheet.getCell(`A${nextLine}`).value = formatDate(shopping.fecEmi);
         worksheet.getCell(`B${nextLine}`).value = formatTypes(shopping).classDocument;
         worksheet.getCell(`C${nextLine}`).value = formatDteType(shopping.typeDte)
-        worksheet.getCell(`D${nextLine}`).value = formatControlNumber(shopping.controlNumber);
+        worksheet.getCell(`D${nextLine}`).value = formatControlNumber(shopping.generationCode);
         worksheet.getCell(`E${nextLine}`).value = formatNit(shopping.supplier)
         worksheet.getCell(`F${nextLine}`).value = shopping.supplier.nombre;
         worksheet.getCell(`G${nextLine}`).value = shopping.typeSale === "Interna" ? Number(shopping.totalExenta) : 0;
@@ -183,31 +177,6 @@ export const annexes_iva_shopping = async (shoppingReport: ShoppingReport[]) => 
     const blob = new Blob([buffer], { type: 'application/octet-stream' });
 
     return blob;
-}
-
-export const formatDteType = (typeDte: string) => {
-    switch (typeDte) {
-        case "03":
-            return "03. COMPROBANTE DE CRÉDITO FISCAL";
-        case "05":
-            return "05. NOTA DE CRÉDITO";
-        case "06":
-            return "06. NOTA DE DÉBITO"
-        default:
-            return ""
-    }
-}
-
-export const formatNit = (supplier: Supplier) => {
-    if (supplier.nit && supplier.nit.length > 0 && supplier.nit !== "" && supplier.nit !== "0" && supplier.nit !== "N/A") {
-        return supplier.nit;
-    }
-
-    if (supplier.nrc && supplier.nrc.length > 0 && supplier.nrc !== "" && supplier.nrc !== "0" && supplier.nrc !== "N/A") {
-        return supplier.nrc;
-    }
-
-    return "";
 }
 
 
@@ -489,31 +458,22 @@ export const formatClassCodeDte = (type: string) => {
             return ""
     }
 }
-// export const formatResolution = (iva: IvaSale) => {
-//     if (iva.type === "DTE") return "N/A"
-//     return iva.resolution
-// }
+
 export const formatResolution = (iva: IvaSale) => {
     if (iva.type === "DTE") {
-        return iva.firstNumeroControl; // Mostrar `firstNumeroControl` si es Factura (FE)
+        return iva.firstNumeroControl;
     }
 
-    return iva.resolution; // Mostrar `resolution` para otros casos
+    return iva.resolution;
 };
 
 
-
-// export const formatSeries = (iva: IvaSale) => {
-//     if (iva.type === "DTE") return "N/A"
-//     return iva.series
-// }
-
 export const formatSeries = (iva: IvaSale) => {
     if (iva.type === "DTE") {
-        return iva.firstSelloRecibido; // Mostrar `firstNumeroControl` si es Factura (FE)
+        return iva.firstSelloRecibido;
     }
 
-    return iva.series; // Mostrar `resolution` para otros casos
+    return iva.series;
 };
 
 export const formatInternalControl = (iva: IvaSale) => {
@@ -886,13 +846,13 @@ export const exportExcellShoppingExcludedSubject = async (tableData: ShoppingRep
             type: 'pattern',
             pattern: 'solid',
             fgColor: { argb: 'FF5b9bd5' },
-            
+
         };
         cell.font = {
             bold: true,
             color: { argb: 'FFFFFFFF' },
         };
-        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
     });
 
     worksheet.columns = [
@@ -913,7 +873,7 @@ export const exportExcellShoppingExcludedSubject = async (tableData: ShoppingRep
 
     tableData.forEach((item) => {
         worksheet.addRow([
-            formatTypeDocument(item.supplier.tipoDocumento),
+            `${formatTypeDocument(item.supplier.tipoDocumento).code} ${formatTypeDocument(item.supplier.tipoDocumento).desc}`,
             item.supplier.numDocumento,
             item.supplier.nombre,
             item.fecEmi,
@@ -940,7 +900,7 @@ export const csvmakershopexcludedsubject = (annexe: ShoppingReport[]) => {
 
     const payload = annexe.map((item) => {
         return [
-            item.supplier.tipoDocumento,
+            `${formatTypeDocument(item.supplier.tipoDocumento).code}`,
             item.supplier.numDocumento,
             item.supplier.nombre,
             item.fecEmi,
@@ -960,10 +920,14 @@ export const csvmakershopexcludedsubject = (annexe: ShoppingReport[]) => {
 }
 
 export const formatTypeDocument = (type: string) => {
-    const document = typesDocumento.find((item) => item.code === type)
+    switch (type) {
+        case "36":
+            return { code: "1", desc: ". NIT" }
+        case "13":
+            return { code: "2", desc: ". DUI" };
+        default:
+            return { code: "3", desc: ". OTRO DOCUMENTO" }
+    }
 
-    if(document)
-
-    return `${document.code}. ${document.name}`
 }
 

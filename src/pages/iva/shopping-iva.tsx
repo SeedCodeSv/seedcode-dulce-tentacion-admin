@@ -46,7 +46,7 @@ function ShoppingBookIVA() {
 
   const [pdf, setPdf] = useState('');
   const { shopping_by_months, onGetShoppingByMonth, loading_shopping } = useShoppingStore();
-  const { excluded_subjects_month, getExcludedSubjectByMonth } = useExcludedSubjectStore();
+  const { getExcludedSubjectByMonth } = useExcludedSubjectStore();
 
   useEffect(() => {
     onGetShoppingByMonth(
@@ -83,36 +83,37 @@ function ShoppingBookIVA() {
         shop.typeSale === 'Importacion' ? totalExenta : 0,
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
-        0,
+        Number(shop.totalCompra),
       ];
     });
 
-    const dataExcluded = excluded_subjects_month.map((exc) => [
-      formatDateToMMDDYYYY(exc.fecEmi),
-      exc.codigoGeneracion.replace(/-/g, ''),
-      '',
-      exc.subject.nit !== '0' && exc.subject.nit !== 'N/A'
-        ? exc.subject.nit
-        : exc.subject.numDocumento,
-      exc.subject.nombre,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      Number(exc.totalCompra),
-    ]);
+    // const dataExcluded = excluded_subjects_month.map((exc) => [
+    //   formatDateToMMDDYYYY(exc.fecEmi),
+    //   exc.codigoGeneracion.replace(/-/g, ''),
+    //   '',
+    //   exc.subject.nit !== '0' && exc.subject.nit !== 'N/A'
+    //     ? exc.subject.nit
+    //     : exc.subject.numDocumento,
+    //   exc.subject.nombre,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   Number(exc.totalCompra),
+    // ]);
 
-    const formatData = [...data, ...dataExcluded]
+    // const formatData = [...data, ...dataExcluded]
+      const formatData = [...data]
       .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
       .map((da, index) => [index + 1, ...da]);
 
     return formatData;
-  }, [excluded_subjects_month, shopping_by_months]);
+  }, [shopping_by_months]);
 
   const export_to_pdf = (type: 'print' | 'download') => {
     const doc = new jsPDF({ orientation: 'landscape' });
@@ -303,29 +304,29 @@ function ShoppingBookIVA() {
         shop.typeSale === 'Importacion' ? totalExenta : 0,
         Number(shop.montoTotalOperacion),
         Number(shop.ivaPerci1),
-        0,
+        Number(shop.totalCompra),
       ];
     });
 
-    const dataExcluded = excluded_subjects_month.map((exc) => [
-      formatDateToMMDDYYYY(exc.fecEmi),
-      exc.codigoGeneracion.replace(/-/g, ''),
-      '',
-      exc.subject.nit !== '0' && exc.subject.nit !== 'N/A'
-        ? exc.subject.nit
-        : exc.subject.numDocumento,
-      exc.subject.nombre,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      Number(exc.totalCompra),
-    ]);
+    // const dataExcluded = excluded_subjects_month.map((exc) => [
+    //   formatDateToMMDDYYYY(exc.fecEmi),
+    //   exc.codigoGeneracion.replace(/-/g, ''),
+    //   '',
+    //   exc.subject.nit !== '0' && exc.subject.nit !== 'N/A'
+    //     ? exc.subject.nit
+    //     : exc.subject.numDocumento,
+    //   exc.subject.nombre,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   0,
+    //   Number(exc.totalCompra),
+    // ]);
 
-    const formatData = [...data, ...dataExcluded]
+    const formatData = [...data]
       .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
       .map((da, index) => [index + 1, ...da]);
 

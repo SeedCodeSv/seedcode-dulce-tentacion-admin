@@ -119,13 +119,12 @@ export default function AnexoComprasSujetoExcluido() {
                 'PROVEEDOR',
                 'FECHA DE EMISIÓN DEL DOCUMENTO',
                 'MONTO DE LA OPERACIÓN',
-                'MONTO DE LA RETENCIÓN DEL IVA 13%',
               ]}>
                 <>
                   {shopping_excluded_subject.map((item, index) => (
                     <tr key={index} className="border-b border-slate-200">
                       <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                         {formatTypeDocument(item.supplier.tipoDocumento)}
+                         {`${formatTypeDocument(item.supplier.tipoDocumento).code} ${formatTypeDocument(item.supplier.tipoDocumento).desc}`}
                       </TdGlobal>
                       <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
                         {item.supplier.nombre}
@@ -135,9 +134,6 @@ export default function AnexoComprasSujetoExcluido() {
                       </TdGlobal>
                       <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
                         {formatCurrency(Number(item.montoTotalOperacion ?? 0))}
-                      </TdGlobal>
-                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                        {formatCurrency(Number(0))}
                       </TdGlobal>
                     </tr>
                   ))}
