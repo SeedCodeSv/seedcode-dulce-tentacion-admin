@@ -99,7 +99,7 @@ export const get_employee_list = () => {
 
 export const get_employee_by_branch = (id: number) => {
   const token = get_token() ?? ''
-  
+
   return axios.get<GetEmployeeList>(API_URL + '/employees/get-by-branch/' + id, {
     headers: {
       Authorization: `Bearer ${token}`
@@ -158,3 +158,20 @@ export const get_employee_by_code = (code: string) => {
     },
   });
 };
+
+
+
+export const generate_code = (id: number, time: number) => {
+  const token = get_token() ?? '';
+
+  return axios.patch<{ ok: boolean; code: string }>(
+    `${API_URL}/employees/generate-code/${id}`,
+    { time },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+};
+

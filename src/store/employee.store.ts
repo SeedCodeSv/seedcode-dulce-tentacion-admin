@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import {
   activate_employee,
   delete_employee,
+  generate_code,
   get_birthday_employees,
   get_employee_by_branch,
   get_employee_list,
@@ -87,7 +88,7 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         const user = get_user();
 
         get().getEmployeesPaginated(
-         user?.pointOfSale?.branch.transmitterId ?? 0,
+          user?.pointOfSale?.branch.transmitterId ?? 0,
           1,
           5,
           '',
@@ -208,6 +209,26 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         set((state) => ({ ...state, employee_list: [] }))
       })
   },
+  async generateCode(id, time) {
+    try {
+      const data = await generate_code(id, time);
+
+      if (data && data.data.ok) {
+        toast.success(messages.success);
+
+        return data.data.code;
+      } else {
+        toast.warning(messages.error);
+
+        return null;
+      }
+    } catch (error) {
+      toast.warning(messages.error);
+
+      return null;
+    }
+  }
+
   // getListEmployees() {
   //   get_list_employees()
   //     .then(({ data }) => {

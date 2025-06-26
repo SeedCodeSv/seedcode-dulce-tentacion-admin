@@ -20,6 +20,7 @@ import {
   ScanBarcode,
   Store,
   Trash,
+  RectangleEllipsis,
 } from 'lucide-react';
 import classNames from 'classnames';
 import { useNavigate } from 'react-router';
@@ -51,6 +52,7 @@ import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import { TableComponent } from '@/themes/ui/table-ui';
 import DivGlobal from '@/themes/ui/div-global';
+import GenerateCodeEmployee from './GenerateCode';
 
 
 interface Props {
@@ -78,6 +80,7 @@ function ListEmployee({ actions }: Props) {
   const { getBranchesList, branch_list } = useBranchesStore();
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
+  const [selectId, setSelectedId] = useState(0);
 
   const [isDate, setDate] = useState(false);
   const changePage = () => {
@@ -137,7 +140,7 @@ function ListEmployee({ actions }: Props) {
     });
   };
   const navigate = useNavigate();
-
+  const generateCodeModal = useDisclosure()
   //estado para capturar ;la data actualizada
   const [dataUpdate, setDataUpdate] = useState<EmployeePayload>({
     firstName: '',
@@ -475,9 +478,20 @@ function ListEmployee({ actions }: Props) {
                                   )}
                                   {actions.includes('Contrato de Trabajo') &&
                                     employee.isActive && (
-                                      <ContractPdf employee={employee}/>
+                                      <ContractPdf employee={employee} />
                                     )}
-
+                                  <ButtonUi
+                                    isIconOnly
+                                    showTooltip
+                                    theme={Colors.Default}
+                                    tooltipText="Generar código"
+                                    onPress={() => {
+                                      setSelectedId(employee?.id)
+                                      generateCodeModal.onOpen();
+                                    }}
+                                  >
+                                    <RectangleEllipsis />
+                                  </ButtonUi>
                                   {!employee.isActive && (
                                     <>
                                       {actions.includes('Activar') && (
@@ -559,6 +573,14 @@ function ListEmployee({ actions }: Props) {
           >
             <AddEmployee />
           </HeadlessModal>
+          <HeadlessModal
+            isOpen={generateCodeModal.isOpen}
+            size="w-[350px] md:w-[450px]"
+            title="Generar código"
+            onClose={generateCodeModal.onClose}
+          >
+            <GenerateCodeEmployee id={selectId} />
+          </HeadlessModal>
         </>
       )
       }
@@ -618,6 +640,7 @@ export const DeletePopover = ({ employee }: PopProps) => {
           </div>
         </PopoverContent>
       </Popover>
+
     </>
   );
 };

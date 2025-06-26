@@ -14,6 +14,7 @@ import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } fro
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ArrowLeft, Badge, BarChart3, Barcode, Check, CreditCard, DollarSign, Grid3X3, Hash, Package, Search, Sparkles, Table, Tag } from 'lucide-react';
 import classNames from 'classnames';
+import { toast } from 'sonner';
 
 import Pagination from '../global/Pagination';
 
@@ -98,7 +99,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     { name: "Codigo", uuid: "code" },
     { name: "Nombre", uuid: "name" },
     { name: "Stock", uuid: "stock" },
-    { name: "Precio", uuid: "price" }]
+    { name: "Costo unitario", uuid: "coste" }]
 
 
   useHotkeys(['left', 'up'], () => {
@@ -423,7 +424,9 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   }
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                      setSelectedIndex(index);
+                                      if (bp.stock <= 0) {
+                                        return toast.warning('Este producto no cuenta con suficiente stock')
+                                      } setSelectedIndex(index);
                                       handleSelect(bp.id)
                                     }
                                   }}
@@ -435,7 +438,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   <TdGlobal className="py-2 px-3">{bp.product.code}</TdGlobal>
                                   <TdGlobal className="py-2 px-3">{bp.product.name}</TdGlobal>
                                   <TdGlobal className="py-2 px-3">{bp.stock}</TdGlobal>
-                                  <TdGlobal className="py-2 px-3">{bp.price}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">{Number(bp.costoUnitario).toFixed(4)}</TdGlobal>
                                 </tr>
                               )
                             })}
