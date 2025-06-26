@@ -41,6 +41,7 @@ import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { limit_options } from '@/utils/constants';
+import TdGlobal from '@/themes/ui/td-global';
 
 function ListSuppliers({ actions }: ArrayAction) {
   const { getSupplierPagination, supplier_pagination, activateSupplier, loading } =
@@ -225,34 +226,32 @@ function ListSuppliers({ actions }: ArrayAction) {
                   <LoadingTable />
                 </td>
               </tr>
-            ) : (
-              <>
-                {supplier_pagination.suppliers.length > 0 ? (
+            ) : supplier_pagination.suppliers.length > 0 ? (
                   <>
                     {supplier_pagination.suppliers.map((item, index) => (
                       <tr key={index} className="border-b border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <TdGlobal className='p-3'>
                           {item.id}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
+                        </TdGlobal>
+                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
                           {item.nombre}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        </TdGlobal>
+                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {item.telefono}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        </TdGlobal>
+                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           {item.correo}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                        </TdGlobal>
+                        <TdGlobal className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
                           <span
                             className={`px-2 py-1 text-white rounded-lg ${item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
                               }`}
                           >
                             {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
                           </span>
-                        </td>
+                        </TdGlobal>
 
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
                           <div className="flex w-full gap-5">
                             {item.isActive && actions.includes('Editar') && (
                               <ButtonUi
@@ -315,7 +314,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                               )}
                             </>
                           </div>
-                        </td>
+                        </TdGlobal>
                       </tr>
                     ))}
                   </>
@@ -326,8 +325,6 @@ function ListSuppliers({ actions }: ArrayAction) {
                     </td>
                   </tr>
                 )}
-              </>
-            )}
           </TableComponent>
         )}
         {supplier_pagination.totalPag > 1 && (
@@ -409,7 +406,7 @@ export const DeletePopover = ({ supplier }: PopProps) => {
 
 export const BottomAdd = () => {
   const navigate = useNavigate();
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const style = useThemeColors({ name: Colors.Success });
 
   return (
     <Popover
@@ -417,21 +414,18 @@ export const BottomAdd = () => {
       aria-describedby="popover-id"
       aria-labelledby="popover-title"
       backdrop="blur"
-      isOpen={isOpen}
-      onClose={onClose}
     >
       <PopoverTrigger>
-        <ButtonUi
+        <Button
           isIconOnly
           endContent={<PlusIcon />}
-          theme={Colors.Success}
-          onPress={() => (isOpen ? onClose() : onOpen())}
+          style={style}
         />
       </PopoverTrigger>
       <PopoverContent aria-labelledby="popover-title" className="border border-white">
         <div className="flex flex-col gap-5 p-3 bg-white dark:bg-zinc-900">
           <Button
-            className="border bg-[#64DD17] text-white"
+            style={style}
             onPress={() => {
               navigate('/add-supplier-normal');
             }}
@@ -439,8 +433,8 @@ export const BottomAdd = () => {
             Proveedor Consumidor Final
           </Button>
           <Button
-            className="border bg-[#64DD17] text-white"
-            onClick={() => {
+            style={style}
+            onPress={() => {
               navigate('/add-supplier-tribute');
             }}
           >

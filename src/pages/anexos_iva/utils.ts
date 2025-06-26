@@ -5,6 +5,7 @@ import { IvaSale } from '@/store/types/iva-fe.types';
 import { ShoppingReport } from '@/types/shopping.types';
 import { Supplier } from '@/types/supplier.types';
 import { Sale } from '@/types/sales.types';
+import { typesDocumento } from '@/utils/constants';
 
 const formatDate = (dateString: string) => {
     const [year, month, day] = dateString.split('-');
@@ -812,8 +813,8 @@ export const exportExcellAnulated = async (tableData: Sale[]) => {
         { width: 30 },
         { width: 25 },
         { width: 10 },
-         { width: 10 },
-          { width: 40 }
+        { width: 10 },
+        { width: 40 }
     ];
 
     tableData.forEach((item) => {
@@ -857,3 +858,112 @@ export const csvmakeranulateds = (annexe_fe: Sale[]) => {
 
     return payload.map((row) => row.join(';')).join('\n');
 }
+
+export const exportExcellShoppingExcludedSubject = async (tableData: ShoppingReport[]) => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Compras A Sujetos Excluidos');
+
+    const headers = [
+        'TIPO DE DOCUMENTO',
+        'NÚMERO DE NIT, DUI U OTRO DOCUMENTO',
+        'NOMBRE, RAZÓN SOCIAL O DENOMINACIÓN',
+        'FECHA DE EMISIÓN DEL DOCUMENTO',
+        'NÚMERO DE SERIE DEL DOCUMENTO',
+        'NÚMERO DE DOCUMENTO',
+        'MONTO DE LA OPERACIÓN',
+        'MONTO DE LA RETENCIÓN DEL IVA 13%',
+        'TIPO DE OPERACIÓN (Renta)',
+        'CLASIFICACIÓN (Renta)',
+        'SECTOR (Renta)',
+        'TIPO DE COSTO/GASTO (Renta)',
+        'NÚMERO DEL ANEXO'
+    ]
+
+    const headerRow = worksheet.addRow(headers);
+
+    headerRow.eachCell((cell) => {
+        cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF5b9bd5' },
+            
+        };
+        cell.font = {
+            bold: true,
+            color: { argb: 'FFFFFFFF' },
+        };
+        cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true};
+    });
+
+    worksheet.columns = [
+        { width: 22 },
+        { width: 23 },
+        { width: 43 },
+        { width: 23 },
+        { width: 15 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 },
+        { width: 20 }
+    ];
+
+    tableData.forEach((item) => {
+        worksheet.addRow([
+            formatTypeDocument(item.supplier.tipoDocumento),
+            item.supplier.numDocumento,
+            item.supplier.nombre,
+            item.fecEmi,
+            0,
+            0,
+            item.montoTotalOperacion,
+            0,
+            ` ${item.operationTypeCode} ${item.operationTypeValue}`,
+            ` ${item.classificationCode} ${item.classificationValue}`,
+            ` ${item.sectorCode} ${item.sectorValue}`,
+            ` ${item.typeCostSpentCode} ${item.typeCostSpentValue}`,
+            5
+        ]);
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], { type: 'application/octet-stream' });
+
+    return blob;
+}
+
+export const csvmakershopexcludedsubject = (annexe: ShoppingReport[]) => {
+
+    const payload = annexe.map((item) => {
+        return [
+            item.supplier.tipoDocumento,
+            item.supplier.numDocumento,
+            item.supplier.nombre,
+            item.fecEmi,
+            0,
+            0,
+            item.montoTotalOperacion,
+            0,
+            item.operationTypeCode,
+            item.classificationCode,
+            item.sectorCode,
+            item.typeCostSpentCode,
+            5
+        ]
+    })
+
+    return payload.map((row) => row.join(';')).join('\n');
+}
+
+export const formatTypeDocument = (type: string) => {
+    const document = typesDocumento.find((item) => item.code === type)
+
+    if(document)
+
+    return `${document.code}. ${document.name}`
+}
+

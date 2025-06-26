@@ -32,6 +32,7 @@ import OrderProductionProductOrder from '@/components/product-order/production-o
 import CreditNotePage from '@/pages/notes/CreditNotePage';
 import DebitNotePage from '@/pages/notes/DebitNotePage';
 import AnexoAnulados from '@/pages/anexos_iva/anexo_anulados';
+import AnexoComprasSujetoExcluido from '@/pages/anexos_iva/anexo_compras_sujeto_excluido';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -711,6 +712,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/anexos-doc-anulados"
+      />
+       <Route
+        element={
+          <AnimatedRoute>
+            <AnexoComprasSujetoExcluido />
+          </AnimatedRoute>
+        }
+        path="/anexos-compras-sujetoexcluido"
       />
       <Route
         element={

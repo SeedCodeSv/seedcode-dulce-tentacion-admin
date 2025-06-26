@@ -329,6 +329,14 @@
         "Exportar CSV"
       ]
     },
+     {
+      "view": "Anexos compras a sujetos excluidos",
+      "actions": [
+        "Mostrar",
+        "Exportar",
+        "Exportar CSV"
+      ]
+    },
     {
       "view": "Anexos de consumidor final",
       "actions": [

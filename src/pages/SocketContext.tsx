@@ -16,8 +16,6 @@ function SocketContext() {
   const { user } = useAuthStore()
   const branchId = user?.branchId ?? 0
 
-
-
   const socket = useMemo(() => {
     return connect(WS_URL, {
       transports: ['websocket'],

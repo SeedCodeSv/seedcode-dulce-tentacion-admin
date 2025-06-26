@@ -98,10 +98,10 @@ export default function AnexoAnulados() {
           </Select>
 
           <div className="w-full flex justify-end gap-5 mt-4">
-            <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
+            <Button style={global_styles().thirdStyle} onPress={exportAnnexes}>
               Exportar anexo
             </Button>
-            <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
+            <Button style={global_styles().secondaryStyle} onPress={exportAnnexesCSV}>
               Exportar a CSV
             </Button>
           </div>

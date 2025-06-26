@@ -1,10 +1,9 @@
 import { Button, Select, SelectItem } from '@heroui/react';
 import { useEffect, useState } from 'react';
 
-import { annexes_iva_fe, csvmaker_fe } from './utils';
+import { csvmakershopexcludedsubject, exportExcellShoppingExcludedSubject, formatTypeDocument } from './utils';
 
 import Layout from '@/layout/Layout';
-import { useIvaFeStore } from '@/store/reports/iva-fe.store';
 import { formatCurrency } from '@/utils/dte';
 import { global_styles } from '@/styles/global.styles';
 import { useAuthStore } from '@/store/auth.store';
@@ -14,11 +13,12 @@ import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import TdGlobal from '@/themes/ui/td-global';
 import LoadingTable from '@/components/global/LoadingTable';
+import { useShoppingStore } from '@/store/shopping.store';
 
-function AnexoFe() {
+export default function AnexoComprasSujetoExcluido() {
   const { user } = useAuthStore();
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
-  const { annexes_iva, onGetAnnexesIva, loading_annexes_fe } = useIvaFeStore();
+  const { shopping_excluded_subject, onGetShoppingExcludedSubject, loading } = useShoppingStore();
 
   const currentYear = new Date().getFullYear();
   const years = [
@@ -30,7 +30,7 @@ function AnexoFe() {
   useEffect(() => {
     const transId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
-    onGetAnnexesIva(
+    onGetShoppingExcludedSubject(
       Number(transId),
       monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
       yearSelected
@@ -38,28 +38,28 @@ function AnexoFe() {
   }, [monthSelected, yearSelected]);
 
   const exportAnnexes = async () => {
-    const blob = await annexes_iva_fe(annexes_iva);
+    const blob = await exportExcellShoppingExcludedSubject(shopping_excluded_subject);
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
 
     link.href = url;
-    link.download = 'anexos-iva-fe.xlsx';
+    link.download = 'anexo_compras_a_sujetos_excluidos.xlsx';
     link.click();
   };
 
   const exportAnnexesCSV = () => {
-    const csv = csvmaker_fe(annexes_iva);
+    const csv = csvmakershopexcludedsubject(shopping_excluded_subject);
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
 
     link.href = url;
-    link.download = 'CONSUMIDOR_FINAL.csv';
+    link.download = 'Compras_a_sujetos_excluidos.csv';
     link.click();
   };
 
   return (
-    <Layout title="Anexo FE">
+    <Layout title="DETALLE DE DOCUMENTOS ANULADOS">
       <DivGlobal>
         <div className="w-full flex justify-between gap-5">
           <Select
@@ -107,64 +107,50 @@ function AnexoFe() {
           </div>
         </div>
         <>
-          {loading_annexes_fe ? (
+          {loading ? (
             <>
               <LoadingTable />
             </>
-          ) : (
+          ) : shopping_excluded_subject.length > 0 ? (
             <>
-              {annexes_iva.length > 0 ? (
+              {' '}
+              <TableComponent headers={[
+                'TIPO DE DOCUMENTO',
+                'PROVEEDOR',
+                'FECHA DE EMISIÓN DEL DOCUMENTO',
+                'MONTO DE LA OPERACIÓN',
+                'MONTO DE LA RETENCIÓN DEL IVA 13%',
+              ]}>
                 <>
-                  {' '}
-                  <TableComponent headers={['Fecha', 'Numero control del', 'Numero control al', ' Cod. Generación Inicial', ' Cod. Generación Final', 'Total']}>
-                    <>
-                      {annexes_iva.map((shopping) => (
-                        <tr key={shopping.day} className="border-b border-slate-200">
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {shopping.currentDay}
-                          </TdGlobal>
-                          {/* <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                {shopping.resolution}
-                              </TdGlobal> */}
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {shopping.typeVoucher === 'FE'
-                              ? shopping.firstNumeroControl
-                              : shopping.resolution}
-                          </TdGlobal>
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {shopping.typeVoucher === 'FE'
-                              ? shopping.lastNumeroControl
-                              : shopping.series}
-                          </TdGlobal>
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {shopping.typeVoucher === 'FE'
-                              ? shopping.firstCorrelativ
-                              : shopping.firstNumeroControl}
-                          </TdGlobal>
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {shopping.typeVoucher === 'FE'
-                              ? shopping.lastCorrelative
-                              : shopping.lastNumeroControl}
-                          </TdGlobal>
-                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                            {formatCurrency(shopping.totalSales)}
-                          </TdGlobal>
-                        </tr>
-                      ))}
-                    </>
-                  </TableComponent>
+                  {shopping_excluded_subject.map((item, index) => (
+                    <tr key={index} className="border-b border-slate-200">
+                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                         {formatTypeDocument(item.supplier.tipoDocumento)}
+                      </TdGlobal>
+                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {item.supplier.nombre}
+                      </TdGlobal>
+                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {item.fecEmi}
+                      </TdGlobal>
+                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(item.montoTotalOperacion ?? 0))}
+                      </TdGlobal>
+                      <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                        {formatCurrency(Number(0))}
+                      </TdGlobal>
+                    </tr>
+                  ))}
                 </>
-              ) : (
-                <div className='p-5'>
-                  <EmptyTable />
-                </div>
-              )}
+              </TableComponent>
             </>
+          ) : (
+            <div className='p-5'>
+              <EmptyTable />
+            </div>
           )}
         </>
       </DivGlobal>
     </Layout >
   );
 }
-
-export default AnexoFe;

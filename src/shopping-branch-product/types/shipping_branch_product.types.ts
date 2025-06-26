@@ -1,6 +1,6 @@
-import { ICheckStockResponse, ProductQuery } from '@/types/branch_products.types';
 import { Emisor, Receptor } from './notes_of_remision.types';
 
+import { ICheckStockResponse, ProductQuery } from '@/types/branch_products.types';
 import { Transmitter } from '@/types/categories.types';
 import { OrderProductDetail } from '@/types/order-products.types';
 

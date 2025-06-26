@@ -59,101 +59,101 @@ function AnexoCcfe() {
   return (
     <Layout title="Anexo CCFE">
       <DivGlobal>
-          <div className="w-full flex justify-between gap-5">
-            <Select
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Meses"
-              labelPlacement="outside"
-              selectedKeys={[`${monthSelected}`]}
-              variant="bordered"
-              onSelectionChange={(key) => {
-                if (key) {
-                  setMonthSelected(Number(new Set(key).values().next().value));
-                }
-              }}
-            >
-              {months.map((month) => (
-                <SelectItem key={month.value}>
-                  {month.name}
-                </SelectItem>
-              ))}
-            </Select>
-            <Select
-              className="w-44"
-              classNames={{ label: 'font-semibold' }}
-              label="Año"
-              labelPlacement="outside"
-              selectedKeys={[`${yearSelected}`]}
-              variant="bordered"
-              onSelectionChange={(key) => {
-                if (key) {
-                  setYearSelected(Number(new Set(key).values().next().value));
-                }
-              }}
-            >
-              {years.map((years) => (
-                <SelectItem key={years.value}>
-                  {years.name}
-                </SelectItem>
-              ))}
-            </Select>
-            <div className="w-full flex justify-end gap-5 mt-4">
-              <Button style={global_styles().thirdStyle} onClick={exportAnnexes}>
-                Exportar anexo
-              </Button>
-              <Button style={global_styles().secondaryStyle} onClick={exportAnnexesCSV}>
-                Exportar a CSV
-              </Button>
-            </div>
+        <div className="w-full flex justify-between gap-5">
+          <Select
+            className="w-44"
+            classNames={{ label: 'font-semibold' }}
+            label="Meses"
+            labelPlacement="outside"
+            selectedKeys={[`${monthSelected}`]}
+            variant="bordered"
+            onSelectionChange={(key) => {
+              if (key) {
+                setMonthSelected(Number(new Set(key).values().next().value));
+              }
+            }}
+          >
+            {months.map((month) => (
+              <SelectItem key={month.value}>
+                {month.name}
+              </SelectItem>
+            ))}
+          </Select>
+          <Select
+            className="w-44"
+            classNames={{ label: 'font-semibold' }}
+            label="Año"
+            labelPlacement="outside"
+            selectedKeys={[`${yearSelected}`]}
+            variant="bordered"
+            onSelectionChange={(key) => {
+              if (key) {
+                setYearSelected(Number(new Set(key).values().next().value));
+              }
+            }}
+          >
+            {years.map((years) => (
+              <SelectItem key={years.value}>
+                {years.name}
+              </SelectItem>
+            ))}
+          </Select>
+          <div className="w-full flex justify-end gap-5 mt-4">
+            <Button style={global_styles().thirdStyle} onPress={exportAnnexes}>
+              Exportar anexo
+            </Button>
+            <Button style={global_styles().secondaryStyle} onPress={exportAnnexesCSV}>
+              Exportar a CSV
+            </Button>
           </div>
+        </div>
 
+        <>
+          {loading_annexes_iva_ccfe ? (
             <>
-              {loading_annexes_iva_ccfe ? (
+              <LoadingTable />
+            </>
+          ) : (
+            <>
+              {annexes_iva_ccfe.length > 0 ? (
                 <>
-                 <LoadingTable/>
+                  <TableComponent headers={['Fecha', 'Cliente', 'Numero de control', 'Código generación', 'IVA', 'Total']}>
+
+                    <>
+                      {annexes_iva_ccfe.map((line) => (
+                        <tr key={line.id} className="border-b border-slate-200">
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {line.fecEmi}
+                          </TdGlobal>
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {line.customer.nombre}
+                          </TdGlobal>
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {line.numeroControl}
+                          </TdGlobal>
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {line.codigoGeneracion}
+                          </TdGlobal>
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {line.totalIva}
+                          </TdGlobal>
+                          <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                            {formatCurrency(Number(line.montoTotalOperacion))}
+                          </TdGlobal>
+                        </tr>
+                      ))}
+                    </>
+                  </TableComponent>
                 </>
               ) : (
-                <>
-                  {annexes_iva_ccfe.length > 0 ? (
-                    <>
-                    <TableComponent headers={['Fecha','Cliente','Numero de control','Código generación','IVA','Total']}>
-                    
-                          <>
-                            {annexes_iva_ccfe.map((line) => (
-                              <tr key={line.id} className="border-b border-slate-200">
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {line.fecEmi}
-                                </TdGlobal>
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {line.customer.nombre}
-                                </TdGlobal>
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {line.numeroControl}
-                                </TdGlobal>
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {line.codigoGeneracion}
-                                </TdGlobal>
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {line.totalIva}
-                                </TdGlobal>
-                                <TdGlobal className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                                  {formatCurrency(Number(line.montoTotalOperacion))}
-                                </TdGlobal>
-                              </tr>
-                            ))}
-                          </>
-                       </TableComponent>
-                    </>
-                  ) : (
-                    <div className='p-5'>
-                     <EmptyTable/>
-                    </div>
-                  )}
-                </>
+                <div className='p-5'>
+                  <EmptyTable />
+                </div>
               )}
             </>
-       </DivGlobal>
+          )}
+        </>
+      </DivGlobal>
     </Layout>
   );
 }

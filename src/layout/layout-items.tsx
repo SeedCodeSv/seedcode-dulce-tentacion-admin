@@ -410,6 +410,12 @@ export const LayoutItems = (props: Props) => {
       icon: HandCoins,
       label: 'Anexos documentos anulados',
     },
+    {
+      viewName: 'Anexos compras a sujetos excluidos',
+      to: '/anexos-compras-sujetoexcluido',
+      icon: HandCoins,
+      label: 'Anexos compras a sujetos excluidos',
+    },
   ];
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const handleGroupClick = (group: string) => {

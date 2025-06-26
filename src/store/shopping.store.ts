@@ -5,12 +5,14 @@ import { IShoppingStore } from './types/shopping.store';
 import {
   get_shopping_by_id,
   get_shopping_by_month,
+  get_shopping_excluded_subject,
   get_shoppings_paginated,
 } from '@/services/shopping.service';
 import { formatDate } from '@/utils/dates';
 
 export const useShoppingStore = create<IShoppingStore>((set) => ({
   shoppingList: [],
+  shopping_excluded_subject: [],
   pagination_shopping: {
     total: 0,
     totalPag: 0,
@@ -21,6 +23,7 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
     ok: true,
   },
   loading_shopping: false,
+  loading: false,
   shopping_details: undefined,
   shopping_by_months: [],
   search_params: {
@@ -98,6 +101,16 @@ export const useShoppingStore = create<IShoppingStore>((set) => ({
       })
       .catch(() => {
         set({ shopping_by_months: [], loading_shopping: false });
+      });
+  },
+  onGetShoppingExcludedSubject(transmitterId, month, year) {
+    set({ loading: true });
+    get_shopping_excluded_subject(transmitterId, month, year)
+      .then(({ data }) => {
+        set({ shopping_excluded_subject: data.shoppings, loading: false });
+      })
+      .catch(() => {
+        set({ shopping_excluded_subject: [], loading: false });
       });
   },
 }));

@@ -71,4 +71,10 @@ export const update_shopping_manual = (id: number, payload: ICreateShoppingManua
   return axios.patch<{ ok: boolean }>(`${API_URL}/shoppings/${id}`, payload);
 };
 
+export const get_shopping_excluded_subject = (transmitterId: number, month: string, year: number) => {
+  return axios.get<IGetShoppingReport>(
+    API_URL + `/reports/annexes-shopping-excluded-subject/${transmitterId}?month=${month}&year=${year}`
+  );
+};
+
 

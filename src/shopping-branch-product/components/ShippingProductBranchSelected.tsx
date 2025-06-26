@@ -379,6 +379,7 @@ function ShippingProductBranchSelected(props: Props) {
                           onChange={(e) => {
                             OnChangeQuantityManual(
                               item.id,
+                              item.product.id,
                               Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                             );
                           }}
