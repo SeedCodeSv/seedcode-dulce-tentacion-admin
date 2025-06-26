@@ -209,9 +209,9 @@ export const useEmployeeStore = create<IEmployeeStore>((set, get) => ({
         set((state) => ({ ...state, employee_list: [] }))
       })
   },
-  async generateCode(id, time) {
+  async generateCode(id, payload) {
     try {
-      const data = await generate_code(id, time);
+      const data = await generate_code(id, payload);
 
       if (data && data.data.ok) {
         toast.success(messages.success);

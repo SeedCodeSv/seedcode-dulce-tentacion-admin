@@ -1,4 +1,4 @@
-import { Employee, EmployeePayload, IGetEmployeesPaginated, MonthsAttendance } from '../../types/employees.types';
+import { Employee, EmployeePayload, GenerateCodeCut, IGetEmployeesPaginated, MonthsAttendance } from '../../types/employees.types';
 
 export interface IEmployeeStore {
   employee_paginated: IGetEmployeesPaginated;
@@ -23,7 +23,7 @@ export interface IEmployeeStore {
   patchEmployee: (payload: EmployeePayload, id: number) => Promise<boolean>;
   deleteEmployee: (id: number) => Promise<boolean>;
   getEmployeesList: () => void;
-  generateCode: (id: number, time:number) => Promise<string | null>;
+  generateCode: (id: number, payload: GenerateCodeCut) => Promise<string | null>;
   activateEmployee: (id: number) => Promise<void>;
   verifyCode: (code: string) => Promise<boolean>;
   OnGetBirthDays: () => void;

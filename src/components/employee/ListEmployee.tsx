@@ -484,7 +484,7 @@ function ListEmployee({ actions }: Props) {
                                     isIconOnly
                                     showTooltip
                                     theme={Colors.Default}
-                                    tooltipText="Generar código"
+                                    tooltipText="Generar código para corte"
                                     onPress={() => {
                                       setSelectedId(employee?.id)
                                       generateCodeModal.onOpen();
@@ -492,6 +492,7 @@ function ListEmployee({ actions }: Props) {
                                   >
                                     <RectangleEllipsis />
                                   </ButtonUi>
+                                 
                                   {!employee.isActive && (
                                     <>
                                       {actions.includes('Activar') && (
@@ -575,8 +576,8 @@ function ListEmployee({ actions }: Props) {
           </HeadlessModal>
           <HeadlessModal
             isOpen={generateCodeModal.isOpen}
-            size="w-[350px] md:w-[450px]"
-            title="Generar código"
+            size="w-[350px] md:w-[560px]"
+            title="Generar códigos para corte de caja"
             onClose={generateCodeModal.onClose}
           >
             <GenerateCodeEmployee id={selectId} />
