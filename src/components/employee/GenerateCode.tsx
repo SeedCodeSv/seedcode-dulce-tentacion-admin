@@ -14,12 +14,11 @@ interface Props {
 function GenerateCodeEmployee(props: Props) {
   const { generateCode } = useEmployeeStore()
   const [code, setCode] = useState({
-    codeX: '',
+    codeReferalNote: '',
     codeZ: ''
   });
   const [payload, setPayload] = useState<GenerateCodeCut>({
-    time: 5,
-    cutX: true,
+    codeReferalNote: true,
     cutZ: false
   })
   const [loading, setLoading] = useState(false);
@@ -37,8 +36,8 @@ function GenerateCodeEmployee(props: Props) {
       const response = await generateCode(props.id, payload);
 
       if (response) {
-        if (payload.cutX) {
-          setCode({ ...code, codeX: response });
+        if (payload.codeReferalNote) {
+          setCode({ ...code, codeReferalNote: response });
 
         }
         if (payload.cutZ) {
@@ -59,7 +58,7 @@ function GenerateCodeEmployee(props: Props) {
 
 
   const handleCopyToClipboard = () => {
-    const currentCode = payload.cutX ? code.codeX : code.codeZ;
+    const currentCode = payload.codeReferalNote ? code.codeReferalNote : code.codeZ;
 
     navigator.clipboard.writeText(currentCode || '').then(() => {
       toast.success('Código copiado al portapapeles');
@@ -74,33 +73,33 @@ function GenerateCodeEmployee(props: Props) {
       <div className="flex flex-row justify-center gap-6 mt-4">
         <button
           className={`
-            rounded-xl p-2 flex justify-center border ${payload.cutX ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
+            rounded-xl p-2 flex justify-center border ${payload.codeReferalNote ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
           onClick={() => {
-            setPayload({ ...payload, cutX: true, cutZ: false })
+            setPayload({ ...payload, codeReferalNote: true, cutZ: false })
           }}
         >
-          Corte de caja x
+          Notas de remision
         </button>
         <button
           className={`
           rounded-xl p-2 flex justify-center border ${payload.cutZ ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
 
           onClick={() => {
-            setPayload({ ...payload, cutZ: true, cutX: false })
+            setPayload({ ...payload, cutZ: true, codeReferalNote: false })
           }}
         >
           Corte de caja z
         </button>
       </div>
       <div className='flex mt-6 gap-4'>
-        {payload.cutX ? (
+        {payload.codeReferalNote ? (
           <Input
             readOnly
             className='bg-red'
             label="Codigo"
             labelPlacement='outside'
             placeholder='Codigo para el empleado'
-            value={code.codeX}
+            value={code.codeReferalNote}
           />
         ) : (
           <Input
@@ -124,19 +123,7 @@ function GenerateCodeEmployee(props: Props) {
           </Button>
         </Tooltip>
       </div>
-      <div className='flex mt-6 gap-4'>
-        <Input
-          label="Tiempo de expiracion"
-          labelPlacement='outside'
-          placeholder='5'
-          value={payload.time.toString()}
-          onChange={(e) => {
-            setPayload({ ...payload, time: Number(e.currentTarget.value) })
-          }} />
-        <span className='mt-6 ml-10 rounded-xl border-sky-400 border p-2'
-        >minutos</span>
 
-      </div>
       <Button
         className='w-full mt-6'
         disabled={loading}

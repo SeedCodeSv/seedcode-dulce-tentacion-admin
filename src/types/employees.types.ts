@@ -80,8 +80,7 @@ export interface EmployeePayload {
   dateOfExit: string;
 }
 export interface GenerateCodeCut {
-  time: number;
-  cutX: boolean;
+  codeReferalNote: boolean;
   cutZ: boolean
 }
 interface Address {
