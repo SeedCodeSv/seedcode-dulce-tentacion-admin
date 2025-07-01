@@ -76,7 +76,9 @@ function ShippingProductBranchSelected(props: Props) {
   const { customer_list, getCustomerByBranchId } = useCustomerStore();
   const [customerData, setCustomerData] = useState<Customer>();
   const [responsibleEmployee, setResponsibleEmployee] = useState<Employee>();
-  const [pointOfSaleId, setPointOfSaleId] = useState(0);
+  const [pointOfSaleId, setPointOfSaleId] = useState(
+    point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0
+  );
   const [movementType, setMovementType] = useState(2);
   const [observations, setObservations] = useState('');
 
@@ -101,7 +103,6 @@ function ShippingProductBranchSelected(props: Props) {
     if (props.branchDestiny) {
       setBranchData(props.branchDestiny)
     }
-
   }, [props.branchDestiny])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
@@ -127,12 +128,15 @@ function ShippingProductBranchSelected(props: Props) {
     }
   })
 
-
-
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectProduct, setSelectedProduct] = useState(0)
 
+  useEffect(() => {
+    if (point_of_sales) {
+      setPointOfSaleId( point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
+    }
+  }, [point_of_sales])
 
   useHotkeys('arrowdown', () => {
     setSelectedIndex((prev) => {
@@ -288,7 +292,7 @@ function ShippingProductBranchSelected(props: Props) {
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
                         >
-                          {employee.firstName}
+                          {employee.firstName}{' '}{employee.firstLastName}
                         </AutocompleteItem>
                       ))}
                   </Autocomplete>
@@ -503,6 +507,7 @@ function ShippingProductBranchSelected(props: Props) {
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
+
                       onSelectionChange={(key) => {
                         if (key) {
                           const pointSale = JSON.parse(key as string) as {
@@ -577,18 +582,14 @@ function ShippingProductBranchSelected(props: Props) {
                       classNames={{
                         base: 'font-semibold text-sm text-gray-900 dark:text-white',
                       }}
+                      defaultSelectedKey={pointOfSaleId.toString()}
                       label="Selecciona el punto de venta"
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const pointSale = JSON.parse(key as string) as {
-                            id: number;
-                            code: string;
-                          };
-
-                          setPointOfSaleId(pointSale.id);
+                          setPointOfSaleId(Number(key));
                         }
                       }}
                     >
@@ -596,7 +597,7 @@ function ShippingProductBranchSelected(props: Props) {
                         .filter((p) => ['NRE'].includes(p.typeVoucher))
                         .map((p) => (
                           <AutocompleteItem
-                            key={JSON.stringify(p)}
+                            key={p.id}
                             className="dark:text-white"
                           >
                             {p.code}

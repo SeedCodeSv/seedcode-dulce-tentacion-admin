@@ -28,7 +28,7 @@ export default function ContentProductBranch() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState({
     page: 1,
-    limit: 10,
+    limit: 30,
     name: '',
     category: '',
     supplier: '',

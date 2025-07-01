@@ -75,14 +75,7 @@ const AddCategory = (props: Props) => {
                     onBlur={handleBlur('name')}
                     onChange={handleChange('name')}
                   />
-                  <Checkbox
-                    isSelected={values.showSale}
-                    onValueChange={(val) => {
-                      handleChange({ target: { name: 'showSale', value: val } });
-                    }}
-                  >
-                    Incluir la categoría en la pantalla de ventas
-                  </Checkbox>
+                  karde
 
                 </div>
               </ModalBody>

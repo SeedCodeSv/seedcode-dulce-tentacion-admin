@@ -1,6 +1,6 @@
 import { Autocomplete, AutocompleteItem, Drawer, DrawerBody, DrawerContent, DrawerHeader, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
-import { CalendarDays, Clock, Eye, Hash, Info, ReceiptText, ShoppingCart, StickyNote, User } from "lucide-react";
+import { CalendarDays, Clock, Eye, Hash, Info, ReceiptText, ShoppingCart, StickyNote, Store, User } from "lucide-react";
 import { useNavigate } from "react-router";
 
 import EmptyTable from "../global/EmptyTable";
@@ -283,11 +283,17 @@ export default function ProductOrderComponent() {
                                                 {selectedOrder.employee.secondLastName}
                                             </Pui>
                                         </div>
-                                        <div className="col-span-3">
+                                        <div className="">
                                             <Pui className="flex gap-2 font-semibold text-lg">
                                                 <Info /> Observaciones
                                             </Pui>
                                             <Pui>{selectedOrder.details}</Pui>
+                                        </div>
+                                         <div className="">
+                                            <Pui className="flex gap-2 font-semibold text-lg">
+                                                <Store /> Sucursal de recepción
+                                            </Pui>
+                                            <Pui>{selectedOrder.branch.name}</Pui>
                                         </div>
                                     </section>
                                     <section className="bg-[rgba(255,255,255,0.1)] rounded-[12px] shadow-md p-6 mt-5">

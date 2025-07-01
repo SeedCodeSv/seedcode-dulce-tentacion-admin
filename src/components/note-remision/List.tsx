@@ -41,7 +41,7 @@ function List() {
   const [state, setState] = useState({ label: 'TODOS', value: '' })
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [limit, setLimit] = useState(10)
+  const [limit, setLimit] = useState(30)
   const { referalNotes, loading, onGetReferalNotes, pagination_referal_notes } = useReferalNote();
   const { user } = useAuthStore();
   const [branchId, setBranchId] = useState<number>(0)
@@ -191,9 +191,10 @@ function List() {
                 labelPlacement="outside"
                 placeholder="Mostrar"
                 value={limit}
+                defaultSelectedKeys={[limit.toString()]}
                 variant="bordered"
                 onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
                 }}
               >
                 {limit_options.map((limit) => (

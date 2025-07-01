@@ -49,7 +49,7 @@ function Layout(props: Props) {
   const [transitionStage, setTransistionStage] = useState('fadeIn');
 
   useEffect(() => {
-  const excludedRoutes = ["/kardex", "/OP-report", "/cash-cuts", "/products-selled"];
+  const excludedRoutes = ["/kardex", "/OP-report", "/cash-cuts", "/products-selled", '/inventary-adjustment'];
 
   const isExcluded = excludedRoutes.some(route => location.pathname.startsWith(route));
 

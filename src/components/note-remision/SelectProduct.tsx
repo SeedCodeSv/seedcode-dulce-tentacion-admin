@@ -68,15 +68,15 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
 
   useEffect(() => {
     getListCategories();
-    OnGetShippinProductBranch(
-      selectedBranch?.id ?? 0,
-      1,
-      10,
-      '',
-      '',
-      '',
-      ''
-    )
+    // OnGetShippinProductBranch(
+    //   selectedBranch?.id ?? 0,
+    //   1,
+    //   30,
+    //   '',
+    //   '',
+    //   '',
+    //   ''
+    // )
   }, []);
 
   const [view, setView] = useState<"grid" | "table">("table")
@@ -465,7 +465,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                   OnGetShippinProductBranch(
                     selectedBranch?.id ?? 0,
                     page,
-                    10,
+                    filter.limit,
                     filter.name,
                     filter.category,
                     filter.supplier,

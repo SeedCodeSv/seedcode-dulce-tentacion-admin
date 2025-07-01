@@ -31,21 +31,12 @@ export default function ListProductInventoryAdjustment({
     product: '',
     code: '',
     page: 1,
-    limit: 10,
+    limit: 30,
     itemType: '1',
   });
 
   useEffect(() => {
     reloadInventory(
-      branchName,
-      filter.supplier,
-      filter.product,
-      filter.code,
-      filter.page,
-      filter.limit,
-      filter.itemType
-    );
-    OnGetProductInventoryAdjustament(
       branchName,
       filter.supplier,
       filter.product,
@@ -145,13 +136,7 @@ export default function ListProductInventoryAdjustment({
               </thead>
               <tbody>
                 {branchProducts.map((b, index) => (
-                  <motion.tr
-                    key={b.id}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="border-b border-gray-200"
-                    initial={{ opacity: 0, y: 20 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
+                  <tr key={index}>
                     <td className="px-4 py-2 dark:text-white">{b.product.name}</td>
                     <td className={`${b.stock < 5 ? 'text-red-600' : 'dark:text-white'} px-4 py-2`}>
                       {b.stock}
@@ -174,7 +159,7 @@ export default function ListProductInventoryAdjustment({
                         )}
                       </Button>
                     </td>
-                  </motion.tr>
+                  </tr>
                 ))}
               </tbody>
             </table>
