@@ -246,6 +246,8 @@ export interface RecipeBook {
   cost:                     string;
   productRecipeBookDetails: ProductRecipeBookDetail[];
   productId:                number;
+  MOP:                      number;
+  CIF:                      number;
 }
 
 export interface ProductRecipeBookDetail {

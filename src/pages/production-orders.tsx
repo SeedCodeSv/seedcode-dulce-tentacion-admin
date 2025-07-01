@@ -36,6 +36,7 @@ import Pagination from '@/components/global/Pagination';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
+import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 type Key = string;
 
@@ -61,7 +62,7 @@ function ProductionOrders() {
     useProductionOrderStore();
   const [selectedStatus, setSelectedStatus] = useState<Selection>(new Set([]));
   const [selectedType] = useState<Selection>(new Set([]));
-  const [page,setPage] = useState(1)
+  const [page, setPage] = useState(1)
 
   useEffect(() => {
     onGetProductionOrderTypes();
@@ -78,7 +79,7 @@ function ProductionOrders() {
         : 0;
 
     getProductionsOrders(page, 5, startDate, endDate, 0, status, 0, +type);
-  }, [page,startDate, endDate, selectedStatus, selectedType]);
+  }, [page, startDate, endDate, selectedStatus, selectedType]);
 
   const productionOrderStatus = ['Abierta', 'En Proceso', 'Completada', 'Cancelada'];
 
@@ -143,10 +144,16 @@ function ProductionOrders() {
       });
   };
 
+
+  const handleGenerateReports = () => {
+
+  }
+
   return (
     <Layout title="Ordenes de producción">
       <DivGlobal>
-          <ResponsiveFilterWrapper withButton={false}>
+
+        <ResponsiveFilterWrapper withButton={false}>
           <Input
             className='dark:text-white'
             classNames={{ label: 'font-semibold' }}
@@ -181,7 +188,7 @@ function ProductionOrders() {
               <SelectItem key={status} className='dark:text-white'>{status}</SelectItem>
             ))}
           </Select>
-          </ResponsiveFilterWrapper>
+        </ResponsiveFilterWrapper>
         <div className="flex justify-end mt-2">
           <ButtonUi
             isIconOnly
@@ -193,106 +200,118 @@ function ProductionOrders() {
             <Plus />
           </ButtonUi>
         </div>
-        <TableComponent
-            headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin",'Hora de fin','Estado','Acciones']}
+        <div>
+          <ButtonUi
+            className="mt-4 font-semibold w-48 "
+            color="success"
+            theme={Colors.Success}
+            onPress={() => {
+              handleGenerateReports()
+            }}
           >
-              {productionOrders.length === 0 && (
-                <tr>
-                  <td className="p-3" colSpan={7}>
-                    <EmptyTable/>
-                  </td>
-                </tr>
-              )}
-              {productionOrders.map((porD, index) => (
-                <tr key={index}>
-                  <TdGlobal className="p-3">{index + 1}</TdGlobal>
-                  <TdGlobal className="p-3">{porD.date}</TdGlobal>
-                  <TdGlobal className="p-3">{porD.time}</TdGlobal>
-                  <TdGlobal className="p-3">{porD.endDate || 'No definido'}</TdGlobal>
-                  <TdGlobal className="p-3">{porD.endTime || 'No definido'}</TdGlobal>
-                  <TdGlobal className="p-3">
-                    {RenderStatus({ status: porD.statusOrder as Status }) || porD.statusOrder}
-                  </TdGlobal>
-                  <TdGlobal className="p-3 flex gap-2">
-                    {porD.statusOrder === 'Abierta' && (
-                      <div className="flex gap-2">
-                        <ButtonUi
-                          isIconOnly
-                          showTooltip
-                          theme={Colors.Success}
-                          tooltipText="Iniciar orden de producción"
-                          onPress={() => {
-                            setSelectedOrderId(porD.id);
-                            modalVerifyOrder.onOpen();
-                          }}
-                        >
-                          <Play />
-                        </ButtonUi>
-                        <ButtonUi
-                          isIconOnly
-                          showTooltip
-                          theme={Colors.Error}
-                          tooltipText="Cancelar orden de producción"
-                          onPress={() => {
-                            setSelectedOrderId(porD.id);
-                            modalCancelOrder.onOpen();
-                          }}
-                        >
-                          <TbCancel size={20} />
-                        </ButtonUi>
-                      </div>
-                    )}
-                    {porD.statusOrder === 'En Proceso' && (
-                      <>
-                        <ButtonUi
-                          isIconOnly
-                          showTooltip
-                          theme={Colors.Success}
-                          tooltipText="Completar orden de producción"
-                          onPress={() => {
-                            setSelectedOrderId(porD.id);
-                            modalCompleteOrder.onOpen();
-                          }}
-                        >
-                          <TbCheck size={20} />
-                        </ButtonUi>
-                        <ButtonUi
-                          isIconOnly
-                          showTooltip
-                          theme={Colors.Error}
-                          tooltipText="Cancelar orden de producción"
-                          onPress={() => {
-                            setSelectedOrderId(porD.id);
-                            modalCancelOrder.onOpen();
-                          }}
-                        >
-                          <TbCancel size={20} />
-                        </ButtonUi>
-                      </>
-                    )}
+            <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+          </ButtonUi>
+        </div>
+        <TableComponent
+          headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin", 'Hora de fin', 'Estado', 'Acciones']}
+        >
+          {productionOrders.length === 0 && (
+            <tr>
+              <td className="p-3" colSpan={7}>
+                <EmptyTable />
+              </td>
+            </tr>
+          )}
+          {productionOrders.map((porD, index) => (
+            <tr key={index}>
+              <TdGlobal className="p-3">{index + 1}</TdGlobal>
+              <TdGlobal className="p-3">{porD.date}</TdGlobal>
+              <TdGlobal className="p-3">{porD.time}</TdGlobal>
+              <TdGlobal className="p-3">{porD.endDate || 'No definido'}</TdGlobal>
+              <TdGlobal className="p-3">{porD.endTime || 'No definido'}</TdGlobal>
+              <TdGlobal className="p-3">
+                {RenderStatus({ status: porD.statusOrder as Status }) || porD.statusOrder}
+              </TdGlobal>
+              <TdGlobal className="p-3 flex gap-2">
+                {porD.statusOrder === 'Abierta' && (
+                  <div className="flex gap-2">
                     <ButtonUi
                       isIconOnly
                       showTooltip
-                      theme={Colors.Warning}
-                      tooltipText="Ver orden de producción"
+                      theme={Colors.Success}
+                      tooltipText="Iniciar orden de producción"
                       onPress={() => {
                         setSelectedOrderId(porD.id);
-                        modalMoreInformation.onOpen();
+                        modalVerifyOrder.onOpen();
                       }}
                     >
-                      <Eye size={20} />
+                      <Play />
                     </ButtonUi>
-                  </TdGlobal>
-                </tr>
-              ))}
-            </TableComponent>
+                    <ButtonUi
+                      isIconOnly
+                      showTooltip
+                      theme={Colors.Error}
+                      tooltipText="Cancelar orden de producción"
+                      onPress={() => {
+                        setSelectedOrderId(porD.id);
+                        modalCancelOrder.onOpen();
+                      }}
+                    >
+                      <TbCancel size={20} />
+                    </ButtonUi>
+                  </div>
+                )}
+                {porD.statusOrder === 'En Proceso' && (
+                  <>
+                    <ButtonUi
+                      isIconOnly
+                      showTooltip
+                      theme={Colors.Success}
+                      tooltipText="Completar orden de producción"
+                      onPress={() => {
+                        setSelectedOrderId(porD.id);
+                        modalCompleteOrder.onOpen();
+                      }}
+                    >
+                      <TbCheck size={20} />
+                    </ButtonUi>
+                    <ButtonUi
+                      isIconOnly
+                      showTooltip
+                      theme={Colors.Error}
+                      tooltipText="Cancelar orden de producción"
+                      onPress={() => {
+                        setSelectedOrderId(porD.id);
+                        modalCancelOrder.onOpen();
+                      }}
+                    >
+                      <TbCancel size={20} />
+                    </ButtonUi>
+                  </>
+                )}
+                <ButtonUi
+                  isIconOnly
+                  showTooltip
+                  theme={Colors.Warning}
+                  tooltipText="Ver orden de producción"
+                  onPress={() => {
+                    setSelectedOrderId(porD.id);
+                    modalMoreInformation.onOpen();
+                  }}
+                >
+                  <Eye size={20} />
+                </ButtonUi>
+              </TdGlobal>
+            </tr>
+          ))}
+        </TableComponent>
         <div className="mt-3">
           <Pagination
             currentPage={paginationProductionOrders.currentPag}
             nextPage={paginationProductionOrders.nextPag}
             previousPage={paginationProductionOrders.prevPag}
             totalPages={paginationProductionOrders.totalPag}
-            onPageChange={(page) => setPage(page) }
+            onPageChange={(page) => setPage(page)}
           />
         </div>
         <Modal {...modalCancelOrder} isDismissable={false}>
@@ -332,23 +351,23 @@ function ProductionOrders() {
           <DetailsProductionOrder
             id={selectedOrderId}
             modalMoreInformation={modalMoreInformation}
-            onClose={()=>{
+            onClose={() => {
               setSelectedOrderId(0)
             }}
           />
         )}
-        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0} 
-        onReload={() => {
-          setPage(1)
-          getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
-          setSelectedOrderId(0)
-        }} />
-        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0} 
-        reload={() => {
-          setPage(1);
-          getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
-          setSelectedOrderId(0)
-        }}/>
+        <VerifyProductionOrder disclosure={modalVerifyOrder} id={selectedOrderId ?? 0}
+          onReload={() => {
+            setPage(1)
+            getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+            setSelectedOrderId(0)
+          }} />
+        <CompleteOrder disclosure={modalCompleteOrder} id={selectedOrderId ?? 0}
+          reload={() => {
+            setPage(1);
+            getProductionsOrders(page, 5, startDate, endDate, 0, '', 0, 0);
+            setSelectedOrderId(0)
+          }} />
       </DivGlobal>
     </Layout>
   );

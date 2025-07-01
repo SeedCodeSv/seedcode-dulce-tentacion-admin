@@ -32,20 +32,34 @@ import { preventLetters } from '@/utils';
 import { typesProduct } from '@/utils/constants';
 import { useSubCategoryStore } from '@/store/sub-category';
 
-type ProductOrder = Product & { quantity: number; performanceQuantity: string; cost: number };
+type ProductOrder = Product & {
+  quantity: number;
+  performanceQuantity: string;
+  cost: number;
+  MOP: number;
+  CIF: number;
+};
 
 interface Props {
   selectedProducts: ProductOrder[];
   setSelectedProducts: Dispatch<SetStateAction<ProductOrder[]>>;
   performance: string;
+  mop: number;
+  cif: number;
   setPerformance: Dispatch<SetStateAction<string>>;
+  setMop: Dispatch<SetStateAction<number>>;
+  setCif: Dispatch<SetStateAction<number>>;
 }
 
 function GeneralProductInfo({
   selectedProducts,
   setSelectedProducts,
   performance,
+  mop,
+  cif,
   setPerformance,
+  setMop,
+  setCif,
 }: Props) {
   const formik = useFormikContext<ProductPayloadForm>();
 
@@ -148,6 +162,8 @@ function GeneralProductInfo({
         performanceQuantity: performanceQuantity.toFixed(4),
         cost: 0,
         quantity: quantity,
+        MOP: 0,
+        CIF: 0,
       });
     } else {
       list_suppliers.splice(checkIfExist, 1);
@@ -356,7 +372,7 @@ function GeneralProductInfo({
           )}
         </div>
         {includeReceipt && (
-          <div className="pt-5">
+          <div className="pt-5 flex flex-col gap-4 md:flex-row">
             <Input
               className="dark:text-white font-semibold max-w-72"
               classNames={{ label: 'font-semibold' }}
@@ -367,6 +383,37 @@ function GeneralProductInfo({
               variant="bordered"
               onKeyDown={preventLetters}
               onValueChange={(value) => setPerformance(value)}
+            />
+
+            <Input
+              className="w-full"
+              classNames={{
+                label: 'font-semibold',
+              }}
+              label="Mano de obra directa MOD"
+              placeholder="Ingresa la mano de obra directa MOD"
+              type="string"
+              value={mop.toString()}
+              variant="bordered"
+              onKeyDown={preventLetters}
+              onValueChange={(value) => {
+                setMop(Number(value));
+              }}
+            />
+            <Input
+              className="w-full"
+              classNames={{
+                label: 'font-semibold',
+              }}
+              label="Costo indirecto de fabricación CIF"
+              placeholder="Ingresa el costo indirecto de fabricación CIF"
+              type="string"
+              value={cif.toString()}
+              variant="bordered"
+              onKeyDown={preventLetters}
+              onValueChange={(value) => {
+                setCif(Number(value));
+              }}
             />
           </div>
         )}

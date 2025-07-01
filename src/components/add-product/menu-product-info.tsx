@@ -6,7 +6,7 @@ import MenuDetailsProductInfo from './menu-details-product.info';
 
 import { Product, ProductPayloadForm } from '@/types/products.types';
 
-type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
+type ProductOrder = Product & { quantity: number; uniMedidaExtra: string  };
 
 interface Props {
   selectedProducts: ProductOrder[];

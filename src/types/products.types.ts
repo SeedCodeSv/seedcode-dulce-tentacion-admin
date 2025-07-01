@@ -181,7 +181,8 @@ export interface ProductPayloadForm {
     sun: boolean;
   };
   suppliers: [];
-
+  MOP: number;
+  CIF: number;
 }
 
 export interface ProductPayloadFormTwo {

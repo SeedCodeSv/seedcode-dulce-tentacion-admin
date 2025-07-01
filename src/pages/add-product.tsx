@@ -17,11 +17,19 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
 
-type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
+type ProductOrder = Product & {
+  quantity: number;
+  uniMedidaExtra: string;
+  // MOP: number;
+  // CIF: number;
+};
+
 type ProductOrderReceipt = Product & {
   quantity: number;
   performanceQuantity: string;
   cost: number;
+  MOP: number;
+  CIF: number;
 };
 
 function AddProduct() {
@@ -31,6 +39,9 @@ function AddProduct() {
   const [selectedProducts, setSelectedProducts] = useState<ProductOrder[]>([]);
   const [selectedProductsReceipt, setSelectedProductsReceipt] = useState<ProductOrderReceipt[]>([]);
   const [performance, setPerformance] = useState<string>('1');
+
+  const [cif, setCif] = useState<number>(0);
+  const [mop, setMop] = useState<number>(0);
 
   useEffect(() => {
     getBranchesList();
@@ -46,6 +57,9 @@ function AddProduct() {
       const valuesToSend = {
         ...values,
         performance: Number(performance ?? '1'),
+        MOP: mop,
+        CIF: cif,
+
         receipt: selectedProductsReceipt.map((product) => ({
           productId: product.id,
           quantity: product.performanceQuantity,
@@ -88,8 +102,12 @@ function AddProduct() {
         >
           <FormikProvider value={formik}>
             <GeneralProductInfo
+              cif={cif}
+              mop={mop}
               performance={performance}
               selectedProducts={selectedProductsReceipt}
+              setCif={setCif}
+              setMop={setMop}
               setPerformance={setPerformance}
               setSelectedProducts={setSelectedProductsReceipt}
             />
