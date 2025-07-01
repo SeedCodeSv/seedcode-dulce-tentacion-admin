@@ -43,6 +43,7 @@ export interface Employee {
   municipalityName: string;
   addressId: number;
   isActive: boolean;
+  isResponsibleCutZ: boolean
 }
 
 export interface IGetEmployeesPaginated extends IPagination {
@@ -78,6 +79,7 @@ export interface EmployeePayload {
   municipalityName: string;
   complement?: string;
   dateOfExit: string;
+  isResponsibleCutZ?: boolean
 }
 export interface GenerateCodeCut {
   codeReferalNote: boolean;
