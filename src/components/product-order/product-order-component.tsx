@@ -170,7 +170,7 @@ export default function ProductOrderComponent() {
                     ))}
                 </Select>
             </ResponsiveFilterWrapper>
-            <TableComponent headers={['Nº', 'Fecha/Hora', 'Sucursal', 'Encargado', 'Estado', 'Acciones']}>
+            <TableComponent headers={['Nº', 'Fecha/Hora', 'Sucursal que solicita', 'Encargado', 'Estado', 'Acciones']}>
                 {ordersProducts.order_products.length === 0 && (
                     <tr className="border-b border-slate-200">
                         <td

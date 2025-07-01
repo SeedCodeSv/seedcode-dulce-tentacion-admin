@@ -187,11 +187,11 @@ function List() {
                   label: 'font-semibold',
                   selectorIcon: 'dark:text-white'
                 }}
+                defaultSelectedKeys={[limit.toString()]}
                 label="Mostrar"
                 labelPlacement="outside"
                 placeholder="Mostrar"
                 value={limit}
-                defaultSelectedKeys={[limit.toString()]}
                 variant="bordered"
                 onChange={(e) => {
                   setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
@@ -225,7 +225,7 @@ function List() {
                 isIconOnly
                 style={{ ...style, justifySelf: "end" }}
                 type="button"
-                onClick={() => navigate('/list-referal-notes')}
+                onPress={() => navigate('/list-referal-notes')}
               >
                 <Plus />
               </Button>

@@ -148,7 +148,7 @@ export default function ContentProductBranch() {
         <div className="space-y-6">
           <Button
             className="bg-transparent dark:text-white flex"
-            onClick={() => navigate('/note-referal')}
+            onPress={() => navigate('/note-referal')}
           >
             <ArrowLeft /> Regresar
           </Button>

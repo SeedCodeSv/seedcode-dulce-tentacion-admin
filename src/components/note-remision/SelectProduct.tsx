@@ -192,7 +192,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                         <Input
                           className="pl-12 w-full"
                           classNames={{
-                            input: "pl-12 text-gray-800 dark:text-white placeholder:text-gray-400",
+                            input: "text-gray-800 dark:text-white placeholder:text-gray-400",
                             inputWrapper:
                               "bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-blue-300 focus-within:border-blue-500 rounded-xl shadow-sm",
                           }}

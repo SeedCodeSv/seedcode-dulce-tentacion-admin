@@ -134,7 +134,7 @@ function ShippingProductBranchSelected(props: Props) {
 
   useEffect(() => {
     if (point_of_sales) {
-      setPointOfSaleId( point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
+      setPointOfSaleId(point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
     }
   }, [point_of_sales])
 
@@ -291,8 +291,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                          textValue={
+                            employee.firstName +  ' ' + employee.firstLastName 
+                          }
                         >
-                          {employee.firstName}{' '}{employee.firstLastName}
+                          {employee.firstName ?? '-'} {employee.firstLastName ?? '-'}
                         </AutocompleteItem>
                       ))}
                   </Autocomplete>
