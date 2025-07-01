@@ -41,7 +41,7 @@ type TypeSearch = 'MP' | 'RENDIMIENTO';
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
   const isMovil = useIsMobileOrTablet();
-  const { show, close } = useAlert()
+  const { show, close } = useAlert();
 
   const [selectedBranch, setSelectedBranch] = useState<Selection>(new Set([]));
   const [moveSelectedBranch, setMoveSelectedBranch] = useState<Selection>(new Set([]));
@@ -52,9 +52,7 @@ function AddProductionOrder() {
   const modalRecipe = useDisclosure();
   const typeSearch = ['RENDIMIENTO', 'MP'];
 
-  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>(
-    'RENDIMIENTO'
-  );
+  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>('RENDIMIENTO');
 
   const { getEmployeesList, employee_list } = useEmployeeStore();
 
@@ -118,16 +116,21 @@ function AddProductionOrder() {
       if (hasStockIssues) {
         show({
           type: 'warning',
-          message:
-            'Algunos insumos no tienen stock suficiente. ¿Deseas continuar de todas formas?',
+          message: 'Algunos insumos no tienen stock suficiente. ¿Deseas continuar de todas formas?',
           buttonOptions: (
             <>
-              <ButtonUi theme={Colors.Info} onPress={close}>Cancelar</ButtonUi>
-              <ButtonUi theme={Colors.Primary} onPress={() => {
-                sendProductionOrder('["algunos insumos no tienen suficiente stock"]')
-                close()
-              }
-              }  >Sí, continuar</ButtonUi>
+              <ButtonUi theme={Colors.Info} onPress={close}>
+                Cancelar
+              </ButtonUi>
+              <ButtonUi
+                theme={Colors.Primary}
+                onPress={() => {
+                  sendProductionOrder('["algunos insumos no tienen suficiente stock"]');
+                  close();
+                }}
+              >
+                Sí, continuar
+              </ButtonUi>
             </>
           ),
         });
@@ -138,7 +141,6 @@ function AddProductionOrder() {
 
     return true;
   };
-
 
   const handleSaveOrder = () => {
     const branch = new Set(selectedBranch).values().next().value;
@@ -155,7 +157,29 @@ function AddProductionOrder() {
       return;
     }
 
-    sendProductionOrder()
+    sendProductionOrder();
+  };
+
+  const getMod = (index: number) => {
+    return selectedProducts[index]?.recipeBook?.MOP || '0.00';
+  };
+
+  const getCif = (index: number) => {
+    return selectedProducts[index]?.recipeBook?.CIF || '0.00';
+  };
+
+  const calcCostoPrimo = (index: number) => {
+    const mp = Number(calcMp(index)) || 0;
+    const mod = Number(getMod(index)) || 0;
+
+    return (mp + mod).toFixed(2);
+  };
+
+  const calcCostoTotal = (index: number) => {
+    const costoPrimo = Number(calcCostoPrimo(index)) || 0;
+    const cif = Number(getCif(index)) || 0;
+
+    return (costoPrimo + cif).toFixed(2);
   };
 
   const sendProductionOrder = (moreInformation = '[]') => {
@@ -163,47 +187,44 @@ function AddProductionOrder() {
     const employee = new Set(selectedEmployee).values().next().value;
     const destinationBranch = new Set(moveSelectedBranch).values().next().value;
 
+    const firstProduct = selectedProducts[0];
+    const index = 0;
+
     const payload = {
-      branchProductId: selectedProducts[0].branchProduct.id,
       receptionBranch: Number(branch),
       destinationBranch: Number(destinationBranch),
+      totalCost: calcCostoTotal(index),
+      costPrime: calcCostoPrimo(index),
+      costRawMaterial: calcMp(index),
+      indirectManufacturingCost: getCif(index),
+      costDirectLabor: getMod(index),
       employee: Number(employee),
-      quantity: Number(selectedProducts[0].recipeBook.performance),
+      quantity: Number(firstProduct.recipeBook?.performance || 0),
+      branchProductId: firstProduct.branchProduct.id,
+      products:
+        firstProduct.recipeBook?.productRecipeBookDetails?.map((detail) => ({
+          observations: '',
+          branchProductId: detail.branchProduct?.id,
+          quantity: Number(detail.quantityPerPerformance || 0),
+          totalCost: (
+            Number(detail.branchProduct?.costoUnitario || 0) *
+            Number(detail.quantityPerPerformance || 0)
+          ).toFixed(4),
+        })) || [],
       observation,
       moreInformation,
-      totalCost: totalCost(0),
-      costPrime: calcCostoPrimo(0).toFixed(2),
-      costRawMaterial: calcMp(0),
-      indirectManufacturingCost: calcCif(0),
-      costDirectLabor: calcMod(0),
-      products: selectedProducts[0].recipeBook.productRecipeBookDetails.map((p) => ({
-        observations: '',
-        branchProductId: p.branchProduct?.id,
-        branchProductName: p.branchProduct?.product.name,
-        quantity: +p.quantityPerPerformance,
-        totalCost: (Number(p.branchProduct?.costoUnitario) * Number(p.quantityPerPerformance)).toFixed(4),
-      })),
-
     };
 
     axios
       .post(API_URL + '/production-orders', payload)
       .then(() => {
-        toast.success('Orden de producción creada exitosamente', {
-          position: isMovil ? 'bottom-right' : 'top-center',
-          duration: 1000,
-        });
+        toast.success('Orden de producción creada exitosamente');
         navigate('/production-orders');
       })
       .catch(() => {
-        toast.error('Error al crear la orden de producción', {
-          position: isMovil ? 'bottom-right' : 'top-center',
-          duration: 1000,
-        });
+        toast.error('Error al crear la orden de producción');
       });
   };
-
-
 
   const handleChangePerformance = (index: number, performance: string) => {
     const products = [...selectedProducts];
@@ -211,7 +232,6 @@ function AddProductionOrder() {
     if (Number(performance) > 0) {
       products[index].recipeBook?.productRecipeBookDetails.forEach((detail) => {
         detail.quantityPerPerformance = (Number(performance) * Number(detail?.quantity)).toFixed(4);
-
       });
     }
 
@@ -232,65 +252,6 @@ function AddProductionOrder() {
     );
 
     return total;
-  };
-
-  const calcMod = (index: number) => {
-    if (selectedProducts.length === 0) {
-      return '0';
-    }
-
-    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
-      return '0';
-    }
-
-    const performance = selectedProducts[index].recipeBook?.performance;
-
-    const base = selectedTypeSearch === 'MP' ? calcMp(index) : performance;
-
-    return (Number(mod) * base).toFixed(2);
-  };
-
-  const [mod, setMod] = useState('0');
-
-  const calcCostoPrimo = (index: number) => {
-    const mp = calcMp(index);
-
-    if (mp <= 0) {
-      return 0;
-    }
-
-    if (calcMod(0) === '0' || calcMod(0) === undefined || mod === null || isNaN(Number(calcMod(0)))) {
-      return 0;
-    }
-
-    return mp + Number(calcMod(0));
-  };
-
-  const [costCif, setCostCif] = useState('0');
-
-  const calcCif = (index: number) => {
-    if (selectedProducts.length === 0) {
-      return '0';
-    }
-
-    if (costCif === '0' || costCif === undefined || costCif === null || isNaN(Number(costCif))) {
-      return '0';
-    }
-
-    const performance = selectedProducts[index].recipeBook?.performance;
-
-    return (Number(costCif) * Number(performance))?.toFixed(2);
-  };
-
-  const totalCost = (index: number) => {
-    if (selectedProducts.length === 0) {
-      return '0';
-    }
-
-    const cif = calcCif(index);
-    const mod = calcCostoPrimo(index);
-
-    return (Number(cif) + Number(mod))?.toFixed(2);
   };
 
   return (
@@ -346,14 +307,20 @@ function AddProductionOrder() {
                     selectionMode="single"
                     variant="bordered"
                     onSelectionChange={setSelectedEmployee}
-                  // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
+                    // startContent={<RefreshCcw onClick={() => getEmployeesList()}/>}
                   >
                     {employee_list.map((e) => (
                       <SelectItem
                         key={e.id}
                         className="dark:text-white"
                         textValue={
-                          e.firstName + ' ' + e.secondName + ' ' + e.firstLastName + ' ' + e.secondLastName
+                          e.firstName +
+                          ' ' +
+                          e.secondName +
+                          ' ' +
+                          e.firstLastName +
+                          ' ' +
+                          e.secondLastName
                         }
                       >
                         {e.firstName ?? '-'} {e.secondName ?? '-'} {e.firstLastName ?? '-'}{' '}
@@ -376,7 +343,9 @@ function AddProductionOrder() {
                 <p className="text-sm font-semibold hiiden xl:flex">Productos</p>
                 <ButtonUi
                   isIconOnly
-                  isDisabled={new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0}
+                  isDisabled={
+                    new Set(selectedBranch).size === 0 || new Set(moveSelectedBranch).size === 0
+                  }
                   theme={Colors.Success}
                   onPress={modalProducts.onOpen}
                 >
@@ -405,14 +374,14 @@ function AddProductionOrder() {
                 {selectedProducts[0].recipeBook && (
                   <>
                     <TableComponent
-                      className=' hidden md:flex flex-col'
+                      className=" hidden md:flex flex-col"
                       headers={[
                         'Producto',
                         'Código',
                         'Cant. por unidad',
                         'Costo unitario',
                         'Cant. Total',
-                        'Costo Total'
+                        'Costo Total',
                       ]}
                     >
                       {selectedProducts[0].recipeBook?.productRecipeBookDetails?.map((r) => (
@@ -420,13 +389,13 @@ function AddProductionOrder() {
                           <TdGlobal className="p-3">{r.product?.name}</TdGlobal>
                           <TdGlobal className="p-3">{r.product.code}</TdGlobal>
                           <TdGlobal className="p-3">{r.quantity}</TdGlobal>
-                          <TdGlobal className="p-3">{r.branchProduct?.costoUnitario}
-                          </TdGlobal>
+                          <TdGlobal className="p-3">{r.branchProduct?.costoUnitario}</TdGlobal>
                           <TdGlobal className="p-3">{r.quantityPerPerformance}</TdGlobal>
                           <TdGlobal className="p-3">
-                            {(Number(r.branchProduct?.costoUnitario) * Number(r.quantityPerPerformance)).toFixed(
-                              4
-                            )}
+                            {(
+                              Number(r.branchProduct?.costoUnitario) *
+                              Number(r.quantityPerPerformance)
+                            ).toFixed(4)}
                           </TdGlobal>
                         </tr>
                       ))}
@@ -434,177 +403,101 @@ function AddProductionOrder() {
                   </>
                 )}
                 <div className="h-full overflow-y-auto flex md:hidden" />
+                <Accordion defaultExpandedKeys={['costs']} variant="splitted">
+                  {selectedProducts.map((_product, index) => (
+                    <AccordionItem
+                      key={`costs-${index}`}
+                      className="dark:bg-gray-800"
+                      indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
+                      startContent={
+                        <DollarSign className="text-green-700 dark:text-slate-200" size={25} />
+                      }
+                      title={<p className="font-semibold">Costos</p>}
+                    >
+                      <div className="flex flex-col">
+                        <div className="grid grid-cols-3 gap-3">
+                          <Input
+                            readOnly
+                            classNames={{
+                              label: 'font-semibold text-[10px]',
+                              input: 'text-xs',
+                            }}
+                            label="MP"
+                            labelPlacement="outside"
+                            placeholder="0.00"
+                            size="sm"
+                            value={calcMp(index)?.toFixed(2) || '0.00'}
+                            variant="bordered"
+                          />
+
+                          <Input
+                            readOnly
+                            classNames={{
+                              label: 'font-semibold text-[10px]',
+                              input: 'text-xs',
+                            }}
+                            label="MOD"
+                            labelPlacement="outside"
+                            placeholder="0.00"
+                            size="sm"
+                            value={String(getMod(index))}
+                            variant="bordered"
+                          />
+
+                          <Input
+                            readOnly
+                            classNames={{
+                              label: 'font-semibold text-[10px]',
+                              input: 'text-xs',
+                            }}
+                            label="COSTO PRIMO"
+                            labelPlacement="outside"
+                            placeholder="0.00"
+                            size="sm"
+                            value={calcCostoPrimo(index)}
+                            variant="bordered"
+                          />
+
+                          <Input
+                            readOnly
+                            classNames={{
+                              label: 'font-semibold text-[10px]',
+                              input: 'text-xs',
+                            }}
+                            label="CIF"
+                            labelPlacement="outside"
+                            placeholder="0.00"
+                            size="sm"
+                            value={String(getCif(index))}
+                            variant="bordered"
+                          />
+
+                          <Input
+                            readOnly
+                            classNames={{
+                              label: 'font-semibold text-[10px]',
+                              input: 'text-xs',
+                            }}
+                            label="COSTO TOTAL"
+                            labelPlacement="outside"
+                            placeholder="0.00"
+                            size="sm"
+                            value={calcCostoTotal(index)}
+                            variant="bordered"
+                          />
+                        </div>
+                      </div>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </>
             )}
           </div>
-          <Accordion defaultExpandedKeys={['costs']} variant="splitted" >
-            <AccordionItem
-              key="costs"
-              className='dark:bg-gray-800'
-              indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
-              startContent={<DollarSign className="text-green-700 dark:text-slate-200" size={25} />}
-              title={<p className="font-semibold">Costos</p>}
-            >
-              <div className="flex flex-col">
-                <div className="grid grid-cols-3 gap-3">
-                  <Input
-                    readOnly
-                    classNames={{
-                      label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
-                    }}
-                    label="MP"
-                    labelPlacement="outside"
-                    placeholder="0.00"
-                    size="sm"
-                    value={selectedProducts.length > 0 ? calcMp(0)?.toFixed(2) : '0'}
-                    variant="bordered"
-                  />
-                  <div className="flex gap-1 items-end col-span-2">
-                    <Input
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="VALOR"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={mod}
-                      variant="bordered"
-                      onKeyDown={preventLetters}
-                      onValueChange={(e) => setMod(e)}
-                    />
-                    <span className="font-semibold text-3xl">*</span>
-                    <Input
-                      readOnly
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      endContent={
-                        <select
-                          className="outline-none border-0 flex items-end bg-transparent text-default-400 text-small"
-                          id="currency"
-                          name="currency"
-                          onChange={(e) => {
-                            setSelectedTypeSearch(e.currentTarget.value as TypeSearch);
-                          }}
-                        >
-                          {typeSearch.map((tpS) => (
-                            <option key={tpS} value={tpS}>
-                              {tpS}
-                            </option>
-                          ))}
-                        </select>
-                      }
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={
-                        selectedProducts.length === 0
-                          ? ''
-                          : selectedTypeSearch === 'MP'
-                            ? calcMp(0).toFixed(2)
-                            : String(selectedProducts[0].recipeBook?.performance ?? '')
-                      }
-                      variant="bordered"
-                    />
-                    <span className="font-semibold text-3xl">=</span>
-                    <Input
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="MOD"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={calcMod(0)}
-                      variant="bordered"
-                      onKeyDown={preventLetters}
-                    />
-                    <Input
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="COSTO PRIMO"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={selectedProducts.length > 0 ? calcCostoPrimo(0).toFixed(2) : '0'}
-                      variant="bordered"
-                    />
-                  </div>
-                  <div className="flex gap-1 items-end col-span-2">
-                    <Input
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="VALOR"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={costCif}
-                      variant="bordered"
-                      onKeyDown={preventLetters}
-                      onValueChange={(e) => setCostCif(e)}
-                    />
-                    <span className="font-semibold text-3xl">*</span>
-                    <Input
-                      readOnly
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="RENDIMIENTO"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={
-                        selectedProducts.length > 0
-                          ? String(selectedProducts[0].recipeBook?.performance)
-                          : '0'
-                      }
-                      variant="bordered"
-                    />
-                    <span className="font-semibold text-3xl">=</span>
-                    <Input
-                      readOnly
-                      classNames={{
-                        label: 'font-semibold text-[10px]',
-                        input: 'text-xs',
-                      }}
-                      label="CIF"
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      size="sm"
-                      value={calcCif(0)}
-                      variant="bordered"
-                    />
-                  </div>
-                  <Input
-                    readOnly
-                    classNames={{
-                      label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
-                    }}
-                    label="COSTO TOTAL"
-                    labelPlacement="outside"
-                    placeholder="0.00"
-                    size="sm"
-                    value={selectedProducts.length > 0 ? totalCost(0) : '0'}
-                    variant="bordered"
-                  />
-                </div>
-              </div>
-            </AccordionItem>
-          </Accordion>
 
           <div className="flex justify-between md:justify-end gap-0 md:gap-4 items-end mt-3">
-            <ButtonUi theme={Colors.Warning} onPress={() => setSelectedProducts([])}>Limpiar todo</ButtonUi>
+            <ButtonUi theme={Colors.Warning} onPress={() => setSelectedProducts([])}>
+              Limpiar todo
+            </ButtonUi>
             <ButtonUi theme={Colors.Error} onPress={() => navigation('/production-orders')}>
               Cancelar
             </ButtonUi>
