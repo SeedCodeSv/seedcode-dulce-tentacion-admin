@@ -19,7 +19,7 @@ import { useProductsStore } from '@/store/products.store';
 import { Product } from '@/types/products.types';
 import { preventLetters } from '@/utils';
 
-type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
+type ProductOrder = Product & { quantity: number; uniMedidaExtra: string  };
 
 interface Props {
   selectedProducts: ProductOrder[];
@@ -64,7 +64,11 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
     const checkIfExist = list_suppliers.findIndex((lsP) => lsP.id === prd.id);
 
     if (checkIfExist === -1) {
-      list_suppliers.push({ ...prd, quantity: 1, uniMedidaExtra: prd.uniMedida });
+      list_suppliers.push({
+        ...prd, quantity: 1, uniMedidaExtra: prd.uniMedida,
+        // MOP: 0,
+        // CIF: 0
+      });
     } else {
       list_suppliers.splice(checkIfExist, 1);
     }
