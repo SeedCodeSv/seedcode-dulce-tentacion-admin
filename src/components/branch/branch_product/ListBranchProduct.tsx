@@ -30,15 +30,20 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-import { IGetBranchProduct } from '@/types/branches.types';
+import { Branches, IGetBranchProduct } from '@/types/branches.types';
 import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
+import BranchProductExcell from './BranchProductExcell';
+import DownloadPDFButton from './BranchProductPDF';
+import { useTransmitterStore } from '@/store/transmitter.store';
 interface Props {
   id: number;
   onclick: () => void;
   actions: string[]
 }
 export default function ListBranchProduct({ id, onclick, actions }: Props) {
+    const { transmitter, gettransmitter } = useTransmitterStore();
+  
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -47,6 +52,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
   const [category, setCategory] = useState('');
+  const [branch, setBranch] = useState<Branches>()
   const [code, setCode] = useState('');
   const [page, serPage] = useState(1);
   const [name, setName] = useState('');
@@ -68,6 +74,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   }, [id, limit]);
 
   useEffect(() => {
+    gettransmitter()
     getListCategories();
   }, []);
 
@@ -150,9 +157,10 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
-                    const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                    const branchSelected = JSON.parse(key as string) as Branches;
 
                     setCategory(branchSelected.name);
+                    setBranch(branchSelected)
                   }
                 }}
               >
@@ -166,6 +174,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
           </div>
           <SearchBranchProduct />
           <div className="w-full flex items-end justify-between">
+            <div className='flex gap-4 items-end'>
             <ButtonGroup className="mt-4">
               <ButtonUi
                 isIconOnly
@@ -182,7 +191,10 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 <CreditCard />
               </ButtonUi>
             </ButtonGroup>
-
+            
+            <DownloadPDFButton  branch={branch!} transmitter={transmitter}/>
+            <BranchProductExcell branch={branch!} transmitter={transmitter}/>
+            </div>
             <div className="flex items-end gap-5">
               <div>
                 <Select
@@ -314,7 +326,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 {loading_branch_product ? (
                   <tr>
                     <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                      <LoadingTable/>
+                      <LoadingTable />
                     </td>
                   </tr>
                 ) : (
@@ -336,7 +348,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                               {formatCurrency(Number(cat.price))}
                             </td>
                             <td className="p-3 text-sm text-green-500 dark:text-green-300">
-                              { Number(cat.stock).toFixed(2)}
+                              {Number(cat.stock).toFixed(2)}
                             </td>
                             <td className="p-3 text-sm text-red-500 dark:text-red-300">
                               {cat.reserved}
@@ -400,7 +412,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                     ) : (
                       <tr>
                         <td colSpan={7}>
-                          <EmptyTable/>
+                          <EmptyTable />
                         </td>
                       </tr>
                     )}

@@ -28,11 +28,11 @@ import { usePermission } from '@/hooks/usePermission';
 import { limit_options } from '@/utils/constants';
 import { estadosV } from '@/utils/utils';
 import { ThemeContext } from '@/hooks/useTheme';
-import ThGlobal from '@/themes/ui/th-global';
 import { useBranchesStore } from '@/store/branches.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
@@ -108,330 +108,294 @@ function List() {
   return (
     <>
       <DivGlobal>
-          <div className="grid grid-cols-3 gap-5">
-            <Input
-              classNames={{ label: 'font-semibold dark:text-white', input: 'dark:text-white' }}
-              label="Fecha inicial"
-              labelPlacement="outside"
-              type="date"
-              value={startDate}
-              variant="bordered"
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <Input
-              classNames={{
-                label: 'font-semibold dark:text-white',
-                input: 'dark:text-white'
-              }}
-              label="Fecha final"
-              labelPlacement="outside"
-              type="date"
-              value={endDate}
-              variant="bordered"
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+        <div className="grid grid-cols-3 gap-5">
+          <Input
+            classNames={{ label: 'font-semibold dark:text-white', input: 'dark:text-white' }}
+            label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
+            value={startDate}
+            variant="bordered"
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <Input
+            classNames={{
+              label: 'font-semibold dark:text-white',
+              input: 'dark:text-white'
+            }}
+            label="Fecha final"
+            labelPlacement="outside"
+            type="date"
+            value={endDate}
+            variant="bordered"
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <Select
+            classNames={{
+              label: 'font-semibold',
+              selectorIcon: 'dark:text-white'
+            }}
+            label="Sucursales"
+            labelPlacement="outside"
+            placeholder="Selecciona una sucursal"
+            value={limit}
+            variant="bordered"
+            onChange={(e) => {
+              setBranchId(Number(e.target.value));
+            }}
+          >
+            {branch_list.map((item) => (
+              <SelectItem key={item.id} className="dark:text-white">
+                {item.name}
+              </SelectItem>
+            ))}
+          </Select>
+          <div />
+
+        </div>
+        <div className='flex flex-row items-end grid grid-cols-2'>
+
+          {actions?.includes("Exportar Excel") && (
+            <>
+              {referalNotes?.length > 0 ?
+                <ButtonUi
+                  className="mt-4 font-semibold w-48 "
+                  color="success"
+                  theme={Colors.Success}
+                  onPress={() => {
+                    handleExportExcel(undefined, undefined)
+                  }}
+                >
+                  <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                </ButtonUi>
+                :
+                <ButtonUi
+                  className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
+                  color="success"
+                  theme={Colors.Success}
+                >
+                  <p>Exportar Excel</p>
+                  <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                </ButtonUi>
+              }
+            </>
+          )}
+          <div className='flex flex-row gap-2 justify-end items-end'>
             <Select
+              className="w-44"
               classNames={{
                 label: 'font-semibold',
                 selectorIcon: 'dark:text-white'
               }}
-              label="Sucursales"
+              defaultSelectedKeys={[limit.toString()]}
+              label="Mostrar"
               labelPlacement="outside"
-              placeholder="Selecciona una sucursal"
+              placeholder="Mostrar"
               value={limit}
               variant="bordered"
               onChange={(e) => {
-                setBranchId(Number(e.target.value));
+                setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
               }}
             >
-              {branch_list.map((item) => (
-                <SelectItem key={item.id} className="dark:text-white">
-                  {item.name}
+              {limit_options.map((limit) => (
+                <SelectItem key={limit} className="dark:text-white">
+                  {limit}
                 </SelectItem>
               ))}
             </Select>
-            <div />
+            <Select
+              className="w-44"
+              classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
+              label="Mostrar por estado"
+              labelPlacement="outside"
+              placeholder="Selecciona un estado"
+              value={state.label}
+              variant="bordered"
+              onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
+            >
+              {estadosV.map((e) => (
+                <SelectItem key={e.value} className="dark:text-white">
+                  {e.label}
+                </SelectItem>
+              ))}
+            </Select>
 
+
+            <Button
+              isIconOnly
+              style={{ ...style, justifySelf: "end" }}
+              type="button"
+              onPress={() => navigate('/list-referal-notes')}
+            >
+              <Plus />
+            </Button>
           </div>
-          <div className='flex flex-row items-end grid grid-cols-2'>
-
-            {actions?.includes("Exportar Excel") && (
-              <>
-                {referalNotes?.length > 0 ?
-                  <ButtonUi
-                    className="mt-4 font-semibold w-48 "
-                    color="success"
-                    theme={Colors.Success}
-                    onPress={() => {
-                      handleExportExcel(undefined, undefined)
-                    }}
-                  >
-                    <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
-                  </ButtonUi>
-                  :
-                  <ButtonUi
-                    className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
-                    color="success"
-                    theme={Colors.Success}
-                  >
-                    <p>Exportar Excel</p>
-                    <PiMicrosoftExcelLogoBold className="text-white" size={24} />
-                  </ButtonUi>
-                }
-              </>
-            )}
-            <div className='flex flex-row gap-2 justify-end items-end'>
-              <Select
-                className="w-44"
-                classNames={{
-                  label: 'font-semibold',
-                  selectorIcon: 'dark:text-white'
-                }}
-                defaultSelectedKeys={[limit.toString()]}
-                label="Mostrar"
-                labelPlacement="outside"
-                placeholder="Mostrar"
-                value={limit}
-                variant="bordered"
-                onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
-                }}
-              >
-                {limit_options.map((limit) => (
-                  <SelectItem key={limit} className="dark:text-white">
-                    {limit}
-                  </SelectItem>
-                ))}
-              </Select>
-              <Select
-                className="w-44"
-                classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
-                label="Mostrar por estado"
-                labelPlacement="outside"
-                placeholder="Selecciona un estado"
-                value={state.label}
-                variant="bordered"
-                onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
-              >
-                {estadosV.map((e) => (
-                  <SelectItem key={e.value} className="dark:text-white">
-                    {e.label}
-                  </SelectItem>
-                ))}
-              </Select>
-
-
-              <Button
-                isIconOnly
-                style={{ ...style, justifySelf: "end" }}
-                type="button"
-                onPress={() => navigate('/list-referal-notes')}
-              >
-                <Plus />
-              </Button>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto custom-scrollbar mt-4">
-            <table className="w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    No.
-                  </ThGlobal>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    Numero control
-                  </ThGlobal>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    Código generación
-                  </ThGlobal>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left max-w-[200px] text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    Empleado
-                  </ThGlobal>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left max-w-[200px] text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    Estado
-                  </ThGlobal>
-                  <ThGlobal
-                    className="p-3 text-sm font-semibold text-left text-slate-600 dark:text-gray-100 dark:bg-slate-700 bg-slate-200"
-                  >
-                    Acciones
-                  </ThGlobal>
-                </tr>
-              </thead>
-              <tbody className="max-h-[600px] w-full overflow-y-auto">
-                {loading ? (
-                  <tr>
-                    <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
-                      <LoadingTable />
-                    </td>
-                  </tr>
-                ) : (
-                  <>
-                    {referalNotes.length > 0 ? (
-                      <>
-                        {referalNotes.map((item) => (
-                          <tr key={item.id} className="border-b border-slate-200">
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.id}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                              {item.numeroControl}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.codigoGeneracion}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.employee
-                                ? item?.employee?.firstName + ' ' + item?.employee?.secondName
-                                : 'N/A'}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              <Chip
-                                classNames={{
-                                  content: 'text-white text-sm !font-bold px-3',
-                                }}
-                                color={(() => {
-                                  switch (item.status.name) {
-                                    case 'PROCESADO':
-                                      return 'success';
-                                    case 'ANULADA':
-                                      return 'danger';
-                                    case 'CONTINGENCIA':
-                                      return 'warning';
-                                    case 'PENDIENTE':
-                                      return 'primary';
-                                    default:
-                                      return 'default';
-                                  }
-                                })()}
-                              >
-                                {item.status.name}
-                              </Chip>
-                            </td>
-                            <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
-                              {actions.includes('Ver comprobante') && (
-                                <TooltipGlobal text="Ver comprobante">
-                                  <Button
-                                    isIconOnly
-                                    style={styles.dangerStyles}
-                                    onClick={() => handleShowPdf(item.codigoGeneracion)}
-                                  >
-                                    <PiFilePdf size={25} />
-                                  </Button>
-                                </TooltipGlobal>
-                              )}
-                              {item?.status.name.includes('PROCESADO') && (
-                                <TooltipGlobal text="Invalidar">
-
-                                  <Button
-                                    isIconOnly
-                                    style={styles.dangerStyles}
-                                    onPress={() => {
-                                      modalInvalidate.onOpen()
-                                      setItems(item)
-                                    }}
-                                  >
-                                    <FileX2 size={25} />
-                                  </Button>
-
-                                </TooltipGlobal>
-                              )}
-                              {!!item.employee && item.status.name.includes('PENDIENTE') && (
-                                <TooltipGlobal
-                                  text={item?.isCompleted ? 'Completado' : 'Completar'}
-                                >
-                                  <Button
-                                    isIconOnly
-                                    style={
-                                      !item?.isCompleted
-                                        ? styles.darkStyle
-                                        : { backgroundColor: '#2E8B57', color: 'white' }
-                                    }
-                                    onClick={() => {
-                                      setSelectedNote(item)
-                                      modalComplete.onOpen()
-                                    }}
-                                  >
-                                    {!item?.isCompleted ? (
-                                      <Clipboard size={25} />
-                                    ) : (
-                                      <ClipboardCheck size={25} />
-                                    )}
-                                  </Button>
-                                </TooltipGlobal>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan={6}>
-                          <div className="flex flex-col justify-center items-center">
-                            <Lottie animationData={EMPTY} className="w-80" />
-                            <p className="text-2xl dark:text-white">No se encontraron resultados</p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          </div>
-          {pagination_referal_notes.totalPag > 1 && (
+        </div>
+        <TableComponent headers={['No.','Sucursal', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
+          {loading ? (
+            <tr>
+              <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
+                <LoadingTable />
+              </td>
+            </tr>
+          ) : (
             <>
-              <div className="hidden w-full mt-5 md:flex">
-                <Pagination
-                  currentPage={pagination_referal_notes.currentPag}
-                  nextPage={pagination_referal_notes.nextPag}
-                  previousPage={pagination_referal_notes.prevPag}
-                  totalPages={pagination_referal_notes.totalPag}
-                  onPageChange={(page) => {
-                    onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value, branchId);
-                  }}
-                />
-              </div>
-              <div className="flex w-full mt-5 md:hidden">
-                <SmPagination
-                  currentPage={pagination_referal_notes.currentPag}
-                  handleNext={() => {
-                    onGetReferalNotes(
-                      Number(user?.transmitterId),
-                      pagination_referal_notes.nextPag,
-                      10,
-                      startDate,
-                      endDate,
-                      state.value,
-                      branchId
-                    );
-                  }}
-                  handlePrev={() => {
-                    onGetReferalNotes(
-                      Number(user?.transmitterId),
-                      pagination_referal_notes.prevPag,
-                      10,
-                      startDate,
-                      endDate,
-                      state.value,
-                      branchId
-                    );
-                  }}
-                  totalPages={pagination_referal_notes.totalPag}
-                />
-              </div>
+              {referalNotes.length > 0 ? (
+                <>
+                  {referalNotes.map((item) => (
+                    <tr key={item.id} className="border-b border-slate-200">
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {item.id}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {item.branch.name}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {item.numeroControl}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {item.codigoGeneracion}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {item.employee
+                          ? item?.employee?.firstName + ' ' + item?.employee?.secondName
+                          : 'N/A'}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <Chip
+                          classNames={{
+                            content: 'text-white text-sm !font-bold px-3',
+                          }}
+                          color={(() => {
+                            switch (item.status.name) {
+                              case 'PROCESADO':
+                                return 'success';
+                              case 'ANULADA':
+                                return 'danger';
+                              case 'CONTINGENCIA':
+                                return 'warning';
+                              case 'PENDIENTE':
+                                return 'primary';
+                              default:
+                                return 'default';
+                            }
+                          })()}
+                        >
+                          {item.status.name}
+                        </Chip>
+                      </td>
+                      <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
+                        {actions.includes('Ver comprobante') && (
+                          <TooltipGlobal text="Ver comprobante">
+                            <Button
+                              isIconOnly
+                              style={styles.dangerStyles}
+                              onPress={() => handleShowPdf(item.codigoGeneracion)}
+                            >
+                              <PiFilePdf size={25} />
+                            </Button>
+                          </TooltipGlobal>
+                        )}
+                        {item?.status.name.includes('PROCESADO') && (
+                          <TooltipGlobal text="Invalidar">
+
+                            <Button
+                              isIconOnly
+                              style={styles.dangerStyles}
+                              onPress={() => {
+                                modalInvalidate.onOpen()
+                                setItems(item)
+                              }}
+                            >
+                              <FileX2 size={25} />
+                            </Button>
+
+                          </TooltipGlobal>
+                        )}
+                        {!!item.employee && item.status.name.includes('PENDIENTE') && (
+                          <TooltipGlobal
+                            text={item?.isCompleted ? 'Completado' : 'Completar'}
+                          >
+                            <Button
+                              isIconOnly
+                              style={
+                                !item?.isCompleted
+                                  ? styles.darkStyle
+                                  : { backgroundColor: '#2E8B57', color: 'white' }
+                              }
+                              onPress={() => {
+                                setSelectedNote(item)
+                                modalComplete.onOpen()
+                              }}
+                            >
+                              {!item?.isCompleted ? (
+                                <Clipboard size={25} />
+                              ) : (
+                                <ClipboardCheck size={25} />
+                              )}
+                            </Button>
+                          </TooltipGlobal>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </>
+              ) : (
+                <tr>
+                  <td colSpan={6}>
+                    <div className="flex flex-col justify-center items-center">
+                      <Lottie animationData={EMPTY} className="w-80" />
+                      <p className="text-2xl dark:text-white">No se encontraron resultados</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </>
           )}
+        </TableComponent>
+        {pagination_referal_notes.totalPag > 1 && (
+          <>
+            <div className="hidden w-full mt-5 md:flex">
+              <Pagination
+                currentPage={pagination_referal_notes.currentPag}
+                nextPage={pagination_referal_notes.nextPag}
+                previousPage={pagination_referal_notes.prevPag}
+                totalPages={pagination_referal_notes.totalPag}
+                onPageChange={(page) => {
+                  onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value, branchId);
+                }}
+              />
+            </div>
+            <div className="flex w-full mt-5 md:hidden">
+              <SmPagination
+                currentPage={pagination_referal_notes.currentPag}
+                handleNext={() => {
+                  onGetReferalNotes(
+                    Number(user?.transmitterId),
+                    pagination_referal_notes.nextPag,
+                    10,
+                    startDate,
+                    endDate,
+                    state.value,
+                    branchId
+                  );
+                }}
+                handlePrev={() => {
+                  onGetReferalNotes(
+                    Number(user?.transmitterId),
+                    pagination_referal_notes.prevPag,
+                    10,
+                    startDate,
+                    endDate,
+                    state.value,
+                    branchId
+                  );
+                }}
+                totalPages={pagination_referal_notes.totalPag}
+              />
+            </div>
+          </>
+        )}
 
         {modalPdf.isOpen && (
           <div className="fixed inset-0 z-50">
@@ -471,7 +435,7 @@ function List() {
             }}
           />
         )}
-     </DivGlobal>
+      </DivGlobal>
       <InvalidateNoteReferal
         item={items}
         modalInvalidate={modalInvalidate}

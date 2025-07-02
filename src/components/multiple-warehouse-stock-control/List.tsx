@@ -140,7 +140,7 @@ function List() {
                             style={{ ...style, justifySelf: "end" }}
 
                             type="button"
-                            onClick={() => navigate('/list-referal-notes')}
+                            onPress={() => navigate('/list-referal-notes')}
                         >
                             <Plus />
                         </Button>
