@@ -12,7 +12,6 @@ import {
 import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare } from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
-import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
 import Pagination from '../../global/Pagination';
 import SmPagination from '../../global/SmPagination';
@@ -22,6 +21,8 @@ import MobileView from './MobileView';
 import UpdateBranchProduct from './UpdateBranchProduct';
 import MenuUpdate from './MenuUpdate';
 import DeletePopUp from './DeleteMenu';
+import BranchProductExcell from './BranchProductExcell';
+import DownloadPDFButton from './BranchProductPDF';
 
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
@@ -33,8 +34,6 @@ import { TableComponent } from '@/themes/ui/table-ui';
 import { Branches, IGetBranchProduct } from '@/types/branches.types';
 import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
-import BranchProductExcell from './BranchProductExcell';
-import DownloadPDFButton from './BranchProductPDF';
 import { useTransmitterStore } from '@/store/transmitter.store';
 interface Props {
   id: number;

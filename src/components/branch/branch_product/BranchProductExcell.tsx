@@ -14,7 +14,7 @@ import { ITransmitter } from "@/types/transmitter.types";
 
 export default function BranchProductExcell({branch,transmitter }: {branch: Branches, transmitter: ITransmitter, }) {
     const styles = useGlobalStyles();
-    const {branchProductsFilteredList, getBranchProductsFilteredList} = useBranchProductStore()
+    const {branchProductsFilteredList} = useBranchProductStore()
 
     const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
     const fontColor = hexToARGB(styles.darkStyle.color);
@@ -69,18 +69,18 @@ export default function BranchProductExcell({branch,transmitter }: {branch: Bran
             { width: 20 }
         ];
 
-        tableData.forEach((item, index) => {
-            worksheet.addRow([
-                index + 1,
-                `${item.date} - ${item.time}`,
-                `${item.movementType} - ${item.inventoryType}`,
-                item.productCode || '',
-                item.productName || '',
-                item.quantity || 0,
-                item.unitCost ?? 0,
-                item.totalMovement ?? 0,
-            ]);
-        });
+        // tableData.forEach((item, index) => {
+        //     worksheet.addRow([
+        //         index + 1,
+        //         `${item.date} - ${item.time}`,
+        //         `${item.movementType} - ${item.inventoryType}`,
+        //         item.productCode || '',
+        //         item.productName || '',
+        //         item.quantity || 0,
+        //         item.unitCost ?? 0,
+        //         item.totalMovement ?? 0,
+        //     ]);
+        // });
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
