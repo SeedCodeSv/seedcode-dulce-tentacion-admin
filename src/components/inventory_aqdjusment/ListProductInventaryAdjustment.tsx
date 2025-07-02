@@ -45,7 +45,16 @@ export default function ListProductInventoryAdjustment({
       filter.limit,
       filter.itemType
     );
-  }, [filter.branch, filter.product, branchName]);
+      OnGetProductInventoryAdjustament(
+      branchName,
+      filter.supplier,
+      filter.product,
+      filter.code,
+      filter.page,
+      filter.limit,
+      filter.itemType
+    );
+  }, [filter.product, branchName]);
 
   return (
     <div className="bg-transparent border p-4 w-full sm:p-6 rounded-xl h-[calc(100vh-200px)] flex-grow overflow-hidden flex flex-col">

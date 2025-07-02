@@ -11,8 +11,6 @@ import DivGlobal from '@/themes/ui/div-global';
 
 function PurchaseOrders() {
   const [isOpenModalProduct, setIsOpenModalProduct] = useState(false);
-  const [selectedTab, setSelectedTab] = useState<'ajuste' | 'recuento'>('ajuste');
-
   const [branchName, setBranchName] = useState('');
 
   const isMovil = useIsMobileOrTablet()
@@ -21,7 +19,6 @@ function PurchaseOrders() {
 
   useEffect(() => {
     return () => {
-      setSelectedTab('ajuste');
       setIsOpenModalProduct(false);
       setBranchName('');
     };
