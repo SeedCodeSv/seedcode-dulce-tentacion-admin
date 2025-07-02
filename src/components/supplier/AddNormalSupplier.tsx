@@ -32,8 +32,7 @@ function AddNormalSupplier() {
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
     getCat012Departamento();
-    const transId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    const transId = user?.pointOfSale.branch.transmitter.id ?? 0
 
     getAccountCatalogs(transId, '', '');
   }, []);
@@ -48,7 +47,7 @@ function AddNormalSupplier() {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Nuevo Consumidor Final">
+    <>
       <Formik
         initialValues={{
           nombre: '',
@@ -66,8 +65,7 @@ function AddNormalSupplier() {
           departamento: '',
           complemento: '',
           codCuenta: '',
-          transmitterId:
-            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+          transmitterId: user?.pointOfSale.branch.transmitter.id ?? 0,
         }}
         validationSchema={supplierSchemaNormal}
         onSubmit={(values, { setSubmitting }) => {
@@ -312,7 +310,7 @@ function AddNormalSupplier() {
           </Form>
         )}
       </Formik>
-    </Layout>
+    </>
   );
 }
 

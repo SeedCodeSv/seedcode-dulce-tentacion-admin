@@ -22,7 +22,7 @@ export default function KardexPage() {
   };
 
   return (
-    <Layout title="Kardex">
+    <>
       <DivGlobal>
         <Tabs
           className="mb-4"
@@ -42,6 +42,6 @@ export default function KardexPage() {
         </Tabs>
         <Outlet context={{ actionView }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }

@@ -27,9 +27,7 @@ function SettlementDocument() {
   const { user } = useAuthStore();
 
   useEffect(() => {
-    const transmitter = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : user?.pointOfSale?.branch.transmitter.id;
+    const transmitter = user?.pointOfSale.branch.transmitter.id;
 
     onGetSettlementDocuments(searchParams.page, limit, transmitter ?? 0, startDate, endDate, 0);
   }, [startDate, endDate, limit]);
@@ -39,7 +37,7 @@ function SettlementDocument() {
   const navigate = useNavigate()
 
   return (
-    <Layout title="Documentos Contables de Liquidación">
+    <>
       <div className="w-full h-full bg-gray-50 dark:bg-gray-800">
         <div className="w-full h-full flex flex-col p-3 pt-10 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex gap-5">
@@ -170,7 +168,7 @@ function SettlementDocument() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

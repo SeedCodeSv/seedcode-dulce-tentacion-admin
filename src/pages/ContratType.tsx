@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListContractType from '../components/employee/typeContract/ListTypeContract';
 
 import { useViewsStore } from '@/store/views.store';
@@ -10,7 +9,7 @@ function ContratType() {
   const actionsView = contractTypeView?.actions?.name || [];
 
   return (
-    <Layout title="Tipo de Contratación">
+    <>
       {contractTypeView ? (
         <ListContractType actions={actionsView} />
       ) : (
@@ -22,7 +21,7 @@ function ContratType() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 }
 

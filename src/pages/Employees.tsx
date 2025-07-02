@@ -8,9 +8,9 @@ function Employees() {
   const actionsView = empleadosView?.actions?.name || [];
 
   return (
-    <Layout title="EMPLEADOS">
+    <>
       <ListEmployee actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 export default Employees;

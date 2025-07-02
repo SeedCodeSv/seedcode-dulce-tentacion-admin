@@ -17,7 +17,7 @@ function PurchaseOrders() {
   const isMovil = useIsMobileOrTablet()
 
   return (
-    <Layout title="Ajuste de Inventario">
+    <>
       <>
        <DivGlobal>
             <div className="flex w-full flex-col">
@@ -79,7 +79,7 @@ function PurchaseOrders() {
             </div>
           </DivGlobal>
       </>
-    </Layout>
+    </>
   );
 }
 

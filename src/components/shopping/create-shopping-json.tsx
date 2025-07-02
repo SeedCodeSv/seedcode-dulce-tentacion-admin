@@ -72,32 +72,32 @@ function CreateShopping() {
   return (
     <>
       {actionView.includes('Agregar') ? (
-        <Layout title="Agregar">
+        <>
           <DivGlobal>
-              <Tabs
-                aria-label="Dynamic tabs"
-                classNames={{
-                  base: 'w-full flex justify-center',
-                }}
-                items={[
-                  {
-                    id: 1,
-                    label: 'Manual',
-                    content: <CreateShoppingManual />,
-                  },
-                  { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
-                ]}
-              >
-                {(item) => (
-                  <Tab key={item.id} title={item.label}>
-                    <Card className="bg-white dark:bg-gray-900">
-                      <CardBody>{item.content}</CardBody>
-                    </Card>
-                  </Tab>
-                )}
-              </Tabs>
-            </DivGlobal>
-        </Layout>
+            <Tabs
+              aria-label="Dynamic tabs"
+              classNames={{
+                base: 'w-full flex justify-center',
+              }}
+              items={[
+                {
+                  id: 1,
+                  label: 'Manual',
+                  content: <CreateShoppingManual />,
+                },
+                { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
+              ]}
+            >
+              {(item) => (
+                <Tab key={item.id} title={item.label}>
+                  <Card className="bg-white dark:bg-gray-900">
+                    <CardBody>{item.content}</CardBody>
+                  </Card>
+                </Tab>
+              )}
+            </Tabs>
+          </DivGlobal>
+        </>
       ) : (
         <NoAuthorization />
       )}
@@ -121,9 +121,7 @@ const JSONMode = () => {
 
   useEffect(() => {
     if (user) {
-      const transId = user.pointOfSale
-          ? user.pointOfSale.branch.transmitter.id
-          : 0;
+      const transId = user.pointOfSale ? user.pointOfSale.branch.transmitter.id : 0;
 
       getFiscalDataAndParameter(transId);
       getAccountCatalogs(transId ?? 0, '', '');
@@ -286,7 +284,7 @@ const JSONMode = () => {
         return;
       }
 
-      const transmitterId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
+      const transmitterId = user?.pointOfSale?.branch.transmitter.id ?? 0;
 
       const formData = new FormData();
 
@@ -608,9 +606,11 @@ const JSONMode = () => {
                         }}
                       >
                         {branch_list.map((item) => (
-                          <SelectItem key={item.id}
-                           className='dark:text-white'
-                           textValue={item.name}>
+                          <SelectItem
+                            key={item.id}
+                            className="dark:text-white"
+                            textValue={item.name}
+                          >
                             {item.name}
                           </SelectItem>
                         ))}

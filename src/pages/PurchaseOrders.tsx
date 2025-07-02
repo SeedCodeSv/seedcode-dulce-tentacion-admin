@@ -19,9 +19,9 @@ function PurchaseOrders() {
   }, [roleActions]);
 
   return (
-    <Layout title="Ordenes de Compra">
+    <>
       <ListPurchasesOrders actions={actions} />
-    </Layout>
+    </>
   );
 }
 

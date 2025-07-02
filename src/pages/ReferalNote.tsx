@@ -3,9 +3,9 @@ import Layout from '@/layout/Layout';
 
 function NotaRemision() {
   return (
-    <Layout title="Notas de remisión">
+    <>
       <List />
-    </Layout>
+    </>
   );
 }
 

@@ -9,9 +9,9 @@ function Supplier() {
   const actionsView = supplierView?.actions?.name || [];
 
   return (
-    <Layout title="Proveedores">
+    <>
       <ListSuppliers actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

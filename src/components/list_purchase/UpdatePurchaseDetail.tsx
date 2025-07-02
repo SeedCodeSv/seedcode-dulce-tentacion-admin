@@ -109,7 +109,7 @@ function UpdatePurchaseDetail() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Layout title="Confirmar orden">
+    <>
       <DivGlobal >
         <div className="flex justify-between">
           <h2 className="text-3xl font-bold dark:text-white mb-6">Detalle de Orden</h2>
@@ -346,7 +346,7 @@ function UpdatePurchaseDetail() {
           </label>
         </HeadlessModal>
       </DivGlobal>
-    </Layout>
+    </>
   );
 }
 

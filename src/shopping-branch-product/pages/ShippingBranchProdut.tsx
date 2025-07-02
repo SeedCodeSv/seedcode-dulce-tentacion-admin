@@ -5,11 +5,9 @@ import Layout from '@/layout/Layout';
 
 function ShippingProductsBranchPage() {
   return (
-    <Layout title="Nota de Remision">
-     <DivGlobal>
-          <ContentProductBranch />
-        </DivGlobal>
-    </Layout>
+    <DivGlobal>
+      <ContentProductBranch />
+    </DivGlobal>
   );
 }
 

@@ -142,7 +142,7 @@ function UpdateTributeSupplier() {
   }, [supplier.direccion]);
 
   return (
-    <Layout title="Actualizar  Contribuyente">
+    <>
       <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button className="w-32  flex gap-2 mb-4 cursor-pointer" onClick={() => navigate("/suppliers")}>
@@ -178,7 +178,7 @@ function UpdateTributeSupplier() {
           </form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 
