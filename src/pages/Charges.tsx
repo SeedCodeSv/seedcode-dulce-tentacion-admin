@@ -16,7 +16,7 @@ function ProductsCategories() {
   }, []);
 
   return (
-    <Layout title="Cargos de Empleados">
+    <>
       {chargesView ? (
         <ListCharges actions={actions} />
       ) : (
@@ -28,7 +28,7 @@ function ProductsCategories() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 }
 

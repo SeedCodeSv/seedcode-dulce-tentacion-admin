@@ -33,6 +33,7 @@ import CreditNotePage from '@/pages/notes/CreditNotePage';
 import DebitNotePage from '@/pages/notes/DebitNotePage';
 import AnexoAnulados from '@/pages/anexos_iva/anexo_anulados';
 import AnexoComprasSujetoExcluido from '@/pages/anexos_iva/anexo_compras_sujeto_excluido';
+import Layout from '@/layout/Layout';
 import AddInventaryAdjustment from '@/components/inventory_aqdjusment/AddInventaryAdjustment';
 import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusment/AddInventoryAdjustmentRecountStock';
 
@@ -116,7 +117,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   };
 
   const mainRoutes = createRoutesFromElements(
-    <>
+    <Route element={<Layout />}>
       <Route
         element={
           <AnimatedRoute>
@@ -808,7 +809,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/create-branch-product/:id"
       />
-    </>
+    </Route>
   );
 
   return createBrowserRouter([...mainRoutes]);

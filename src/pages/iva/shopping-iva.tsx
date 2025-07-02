@@ -54,7 +54,11 @@ function ShoppingBookIVA() {
       monthSelected <= 9 ? '0' + monthSelected : monthSelected.toString(),
       yearSelected
     );
-    getExcludedSubjectByMonth(Number(transmiter?.pointOfSale?.branch.transmitter.id ), monthSelected, yearSelected);
+    getExcludedSubjectByMonth(
+      Number(transmiter?.pointOfSale?.branch.transmitter.id),
+      monthSelected,
+      yearSelected
+    );
   }, [monthSelected, yearSelected]);
 
   const formatData = useMemo(() => {
@@ -108,7 +112,7 @@ function ShoppingBookIVA() {
     // ]);
 
     // const formatData = [...data, ...dataExcluded]
-      const formatData = [...data]
+    const formatData = [...data]
       .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
       .map((da, index) => [index + 1, ...da]);
 
@@ -341,198 +345,196 @@ function ShoppingBookIVA() {
   const actionView = viewName?.actions.name || [];
 
   return (
-    <Layout title="IVA de Compras">
-      <>
-        <DivGlobal>
-          <div className="w-full flex pb-5 mt-10">
-            <Link className=" dark:text-white flex" to="/">
-              <ArrowLeft /> Regresar
-            </Link>
-          </div>
-          <div className="w-full  mt-2">
-            <div className="w-full flex justify-between gap-5">
-              <Select
-                className="w-44"
-                classNames={{ label: 'font-semibold' }}
-                label="Meses"
-                labelPlacement="outside"
-                selectedKeys={[`${monthSelected}`]}
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setMonthSelected(Number(new Set(key).values().next().value));
-                  }
-                }}
-              >
-                {months.map((month) => (
-                  <SelectItem key={month.value}>{month.name}</SelectItem>
-                ))}
-              </Select>
-              <Select
-                className="w-44"
-                classNames={{ label: 'font-semibold' }}
-                label="Año"
-                labelPlacement="outside"
-                selectedKeys={[`${yearSelected}`]}
-                variant="bordered"
-                onSelectionChange={(key) => {
-                  if (key) {
-                    setYearSelected(Number(new Set(key).values().next().value));
-                  }
-                }}
-              >
-                {years.map((years) => (
-                  <SelectItem key={years.value}>{years.name}</SelectItem>
-                ))}
-              </Select>
-              <div className="w-full flex justify-end items-end gap-10">
-                {actionView.includes('Imprimir') && (
-                  <ButtonUi
-                    className="px-10"
-                    endContent={<Printer size={20} />}
-                    theme={Colors.Info}
-                    onPress={() => showPdf()}
-                  >
-                    Ver e imprimir
-                  </ButtonUi>
-                )}
-
-                {actionView.includes('Exportar PDF') && (
-                  <ButtonUi
-                    className="px-10"
-                    endContent={<PiFilePdfDuotone size={20} />}
-                    theme={Colors.Error}
-                    onPress={() => export_to_pdf('download')}
-                  >
-                    Exportar a PDF
-                  </ButtonUi>
-                )}
-
-                {actionView.includes('Exportar Excel') && (
-                  <ButtonUi
-                    className="px-10"
-                    endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                    theme={Colors.Success}
-                    onPress={handleExportExcel}
-                  >
-                    Exportar a excel
-                  </ButtonUi>
-                )}
-              </div>
-            </div>
-            <div>
-              <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                {loading_shopping ? (
-                  <div className="w-full flex justify-center p-20 items-center flex-col">
-                    <div className="loader" />
-                    <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
-                  </div>
-                ) : (
-                  <>
-                    {shopping_by_months.length > 0 ? (
-                      <>
-                        <table className="w-full">
-                          <thead className="sticky top-0 z-20 bg-white">
-                            <tr>
-                              <ThGlobal className="text-left p-3">Fecha declaración</ThGlobal>
-                              <ThGlobal className="text-left p-3">Fecha de emision</ThGlobal>
-                              <ThGlobal className="text-left p-3">No. doc</ThGlobal>
-                              <ThGlobal className="text-left p-3">No. Reg.</ThGlobal>
-                              <ThGlobal className="text-left p-3">NIT O DUI</ThGlobal>
-                              <ThGlobal className="text-left p-3">Nombre del proveedor</ThGlobal>
-                              <ThGlobal className="text-left p-3">Compras gravadas</ThGlobal>
-                              <ThGlobal className="text-left p-3">IVA</ThGlobal>
-                              <ThGlobal className="text-left p-3">Total compra</ThGlobal>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {shopping_by_months.map((shop, index) => (
-                              <tr key={index} className="border-b border-slate-200">
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatDateToMMDDYYYY(shop.declarationDate ?? shop.fecEmi)}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatDateToMMDDYYYY(shop.fecEmi)}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {shop.generationCode !== 'N/A'
-                                    ? shop.generationCode
-                                    : shop.controlNumber}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {shop.supplier.nrc !== '0' ? shop.supplier.nrc : ''}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {shop.supplier.tipoDocumento !== 'N/A'
-                                    ? shop.supplier.numDocumento
-                                    : shop.supplier.nit}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {shop.supplier.nombre}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatCurrency(Number(shop.totalGravada))}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatCurrency(Number(shop.totalGravada) * 0.13)}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {formatCurrency(Number(shop.montoTotalOperacion))}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </>
-                    ) : (
-                      <>
-                        <div className="w-full h-full flex p-10 flex-col justify-center items-center">
-                          <img alt="" className="w-44 mt-10" src={NO_DATA} />
-                          <p className="mt-5 dark:text-white text-gray-600 text-xl">
-                            No se encontraron resultados
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </DivGlobal>
-        <FullPageLayout show={showFullLayout.isOpen}>
-          <div
-            className={classNames(
-              'w-[500px] min-h-96 p-8 flex flex-col justify-center items-center bg-white rounded-[25px] bg-gradient-to-b',
-              typeOverlay === 0 && 'from-blue-100 to-white',
-              typeOverlay === 1 && 'from-green-100 to-white',
-              typeOverlay === 2 && 'h-[95vh] w-[95vw] !p-0'
-            )}
-          >
-            {typeOverlay === 2 && (
-              <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
-                <Button
-                  isIconOnly
-                  className="absolute bottom-6 left-6"
-                  color="danger"
-                  onClick={() => showFullLayout.onClose()}
+    <>
+      <DivGlobal>
+        <div className="w-full flex pb-5 mt-10">
+          <Link className=" dark:text-white flex" to="/">
+            <ArrowLeft /> Regresar
+          </Link>
+        </div>
+        <div className="w-full  mt-2">
+          <div className="w-full flex justify-between gap-5">
+            <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Meses"
+              labelPlacement="outside"
+              selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value}>{month.name}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
+              selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value}>{years.name}</SelectItem>
+              ))}
+            </Select>
+            <div className="w-full flex justify-end items-end gap-10">
+              {actionView.includes('Imprimir') && (
+                <ButtonUi
+                  className="px-10"
+                  endContent={<Printer size={20} />}
+                  theme={Colors.Info}
+                  onPress={() => showPdf()}
                 >
-                  <X />
-                </Button>
-                {loadingPdf ? (
-                  <div className="w-full h-full flex flex-col justify-center items-center">
-                    <div className="loader" />
-                    <p className="mt-5 text-xl">Cargando...</p>
-                  </div>
-                ) : (
-                  <iframe className="w-full h-full" src={pdf} title='pdf' />
-                )}
-              </div>
-            )}
+                  Ver e imprimir
+                </ButtonUi>
+              )}
+
+              {actionView.includes('Exportar PDF') && (
+                <ButtonUi
+                  className="px-10"
+                  endContent={<PiFilePdfDuotone size={20} />}
+                  theme={Colors.Error}
+                  onPress={() => export_to_pdf('download')}
+                >
+                  Exportar a PDF
+                </ButtonUi>
+              )}
+
+              {actionView.includes('Exportar Excel') && (
+                <ButtonUi
+                  className="px-10"
+                  endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                  theme={Colors.Success}
+                  onPress={handleExportExcel}
+                >
+                  Exportar a excel
+                </ButtonUi>
+              )}
+            </div>
           </div>
-        </FullPageLayout>
-      </>
-    </Layout>
+          <div>
+            <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
+              {loading_shopping ? (
+                <div className="w-full flex justify-center p-20 items-center flex-col">
+                  <div className="loader" />
+                  <p className="mt-5 dark:text-white text-gray-600 text-xl">Cargando...</p>
+                </div>
+              ) : (
+                <>
+                  {shopping_by_months.length > 0 ? (
+                    <>
+                      <table className="w-full">
+                        <thead className="sticky top-0 z-20 bg-white">
+                          <tr>
+                            <ThGlobal className="text-left p-3">Fecha declaración</ThGlobal>
+                            <ThGlobal className="text-left p-3">Fecha de emision</ThGlobal>
+                            <ThGlobal className="text-left p-3">No. doc</ThGlobal>
+                            <ThGlobal className="text-left p-3">No. Reg.</ThGlobal>
+                            <ThGlobal className="text-left p-3">NIT O DUI</ThGlobal>
+                            <ThGlobal className="text-left p-3">Nombre del proveedor</ThGlobal>
+                            <ThGlobal className="text-left p-3">Compras gravadas</ThGlobal>
+                            <ThGlobal className="text-left p-3">IVA</ThGlobal>
+                            <ThGlobal className="text-left p-3">Total compra</ThGlobal>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {shopping_by_months.map((shop, index) => (
+                            <tr key={index} className="border-b border-slate-200">
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {formatDateToMMDDYYYY(shop.declarationDate ?? shop.fecEmi)}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {formatDateToMMDDYYYY(shop.fecEmi)}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {shop.generationCode !== 'N/A'
+                                  ? shop.generationCode
+                                  : shop.controlNumber}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {shop.supplier.nrc !== '0' ? shop.supplier.nrc : ''}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {shop.supplier.tipoDocumento !== 'N/A'
+                                  ? shop.supplier.numDocumento
+                                  : shop.supplier.nit}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {shop.supplier.nombre}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {formatCurrency(Number(shop.totalGravada))}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {formatCurrency(Number(shop.totalGravada) * 0.13)}
+                              </td>
+                              <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                {formatCurrency(Number(shop.montoTotalOperacion))}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-full h-full flex p-10 flex-col justify-center items-center">
+                        <img alt="" className="w-44 mt-10" src={NO_DATA} />
+                        <p className="mt-5 dark:text-white text-gray-600 text-xl">
+                          No se encontraron resultados
+                        </p>
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </DivGlobal>
+      <FullPageLayout show={showFullLayout.isOpen}>
+        <div
+          className={classNames(
+            'w-[500px] min-h-96 p-8 flex flex-col justify-center items-center bg-white rounded-[25px] bg-gradient-to-b',
+            typeOverlay === 0 && 'from-blue-100 to-white',
+            typeOverlay === 1 && 'from-green-100 to-white',
+            typeOverlay === 2 && 'h-[95vh] w-[95vw] !p-0'
+          )}
+        >
+          {typeOverlay === 2 && (
+            <div className="w-[95vw] h-[95vh] bg-white rounded-2xl">
+              <Button
+                isIconOnly
+                className="absolute bottom-6 left-6"
+                color="danger"
+                onClick={() => showFullLayout.onClose()}
+              >
+                <X />
+              </Button>
+              {loadingPdf ? (
+                <div className="w-full h-full flex flex-col justify-center items-center">
+                  <div className="loader" />
+                  <p className="mt-5 text-xl">Cargando...</p>
+                </div>
+              ) : (
+                <iframe className="w-full h-full" src={pdf} title="pdf" />
+              )}
+            </div>
+          )}
+        </div>
+      </FullPageLayout>
+    </>
   );
 }
 

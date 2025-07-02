@@ -25,7 +25,6 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 
-
 function AddEmployee() {
   const { GetEmployeeStatus, employee_status } = useEmployeeStatusStore();
   const { GetContractType, contract_type } = useContractTypeStore();
@@ -35,7 +34,7 @@ function AddEmployee() {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
-  const [isCutResponsible, setIsCutResponsible] = useState(false)
+  const [isCutResponsible, setIsCutResponsible] = useState(false);
 
   useEffect(() => {
     getBranchesList();
@@ -76,7 +75,7 @@ function AddEmployee() {
     municipalityName: '',
     complement: '',
     branchId: 0,
-    isResponsibleCutZ: isCutResponsible
+    isResponsibleCutZ: isCutResponsible,
   });
 
   const createEmployee = async (values: EmployeePayload) => {
@@ -95,7 +94,7 @@ function AddEmployee() {
       complement: values.complement || 'N/A',
       nit: values.nit || '0',
       code: codigoFinal,
-      isResponsibleCutZ: isCutResponsible ?? false
+      isResponsibleCutZ: isCutResponsible ?? false,
     };
 
     try {
@@ -140,9 +139,9 @@ function AddEmployee() {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Agregar Empleado">
+    <>
       <DivGlobal>
-        <div className='w-full flex flex-row justify-between'>
+        <div className="w-full flex flex-row justify-between">
           <Button
             className=" bg-transparent dark:text-white text-black"
             onPress={() => navigate('/employees')}
@@ -150,15 +149,14 @@ function AddEmployee() {
             <ArrowLeft className="dark:text-white text-black" />
             Regresar
           </Button>
-          <button
-            className='flex flex-row justify-start mr-8 border border-sky-200 rounded-xl p-2'>
+          <button className="flex flex-row justify-start mr-8 border border-sky-200 rounded-xl p-2">
             <Checkbox
               checked={isCutResponsible}
-              size='md'
+              size="md"
               color={'warning'}
               onChange={() => setIsCutResponsible(!isCutResponsible)}
             />
-            <p className='dark:text-white mt-1 text-sky-500'>Responsable de corte Z</p>
+            <p className="dark:text-white mt-1 text-sky-500">Responsable de corte Z</p>
           </button>
         </div>
         <div className="overflow-y-auto dark:text-white mt-0">
@@ -377,12 +375,7 @@ function AddEmployee() {
                           className="xl:w-full w-[140px] mt-3"
                           theme={Colors.Info}
                           onPress={() =>
-                            generateCode(
-                              setFieldValue,
-                              firstName,
-                              lastName,
-                              setCodigoGenerado
-                            )
+                            generateCode(setFieldValue, firstName, lastName, setCodigoGenerado)
                           }
                         >
                           Generar
@@ -487,7 +480,6 @@ function AddEmployee() {
                         onBlur={handleBlur('dateOfEntry')}
                         onChange={handleChange('dateOfEntry')}
                       />
-
                     </div>
                     <div className="flex flex-col mt-3">
                       <Input
@@ -823,7 +815,7 @@ function AddEmployee() {
           </div>
         </div>
       </DivGlobal>
-    </Layout>
+    </>
   );
 }
 export default AddEmployee;

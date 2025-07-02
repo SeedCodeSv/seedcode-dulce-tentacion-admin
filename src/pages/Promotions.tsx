@@ -16,11 +16,9 @@ function Discounts() {
   }, []);
 
   return (
-    <Layout title="DESCUENTOS">
-     
-        <ListPromotions actions={actions} />
-     
-    </Layout>
+    <>
+      <ListPromotions actions={actions} />
+    </>
   );
 }
 

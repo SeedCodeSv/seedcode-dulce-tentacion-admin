@@ -124,7 +124,7 @@ function UpdateAccountCatalogs() {
 
   return (
     <>
-      <Layout title="Catálogos de Cuentas">
+      <>
         <>
           <DivGlobal>
               <div className="">
@@ -313,7 +313,7 @@ function UpdateAccountCatalogs() {
               </div>
            </DivGlobal>
         </>
-      </Layout>
+      </>
     </>
   );
 }

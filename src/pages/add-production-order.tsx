@@ -12,8 +12,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 
-import Layout from '@/layout/Layout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useBranchesStore } from '@/store/branches.store';
@@ -32,11 +32,10 @@ import { useProductionOrderStore } from '@/store/production-order.store';
 import { useAlert } from '@/lib/alert';
 import TdGlobal from '@/themes/ui/td-global';
 
+
 type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
-
-type TypeSearch = 'MP' | 'RENDIMIENTO';
 
 function AddProductionOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
@@ -50,9 +49,6 @@ function AddProductionOrder() {
   const [observation, setObservation] = useState('');
 
   const modalRecipe = useDisclosure();
-  const typeSearch = ['RENDIMIENTO', 'MP'];
-
-  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>('RENDIMIENTO');
 
   const { getEmployeesList, employee_list } = useEmployeeStore();
 
@@ -255,7 +251,10 @@ function AddProductionOrder() {
   };
 
   return (
-    <Layout title="Nueva Orden de Producción">
+    <>
+      <Helmet>
+        <title>Nueva orden de producción</title>
+      </Helmet>
       <>
         <RecipeBook
           isOpen={modalRecipe.isOpen}
@@ -517,7 +516,7 @@ function AddProductionOrder() {
           setSelectedTypeProduct={setSelectedTypeProduct}
         />
       </>
-    </Layout>
+    </>
   );
 }
 

@@ -3,9 +3,9 @@ import Layout from '../layout/Layout';
 
 function ReportSalesAndExpenses() {
   return (
-    <Layout title="Reporteria">
+    <>
       <HomeReports />
-    </Layout>
+    </>
   );
 }
 

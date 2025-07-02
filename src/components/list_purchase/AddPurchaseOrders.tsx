@@ -140,7 +140,7 @@ function AddPurchaseOrders() {
   const actions = viewSupplier?.actions.name || [];
 
   return (
-    <Layout title="Lista de Ordenes de compra">
+    <>
       {actions.includes('Agregar') ? (
         <DivGlobal>
           <div className="w-full flex items-center justify-between">
@@ -293,7 +293,7 @@ function AddPurchaseOrders() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 }
 

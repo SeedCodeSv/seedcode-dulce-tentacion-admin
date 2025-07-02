@@ -1,8 +1,8 @@
-import { Tab, Tabs } from "@heroui/react";
+import { Tab, Tabs } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { Button } from "@heroui/react";
+import { Button } from '@heroui/react';
 
 import AddClientContributor from '../components/clients/AddClientContributor';
 import AddClientNormal from '../components/clients/AddClientNormal';
@@ -10,7 +10,8 @@ import Layout from '../layout/Layout';
 
 import { useCustomerStore } from '@/store/customers.store';
 import GlobalLoading from '@/components/global/GlobalLoading';
-import DivGlobal from "@/themes/ui/div-global";
+import DivGlobal from '@/themes/ui/div-global';
+import { Helmet } from 'react-helmet-async';
 
 function AddCustomer() {
   const [selected, setSelected] = useState<string | undefined>('normal');
@@ -28,58 +29,37 @@ function AddCustomer() {
   const { loading_save } = useCustomerStore();
 
   return (
-    <Layout title={type == '0' ? 'Agregar cliente' : 'Actualizar cliente'}>
-      <>
-        <GlobalLoading show={loading_save} />
-        <DivGlobal>
-          <div className="w-full">
-            <Button className="bg-transparent" onClick={() => navigate('/clients')}>
-              <ArrowLeft />
-              <p className="">Regresar</p>
-            </Button>
-            <Tabs
-              className="flex justify-center mt-3 md:mt-0"
-              color="secondary"
-              selectedKey={selected}
-              variant="bordered"
-            >
-              <Tab key="normal" title="Consumidor final">
-                <div className="mt-2">
-                  <AddClientNormal />
-                </div>
-              </Tab>
-              <Tab key="tribute" title="Cliente contribuyente">
-                <div className="mt-2">
-                  <AddClientContributor />
-                </div>
-              </Tab>
-            </Tabs>
-            {/* <Tabs
-              selectedKey={selected}
-              variant="bordered"
-              color="secondary"
-              className="flex justify-center mt-3 md:mt-0"
-              onSelectionChange={(key) => setSelected(String(key))} // Convertimos 'key' a string
-            >
-              {selected === 'normal' && (
-                <Tab key="normal" title="Consumidor final">
-                  <div className="mt-2">
-                    <AddClientNormal />
-                  </div>
-                </Tab>
-              )}
-              {selected === 'tribute' && (
-                <Tab key="tribute" title="Cliente contribuyente">
-                  <div className="mt-2">
-                    <AddClientContributor />
-                  </div>
-                </Tab>
-              )}
-            </Tabs> */}
-            </div>
-          </DivGlobal>
-      </>
-    </Layout>
+    <>
+      <Helmet>
+        <title>Nuevo cliente</title>
+      </Helmet>
+      <GlobalLoading show={loading_save} />
+      <DivGlobal>
+        <div className="w-full">
+          <Button className="bg-transparent" onPress={() => navigate('/clients')}>
+            <ArrowLeft />
+            <p className="">Regresar</p>
+          </Button>
+          <Tabs
+            className="flex justify-center mt-3 md:mt-0"
+            color="secondary"
+            selectedKey={selected}
+            variant="bordered"
+          >
+            <Tab key="normal" title="Consumidor final">
+              <div className="mt-2">
+                <AddClientNormal />
+              </div>
+            </Tab>
+            <Tab key="tribute" title="Cliente contribuyente">
+              <div className="mt-2">
+                <AddClientContributor />
+              </div>
+            </Tab>
+          </Tabs>
+        </div>
+      </DivGlobal>
+    </>
   );
 }
 

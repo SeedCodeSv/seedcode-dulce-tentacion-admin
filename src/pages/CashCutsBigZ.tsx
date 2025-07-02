@@ -178,8 +178,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-      )}</span>
+          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+        )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -192,8 +192,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-      )}</strong></span>
+          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+        )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -211,8 +211,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-      )}</span>
+          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+        )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -225,8 +225,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-      )}</strong></span>
+          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+        )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -279,7 +279,7 @@ const CushCatsBigZ = () => {
       totalGeneral,
       transmitter,
       bgHeader: fillColor,
-      fontColor: fontColor
+      fontColor: fontColor,
     });
 
     saveAs(blob, `Corte_bigZ_${selectedBranch?.name ?? ''}_${Date.now()}.xlsx`);
@@ -295,14 +295,14 @@ const CushCatsBigZ = () => {
     if (!params.branch.id) {
       toast.warning('Selecciona una sucursal');
 
-      return
+      return;
     }
-      setSelectedBranch(params.branch);
-      onGetDataBox(params.branch.id ?? 0, params.date);
+    setSelectedBranch(params.branch);
+    onGetDataBox(params.branch.id ?? 0, params.date);
   };
 
   return (
-    <Layout title="Corte Gran Z">
+    <>
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
         <div className="flex w-full items-end max-w-4xl gap-4">
           {/* <Input
@@ -345,7 +345,7 @@ const CushCatsBigZ = () => {
               <AutocompleteItem
                 key={item.id}
                 onPress={() => {
-                  setParams({...params, branch: item})
+                  setParams({ ...params, branch: item });
                 }}
               >
                 {item.name}
@@ -383,13 +383,13 @@ const CushCatsBigZ = () => {
               )}
             </div>
           }
-          cutType='Corte Big Z'
+          cutType="Corte Big Z"
           data={selectedBox!}
           params={{ date: params.date }}
           totalGeneral={totalGeneral}
         />
       </DivGlobal>
-    </Layout>
+    </>
   );
 };
 

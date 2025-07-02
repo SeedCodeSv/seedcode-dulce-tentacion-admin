@@ -312,7 +312,7 @@ const CashCutsX = () => {
   };
 
   return (
-    <Layout title="Corte de X">
+    <>
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
         <div className="flex w-full items-end max-w-lg gap-4">
           <Input
@@ -408,7 +408,7 @@ const CashCutsX = () => {
           totalGeneral={totalGeneral}
         />
       </DivGlobal>
-    </Layout>
+    </>
   );
 };
 

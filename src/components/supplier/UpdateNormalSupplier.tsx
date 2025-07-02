@@ -32,7 +32,7 @@ function UpdateNormalSupplier() {
 
   useEffect(() => {
     const transId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+      user?.pointOfSale?.branch.transmitter.id ?? 0;
 
     getAccountCatalogs(transId, '', '');
   }, []);
@@ -65,7 +65,7 @@ function UpdateNormalSupplier() {
       complemento: '',
       codCuenta: '',
       transmitterId:
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+        user?.pointOfSale.branch.transmitter.id ?? 0,
     },
     onSubmit(values, formikHelpers) {
       patchSupplier({ ...values, id: supplier?.id, nrc: supplier?.nrc }, supplier?.id ?? 0);
@@ -92,13 +92,12 @@ function UpdateNormalSupplier() {
       departamento: supplier.direccion?.departamento ?? '',
       complemento: supplier.direccion?.complemento ?? '',
       codCuenta: supplier.codCuenta,
-      transmitterId:
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      transmitterId: user?.pointOfSale.branch.transmitter.id ?? 0,
     });
   }, [supplier]);
 
   return (
-    <Layout title="Actualizar Consumidor Final">
+    <>
       <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
@@ -326,7 +325,7 @@ function UpdateNormalSupplier() {
           </form>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

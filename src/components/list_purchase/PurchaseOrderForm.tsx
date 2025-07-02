@@ -83,7 +83,7 @@ const PurchaseOrderForm = () => {
   };
 
   return (
-    <Layout title="Ordenes de Compra">
+    <>
       <>
         <DivGlobal>
           <div className='w-full flex md:flex-col justify-between'>
@@ -364,7 +364,7 @@ const PurchaseOrderForm = () => {
           </ModalGlobal>
         </DivGlobal>
       </>
-    </Layout>
+    </>
   );
 };
 

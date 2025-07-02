@@ -16,6 +16,7 @@ import { initialValues, validationSchema } from '@/components/add-product/valida
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
+import { Helmet } from 'react-helmet-async';
 
 type ProductOrder = Product & {
   quantity: number;
@@ -85,7 +86,10 @@ function AddProduct() {
   });
 
   return (
-    <Layout title="Nuevo producto">
+    <>
+     <Helmet>
+            <title>Nuevo producto</title>
+          </Helmet>
       <div className="w-full h-full p-5">
         <button
           className="flex items-center gap-2 bg-transparent"
@@ -127,7 +131,7 @@ function AddProduct() {
           </FormikProvider>
         </form>
       </div>
-    </Layout>
+    </>
   );
 }
 

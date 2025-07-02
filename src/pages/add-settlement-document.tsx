@@ -15,8 +15,8 @@ import { toast } from 'sonner';
 import { PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { Button, useDisclosure } from '@heroui/react';
 import { useNavigate } from 'react-router';
+import { Helmet } from 'react-helmet-async';
 
-import Layout from '@/layout/Layout';
 import CustomLoading from '@/components/global/CustomLoading';
 import { SVFE_DCL } from '@/types/svf_dte/dcl.types';
 import { formatCurrency } from '@/utils/dte';
@@ -218,15 +218,11 @@ function AddSettlementDocument() {
 
     setLoadingSave(true);
 
-    const transmitter = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : user?.pointOfSale?.branch.transmitter.id;
+    const transmitter = user?.transmitterId ?? 0;
 
     const json_url =
       'CLIENTES/' +
-      (user?.correlative
-        ? user.correlative.branch.transmitter.nombre
-        : user?.pointOfSale?.branch.transmitter.nombre) +
+      user?.pointOfSale.branch.transmitter.nombre +
       `/${new Date().getFullYear()}/DOCUMENTOS_CONTABLES_DE_LIQUIDACION/${file.content?.identificacion.fecEmi}/${file.content?.identificacion.codigoGeneracion}.json`;
 
     const uploadParams: PutObjectCommandInput = {
@@ -260,7 +256,10 @@ function AddSettlementDocument() {
   };
 
   return (
-    <Layout title="Agregar Documento Contable de liquidación">
+    <>
+      <Helmet>
+        <title>Agregar Documento Contable de liquidación</title>
+      </Helmet>
       <div className=" w-full h-full flex flex-col bg-gray-50 dark:bg-gray-900">
         <HeadlessModal
           isOpen={providerModal.isOpen}
@@ -527,7 +526,7 @@ function AddSettlementDocument() {
                   className="px-12"
                   isLoading={loadingSave}
                   style={styles.dangerStyles}
-                  onClick={() => navigate('/settlement-document')}
+                  onPress={() => navigate('/settlement-document')}
                 >
                   Cancelar
                 </Button>
@@ -544,7 +543,7 @@ function AddSettlementDocument() {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 

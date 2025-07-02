@@ -18,7 +18,6 @@ import {
   useDisclosure
 } from '@heroui/react';
 
-import Layout from '../layout/Layout';
 import { salesReportStore } from '../store/reports/sales_report.store';
 import { useAuthStore } from '../store/auth.store';
 import { useBranchProductReportStore } from '../store/reports/branch_product.store';
@@ -224,7 +223,6 @@ function Home() {
   };
 
   return (
-    <Layout title="Inicio">
       <DivGlobal>
         <div className="grid w-full gap-5 mt-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
           <Charts />
@@ -366,7 +364,6 @@ function Home() {
           </div>
         </FullPageLayout>
       </DivGlobal>
-    </Layout>
   );
 }
 

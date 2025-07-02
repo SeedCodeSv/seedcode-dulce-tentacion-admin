@@ -22,7 +22,7 @@ export default function CashCutsPage() {
   };
 
   return (
-    <Layout title="Cortes">
+    <>
       <DivGlobal>
         <Tabs
           className="mb-4"
@@ -42,6 +42,6 @@ export default function CashCutsPage() {
         </Tabs>
         <Outlet context={{ actionView }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }

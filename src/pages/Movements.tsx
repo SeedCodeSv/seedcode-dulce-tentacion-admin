@@ -18,9 +18,9 @@ const Movements = () => {
   }, [roleActions]);
 
   return (
-    <Layout title="Movimientos">
+    <>
         <ListMovements actions={actions}/>
-    </Layout>
+    </>
   )
 }
 

@@ -1,5 +1,4 @@
 import ConfigurationList from '../components/configuration/ConfigurationList.tsx';
-import Layout from '../layout/Layout.tsx';
 
 import { useViewsStore } from '@/store/views.store.ts';
 
@@ -10,9 +9,7 @@ function Configuration() {
 
   return (
     <>
-      <Layout title="Configuración">
-        <ConfigurationList actions={actionsView} />
-      </Layout>
+      <ConfigurationList actions={actionsView} />
     </>
   );
 }

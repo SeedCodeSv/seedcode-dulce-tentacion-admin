@@ -53,9 +53,7 @@ function AddItemsBySales() {
   const { branch_list, getBranchesList } = useBranchesStore();
 
   useEffect(() => {
-    const transId = user?.correlative
-      ? user?.correlative.branch.transmitter.id
-      : user?.pointOfSale?.branch.transmitter.id;
+    const transId = user?.pointOfSale?.branch.transmitter.id;
 
     getBranchesList();
     getFiscalDataAndParameter(transId ?? 0);
@@ -66,9 +64,7 @@ function AddItemsBySales() {
   const { saleByItem, getSaleByItem, loadingSalesByItem } = useSalesStore();
 
   const handleSearch = () => {
-    const transId = user?.correlative
-      ? user?.correlative.branch.transmitter.id
-      : user?.pointOfSale?.branch.transmitter.id;
+    const transId = user?.pointOfSale?.branch.transmitter.id;
     const listBranches = Array.from(branches) as number[];
 
     getSaleByItem(
@@ -250,9 +246,7 @@ function AddItemsBySales() {
 
     const listBranches = Array.from(branches) as number[];
 
-    const transId = user?.correlative
-      ? user?.correlative.branch.transmitter.id
-      : user?.pointOfSale?.branch.transmitter.id;
+    const transId = user?.pointOfSale?.branch.transmitter.id;
 
     const existsPeriod = await find_period(transId ?? 0, startDate, endDate, listBranches);
 
@@ -267,8 +261,7 @@ function AddItemsBySales() {
     }
 
     setLoading(true);
-    const trandId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+    const trandId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
     addAddItem({
       date: date,
@@ -342,7 +335,7 @@ function AddItemsBySales() {
     if (period) {
       setloadingUpdateActions(true);
       const trandId =
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+        user?.pointOfSale?.branch.transmitterId ?? 0;
 
       updateAndDeleteItem(period.item.id, {
         date: date,
@@ -377,243 +370,241 @@ function AddItemsBySales() {
   };
 
   return (
-    <Layout title="Generar partida de ventas">
-      <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-gray-800">
-        <div className="w-full h-full flex flex-col p-3 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-          <div className="grid grid-cols-2 gap-x-5 gap-y-2 mt-2 md:grid-cols-3">
-            <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha inicial"
-              labelPlacement="outside"
-              type="date"
-              value={startDate}
-              variant="bordered"
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-            <Input
-              classNames={{ label: 'font-semibold' }}
-              label="Fecha final"
-              labelPlacement="outside"
-              type="date"
-              value={endDate}
-              variant="bordered"
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-            <div className="flex gap-5 items-end">
-              <Select
-                multiple
-                className="col-span-2 md:col-span-1"
-                classNames={{ label: 'font-semibold' }}
-                isLoading={loadingSalesByItem}
-                isRequired={loadingSalesByItem}
-                label="Sucursal"
-                labelPlacement="outside"
-                placeholder="Seleccione una sucursal"
-                selectedKeys={branches}
-                selectionMode="multiple"
-                variant="bordered"
-                onSelectionChange={setBranches}
-              >
-                {branch_list.map((branch) => (
-                  <SelectItem key={branch.id}>{branch.name}</SelectItem>
-                ))}
-              </Select>
-              <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
-                Buscar
-              </ButtonUi>
-            </div>
-          </div>
-          <div className="w-full grid grid-cols-2 gap-5 mt-8">
-            <Input
-              classNames={{
-                base: 'font-semibold',
-              }}
-              label="Fecha de la partida"
-              labelPlacement="outside"
-              type="date"
-              value={date}
-              variant="bordered"
-              onChange={(e) => setDate(e.target.value)}
-            />
+    <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-gray-800">
+      <div className="w-full h-full flex flex-col p-3 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-2 mt-2 md:grid-cols-3">
+          <Input
+            classNames={{ label: 'font-semibold' }}
+            label="Fecha inicial"
+            labelPlacement="outside"
+            type="date"
+            value={startDate}
+            variant="bordered"
+            onChange={(e) => setStartDate(e.target.value)}
+          />
+          <Input
+            classNames={{ label: 'font-semibold' }}
+            label="Fecha final"
+            labelPlacement="outside"
+            type="date"
+            value={endDate}
+            variant="bordered"
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <div className="flex gap-5 items-end">
             <Select
-              classNames={{
-                base: 'font-semibold',
-              }}
-              label="Tipo de partida"
+              multiple
+              className="col-span-2 md:col-span-1"
+              classNames={{ label: 'font-semibold' }}
+              isLoading={loadingSalesByItem}
+              isRequired={loadingSalesByItem}
+              label="Sucursal"
               labelPlacement="outside"
-              placeholder="Selecciona el tipo de partida"
-              selectedKeys={selectedType > 0 ? [selectedType.toString()] : []}
+              placeholder="Seleccione una sucursal"
+              selectedKeys={branches}
+              selectionMode="multiple"
               variant="bordered"
-              onSelectionChange={(key) => {
-                if (key) {
-                  setSelectedType(Number(key.currentKey));
-                }
-              }}
+              onSelectionChange={setBranches}
             >
-              {list_type_of_account.map((type) => (
-                <SelectItem key={type.id} textValue={type.name}>
-                  {type.name}
-                </SelectItem>
+              {branch_list.map((branch) => (
+                <SelectItem key={branch.id}>{branch.name}</SelectItem>
               ))}
             </Select>
-          </div>
-          <div className="mt-2">
-            <Textarea
-              classNames={{
-                base: 'font-semibold',
-              }}
-              label="Concepto de la partida"
-              labelPlacement="outside"
-              placeholder="Ingresa el concepto de la partida"
-              value={description}
-              variant="bordered"
-              onChange={({ target }) => handleDescriptionChange(target.value)}
-            />
-          </div>
-          <div className="mt-4 h-full overflow-y-auto">
-            <table className="w-full">
-              <thead className="sticky top-0 z-20 bg-white">
-                <tr>
-                  <ThGlobal className="text-left p-3">Cod. cuenta</ThGlobal>
-                  <ThGlobal className="text-left p-3">Centro costo</ThGlobal>
-                  <ThGlobal className="text-left p-3">Concepto</ThGlobal>
-                  <ThGlobal className="text-left p-3">Debe</ThGlobal>
-                  <ThGlobal className="text-left p-3">Haber</ThGlobal>
-                </tr>
-              </thead>
-              <tbody>
-                {loadingSalesByItem && (
-                  <tr>
-                    <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
-                      <div className="flex flex-col items-center justify-center w-full h-64">
-                        <div className="loader" />
-                        <p className="mt-3 text-xl font-semibold">Cargando...</p>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-                {!loadingSalesByItem && (
-                  <>
-                    <ItemsList
-                      getBranchName={getBranchName}
-                      isOpen={false}
-                      items={items}
-                      openModal={modalCatalog.onOpen}
-                      setItems={setItems}
-                    />
-                  </>
-                )}
-                <tr>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <p className="text-lg font-semibold">Totales:</p>
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <Input
-                      readOnly
-                      classNames={{ base: 'font-semibold' }}
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      value={$debe.toFixed(2)}
-                      variant="bordered"
-                    />
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <Input
-                      readOnly
-                      classNames={{ base: 'font-semibold' }}
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      value={$haber.toFixed(2)}
-                      variant="bordered"
-                    />
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                </tr>
-                <tr>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <p className="text-lg font-semibold">Diferencia:</p>
-                  </td>
-                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                    <Input
-                      readOnly
-                      classNames={{ base: 'font-semibold' }}
-                      labelPlacement="outside"
-                      placeholder="0.00"
-                      value={$total.toString()}
-                      variant="bordered"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="flex justify-end gap-5 mt-3">
-            <ButtonUi
-              isLoading={loading}
-              theme={Colors.Default}
-              onPress={() => navigate('/accounting-items')}
-            >
-              Cancelar
-            </ButtonUi>
-            <ButtonUi isLoading={loading} theme={Colors.Primary} onPress={() => handleSave()}>
-              Guardar
+            <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
+              Buscar
             </ButtonUi>
           </div>
         </div>
-        <Modal isOpen={periodModal.isOpen} size="xl" onOpenChange={periodModal.onOpenChange}>
-          <ModalContent>
-            <>
-              <ModalHeader>Se encontró una partida contable en este periodo</ModalHeader>
-              <ModalBody>
-                <p>
-                  <span className="font-semibold">Periodo registrado:</span> Del{' '}
-                  {period ? formattedStartDate(period.startDate) : '-'} al{' '}
-                  {period ? formattedStartDate(period.endDate) : '-'}
-                </p>
-                <p>
-                  <span className="font-semibold">Sucursales:</span>{' '}
-                  {formatBranchName(period?.branches || [])}
-                </p>
-                <p>
-                  <span className="font-semibold">Correlativo:</span> {period?.item?.correlative}
-                </p>
-                <div className="grid grid-cols-2 gap5">
-                  <div>
-                    <p className="font-semibold text-lg">Debe</p>
-                    <p>{period?.item?.totalDebe}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-lg">Haber</p>
-                    <p>{period?.item?.totalHaber}</p>
-                  </div>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <ButtonUi
-                  isLoading={loadingUpdate}
-                  theme={Colors.Default}
-                  onPress={() => navigate('/accounting-items')}
-                >
-                  Cancelar
-                </ButtonUi>
-                <ButtonUi
-                  isLoading={loadingUpdate}
-                  theme={Colors.Primary}
-                  onPress={() => handleUpdateAndDelete()}
-                >
-                  Modificar partida
-                </ButtonUi>
-              </ModalFooter>
-            </>
-          </ModalContent>
-        </Modal>
+        <div className="w-full grid grid-cols-2 gap-5 mt-8">
+          <Input
+            classNames={{
+              base: 'font-semibold',
+            }}
+            label="Fecha de la partida"
+            labelPlacement="outside"
+            type="date"
+            value={date}
+            variant="bordered"
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <Select
+            classNames={{
+              base: 'font-semibold',
+            }}
+            label="Tipo de partida"
+            labelPlacement="outside"
+            placeholder="Selecciona el tipo de partida"
+            selectedKeys={selectedType > 0 ? [selectedType.toString()] : []}
+            variant="bordered"
+            onSelectionChange={(key) => {
+              if (key) {
+                setSelectedType(Number(key.currentKey));
+              }
+            }}
+          >
+            {list_type_of_account.map((type) => (
+              <SelectItem key={type.id} textValue={type.name}>
+                {type.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div className="mt-2">
+          <Textarea
+            classNames={{
+              base: 'font-semibold',
+            }}
+            label="Concepto de la partida"
+            labelPlacement="outside"
+            placeholder="Ingresa el concepto de la partida"
+            value={description}
+            variant="bordered"
+            onChange={({ target }) => handleDescriptionChange(target.value)}
+          />
+        </div>
+        <div className="mt-4 h-full overflow-y-auto">
+          <table className="w-full">
+            <thead className="sticky top-0 z-20 bg-white">
+              <tr>
+                <ThGlobal className="text-left p-3">Cod. cuenta</ThGlobal>
+                <ThGlobal className="text-left p-3">Centro costo</ThGlobal>
+                <ThGlobal className="text-left p-3">Concepto</ThGlobal>
+                <ThGlobal className="text-left p-3">Debe</ThGlobal>
+                <ThGlobal className="text-left p-3">Haber</ThGlobal>
+              </tr>
+            </thead>
+            <tbody>
+              {loadingSalesByItem && (
+                <tr>
+                  <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
+                    <div className="flex flex-col items-center justify-center w-full h-64">
+                      <div className="loader" />
+                      <p className="mt-3 text-xl font-semibold">Cargando...</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {!loadingSalesByItem && (
+                <>
+                  <ItemsList
+                    getBranchName={getBranchName}
+                    isOpen={false}
+                    items={items}
+                    openModal={modalCatalog.onOpen}
+                    setItems={setItems}
+                  />
+                </>
+              )}
+              <tr>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <p className="text-lg font-semibold">Totales:</p>
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <Input
+                    readOnly
+                    classNames={{ base: 'font-semibold' }}
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    value={$debe.toFixed(2)}
+                    variant="bordered"
+                  />
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <Input
+                    readOnly
+                    classNames={{ base: 'font-semibold' }}
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    value={$haber.toFixed(2)}
+                    variant="bordered"
+                  />
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+              </tr>
+              <tr>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100" />
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <p className="text-lg font-semibold">Diferencia:</p>
+                </td>
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  <Input
+                    readOnly
+                    classNames={{ base: 'font-semibold' }}
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    value={$total.toString()}
+                    variant="bordered"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-end gap-5 mt-3">
+          <ButtonUi
+            isLoading={loading}
+            theme={Colors.Default}
+            onPress={() => navigate('/accounting-items')}
+          >
+            Cancelar
+          </ButtonUi>
+          <ButtonUi isLoading={loading} theme={Colors.Primary} onPress={() => handleSave()}>
+            Guardar
+          </ButtonUi>
+        </div>
       </div>
-    </Layout>
+      <Modal isOpen={periodModal.isOpen} size="xl" onOpenChange={periodModal.onOpenChange}>
+        <ModalContent>
+          <>
+            <ModalHeader>Se encontró una partida contable en este periodo</ModalHeader>
+            <ModalBody>
+              <p>
+                <span className="font-semibold">Periodo registrado:</span> Del{' '}
+                {period ? formattedStartDate(period.startDate) : '-'} al{' '}
+                {period ? formattedStartDate(period.endDate) : '-'}
+              </p>
+              <p>
+                <span className="font-semibold">Sucursales:</span>{' '}
+                {formatBranchName(period?.branches || [])}
+              </p>
+              <p>
+                <span className="font-semibold">Correlativo:</span> {period?.item?.correlative}
+              </p>
+              <div className="grid grid-cols-2 gap5">
+                <div>
+                  <p className="font-semibold text-lg">Debe</p>
+                  <p>{period?.item?.totalDebe}</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Haber</p>
+                  <p>{period?.item?.totalHaber}</p>
+                </div>
+              </div>
+            </ModalBody>
+            <ModalFooter>
+              <ButtonUi
+                isLoading={loadingUpdate}
+                theme={Colors.Default}
+                onPress={() => navigate('/accounting-items')}
+              >
+                Cancelar
+              </ButtonUi>
+              <ButtonUi
+                isLoading={loadingUpdate}
+                theme={Colors.Primary}
+                onPress={() => handleUpdateAndDelete()}
+              >
+                Modificar partida
+              </ButtonUi>
+            </ModalFooter>
+          </>
+        </ModalContent>
+      </Modal>
+    </div>
   );
 }
 
