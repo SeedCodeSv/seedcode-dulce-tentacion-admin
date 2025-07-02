@@ -8,11 +8,28 @@ import {
   DrawerContent,
   DrawerFooter,
   Input,
+  Select,
+  SelectItem,
   useDisclosure,
 } from '@heroui/react';
 import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { ArrowLeft, Badge, BarChart3, Barcode, Check, CreditCard, DollarSign, Grid3X3, Hash, Package, Search, Sparkles, Table, Tag } from 'lucide-react';
+import {
+  ArrowLeft,
+  Badge,
+  BarChart3,
+  Barcode,
+  Check,
+  CreditCard,
+  DollarSign,
+  Grid3X3,
+  Hash,
+  Package,
+  Search,
+  Sparkles,
+  Table,
+  Tag,
+} from 'lucide-react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
 
@@ -26,6 +43,7 @@ import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import TdGlobal from '@/themes/ui/td-global';
 import { ThemeContext } from '@/hooks/useTheme';
+import { limit_options } from '@/utils/constants';
 
 type DisclosureProps = ReturnType<typeof useDisclosure>;
 
@@ -59,28 +77,18 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     pagination_shippin_product_branch,
     product_selected,
     OnGetShippinProductBranch,
-    OnClearProductSelected
+    OnClearProductSelected,
   } = useShippingBranchProductBranch();
   const { list_categories, getListCategories } = useCategoriesStore();
-  const { context, theme } = useContext(ThemeContext)
+  const { context, theme } = useContext(ThemeContext);
   const productRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     getListCategories();
-    // OnGetShippinProductBranch(
-    //   selectedBranch?.id ?? 0,
-    //   1,
-    //   30,
-    //   '',
-    //   '',
-    //   '',
-    //   ''
-    // )
   }, []);
 
-  const [view, setView] = useState<"grid" | "table">("table")
-
+  const [view, setView] = useState<'grid' | 'table'>('table');
 
   useHotkeys(['right', 'down'], () => {
     setSelectedIndex((prev) => {
@@ -92,15 +100,14 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
     });
   });
 
-
   const header = [
-    { name: "", uuid: "check" },
-    { name: "No.", uuid: "no" },
-    { name: "Codigo", uuid: "code" },
-    { name: "Nombre", uuid: "name" },
-    { name: "Stock", uuid: "stock" },
-    { name: "Costo unitario", uuid: "coste" }]
-
+    { name: '', uuid: 'check' },
+    { name: 'No.', uuid: 'no' },
+    { name: 'Codigo', uuid: 'code' },
+    { name: 'Nombre', uuid: 'name' },
+    { name: 'Stock', uuid: 'stock' },
+    { name: 'Costo unitario', uuid: 'coste' },
+  ];
 
   useHotkeys(['left', 'up'], () => {
     setSelectedIndex((prev) => {
@@ -113,29 +120,29 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
   });
 
   useHotkeys('ctrl+arrowleft', () => {
-    setView('table')
-  })
+    setView('table');
+  });
 
   useHotkeys('ctrl+arrowright', () => {
-    setView('grid')
-  })
+    setView('grid');
+  });
 
-  useHotkeys('0', () => modalProducts.onClose())
+  useHotkeys('0', () => modalProducts.onClose());
 
   const handleSelect = (id: number) => {
-    const selectedProduct = branchProducts.find((item) => item.id === id)
-    const data = product_selected.find((item) => item.id === id)
+    const selectedProduct = branchProducts.find((item) => item.id === id);
+    const data = product_selected.find((item) => item.id === id);
 
     if (data) {
-      OnClearProductSelected(data.id)
+      OnClearProductSelected(data.id);
 
-      return
+      return;
     }
 
-    OnAddProductSelected(selectedProduct!)
-  }
-  const colorfrom = theme.colors[context].buttons.colors.secondary
-  const colorPrim = theme.colors[context].buttons.colors.primary
+    OnAddProductSelected(selectedProduct!);
+  };
+  const colorfrom = theme.colors[context].buttons.colors.secondary;
+  const colorPrim = theme.colors[context].buttons.colors.primary;
 
   return (
     <>
@@ -151,17 +158,14 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
           <DrawerBody className="p-0">
             <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-gray-100 ">
               <div className="bg-white/80 dark:bg-black backdrop-blur-xl dark:border-gray-200/50 px-6 py-6 h-auto">
-                <button className='flex flex-row gap-2 items-center mb-4 p-2 rounded-xl'
+                <button
+                  className="flex flex-row gap-2 items-center mb-4 p-2 rounded-xl"
                   onClick={() => {
-                    modalProducts.onClose()
+                    modalProducts.onClose();
                   }}
-
                 >
-                  <ArrowLeft size={24}
-                  />
-                  <p className='dark:text-white'
-                  >Regresar</p>
-
+                  <ArrowLeft size={24} />
+                  <p className="dark:text-white">Regresar</p>
                 </button>
                 <div className="mb-6">
                   <div className="p-6 rounded-2xl bg-white dark:bg-black shadow-md">
@@ -170,12 +174,9 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       <div className="flex items-center gap-4 flex-shrink-0">
                         <div className="relative">
                           <div
-                            className={
-                              `w-12 h-12
-                                                            rounded-2xl flex items-center justify-center shadow-lg`
-                            }
+                            className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg`}
                             style={{
-                              background: `linear-gradient(to bottom right, ${colorPrim}, ${colorfrom})`
+                              background: `linear-gradient(to bottom right, ${colorPrim}, ${colorfrom})`,
                             }}
                           >
                             <Package className="w-6 h-6 text-white" />
@@ -184,32 +185,38 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                             <Sparkles className="w-2.5 h-2.5 text-white" />
                           </div>
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                          Productos
+                        </h1>
                       </div>
 
                       <div className="flex-1 min-w-[200px] relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
                         <Input
-                          className="pl-12 w-full"
+                          className="w-full"
                           classNames={{
-                            input: "text-gray-800 dark:text-white placeholder:text-gray-400",
-                            inputWrapper:
-                              "bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-blue-300 focus-within:border-blue-500 rounded-xl shadow-sm",
+                            label: 'text-xs font-semibold',
                           }}
                           defaultValue={filter?.name}
+                          label="Buscar por nombre"
+                          labelPlacement="outside"
                           placeholder="Buscar productos..."
+                          startContent={<Search className="w-5 h-5 text-gray-400" />}
                           variant="bordered"
                           onChange={(e) => setFilter({ ...filter, name: e.target.value })}
                         />
                       </div>
 
                       <div className="flex-1 min-w-[200px] relative group">
-                        <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
                         <Autocomplete
                           className="pl-12 w-full"
-                          classNames={{ base: "w-full" }}
-                          clearButtonProps={{ onClick: () => setFilter({ ...filter, category: "" }) }}
+                          classNames={{ base: 'w-full text-xs font-semibold' }}
+                          clearButtonProps={{
+                            onClick: () => setFilter({ ...filter, category: '' }),
+                          }}
+                          label={<p className="text-xs font-semibold">Buscar por categoría</p>}
+                          labelPlacement="outside"
                           placeholder="Seleccionar categoría"
+                          startContent={<Tag className="w-5 h-5 text-gray-400" />}
                           variant="bordered"
                           onSelectionChange={(key) => {
                             if (key) setFilter({ ...filter, category: String(key) });
@@ -227,29 +234,31 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       </div>
 
                       <div className="flex-1 min-w-[200px] relative group">
-                        <Barcode className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 z-10" />
                         <Input
-                          className="pl-12 w-full"
+                          className="w-full"
                           classNames={{
-                            input: "pl-12 text-gray-800 dark:text-white placeholder:text-gray-400",
-                            inputWrapper:
-                              "bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:border-emerald-300 focus-within:border-emerald-500 rounded-xl shadow-sm",
+                            label: 'text-xs font-semibold',
                           }}
+                          label="Buscar por código"
                           placeholder="Código del producto"
+                          startContent={<Barcode className="w-5 h-5 text-gray-400" />}
                           variant="bordered"
                           onChange={(e) => setFilter({ ...filter, code: e.target.value })}
                         />
                       </div>
 
                       <div className="flex items-center gap-6 flex-shrink-0">
-
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-gray-900 dark:text-sky-400">{branchProducts.length}</div>
+                          <div className="text-2xl font-bold text-gray-900 dark:text-sky-400">
+                            {branchProducts.length}
+                          </div>
                           <div className="text-xs text-gray-500 dark:text-gray-300">Productos</div>
                         </div>
                         <div className="w-px h-8 bg-gray-300" />
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-emerald-600">{product_selected.length}</div>
+                          <div className="text-2xl font-bold text-emerald-600">
+                            {product_selected.length}
+                          </div>
                           <div className="text-xs text-gray-500 dark:text-white">Seleccionados</div>
                         </div>
                       </div>
@@ -260,11 +269,15 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                   <div className="flex items-center gap-3">
                     <BarChart3 className="w-5 h-5 text-gray-500" />
                     <span className="text-gray-700 dark:text-white">
-                      Mostrando <span className="font-semibold dark:text-sky-300">{branchProducts.length}</span> productos
+                      Mostrando{' '}
+                      <span className="font-semibold dark:text-sky-300">
+                        {branchProducts.length}
+                      </span>{' '}
+                      productos
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <div className="flex items-end gap-5 text-sm text-gray-500">
                     <ButtonGroup>
                       <ButtonUi
                         isIconOnly
@@ -284,10 +297,22 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                         <CreditCard />
                       </ButtonUi>
                     </ButtonGroup>
-                    <div className="w-2 h-2 bg-green-400 rounded-full" />
-                    <span>Disponible</span>
-                    <div className="w-2 h-2 bg-gray-400 rounded-full ml-3" />
-                    <span>No disponible</span>
+                    <div className="min-w-44">
+                      <Select
+                        classNames={{
+                          label: 'text-xs font-semibold',
+                        }}
+                        label="Cantidad a mostrar"
+                        labelPlacement="outside"
+                        selectedKeys={[`${filter.limit}`]}
+                        variant="bordered"
+                        onChange={(e) => setFilter({ ...filter, limit: Number(e.target.value ?? 30) })}
+                      >
+                        {limit_options.map((l) => (
+                          <SelectItem key={l}>{l}</SelectItem>
+                        ))}
+                      </Select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -296,8 +321,12 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                 {branchProducts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-64 text-gray-500">
                     <Grid3X3 className="w-16 h-16 mb-4 text-gray-300" />
-                    <h3 className="text-xl font-semibold mb-2 dark:text-white">No se encontraron productos</h3>
-                    <p className="text-gray-400 dark:text-white">Intenta ajustar los filtros de búsqueda</p>
+                    <h3 className="text-xl font-semibold mb-2 dark:text-white">
+                      No se encontraron productos
+                    </h3>
+                    <p className="text-gray-400 dark:text-white">
+                      Intenta ajustar los filtros de búsqueda
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -307,28 +336,29 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       >
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           {branchProducts.map((bp, index) => {
-                            const isSelected = product_selected.some((product) => product.id === bp.id)
-                            const isFocused = index === selectedIndex
-                            const isOutOfStock = bp.stock === 0
-                            const colorFocus2 = Colors.Success
-                            const colorFocus3 = Colors.Secondary
+                            const isSelected = product_selected.some(
+                              (product) => product.id === bp.id
+                            );
+                            const isFocused = index === selectedIndex;
+                            const isOutOfStock = bp.stock === 0;
+                            const colorFocus2 = Colors.Success;
+                            const colorFocus3 = Colors.Secondary;
 
                             return (
-
                               <div
                                 key={bp.id}
                                 ref={(el) => (productRefs.current[index] = el)}
                                 className={` mb-2 relative cursor-pointer transition-all duration-200 border-2 hover:shadow-xl hover:-translate-y-1 rounded-xl
                                              focus:outline-none focus:ring-4 } dark:focus:ring-rose-400
-                                             ${isFocused ? `ring-4  dark:ring-rose-400 ` : ""}
+                                             ${isFocused ? `ring-4  dark:ring-rose-400 ` : ''}
                                              ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 bg-white dark:bg-gray-800`}
-                                             ${isOutOfStock ? "opacity-50 cursor-not-allowed" : ""}
+                                             ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}
                                               `}
                                 role="button"
                                 tabIndex={0}
                                 onClick={() => {
-                                  setSelectedIndex(index)
-                                  handleSelect(bp.id)
+                                  setSelectedIndex(index);
+                                  handleSelect(bp.id);
                                 }}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') {
@@ -336,18 +366,17 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                     setSelectedIndex(index);
                                   }
                                 }}
-
                               >
                                 {isSelected && (
-                                  <div className={`absolute -top-2 -right-2 w-8 h-8 bg-${colorFocus2} rounded-full flex items-center justify-center shadow-lg`}>
+                                  <div
+                                    className={`absolute -top-2 -right-2 w-8 h-8 bg-${colorFocus2} rounded-full flex items-center justify-center shadow-lg`}
+                                  >
                                     <Check className="w-5 h-5 text-white" />
                                   </div>
                                 )}
                                 {isOutOfStock && (
                                   <div className="absolute top-3 right-3">
-                                    <Badge className="text-xs font-semibold">
-                                      Sin Stock
-                                    </Badge>
+                                    <Badge className="text-xs font-semibold">Sin Stock</Badge>
                                   </div>
                                 )}
                                 <div className="p-6">
@@ -362,49 +391,56 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
 
                                     <div className="flex items-center gap-2">
                                       <Package className="w-4 h-4 text-gray-500" />
-                                      <span className="text-sm text-gray-600 dark:text-gray-400">Stock:</span>
+                                      <span className="text-sm text-gray-600 dark:text-gray-400">
+                                        Stock:
+                                      </span>
                                       <span
-                                        className={`text-sm font-semibold ${bp.stock > 10 ? "text-green-600" : bp.stock > 0 ? "text-yellow-600" : "text-red-600"
-                                          }`}
+                                        className={`text-sm font-semibold ${
+                                          bp.stock > 10
+                                            ? 'text-green-600'
+                                            : bp.stock > 0
+                                              ? 'text-yellow-600'
+                                              : 'text-red-600'
+                                        }`}
                                       >
                                         {bp.stock} unidades
                                       </span>
                                     </div>
                                     <div className="flex items-center gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
                                       <DollarSign className="w-5 h-5 text-rose-400" />
-                                      <span className="text-xl font-bold text-rose-500">{bp.price}</span>
+                                      <span className="text-xl font-bold text-rose-500">
+                                        {bp.price}
+                                      </span>
                                     </div>
                                   </div>
-                                  <div className={`text-xs font-medium ${isSelected ? `text-rose-600` : "text-gray-400"}`}>
-                                    {isSelected ? "✓ Seleccionado" : "Click para seleccionar"}
+                                  <div
+                                    className={`text-xs font-medium ${isSelected ? `text-rose-600` : 'text-gray-400'}`}
+                                  >
+                                    {isSelected ? '✓ Seleccionado' : 'Click para seleccionar'}
                                   </div>
                                 </div>
                               </div>
-                            )
+                            );
                           })}
                         </div>
-
-
                       </section>
                     )}
                     {view === 'table' && (
-                      <section className="w-full max-h-[400px] lg:max-h-[500px] 2xl:max-h-[600px] shadow text-white overflow-auto">
-                        <table className='w-full'>
+                      <section className="w-full h-full shadow text-white overflow-auto">
+                        <table className="w-full">
                           <thead className="sticky top-0 z-10 bg-gray-700">
-                            <tr className='text-left text-sm'>
+                            <tr className="text-left text-sm">
                               {header.map((item) => (
                                 <ThGlobal key={item.uuid} className="py-4 px-3">
                                   {item.name}
                                 </ThGlobal>
-
                               ))}
-
                             </tr>
                           </thead>
                           <tbody>
                             {branchProducts.map((bp, index) => {
                               const isSelected = product_selected.find((p) => p.id === bp.id);
-                              const iseSelectedBol = isSelected ? true : false
+                              const iseSelectedBol = isSelected ? true : false;
                               const isFocused = index === selectedIndex;
 
                               return (
@@ -418,16 +454,17 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   tabIndex={0}
                                   onClick={() => {
                                     setSelectedIndex(index);
-                                    handleSelect(bp.id)
-                                  }
-
-                                  }
+                                    handleSelect(bp.id);
+                                  }}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
                                       if (bp.stock <= 0) {
-                                        return toast.warning('Este producto no cuenta con suficiente stock')
-                                      } setSelectedIndex(index);
-                                      handleSelect(bp.id)
+                                        return toast.warning(
+                                          'Este producto no cuenta con suficiente stock'
+                                        );
+                                      }
+                                      setSelectedIndex(index);
+                                      handleSelect(bp.id);
                                     }
                                   }}
                                 >
@@ -438,16 +475,16 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   <TdGlobal className="py-2 px-3">{bp.product.code}</TdGlobal>
                                   <TdGlobal className="py-2 px-3">{bp.product.name}</TdGlobal>
                                   <TdGlobal className="py-2 px-3">{bp.stock}</TdGlobal>
-                                  <TdGlobal className="py-2 px-3">{Number(bp.costoUnitario).toFixed(4)}</TdGlobal>
+                                  <TdGlobal className="py-2 px-3">
+                                    {Number(bp.costoUnitario).toFixed(4)}
+                                  </TdGlobal>
                                 </tr>
-                              )
+                              );
                             })}
                           </tbody>
                         </table>
                       </section>
-
                     )}
-
                   </>
                 )}
               </div>
@@ -474,7 +511,6 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                 }}
               />
             )}
-
           </DrawerFooter>
         </DrawerContent>
       </Drawer>

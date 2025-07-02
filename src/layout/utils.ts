@@ -155,7 +155,7 @@ export const returnTitleByPathname = (pathname: string) => {
     case '/add-product-recipe/:id/:recipe':
       return 'AGREGAR RECETA DE PRODUCTO';
     case '/list-referal-notes':
-      return 'LISTA DE NOTAS DE REMISIÓN';
+      return 'NUEVA NOTA DE REMISIÓN';
     case '/get-debit-note/:id':
       return 'NOTA DE DÉBITO';
     case '/get-credit-note/:id':
