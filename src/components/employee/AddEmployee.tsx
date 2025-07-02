@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, Checkbox, Input } from '@heroui/react';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -34,6 +34,7 @@ function AddEmployee() {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState('');
+  const [isCutResponsible, setIsCutResponsible] = useState(false);
 
   useEffect(() => {
     getBranchesList();
@@ -74,6 +75,7 @@ function AddEmployee() {
     municipalityName: '',
     complement: '',
     branchId: 0,
+    isResponsibleCutZ: isCutResponsible,
   });
 
   const createEmployee = async (values: EmployeePayload) => {
@@ -92,6 +94,7 @@ function AddEmployee() {
       complement: values.complement || 'N/A',
       nit: values.nit || '0',
       code: codigoFinal,
+      isResponsibleCutZ: isCutResponsible ?? false,
     };
 
     try {
@@ -108,7 +111,6 @@ function AddEmployee() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [codigo, setCodigoGenerado] = useState('');
-
   const generateCode = (
     setFieldValue: SetFieldValue,
     firstName: string,
@@ -139,7 +141,7 @@ function AddEmployee() {
   return (
     <>
       <DivGlobal>
-        <div className="w-full">
+        <div className="w-full flex flex-row justify-between">
           <Button
             className=" bg-transparent dark:text-white text-black"
             onPress={() => navigate('/employees')}
@@ -147,6 +149,15 @@ function AddEmployee() {
             <ArrowLeft className="dark:text-white text-black" />
             Regresar
           </Button>
+          <button className="flex flex-row justify-start mr-8 border border-sky-200 rounded-xl p-2">
+            <Checkbox
+              checked={isCutResponsible}
+              size="md"
+              color={'warning'}
+              onChange={() => setIsCutResponsible(!isCutResponsible)}
+            />
+            <p className="dark:text-white mt-1 text-sky-500">Responsable de corte Z</p>
+          </button>
         </div>
         <div className="overflow-y-auto dark:text-white mt-0">
           <div className="w-full h-full p-5 overflow-y-auto bg-white shadow rounded-xl dark:bg-transparent">

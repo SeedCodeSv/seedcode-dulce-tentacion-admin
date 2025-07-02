@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Button, Checkbox, Input } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
@@ -31,7 +31,14 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   const { getCat012Departamento, getCat013Municipios, cat_012_departamento, cat_013_municipios } =
     useBillingStore();
   const [codeDepartamento, setCodeDepartamento] = useState(props.data?.address?.departamento ?? '');
+  const [isCutResponsible, setIsCutResponsible] = useState(false);
 
+  useEffect(() => {
+    if (props.data?.isResponsibleCutZ !== undefined) {
+      setIsCutResponsible(props.data.isResponsibleCutZ);
+    }
+  }, [props.data]);
+  console.log('ver el valor', isCutResponsible)
   useEffect(() => {
     getBranchesList();
     getChargesList();
@@ -77,6 +84,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
       municipalityName: props.data?.address?.nombreMunicipio || '',
       complement: props.data?.address?.complemento || '',
       branchId: props.data?.branchId || 0,
+      isResponsibleCutZ: props.data?.isResponsibleCutZ || false
     },
     validationSchema: validationEmployeeSchema,
     onSubmit: async (values, formikHelpers) => {
@@ -89,8 +97,12 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
 
         return
       }
+      const payload = {
+        ...values,
+        isResponsibleCutZ: isCutResponsible
+      }
 
-      patchEmployee(values, props.data?.id ?? 0)
+      patchEmployee(payload, props.data?.id ?? 0)
         .then((res) => {
           if (res) {
             props.id(0);
@@ -135,10 +147,37 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
   return (
     <DivGlobal>
       <div>
-        <Button className="bg-transparent dark:text-white" onPress={() => props.id(0)}>
-          <ArrowLeft className="dark:text-white" />
-          Atras
-        </Button>
+        <div className='w-full flex justify-between'>
+          <Button className="bg-transparent dark:text-white" onPress={() => props.id(0)}>
+            <ArrowLeft className="dark:text-white" />
+            Atras
+          </Button>
+          {/* <div className='flex flex-row justify-start'>
+          <Checkbox
+            checked={isCutResponsible}
+            isSelected={isCutResponsible}
+            onValueChange={() => {
+              setIsCutResponsible(prev => !prev)
+            }}
+          />
+          <p className='dark:text-white'>Responsable de corte Z</p>
+        </div> */}
+          <button
+            className='flex flex-row justify-start mr-6 border border-sky-200 rounded-xl p-2'>
+            <Checkbox
+              checked={isCutResponsible}
+              isSelected={isCutResponsible}
+              onValueChange={() => {
+                setIsCutResponsible(prev => !prev)
+              }}
+              color={'warning'}
+              // checked={isCutResponsible}
+              size='md'
+            // onChange={() => setIsCutResponsible(!isCutResponsible)}
+            />
+            <p className='dark:text-white mt-1 text-sky-500'>Responsable de corte Z</p>
+          </button>
+        </div>
         <div className="overflow-y-auto dark:text-white">
           <div className="w-full h-full p-5 overflow-y-auto custom-scrollbar1 bg-white rounded-xl dark:bg-transparent">
             <form
@@ -616,6 +655,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
                   </div>
 
                   <div className="mt-3 md:mt-3">
+
                     <ButtonUi
                       className="w-full mt-3 text-sm font-semibold"
                       theme={Colors.Primary}

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { InventaryCreateStore } from '@/types/inventory_adjustment.types';
 import { create_inventory_adjustment, recount_stock_inventory_adjustment } from '@/services/inventory_adjustment.service';
 import { get_branch_product_orders } from '@/services/branch_product.service';
-export const useIInventoryAdjustmentStore = create<InventaryCreateStore>((set) => ({
+export const useIInventoryAdjustmentStore = create<InventaryCreateStore>((set, ) => ({
    branchProducts: [],
   card_products: [],
   pagination_data: {
@@ -50,20 +50,24 @@ export const useIInventoryAdjustmentStore = create<InventaryCreateStore>((set) =
       });
   },
   OnAddProductInventoryAdjustament(branchProduct) {
-    set((state) => {
-      const productExists = state.card_products.some(
-        (product) => product.id === branchProduct.id
-      );
+  set((state) => {
+    const productExists = state.card_products.some(
+      (product) => product.id === branchProduct.id
+    );
 
-      if (!productExists) {
-        return {
-          card_products: [...state.card_products, branchProduct],
-        };
-      }
-
-      return state;
-    });
-  },
+    if (!productExists) {
+      return {
+        card_products: [...state.card_products, branchProduct],
+      };
+    } else {
+      return {
+        card_products: state.card_products.filter(
+          (cp) => cp.id !== branchProduct.id
+        ),
+      };
+    }
+  });
+},
   OnDeleteProductInventoryAdjustament(id) {
     set((state) => ({
       card_products: state.card_products.filter((product) => product.id !== id),
