@@ -1,6 +1,5 @@
 import {
   BranchProduct,
-  ConvertProduct,
   IBranchProductOrder,
   IGetBranchProductPaginated,
 } from '../../types/branch_products.types';
@@ -77,5 +76,4 @@ export interface IBranchProductStore {
   // ! branchproduct
   getBranchesList: () => void;
   patchBranchProduct: (id: number, payload: UpdateBranchProductOrder) => Promise<boolean>
-  onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
 }

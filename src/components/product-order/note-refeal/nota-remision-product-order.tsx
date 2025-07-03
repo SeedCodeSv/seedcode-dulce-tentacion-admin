@@ -1,6 +1,7 @@
 import { Autocomplete, AutocompleteItem, Tooltip, useDisclosure } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { MdWarning } from 'react-icons/md';
+import { toast } from 'sonner';
 
 import BranchProductSelectedOrder from './branch-product-selected-order';
 
@@ -42,7 +43,7 @@ export default function NotaRemisionProdutOrder() {
 
     useEffect(() => {
       OnGetShippinProductBranch(
-        branchDestiny?.id ?? 0,
+        branchData?.id ?? 0,
         filter.page,
         filter.limit,
         filter.name,
@@ -50,7 +51,7 @@ export default function NotaRemisionProdutOrder() {
         filter.supplier,
         filter.code
       );
-    }, [filter, branchDestiny]);
+    }, [filter, branchData]);
   
   useEffect(() => {
     getBranchesList();
@@ -180,10 +181,16 @@ export default function NotaRemisionProdutOrder() {
                 );
               })()}
             <ButtonUi
-              theme={Colors.Success}
+              theme={!branchData ? Colors.Warning : Colors.Success}
               onPress={() => {
+                if(!branchData){
+                  toast.error('Debes Seleccionar la sucursal de origen') 
+
+                  return 
+                }
                 modalProducts.onOpen();
               }}
+              
             >
               Seleccionar productos
             </ButtonUi>

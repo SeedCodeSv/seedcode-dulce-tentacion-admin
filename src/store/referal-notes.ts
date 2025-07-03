@@ -11,6 +11,7 @@ import { s3Client } from '@/plugins/s3';
 import { SPACES_BUCKET } from '@/utils/constants';
 import { SVFC_NRE_Firmado } from '@/types/svf_dte/nre.types';
 import { IPagination } from '@/types/global.types';
+import { DetailNote } from '@/types/referal-note.types';
 
 export const useReferalNote = create<ReferalNoteStore>((set) => ({
   referalNotes: [],
@@ -170,15 +171,22 @@ export const useReferalNote = create<ReferalNoteStore>((set) => ({
     ])
   },
   async getDetailNote(id) {
-    return detail_referal_note(id).then(({ data }) => {
+    try {
+      const res = await detail_referal_note(id)
+
       set({
-        detailNoteReferal: data.detailNote
+        detailNoteReferal: res.data.detailNote
       })
-    }).catch(() => {
+
+      return { ok: true, note: res.data.detailNote };
+    } catch (error) {
       set({
         detailNoteReferal: []
       })
-    })
+
+      return {ok: false, note: [] as DetailNote[]}
+    }
+
   },
   setHasNewNotification: (value) => set({ hasNewNotification: value }),
 

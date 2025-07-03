@@ -1,11 +1,13 @@
 import axios from 'axios';
 
 import {
+  ConvertProduct,
   GetBranchProductRecipe,
   GetBranchProductRecipeSupplier,
   GetProductAndRecipe,
   GetProductDetail,
   GetProductRecipeBook,
+  IGetCOnvertedProduct,
   IGetProductsPaginated,
   ProductList,
   ProductPayload,
@@ -215,3 +217,23 @@ export const get_product_list_search = async ({
     })
   ).data;
 };
+
+
+export const convert_product = async ( payload: ConvertProduct ) => {
+  const data = axios.post<BasicResponse>(`${API_URL}/products/convert`, payload)
+
+  return data
+}
+
+export const get_converted_product = async (id: number) => {
+  const data = axios.get<IGetCOnvertedProduct>(`${API_URL}/product-conversions/${id}`)
+
+  return data
+}
+
+
+export const update_product_coversion = async (payload: ConvertProduct, id:number ) => {
+  const data = axios.patch<BasicResponse>(`${API_URL}/product-conversions/${id}`, payload)
+
+  return data
+}

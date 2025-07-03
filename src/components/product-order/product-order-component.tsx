@@ -41,7 +41,7 @@ export default function ProductOrderComponent() {
         page: 1,
         limit: 20,
         branchId: 0,
-        startDate: '2025-06-01',
+        startDate: defaultStartDate.toISOString().split('T')[0],
         endDate: getElSalvadorDateTime().fecEmi,
         status: '',
     });

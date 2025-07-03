@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 
 import {
-  convert_product,
   get_branch_product,
   get_branch_product_list,
   get_branch_product_orders,
@@ -340,12 +339,4 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
 
     set({ orders_by_supplier: groupBySupplier(updatedProducts) });
   },
-  async onConvertProduct(payload) {
-    return convert_product(payload).then(() => {
-      return true
-    }).catch(() => {
-      return false
-    })
-  },
-
 }));

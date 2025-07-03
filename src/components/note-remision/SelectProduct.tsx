@@ -351,13 +351,13 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                 className={` mb-2 relative cursor-pointer transition-all duration-200 border-2 hover:shadow-xl hover:-translate-y-1 rounded-xl
                                              focus:outline-none focus:ring-4 } dark:focus:ring-rose-400 
                                              ${isFocused ? `ring-4  dark:ring-rose-400 ` : ''}
-                                             ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 ${bp.stock <= 0 && 'bg-gray-200 opacity-100'} dark:bg-gray-800`}
+                                             ${isSelected ? ` dark:bg-rose-900/20 border-${colorFocus2} ` : `border-${colorFocus3}-100 dark:border-rose-300 ${Number(bp.stock) <= 0 && 'bg-gray-200 opacity-100'} dark:bg-gray-800`}
                                              ${isOutOfStock ? 'opacity-50 cursor-not-allowed' : ''}
                                               `}
                                 role="button"
                                 tabIndex={0}
                                 onClick={() => {
-                                  if (bp.stock <= 0) {
+                                  if (Number(bp.stock) <= 0) {
                                     toast.warning('No cuentas con stock suficiente')
 
                                     return
@@ -367,7 +367,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                 }}
                                 onKeyDown={(e) => {
                                   if (e.key === 'Enter') {
-                                    if (bp.stock <= 0) {
+                                    if (Number(bp.stock) <= 0) {
                                       toast.warning('No cuentas con stock suficiente')
 
                                       return
@@ -405,9 +405,9 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                         Stock:
                                       </span>
                                       <span
-                                        className={`text-sm font-semibold ${bp.stock > 10
+                                        className={`text-sm font-semibold ${Number(bp.stock) > 10
                                           ? 'text-green-600'
-                                          : bp.stock > 0
+                                          : Number(bp.stock) > 0
                                             ? 'text-yellow-600'
                                             : 'text-red-600'
                                           }`}
@@ -448,7 +448,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                           </thead>
                           <tbody>
                             {branchProducts.map((bp, index) => {
-                              const isSelected = product_selected.find((p) => p.id === bp.id);
+                              const isSelected = product_selected.find((p) => p.product.id === bp.product.id);
                               const iseSelectedBol = isSelected ? true : false;
                               const isFocused = index === selectedIndex;
 
@@ -457,12 +457,12 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   key={bp.id}
                                   ref={(el) => (productRefs.current[index] = el)}
                                   className={classNames(
-                                    `text-left text-gray-600 dark:text-white focus:outline-none ${bp.stock <= 0 && 'bg-gray-300 dark:bg-gray-200'} `,
-                                    isFocused && `${bp.stock <= 0 ? 'bg-gray-300 dark:bg-gray-200' : 'bg-blue-100 dark:bg-blue-200'} `
+                                    `text-left text-gray-600 dark:text-white focus:outline-none ${Number(bp.stock) <= 0 && 'bg-gray-300 dark:bg-gray-200'} `,
+                                    isFocused && `${Number(bp.stock) <= 0 ? 'bg-gray-300 dark:bg-gray-200' : 'bg-blue-100 dark:bg-blue-200'} `
                                   )}
                                   tabIndex={0}
                                   onClick={() => {
-                                    if (bp.stock <= 0) {
+                                    if (Number(bp.stock) <= 0) {
                                       toast.warning('No cuentas con stock suficiente')
 
                                       return
@@ -472,7 +472,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                                   }}
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
-                                      if (bp.stock <= 0) {
+                                      if (Number(bp.stock) <= 0) {
                                         return toast.warning(
                                           'Este producto no cuenta con suficiente stock'
                                         );

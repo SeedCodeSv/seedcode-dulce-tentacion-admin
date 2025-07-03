@@ -44,7 +44,7 @@ function RenderProductsFilters(props: Props) {
     setSubcategory,
   } = props;
 
-  const { sub_categories, getSubCategoriesList, getSubcategories, subcategories} = useSubCategoryStore();
+  const { sub_categories, getSubCategoriesList, getSubcategories, subcategories } = useSubCategoryStore();
   const { list_categories, getListCategories } = useCategoriesStore();
 
   useEffect(() => {
@@ -78,6 +78,11 @@ function RenderProductsFilters(props: Props) {
           onClear={() => {
             setSearch('');
             handleSearch('');
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch(undefined);
+            }
           }}
         />
         <Input

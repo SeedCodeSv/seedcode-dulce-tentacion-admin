@@ -9,7 +9,7 @@ import {
   ButtonGroup,
   useDisclosure
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare, RefreshCcw } from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare } from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
 import { useCategoriesStore } from '../../../store/categories.store';
@@ -23,7 +23,7 @@ import MenuUpdate from './MenuUpdate';
 import DeletePopUp from './DeleteMenu';
 import BranchProductExcell from './BranchProductExcell';
 import DownloadPDFButton from './BranchProductPDF';
-import ConvertProduct from './ConvertProduct';
+// import ConvertProduct from './ConvertProduct';
 
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
@@ -370,7 +370,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                               {cat.reserved}
                             </td>
                             <td className='flex flex-row gap-2'>
-                              {!cat.isToDivided ?
+                              {/* {!cat.isToDivided ?
                                 <ConvertProduct branchProduct={cat} /> : (
                                   <ButtonUi
                                     isDisabled
@@ -382,7 +382,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                                     <RefreshCcw />
                                   </ButtonUi>
                                 )
-                              }
+                              } */}
                               {actions.includes('Editar producto') && (
                                 <ButtonUi
                                   isIconOnly

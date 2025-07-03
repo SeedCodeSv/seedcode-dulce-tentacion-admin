@@ -1,5 +1,7 @@
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
 import {
+  ConvertProduct,
+  GetConvertProduct,
   IGetProductsPaginated,
   Product,
   ProductAndRecipe,
@@ -12,6 +14,7 @@ import { IPagination } from '@/types/global.types';
 export interface IProductsStore {
   products_list: Product[];
   productsFilteredList: Product[];
+  loading_convert: boolean
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
@@ -50,5 +53,11 @@ export interface IProductsStore {
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
   getProductsDetails: (id: number) => void;
-  getProductsFilteredList: (params: {productName?: string, code: string }) => void;
+  getProductsFilteredList: (params: { productName?: string, code: string }) => void;
+  onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
+  getConvertProduct: (id: number) => Promise<boolean>;
+  patchConvertProduct: (payload: ConvertProduct, id: number) => Promise<boolean>;
+
+  convertedProduct: GetConvertProduct | null
+
 }

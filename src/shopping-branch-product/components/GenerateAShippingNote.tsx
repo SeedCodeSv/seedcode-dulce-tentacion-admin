@@ -46,6 +46,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
   }, []);
   const { product_selected, OnClearProductSelectedAll, orderId } = useShippingBranchProductBranch();
   const generateJson = async () => {
+
     props.onOpenChange();
     props.setTitleString('');
     props.setErrors([]);
