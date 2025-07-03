@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 
 import { useEmployeeStore } from '../../store/employee.store';
-import { Employee, EmployeePayload } from '../../types/employees.types';
+import { Employee, EmployeePayload, IResponseCodes } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { useBranchesStore } from '../../store/branches.store';
@@ -43,6 +43,7 @@ import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
 import ContractPdf from './../employee/employees-pdfs/pdfContract';
+import GenerateCodeEmployee from './GenerateCode';
 
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
@@ -52,7 +53,7 @@ import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import { TableComponent } from '@/themes/ui/table-ui';
 import DivGlobal from '@/themes/ui/div-global';
-import GenerateCodeEmployee from './GenerateCode';
+import { get_codes_employees } from '@/services/employess.service';
 
 
 interface Props {
@@ -81,6 +82,7 @@ function ListEmployee({ actions }: Props) {
   const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
   const [selectId, setSelectedId] = useState(0);
+  const [codes, setCodes] = useState<IResponseCodes>()
 
   const [isDate, setDate] = useState(false);
   const changePage = () => {
@@ -485,14 +487,20 @@ function ListEmployee({ actions }: Props) {
                                     showTooltip
                                     theme={Colors.Default}
                                     tooltipText="Generar códigos"
-                                    onPress={() => {
+                                    onPress={async () => {
                                       setSelectedId(employee?.id)
+                                      setSelectedEmployee(employee)
                                       generateCodeModal.onOpen();
+                                      await get_codes_employees(employee?.id)
+                                      const data = (await get_codes_employees(employee?.id)).data
+
+                                      setCodes(data)
+
                                     }}
                                   >
                                     <RectangleEllipsis />
                                   </ButtonUi>
-                                 
+
                                   {!employee.isActive && (
                                     <>
                                       {actions.includes('Activar') && (
@@ -578,9 +586,9 @@ function ListEmployee({ actions }: Props) {
             isOpen={generateCodeModal.isOpen}
             size="w-[350px] md:w-[560px]"
             title="Generar códigos"
-            onClose={generateCodeModal.onClose}
+            onClose={() => { generateCodeModal.onClose(), setSelectedEmployee(undefined) }}
           >
-            <GenerateCodeEmployee id={selectId} />
+            <GenerateCodeEmployee code={codes as IResponseCodes} id={selectId} isResponsableCutz={selectedEmployee?.isResponsibleCutZ} />
           </HeadlessModal>
         </>
       )

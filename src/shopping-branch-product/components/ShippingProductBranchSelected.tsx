@@ -291,7 +291,7 @@ function ShippingProductBranchSelected(props: Props) {
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
                           textValue={
-                            employee.firstName +  ' ' + employee.firstLastName 
+                            employee.firstName + ' ' + employee.firstLastName
                           }
                         >
                           {employee.firstName ?? '-'} {employee.firstLastName ?? '-'}
@@ -324,6 +324,7 @@ function ShippingProductBranchSelected(props: Props) {
                       'Categoria',
                       'Stock disponible',
                       'Cantidad',
+                      'Stock',
                       'Acciones',
                     ].map((column) => (
                       <motion.th
@@ -377,21 +378,34 @@ function ShippingProductBranchSelected(props: Props) {
                           value={item.quantity!.toString()}
                           variant="bordered"
                           onChange={(e) => {
+                            const value = Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                            const product = product_selected.find((val) => val.id === item.id)
+
+                            if (value > Number(product?.stock ?? 0)) {
+
+                              toast.warning('No cuentas con suficiente stock')
+
+                              return
+                            }
+
                             OnChangeQuantityManual(
                               item.id,
                               item.product.id,
-                              item.stock,
+                              Number(item.stock),
                               Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                             );
                           }}
                         />
+                      </TdGlobal>
+                      <TdGlobal className="px-6 py-4 dark:text-white">
+                        {item?.stock ?? 0}
                       </TdGlobal>
                       <TdGlobal className="px-6 py-4 dark:text-white ">
                         <div className="flex gap-4">
                           <ButtonUi
                             isIconOnly
                             theme={Colors.Success}
-                            onPress={() => OnPlusProductSelected(item.id, item.stock)}
+                            onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
                           >
                             <Plus />
                           </ButtonUi>

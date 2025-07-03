@@ -1,47 +1,77 @@
-import { Button, Input, Tooltip } from "@heroui/react";
+import { Button, Checkbox, Input, Tooltip } from "@heroui/react";
 import { Copy } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { global_styles } from "@/styles/global.styles";
 import { useEmployeeStore } from "@/store/employee.store";
-import { GenerateCodeCut } from "@/types/employees.types";
+import { GenerateCodeCut, IResponseCodes } from "@/types/employees.types";
 
 interface Props {
   id: number;
+  code: IResponseCodes
+  isResponsableCutz?: boolean
 }
 
 function GenerateCodeEmployee(props: Props) {
   const { generateCode } = useEmployeeStore()
-  const [code, setCode] = useState({
-    codeReferalNote: '',
-    codeZ: ''
-  });
+
+
   const [payload, setPayload] = useState<GenerateCodeCut>({
     codeReferalNote: true,
-    cutZ: false
+    cutZ: false,
+    codeZValue: props?.code?.codes?.codeCutZ ?? '',
+    codeReferalNoteValue: props?.code?.codes?.codeReferal ?? ''
   })
+
+  useEffect(() => {
+    setPayload(prev => ({
+      ...prev,
+      codeReferalNoteValue: props?.code?.codes?.codeReferal ?? '',
+      codeZValue: props?.code?.codes?.codeCutZ ?? ''
+    }));
+  }, [props.code]);
+
   const [loading, setLoading] = useState(false);
-
-
+  const [isManual, setIsManual] = useState(false)
   const handleGenerateCode = async () => {
+
     if (!props.id) {
       toast.error('El id del empleado no existe');
 
       return;
     }
+
+
     setLoading(true);
     try {
+      if (isManual === false) {
+        if (payload.codeReferalNote && payload.codeReferalNoteValue.trim() === '') {
+          toast.warning('Debes ingresar un código manual para nota de remisión');
 
-      const response = await generateCode(props.id, payload);
+          return;
+        }
+        if (payload.cutZ && payload.codeZValue.trim() === '') {
+          toast.warning('Debes ingresar un código manual para corte Z');
+
+          return;
+        }
+      }
+
+
+      const val = {
+        ...payload,
+        isGenerated: isManual
+      }
+      const response = await generateCode(props.id, val);
 
       if (response) {
         if (payload.codeReferalNote) {
-          setCode({ ...code, codeReferalNote: response });
+          setPayload({ ...payload, codeReferalNoteValue: response });
 
         }
         if (payload.cutZ) {
-          setCode({ ...code, codeZ: response })
+          setPayload({ ...payload, codeZValue: response })
         }
         toast.success('Código generado con éxito');
       } else {
@@ -58,7 +88,7 @@ function GenerateCodeEmployee(props: Props) {
 
 
   const handleCopyToClipboard = () => {
-    const currentCode = payload.codeReferalNote ? code.codeReferalNote : code.codeZ;
+    const currentCode = payload.codeReferalNote ? payload.codeReferalNoteValue : payload.codeZValue;
 
     navigator.clipboard.writeText(currentCode || '').then(() => {
       toast.success('Código copiado al portapapeles');
@@ -80,44 +110,87 @@ function GenerateCodeEmployee(props: Props) {
         >
           Notas de remision
         </button>
-        <button
-          className={`
+        {props.isResponsableCutz && (
+          <button
+            className={`
           rounded-xl p-2 flex justify-center border ${payload.cutZ ? ' border-sky-200 text-sky-400' : 'text-gray-400 border-gray-200'}`}
 
-          onClick={() => {
-            setPayload({ ...payload, cutZ: true, codeReferalNote: false })
-          }}
-        >
-          Corte de caja z
-        </button>
+            onClick={() => {
+              setPayload({ ...payload, cutZ: true, codeReferalNote: false })
+            }}
+          >
+            Corte de caja z
+          </button>
+        )}
+        <div className="flex flex-row gap-1 items-center align-center">
+          <Checkbox
+            checked={isManual}
+            color={'warning'}
+            size="md"
+            onChange={() => {
+              setIsManual(!isManual)
+              if (isManual === false) {
+                setPayload({ ...payload, codeReferalNoteValue: '', codeZValue: '' })
+              }
+            }}
+
+
+          />
+          <p className="dark:text-white ">{`${isManual ? 'Generar codigo' : 'Ingresar codigo'}`}</p>
+        </div>
+
+
       </div>
       <div className='flex mt-6 gap-4'>
-        {payload.codeReferalNote ? (
-          <Input
-            readOnly
-            className='bg-red'
-            label="Codigo"
-            labelPlacement='outside'
-            placeholder='Codigo para el empleado'
-            value={code.codeReferalNote}
-          />
-        ) : (
-          <Input
-            readOnly
-            className='bg-red'
-            label="Codigo"
-            labelPlacement='outside'
-            placeholder='Codigo para el empleado'
-            value={code.codeZ}
-          />
-        )}
-
+        {props.isResponsableCutz ?
+          (<>
+            {payload.codeReferalNote ?
+              <Input
+                className='bg-red'
+                label="Codigo"
+                labelPlacement='outside'
+                placeholder='Codigo para el empleado'
+                readOnly={isManual}
+                value={payload.codeReferalNoteValue}
+                onChange={(e) => {
+                  setPayload({ ...payload, codeReferalNoteValue: e.currentTarget.value.toLocaleUpperCase() })
+                }}
+              />
+              :
+              <Input
+                // readOnly
+                className='bg-red'
+                label="Codigo"
+                labelPlacement='outside'
+                placeholder='Codigo para el empleado'
+                readOnly={isManual}
+                value={payload.codeZValue}
+                onChange={(e) => {
+                  setPayload({ ...payload, codeZValue: e.currentTarget.value.toLocaleUpperCase() })
+                }}
+              />
+            }
+          </>) : (<>
+            <Input
+              // readOnly
+              className='bg-red'
+              label="Codigo"
+              labelPlacement='outside'
+              placeholder='Codigo para el empleado nota remision'
+              readOnly={isManual}
+              value={payload.codeReferalNoteValue}
+              onChange={(e) => {
+                setPayload({ ...payload, codeReferalNoteValue: e.currentTarget.value.toLocaleUpperCase() })
+              }}
+            />
+          </>)
+        }
         <Tooltip content="Copiar al portapapeles">
           <Button
             isIconOnly
             className='mt-6'
             style={styles.secondaryStyle}
-            onClick={handleCopyToClipboard}
+            onPress={() => { handleCopyToClipboard() }}
           >
             <Copy />
           </Button>
@@ -128,9 +201,9 @@ function GenerateCodeEmployee(props: Props) {
         className='w-full mt-6'
         disabled={loading}
         style={styles.thirdStyle}
-        onClick={handleGenerateCode}
+        onPress={() => { handleGenerateCode() }}
       >
-        {loading ? 'Generando...' : 'Generar código'}
+        {loading ? 'Generando...' : 'Generar o crear código '}
       </Button>
     </div>
   )

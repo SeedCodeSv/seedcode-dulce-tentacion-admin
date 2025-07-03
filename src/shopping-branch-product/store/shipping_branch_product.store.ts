@@ -254,7 +254,10 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
         : cp
     );
 
+
+
     set({ response: { ...response, results: updatedProducts } });
+    // const value = this.product_selected.find((br) => br.id === branchProductId && br) ?? {} as any
 
     set((state) => ({
       product_selected: state.product_selected.map((cp) =>

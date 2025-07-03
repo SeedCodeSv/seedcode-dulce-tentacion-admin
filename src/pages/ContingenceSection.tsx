@@ -1,6 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { ArrowDown01, ArrowUp01, BadgeDollarSign, HelpCircle, NotebookIcon } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import ContingenceFC_CCF from './contingence/ContingenceFC_CFF';
 import ContingenceND from './contingence/ContingenceND';
@@ -9,7 +9,7 @@ import ContingenceFSE from './contingence/ContingenceFSE';
 import ContingenceNRE from './contingence/ContingenceNRE';
 
 import { useEmployeeStore } from '@/store/employee.store';
-import Layout from '@/layout/Layout';
+// import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
 
 function ContingenceSection() {
@@ -19,10 +19,18 @@ function ContingenceSection() {
     getEmployeesList();
   }, []);
 
+  const [activeTab, setActiveTab] = useState<'ventas' | 'nd' | 'nc' | 'fse' | 'nre'>('ventas');
+
+  const buttonStyle = (key: string) =>
+    `flex items-center gap-2 px-4 py-2 border rounded-lg text-sm font-medium ${activeTab === key
+      ? 'bg-blue-500 text-white'
+      : 'bg-white text-gray-600 hover:bg-gray-100'
+    }`;
+
   return (
     <>
       <DivGlobal>
-        <Tabs aria-label="Options" className="px-2 grid lg:grid-cols-1 gap-4" color="primary">
+        {/* <Tabs aria-label="Options" className="px-2 grid lg:grid-cols-1 gap-4" color="primary">
           <Tab
             key="contingence"
             className="px-4"
@@ -83,7 +91,39 @@ function ContingenceSection() {
           >
             <ContingenceNRE />
           </Tab>
-        </Tabs>
+        </Tabs> */}
+        <div className="w-full space-y-6">
+          <div className="flex flex-wrap gap-4">
+            <button className={buttonStyle('ventas')} onClick={() => setActiveTab('ventas')}>
+              <BadgeDollarSign />
+              VENTAS (FC - CCF)
+            </button>
+            <button className={buttonStyle('nd')} onClick={() => setActiveTab('nd')}>
+              <ArrowUp01 />
+              NOTAS DE DÉBITO
+            </button>
+            <button className={buttonStyle('nc')} onClick={() => setActiveTab('nc')}>
+              <ArrowDown01 />
+              NOTAS DE CRÉDITO
+            </button>
+            <button className={buttonStyle('fse')} onClick={() => setActiveTab('fse')}>
+              <HelpCircle />
+              SUJETO EXCLUIDO
+            </button>
+            <button className={buttonStyle('nre')} onClick={() => setActiveTab('nre')}>
+              <NotebookIcon />
+              NOTAS REMISIÓN
+            </button>
+          </div>
+
+          <div className="mt-4">
+            {activeTab === 'ventas' && <ContingenceFC_CCF />}
+            {activeTab === 'nd' && <ContingenceND />}
+            {activeTab === 'nc' && <ContingenceNC />}
+            {activeTab === 'fse' && <ContingenceFSE />}
+            {activeTab === 'nre' && <ContingenceNRE />}
+          </div>
+        </div>
       </DivGlobal>
     </>
   );

@@ -98,7 +98,7 @@ export interface IShippingProductBranchStore {
   pagination_shippin_product_branch: IResponseBranchProductPaginatedSent;
   OnClearProductSelected: (productId: number) => void;
   OnClearProductSelectedAll: () => void;
-  OnChangeQuantityManual: (branchProductId: number,prdId:number, stock: number, quantity: number) => void;
+  OnChangeQuantityManual: (branchProductId: number,prdId:number, stock: number, quantity: number ) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
   OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
   onAddBranchDestiny: (branch: Branches) => void
