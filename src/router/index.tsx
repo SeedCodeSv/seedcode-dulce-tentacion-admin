@@ -106,6 +106,7 @@ const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
 const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
+const ProductionReport = lazy(() => import('../pages/reports/production_report/ProductionReport'))
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
@@ -808,6 +809,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/create-branch-product/:id"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte de produccion') ? <ProductionReport /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/production-report"
       />
     </Route>
   );

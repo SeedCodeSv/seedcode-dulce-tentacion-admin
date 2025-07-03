@@ -55,7 +55,6 @@ import { hexToRgba } from './utils';
 import { validate_pathname } from '@/utils/filters';
 import SidebarLinkList from '@/components/global/SidebarLinkList ';
 
-
 interface Props {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -97,7 +96,7 @@ export const LayoutItems = (props: Props) => {
       viewName: 'Productos',
       to: '/products',
       icon: Barcode,
-      label: 'Productos'
+      label: 'Productos',
     },
 
     {
@@ -147,17 +146,15 @@ export const LayoutItems = (props: Props) => {
       to: '/note-referal',
       icon: FaChartLine,
       label: 'Notas de remisión',
-    }
+    },
 
     // ,
-    // { viewName: 'Control de existencias', 
+    // { viewName: 'Control de existencias',
     //   to: '/MWSC',
-    //    icon: Barcode, 
-    //    label: 'Control de existencias' 
+    //    icon: Barcode,
+    //    label: 'Control de existencias'
     //   }
   ];
-
-
 
   const linkAdministration = [
     {
@@ -209,6 +206,7 @@ export const LayoutItems = (props: Props) => {
       label: 'Puntos de Venta',
     },
   ];
+
   const linkReports = [
     {
       viewName: 'Ventas',
@@ -270,8 +268,12 @@ export const LayoutItems = (props: Props) => {
       icon: List,
       label: 'Ver invalidaciones',
     },
-
-
+    {
+      viewName: 'Reporte de produccion',
+      to: '/production-report',
+      icon: ShoppingBasket ,
+      label: 'Reporte de produccion',
+    },
   ];
 
   const linkPlanification = [
@@ -404,7 +406,7 @@ export const LayoutItems = (props: Props) => {
       icon: HandCoins,
       label: 'Anexos ventas a contribuyentes',
     },
-     {
+    {
       viewName: 'Anexos documentos anulados',
       to: '/anexos-doc-anulados',
       icon: HandCoins,
@@ -473,7 +475,7 @@ export const LayoutItems = (props: Props) => {
                     'subCategories',
                     'orders',
                     'compras',
-                    'MWSC'
+                    'MWSC',
                   ]) && openGroup === 'gestion-productos'
                 }
                 isOpen={openGroup === 'gestion-productos'}
@@ -492,8 +494,7 @@ export const LayoutItems = (props: Props) => {
                           'subCategories',
                           'orders',
                           'compras',
-                          'MWSC'
-
+                          'MWSC',
                         ])
                           ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
                           : theme.colors[context].menu.background,
@@ -635,13 +636,11 @@ export const LayoutItems = (props: Props) => {
               </SidebarLinkGroup>
             </ul>
           </>
-<ul className="flex flex-col gap-1.5">
+          <ul className="flex flex-col gap-1.5">
             <SidebarLinkGroup
               activeCondition={
-                validate_pathname(pathname, [
-                  'debit-notes',
-                  'credit-notes'
-                ]) && openGroup === 'notas'
+                validate_pathname(pathname, ['debit-notes', 'credit-notes']) &&
+                openGroup === 'notas'
               }
               isOpen={openGroup === 'notas'}
               onGroupClick={() => handleGroupClick('notas')}
@@ -653,10 +652,7 @@ export const LayoutItems = (props: Props) => {
                       'group relative w-full flex justify-between items-center gap-2.5 rounded-sm px-4 py-4 font-medium text-body duration-300 ease-in-out'
                     )}
                     style={{
-                      backgroundColor: validate_pathname(pathname, [
-                        'debit-notes',
-                        'credit-notes'
-                      ])
+                      backgroundColor: validate_pathname(pathname, ['debit-notes', 'credit-notes'])
                         ? hexToRgba(theme.colors[context].menu.textColor, 0.3)
                         : theme.colors[context].menu.background,
                       color: theme.colors[context].menu.textColor,

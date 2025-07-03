@@ -194,6 +194,8 @@ export const returnTitleByPathname = (pathname: string) => {
       return 'CUMPLEAÑOS DE EMPLEADOS';
     case '/configuration':
       return 'CONFIGURACIÓN';
+    case '/production-report':
+      return 'REPORTE DE PRODUCCIÓN';
 
     default:
       return 'Dulce Tentación';

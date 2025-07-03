@@ -444,6 +444,14 @@
         "Mostrar",
         "Exportar Excel"
       ]
+    },
+    {
+      "view": "Reporte de produccion",
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Exportar PDF"
+      ]
     }
   ]
 }
