@@ -103,7 +103,7 @@ const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
 const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
-const ProductionReport = lazy(() => import('../pages/reports/ProductionReport'))
+const ProductionReport = lazy(() => import('../pages/reports/production_report/ProductionReport'))
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {

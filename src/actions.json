@@ -449,7 +449,8 @@
       "view": "Reporte de produccion",
       "actions": [
         "Mostrar",
-        "Exportar Excel"
+        "Exportar Excel",
+        "Exportar PDF"
       ]
     }
   ]
