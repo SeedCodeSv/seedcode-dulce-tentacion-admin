@@ -324,7 +324,6 @@ function ShippingProductBranchSelected(props: Props) {
                       'Categoria',
                       'Stock disponible',
                       'Cantidad',
-                      'Stock',
                       'Acciones',
                     ].map((column) => (
                       <motion.th
@@ -370,8 +369,8 @@ function ShippingProductBranchSelected(props: Props) {
                         {item.product?.subCategory?.categoryProduct?.name}
                       </TdGlobal>
 
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        {item.stock}
+                     <TdGlobal className="px-6 py-4 dark:text-white">
+                        {item?.stock ?? 0}
                       </TdGlobal>
                       <TdGlobal className="px-6 py-4 dark:text-white">
                         <Input
@@ -397,9 +396,7 @@ function ShippingProductBranchSelected(props: Props) {
                           }}
                         />
                       </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        {item?.stock ?? 0}
-                      </TdGlobal>
+                      
                       <TdGlobal className="px-6 py-4 dark:text-white ">
                         <div className="flex gap-4">
                           <ButtonUi
