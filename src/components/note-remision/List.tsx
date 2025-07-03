@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { Button, Chip, Input, Select, SelectItem, useDisclosure } from '@heroui/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import Lottie from 'lottie-react';
 import { PiFilePdf, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { Clipboard, ClipboardCheck, FileX2, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
@@ -11,15 +10,15 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import useGlobalStyles from '../global/global.styles';
 import LoadingTable from '../global/LoadingTable';
 import Pagination from '../global/Pagination';
-import SmPagination from '../global/SmPagination';
 import TooltipGlobal from '../global/TooltipGlobal';
 import { exportNotesReferal } from '../export-reports/ExportByNotesReferal';
+import EmptyTable from '../global/EmptyTable';
 
 import { CompleteNoteModal } from './CompleteNoteRemision';
 import InvalidateNoteReferal from './Invalidate04';
+import DoublePdfExport from './ExportDoublePdf';
 
 import { formatDate } from '@/utils/dates';
-import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import { useAuthStore } from '@/store/auth.store';
 import { ReferalNote } from '@/types/referal-note.types';
 import { useReferalNote } from '@/store/referal-notes';
@@ -33,9 +32,11 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
+import { useTransmitterStore } from '@/store/transmitter.store';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
+  const { transmitter, gettransmitter } = useTransmitterStore();
 
   const actions = useMemo(() => returnActionsByView('Notas de remisión'), [roleActions]);
   const [state, setState] = useState({ label: 'TODOS', value: '' })
@@ -66,6 +67,7 @@ function List() {
 
   useEffect(() => {
     getBranchesList()
+    gettransmitter()
   }, [])
 
   const styles = useGlobalStyles();
@@ -231,7 +233,7 @@ function List() {
             </Button>
           </div>
         </div>
-        <TableComponent headers={['No.','Sucursal', 'Sucursal que recibe', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
+        <TableComponent headers={['No.','Sucursal Origen','Sucursal Destino', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
           {loading ? (
             <tr>
               <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
@@ -246,6 +248,9 @@ function List() {
                     <tr key={item.id} className="border-b border-slate-200">
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {item.id}
+                      </td>
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {item.receivingBranch?.name ?? ''}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.branch.name}
@@ -288,6 +293,7 @@ function List() {
                         </Chip>
                       </td>
                       <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
+                        <DoublePdfExport note={item} transmitter={transmitter}/>
                         {actions.includes('Ver comprobante') && (
                           <TooltipGlobal text="Ver comprobante">
                             <Button
@@ -345,11 +351,8 @@ function List() {
                 </>
               ) : (
                 <tr>
-                  <td colSpan={6}>
-                    <div className="flex flex-col justify-center items-center">
-                      <Lottie animationData={EMPTY} className="w-80" />
-                      <p className="text-2xl dark:text-white">No se encontraron resultados</p>
-                    </div>
+                  <td colSpan={8}>
+                   <EmptyTable/>
                   </td>
                 </tr>
               )}
@@ -358,43 +361,15 @@ function List() {
         </TableComponent>
         {pagination_referal_notes.totalPag > 1 && (
           <>
-            <div className="hidden w-full mt-5 md:flex">
+            <div className="w-full mt-5">
               <Pagination
                 currentPage={pagination_referal_notes.currentPag}
                 nextPage={pagination_referal_notes.nextPag}
                 previousPage={pagination_referal_notes.prevPag}
                 totalPages={pagination_referal_notes.totalPag}
                 onPageChange={(page) => {
-                  onGetReferalNotes(Number(user?.transmitterId), page, 10, startDate, endDate, state.value, branchId);
+                  onGetReferalNotes(Number(user?.transmitterId), page, limit, startDate, endDate, state.value, branchId);
                 }}
-              />
-            </div>
-            <div className="flex w-full mt-5 md:hidden">
-              <SmPagination
-                currentPage={pagination_referal_notes.currentPag}
-                handleNext={() => {
-                  onGetReferalNotes(
-                    Number(user?.transmitterId),
-                    pagination_referal_notes.nextPag,
-                    10,
-                    startDate,
-                    endDate,
-                    state.value,
-                    branchId
-                  );
-                }}
-                handlePrev={() => {
-                  onGetReferalNotes(
-                    Number(user?.transmitterId),
-                    pagination_referal_notes.prevPag,
-                    10,
-                    startDate,
-                    endDate,
-                    state.value,
-                    branchId
-                  );
-                }}
-                totalPages={pagination_referal_notes.totalPag}
               />
             </div>
           </>

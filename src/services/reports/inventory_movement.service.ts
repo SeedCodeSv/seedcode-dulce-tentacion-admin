@@ -32,3 +32,17 @@ export const get_inventory_movement_graphic = (
       `/reports/report-inventory-movement/${id}?startDate=${startDate}&endDate=${endDate}&branch=${branch}`
   );
 };
+
+export const get_all_inventory_movement = (
+  id: number,
+  startDate: string,
+  endDate: string,
+  branch: string,
+  typeOfMovement: string
+) => {
+  return axios.get<IResponseDataInventoryMovement>(
+    import.meta.env.VITE_API_URL +
+      `/inventory-movements/get-all/${id}?startDate=${startDate}&endDate=${endDate}&branch=${branch}&typeOfMovement=${typeOfMovement}`
+  );
+};
+

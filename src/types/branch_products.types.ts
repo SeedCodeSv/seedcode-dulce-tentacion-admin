@@ -133,9 +133,3 @@ export interface ProductQuery {
   quantity: number
 }
 
-export interface ConvertProduct {
-  branchProductId: number;
-  convertedBranchProductId: number;
-  quantity: number;
-}
-

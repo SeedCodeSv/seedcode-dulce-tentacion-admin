@@ -65,7 +65,6 @@ export interface ReferalNote {
   receivingEmployeeId?: number
   receivingBranchId?: number,
   receivingBranch: Branches
-
 }
 
 export interface Notifications_Referal {

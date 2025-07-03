@@ -127,6 +127,12 @@ export default function BranchProductSelectedOrder(props: Props) {
   const branchIssuingId = branchData?.id ?? 0
 
   const handleSave = async () => {
+    if (product_selected.some((item) => item.quantity === 0)) {
+      toast.error('Las cantidades deben ser mayores a 0');
+
+      return;
+    }
+
     if (!responsibleEmployee) {
       toast.warning('Debes seleccionar el responsable');
 
@@ -284,7 +290,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                       OnChangeQuantityManual(
                         item.id,
                         item.product.id,
-                       Number(item.stock),
+                        Number(item.stock),
                         Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                       );
                     }}
@@ -522,15 +528,15 @@ export default function BranchProductSelectedOrder(props: Props) {
                         setEmployeeReceptor(employee);
                       }
                     }}
-                    
+
                   >
                     {filteredEmployees.map((employee) => (
                       <AutocompleteItem
                         key={JSON.stringify(employee)}
                         className="dark:text-white"
-                         textValue={
-                            employee.firstName +  ' ' + employee.firstLastName 
-                          }
+                        textValue={
+                          employee.firstName + ' ' + employee.firstLastName
+                        }
                       >
                         {employee.firstName}{' '}{employee.firstLastName}
                       </AutocompleteItem>

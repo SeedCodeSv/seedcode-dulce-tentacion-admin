@@ -10,6 +10,7 @@ import {
   ModalFooter,
   Select,
   SelectItem,
+  Checkbox,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
@@ -187,7 +188,6 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                       </SelectItem>
                     ))}
                   </Select>
-
                 </div>
                 <div>
                   <div className="mt-2">

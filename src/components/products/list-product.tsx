@@ -24,6 +24,7 @@ import CardProduct from './card-product';
 import RecipeBook from './recipe-book';
 import RenderProductsFilters from './render-products-filters';
 import { DeletePopover } from './delete-popover';
+import ConvertProduct from './ConvertProduct';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -41,6 +42,8 @@ function ListProducts({ actions }: Props) {
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const { getPaginatedProducts, paginated_products, activateProduct, loading_products } =
     useProductsStore();
+  const modalConvert = useDisclosure()
+  const [product, setSelectProduct] = useState<Product>()
 
   const [search, setSearch] = useState('');
   const [code, setCode] = useState('');
@@ -52,7 +55,6 @@ function ListProducts({ actions }: Props) {
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
-  const [page, serPage] = useState(1);
   const [active, setActive] = useState(true);
 
   useEffect(() => {
@@ -69,7 +71,7 @@ function ListProducts({ actions }: Props) {
 
   const handleSearch = (searchParam: string | undefined) => {
     getPaginatedProducts(
-      page,
+      1,
       limit,
       Number(category ?? 0),
       Number(subCategory ?? 0),
@@ -219,6 +221,19 @@ function ListProducts({ actions }: Props) {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
+
+                              <ButtonUi
+                                isIconOnly
+                                showTooltip
+                                theme={Colors.Info}
+                                tooltipText='Convertir Producto'
+                                onPress={() =>{
+                                  setSelectProduct(product)
+                                   modalConvert.onOpen()
+                                }}
+                              >
+                                <RefreshCcw />
+                              </ButtonUi>
                               {actions.includes('Editar') && product.isActive && (
                                 <ButtonUi
                                   isIconOnly
@@ -301,7 +316,6 @@ function ListProducts({ actions }: Props) {
                 previousPage={paginated_products.prevPag}
                 totalPages={paginated_products.totalPag}
                 onPageChange={(page) => {
-                  serPage(page);
                   getPaginatedProducts(
                     page,
                     limit,
@@ -325,6 +339,13 @@ function ListProducts({ actions }: Props) {
           isOpen={modalRecipe.isOpen}
           productId={selectedId}
           onOpenChange={modalRecipe.onOpenChange}
+        />
+        <ConvertProduct
+         isOpen={modalConvert.isOpen}
+         product={product!}
+         onClose={() => {modalConvert.onClose();
+          setSelectProduct(undefined)
+         }}
         />
       </DivGlobal>
     </>

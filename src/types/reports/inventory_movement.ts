@@ -101,6 +101,7 @@ export interface IInventoryMovementStore {
   totalEntry: number;
   totalExit: number;
   inventoyMovement: IResponseDataInventoryMovementGraphic[];
+  allInventoyMovement: InventoryMoment[];
   pagination_inventory_movement: IResponseDataInventoryMovement;
   inventoryMoments: InventoryMoment[];
   OnGetInventoryMovement: (
@@ -113,6 +114,13 @@ export interface IInventoryMovementStore {
     typeOfInventory: string,
     typeOfMovement: string
   ) => void;
+  OnGetAllInventoryMovement: (
+    id: number,
+    startDate: string,
+    endDate: string,
+    branch: string,
+    typeOfMovement: string
+  ) => Promise<{ ok: boolean, movements: InventoryMoment[] }>;
   OnGetGraphicInventoryMovement: (
     id: number,
     startDate: string,
