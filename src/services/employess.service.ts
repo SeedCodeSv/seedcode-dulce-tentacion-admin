@@ -8,6 +8,7 @@ import {
   // GetEmployeeContingence,
   GetEmployeeList,
   IGetEmployeesPaginated,
+  IResponseCodes,
   Person,
 } from '../types/employees.types';
 import { get_token } from '../storage/localStorage';
@@ -176,3 +177,15 @@ export const generate_code = (id: number, payload: GenerateCodeCut) => {
   );
 };
 
+export const get_codes_employees = (id: number) => {
+  const token = get_token() ?? '';
+
+  return axios.get<IResponseCodes>(
+    `${API_URL}/employees/get-codes-employees/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+}

@@ -84,6 +84,8 @@ export interface EmployeePayload {
 export interface GenerateCodeCut {
   codeReferalNote: boolean;
   cutZ: boolean
+  codeZValue:string,
+  codeReferalNoteValue:string
 }
 interface Address {
   departamento: string;
@@ -117,4 +119,14 @@ export interface GetEmployeeByCode {
   ok: boolean;
   message: string;
   employee: Employee;
+}
+
+export interface IResponseCodes {
+  ok: boolean
+  codes: Codes
+}
+
+export interface Codes {
+  codeCutZ: string
+  codeReferal: string
 }

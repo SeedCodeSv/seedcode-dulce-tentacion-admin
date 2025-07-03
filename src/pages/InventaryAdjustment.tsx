@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-import Layout from '../layout/Layout';
+// import Layout from '../layout/Layout';
 
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 import DivGlobal from '@/themes/ui/div-global';

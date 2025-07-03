@@ -94,7 +94,7 @@ function ListUsers({ actions }: Props) {
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(
-        user?.pointOfSale?.branch.transmitterId ?? 0,
+        user?.pointOfSale?.branch?.transmitterId ?? 0,
         1,
         limit,
         '',
@@ -151,14 +151,14 @@ function ListUsers({ actions }: Props) {
                     handleSearch('');
                   }}
                   onSelectionChange={(value) => {
-                    const selectRol = roles_list.find((rol) => rol.name === value);
+                    const selectRol = roles_list.find((rol) => rol?.name === value);
 
                     setRol(selectRol?.name ?? '');
                   }}
                 >
                   {roles_list.map((dep) => (
-                    <AutocompleteItem key={dep.name} className="dark:text-white">
-                      {dep.name}
+                    <AutocompleteItem key={dep?.name} className="dark:text-white">
+                      {dep?.name}
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
@@ -258,8 +258,8 @@ function ListUsers({ actions }: Props) {
                       {users_paginated.users.map((item, index) => (
                         <tr key={index}>
                           <TdGlobal className="p-3">{item.id}</TdGlobal>
-                          <TdGlobal className="p-3">{item.userName}</TdGlobal>
-                          <TdGlobal className="p-3">{item.role.name}</TdGlobal>
+                          <TdGlobal className="p-3">{item?.userName}</TdGlobal>
+                          <TdGlobal className="p-3">{item?.role?.name}</TdGlobal>
                           <TdGlobal className="p-3">
                             <div className="flex w-full gap-5">
                               {item.active && actions.includes('Editar') && (

@@ -138,20 +138,29 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       });
     }
   },
-  OnChangeQuantityManual(branchProductId,prdId, quantity) {
+  OnChangeQuantityManual(branchProductId, prdId, quantity) {
     const { response } = get()
+
     const updatedProducts = response.results.map((cp) =>
-      cp.productId === prdId ? { ...cp, required: quantity, status: quantity > Number(cp.stock)? 'insufficient_stock': 'ok'  } : cp
+      cp.productId === prdId ? { ...cp, required: quantity, status: quantity > Number(cp.stock) ? 'insufficient_stock' : 'ok' } : cp
     )
 
+
+
     set({ response: { ...response, results: updatedProducts } });
+    // const value = this.product_selected.find((br) => br.id === branchProductId && br) ?? {} as any
 
+    // if (quantity > Number(value?.stock ?? 0)){
+    //   toast.warning('No tienes suficiente stock')
 
-    set((state) => ({
-      product_selected: state.product_selected.map((cp) =>
-        cp.id === branchProductId ? { ...cp, total: Number(cp.price) * quantity, quantity } : cp
-      ),
-    }));
+    //   return
+    // }
+      set((state) => ({
+
+        product_selected: state.product_selected.map((cp) =>
+          cp.id === branchProductId ? { ...cp, total: Number(cp.price) * quantity, quantity } : cp
+        ),
+      }));
   },
   OnUpdatePriceManual(productId, price) {
     set((state) => ({
