@@ -196,6 +196,8 @@ export const returnTitleByPathname = (pathname: string) => {
       return 'CONFIGURACIÓN';
     case '/production-report':
       return 'REPORTE DE PRODUCCIÓN';
+    case '/shipping-report':
+      return 'REPORTE DE ENVIOS';
 
     default:
       return 'Dulce Tentación';

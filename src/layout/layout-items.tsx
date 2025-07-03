@@ -35,7 +35,8 @@ import {
   ScanBarcode,
   ScrollText,
   Scroll,
-  StickyNote
+  StickyNote,
+  Send 
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -273,6 +274,12 @@ export const LayoutItems = (props: Props) => {
       to: '/production-report',
       icon: ShoppingBasket ,
       label: 'Reporte de produccion',
+    },
+    {
+      viewName: 'Reporte de envios',
+      to: '/shipping-report',
+      icon: Send  ,
+      label: 'Reporte de envios',
     },
   ];
 

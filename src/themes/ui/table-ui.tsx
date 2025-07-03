@@ -13,11 +13,9 @@ interface TableProps {
 export const TableComponent: React.FC<TableProps> = ({ headers, children, className, onThClick, renderHeader}) => {
 
   return (
-    <div
-      className={`overflow-y-auto h-full custom-scrollbar mt-4 ${className || ''}`}
-    >
+     <div className={`mt-4 ${className || ''}`}>
       <table className="w-full">
-        <thead className="sticky top-0 z-20">
+       <thead className="sticky top-0 z-20 bg-white">
           <tr>
             {headers.map((header, index) => (
               <ThGlobal key={index} className="text-left p-3" onClick={() =>{onThClick!(header)}}>
@@ -26,7 +24,7 @@ export const TableComponent: React.FC<TableProps> = ({ headers, children, classN
             ))}
           </tr>
         </thead>
-        <tbody >
+        <tbody>
           {children}
         </tbody>
         

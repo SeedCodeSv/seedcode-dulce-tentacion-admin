@@ -107,6 +107,7 @@ const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
 const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
 const ProductionReport = lazy(() => import('../pages/reports/production_report/ProductionReport'))
+const ShippingReport = lazy(() => import('../pages/reports/shipping_report/ShippingReport'))
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
@@ -817,6 +818,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/production-report"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte de envios') ? <ShippingReport /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/shipping-report"
       />
     </Route>
   );
