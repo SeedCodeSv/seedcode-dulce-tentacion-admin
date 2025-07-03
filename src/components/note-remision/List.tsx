@@ -231,7 +231,7 @@ function List() {
             </Button>
           </div>
         </div>
-        <TableComponent headers={['No.','Sucursal', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
+        <TableComponent headers={['No.','Sucursal', 'Sucursal que recibe', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
           {loading ? (
             <tr>
               <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
@@ -249,6 +249,9 @@ function List() {
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.branch.name}
+                      </td>
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {item.receivingBranch.name}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.numeroControl}

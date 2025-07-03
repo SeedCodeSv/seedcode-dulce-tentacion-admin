@@ -64,6 +64,7 @@ export interface ReferalNote {
   isCompleted?: boolean
   receivingEmployeeId?: number
   receivingBranchId?: number,
+  receivingBranch: Branches
 
 }
 
