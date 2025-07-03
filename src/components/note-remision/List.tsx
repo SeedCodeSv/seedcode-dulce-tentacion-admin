@@ -256,12 +256,9 @@ function List() {
                         {item.branch.name}
                       </td>
                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {item.receivingBranch.name}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.numeroControl}
                       </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.codigoGeneracion}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
