@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { Helmet } from 'react-helmet-async';
 
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { Product, ProductPayloadForm } from '@/types/products.types';
@@ -16,7 +16,7 @@ import { initialValues, validationSchema } from '@/components/add-product/valida
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
-import { Helmet } from 'react-helmet-async';
+
 
 type ProductOrder = Product & {
   quantity: number;

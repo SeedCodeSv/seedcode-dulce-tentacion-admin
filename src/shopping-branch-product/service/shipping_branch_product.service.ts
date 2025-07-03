@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-import { BasicResponse, IResponseBranchProductPaginatedSent } from '../types/shipping_branch_product.types';
+import { IResponseBranchProductPaginatedSent } from '../types/shipping_branch_product.types';
 
 import { get_token } from '@/storage/localStorage';
 import { PayloadPoint } from '@/types/point-of-sales.types';
+import { BasicResponse } from '@/types/global.types';
 
 export const get_shopping_products_branch = async (
   branchId: number,

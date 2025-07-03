@@ -16,7 +16,7 @@ export interface IResponseBranchProductPaginatedSent {
 export interface BranchProduct {
   quantity?: number;
   id: number;
-  stock: number;
+  stock: number | string;
   price: string;
   priceA: string;
   priceB: string;
@@ -93,12 +93,12 @@ export interface IShippingProductBranchStore {
   setResponse: (data: ICheckStockResponse) => void
   onAddBydetail: (order: OrderProductDetail[]) => void;
   OnAddProductSelected: (product: BranchProduct) => void;
-  OnPlusProductSelected: (productId: number) => void;
+  OnPlusProductSelected: (productId: number, stock: number) => void;
   OnMinusProductSelected: (productId: number) => void;
   pagination_shippin_product_branch: IResponseBranchProductPaginatedSent;
   OnClearProductSelected: (productId: number) => void;
   OnClearProductSelectedAll: () => void;
-  OnChangeQuantityManual: (branchProductId: number,prdId:number, quantity: number) => void;
+  OnChangeQuantityManual: (branchProductId: number,prdId:number, stock: number, quantity: number) => void;
   OnUpdatePriceManual: (productId: number, price: string) => void;
   OnUpdateCosteManual: (productId: number, costoUnitario: string) => void;
   onAddBranchDestiny: (branch: Branches) => void
@@ -136,15 +136,6 @@ export interface Branches {
   isActive: boolean;
   transmitter?: Transmitter;
 }
-
-
-export interface BasicResponse {
-  ok: boolean;
-  message: string;
-  status: number
-}
-
-
 export interface CHECK_NUM_EXIST {
   status: string;
   body: BodyNote[] | string;

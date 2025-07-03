@@ -54,7 +54,6 @@ function ShippingProductBranchSelected(props: Props) {
     OnPlusProductSelected,
     OnMinusProductSelected,
     OnChangeQuantityManual,
-    OnUpdateCosteManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
@@ -323,7 +322,7 @@ function ShippingProductBranchSelected(props: Props) {
                       'N°',
                       'Nombre',
                       'Categoria',
-                      'Costo Unitario',
+                      'Stock disponible',
                       'Cantidad',
                       'Acciones',
                     ].map((column) => (
@@ -371,13 +370,7 @@ function ShippingProductBranchSelected(props: Props) {
                       </TdGlobal>
 
                       <TdGlobal className="px-6 py-4 dark:text-white">
-                        <Input
-                          value={Number(item.costoUnitario)!.toString()}
-                          variant="bordered"
-                          onChange={(e) => {
-                            OnUpdateCosteManual(item.id, String(e.currentTarget.value));
-                          }}
-                        />
+                        {item.stock}
                       </TdGlobal>
                       <TdGlobal className="px-6 py-4 dark:text-white">
                         <Input
@@ -387,6 +380,7 @@ function ShippingProductBranchSelected(props: Props) {
                             OnChangeQuantityManual(
                               item.id,
                               item.product.id,
+                              item.stock,
                               Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                             );
                           }}
@@ -397,7 +391,7 @@ function ShippingProductBranchSelected(props: Props) {
                           <ButtonUi
                             isIconOnly
                             theme={Colors.Success}
-                            onPress={() => OnPlusProductSelected(item.id)}
+                            onPress={() => OnPlusProductSelected(item.id, item.stock)}
                           >
                             <Plus />
                           </ButtonUi>
@@ -567,6 +561,7 @@ function ShippingProductBranchSelected(props: Props) {
 
                             return;
                           }
+                          
                           setBranchData(branch as any);
                         }
                       }}
@@ -633,8 +628,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                           textValue={
+                            employee.firstName +  ' ' + employee.firstLastName 
+                          }
                         >
-                          {employee.firstName}
+                          {employee.firstName}{' '}{employee.firstLastName}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>

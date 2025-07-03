@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListSuppliers from '../components/supplier/ListSuppliers';
 
 import { useViewsStore } from '@/store/views.store';

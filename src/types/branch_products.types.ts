@@ -27,6 +27,7 @@ export interface BranchProduct {
   minimum: number;
   days: string;
   isActive: boolean
+  reserved?: string
 }
 
 export interface BProductPlusQuantity extends BranchProduct {
@@ -130,5 +131,11 @@ export interface ProductQuery {
   id: number,
   name: string,
   quantity: number
+}
+
+export interface ConvertProduct {
+  branchProductId: number;
+  convertedBranchProductId: number;
+  quantity: number;
 }
 

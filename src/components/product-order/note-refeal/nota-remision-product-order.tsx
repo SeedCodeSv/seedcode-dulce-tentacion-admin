@@ -10,8 +10,10 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { verify_products_stock } from '@/services/branch_product.service';
 import { SigningProcess } from '@/shopping-branch-product/components/process/SingningProcess';
-import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
+import SelectProductNote from '@/components/note-remision/SelectProduct';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 interface Product {
   id: number;
@@ -21,14 +23,35 @@ interface Product {
 
 export default function NotaRemisionProdutOrder() {
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { product_selected, branchDestiny, setResponse, response } =
+  const { product_selected, branchDestiny, setResponse, response, OnGetShippinProductBranch } =
     useShippingBranchProductBranch();
   const [branchData, setBranchData] = useState<Branches>();
   const modalLoading = useDisclosure();
   const [currentState, setCurrentState] = useState(steps[0].title);
   const [titleError, setTitleError] = useState('');
   const [messageError, setMessageError] = useState<string[]>([]);
+  const [filter, setFilter] = useState({
+    page: 1,
+    limit: 30,
+    name: '',
+    category: '',
+    supplier: '',
+    code: '',
+  });
+  const modalProducts = useDisclosure()
 
+    useEffect(() => {
+      OnGetShippinProductBranch(
+        branchDestiny?.id ?? 0,
+        filter.page,
+        filter.limit,
+        filter.name,
+        filter.category,
+        filter.supplier,
+        filter.code
+      );
+    }, [filter, branchDestiny]);
+  
   useEffect(() => {
     getBranchesList();
   }, []);
@@ -156,6 +179,14 @@ export default function NotaRemisionProdutOrder() {
                   </div>
                 );
               })()}
+            <ButtonUi
+              theme={Colors.Success}
+              onPress={() => {
+                modalProducts.onOpen();
+              }}
+            >
+              Seleccionar productos
+            </ButtonUi>
           </div>
         </BranchProductSelectedOrder>
         <SigningProcess
@@ -164,6 +195,13 @@ export default function NotaRemisionProdutOrder() {
           isOpen={modalLoading.isOpen}
           titleMessage={titleError}
           onClose={() => modalLoading.onClose()}
+        />
+        <SelectProductNote
+          filter={filter}
+          modalProducts={modalProducts}
+          selectedBranch={branchData ?? ({} as Branches)}
+          setFilter={setFilter}
+
         />
       </DivGlobal>
     </>

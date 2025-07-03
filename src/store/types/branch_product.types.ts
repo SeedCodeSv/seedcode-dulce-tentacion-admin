@@ -1,5 +1,6 @@
 import {
   BranchProduct,
+  ConvertProduct,
   IBranchProductOrder,
   IGetBranchProductPaginated,
 } from '../../types/branch_products.types';
@@ -11,6 +12,7 @@ import { IPagination } from '@/types/global.types';
 
 export interface IBranchProductStore {
   branch_products: BranchProduct[];
+  founded_products: BranchProduct[]
   pagination_branch_products: IGetBranchProductPaginated;
   branchProductsFilteredList: BranchProduct[];
   branch_product_order: IBranchProductOrder[];
@@ -22,7 +24,10 @@ export interface IBranchProductStore {
   branchProductRecipeSupplier: BranchProductRecipeSupplier[];
   loadingBranchProductRecipe: boolean;
   branchProductRecipePaginated: IPagination;
-  getBranchProductsFilteredList: (params: { branchId: number; productName?: string }) => void;
+  loading_data: boolean;
+  getBranchProductsFilteredList: (params: { branchId: number; productName?: string }) => Promise<{ ok: boolean, branchPrd: BranchProduct[] }>;
+  getBranchProductsSearch: (params: { branchId: number; productName?: string }) => Promise<{ ok: boolean, branchPrd: BranchProduct[] }>;
+
   getBranchProductsRecipe: (
     id: number,
     page: number,
@@ -67,9 +72,10 @@ export interface IBranchProductStore {
   updateQuantityOrders: (numItem: string, quantity: number) => void;
   updatePriceOrders: (numItem: string, price: number) => void;
   clearProductOrders: () => void;
-    removeProductOrder: (id: number) => void;
+  removeProductOrder: (id: number) => void;
 
   // ! branchproduct
   getBranchesList: () => void;
   patchBranchProduct: (id: number, payload: UpdateBranchProductOrder) => Promise<boolean>
+  onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
 }

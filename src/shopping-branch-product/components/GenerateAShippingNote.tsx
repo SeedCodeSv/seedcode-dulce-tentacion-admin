@@ -146,15 +146,6 @@ function GenerateAShippingNote(props: IPropCustomer) {
     }
 
 
-    // const { singInvoiceContingence04 } = useMhActions({
-    //   steps,
-    //   setSteps,
-    //   transmitter,
-    //   setCurrentStep,
-    //   customer: {} as Customer,
-    //   boxId: {} as BoxData
-    // })
-
     singInvoiceContingence04(
       employee,
       { ...transmitter },
@@ -179,8 +170,6 @@ function GenerateAShippingNote(props: IPropCustomer) {
       <ButtonUi
         className="w-full px-10"
         isDisabled={pointOfSaleId === 0}
-        // variant="light"
-
         theme={Colors.Success}
         onPress={() => {
           if (contingence) {

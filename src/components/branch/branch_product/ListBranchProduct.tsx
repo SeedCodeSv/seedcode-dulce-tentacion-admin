@@ -9,7 +9,7 @@ import {
   ButtonGroup,
   useDisclosure
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare } from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare, RefreshCcw } from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
 import { useCategoriesStore } from '../../../store/categories.store';
@@ -23,6 +23,7 @@ import MenuUpdate from './MenuUpdate';
 import DeletePopUp from './DeleteMenu';
 import BranchProductExcell from './BranchProductExcell';
 import DownloadPDFButton from './BranchProductPDF';
+import ConvertProduct from './ConvertProduct';
 
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
@@ -41,8 +42,9 @@ interface Props {
   actions: string[]
 }
 export default function ListBranchProduct({ id, onclick, actions }: Props) {
-    const { transmitter, gettransmitter } = useTransmitterStore();
-  
+  const { transmitter, gettransmitter } = useTransmitterStore();
+  const { getBranchById, branch } = useBranchesStore()
+
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -51,7 +53,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   } = useBranchesStore();
   const { list_categories, getListCategories } = useCategoriesStore();
   const [category, setCategory] = useState('');
-  const [branch, setBranch] = useState<Branches>()
   const [code, setCode] = useState('');
   const [page, serPage] = useState(1);
   const [name, setName] = useState('');
@@ -63,9 +64,8 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   const vaul = useDisclosure();
   const library = useDisclosure()
   const [modalVisible, setModalVisible] = useState<'main' | 'product' | 'menu'>('main')
-
-  const changePage = () => {
-    getBranchProducts(id, page, limit, name, category, code);
+  const changePage = (params?: { id?: number, limit?: number, page?: number, name?: string, code?: string }) => {
+    getBranchProducts(params?.id ?? id, params?.page ?? page, params?.limit ?? limit, params?.name ?? name, category, params?.code ?? code);
   };
 
   useEffect(() => {
@@ -75,6 +75,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   useEffect(() => {
     gettransmitter()
     getListCategories();
+    getBranchById(id)
   }, []);
 
   const handleEdit = async (item: IGetBranchProduct) => {
@@ -105,7 +106,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
               <Input
                 isClearable
                 autoComplete="search"
-                className="w-full  order-1"
+                className="w-full order-1"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
@@ -115,12 +116,21 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 labelPlacement="outside"
                 name="searchName"
                 placeholder="Buscar por nombre..."
-                startContent={<Search className='dark:text-white' />}
+                startContent={<Search className="dark:text-white" />}
                 value={name}
                 variant="bordered"
                 onChange={(e) => setName(e.target.value)}
-                onClear={() => setName('')}
+                onClear={() => {
+                  setName('');
+                  changePage({ name: '' })
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    changePage();
+                  }
+                }}
               />
+
               <Input
                 isClearable
                 autoComplete="search"
@@ -138,7 +148,15 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 value={code}
                 variant="bordered"
                 onChange={(e) => setCode(e.target.value)}
-                onClear={() => setCode('')}
+                onClear={() => {
+                  setCode('')
+                  changePage({ code: '' })
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    changePage();
+                  }
+                }}
               />
 
               <Autocomplete
@@ -159,7 +177,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                     const branchSelected = JSON.parse(key as string) as Branches;
 
                     setCategory(branchSelected.name);
-                    setBranch(branchSelected)
                   }
                 }}
               >
@@ -174,25 +191,25 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
           <SearchBranchProduct />
           <div className="w-full flex items-end justify-between">
             <div className='flex gap-4 items-end'>
-            <ButtonGroup className="mt-4">
-              <ButtonUi
-                isIconOnly
-                theme={view === 'table' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('table')}
-              >
-                <ITable />
-              </ButtonUi>
-              <ButtonUi
-                isIconOnly
-                theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('grid')}
-              >
-                <CreditCard />
-              </ButtonUi>
-            </ButtonGroup>
-            
-            <DownloadPDFButton  branch={branch!} transmitter={transmitter}/>
-            <BranchProductExcell branch={branch!} transmitter={transmitter}/>
+              <ButtonGroup className="mt-4">
+                <ButtonUi
+                  isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
+                  onPress={() => setView('table')}
+                >
+                  <ITable />
+                </ButtonUi>
+                <ButtonUi
+                  isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
+                  onPress={() => setView('grid')}
+                >
+                  <CreditCard />
+                </ButtonUi>
+              </ButtonGroup>
+
+              <DownloadPDFButton branch={branch} transmitter={transmitter} />
+              <BranchProductExcell branch={branch} transmitter={transmitter} />
             </div>
             <div className="flex items-end gap-5">
               <div>
@@ -353,6 +370,19 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                               {cat.reserved}
                             </td>
                             <td className='flex flex-row gap-2'>
+                              {!cat.isToDivided ?
+                                <ConvertProduct branchProduct={cat} /> : (
+                                  <ButtonUi
+                                    isDisabled
+                                    isIconOnly
+                                    showTooltip
+                                    theme={Colors.Info}
+                                    tooltipText='Convertir Producto'
+                                  >
+                                    <RefreshCcw />
+                                  </ButtonUi>
+                                )
+                              }
                               {actions.includes('Editar producto') && (
                                 <ButtonUi
                                   isIconOnly
@@ -402,7 +432,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                                   )}
 
                                 </>
-
                               )}
                             </td>
                           </tr>
@@ -478,7 +507,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
         </DivGlobal>
 
       )}
-
       {modalVisible === 'product' &&
         vaul.isOpen && (
           <UpdateBranchProduct
