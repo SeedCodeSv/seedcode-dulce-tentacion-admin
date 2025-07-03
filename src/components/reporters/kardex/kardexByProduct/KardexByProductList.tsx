@@ -95,6 +95,7 @@ export const KardexByProductList = () => {
     debounce((value: string) => {
       getProductsFilteredList({
         productName: value,
+        code: ''
       });
     }, 300),
     [search.branch]
@@ -102,6 +103,10 @@ export const KardexByProductList = () => {
 
   useEffect(() => {
     getBranchesList();
+    getProductsFilteredList({
+      productName: '',
+      code: ''
+    });
   }, []);
 
   useEffect(() => {
@@ -151,34 +156,37 @@ export const KardexByProductList = () => {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-              <Autocomplete
-                isClearable
-                className="font-semibold dark:text-white w-full"
-                label="Producto"
-                labelPlacement="outside"
-                placeholder="Selecciona un producto"
-                selectedKey={String(search.productId)}
-                startContent={<SearchIcon />}
-                variant="bordered"
-                onClear={() => setSearch({ ...search, productId: 0 })}
-                onInputChange={(value) => {
-                  handleSearchProduct(value);
-                }}
-                onSelectionChange={(key) => {
-                  const product = productsFilteredList.find((item) => item.id === Number(key))
+            <Autocomplete
+              isClearable
+              className="font-semibold dark:text-white w-full"
+              label="Producto"
+              labelPlacement="outside"
+              listboxProps={{
+                emptyContent: "Escribe para buscar",
+              }}
+              placeholder="Selecciona un producto"
+              selectedKey={String(search.productId)}
+              startContent={<SearchIcon />}
+              variant="bordered"
+              onClear={() => setSearch({ ...search, productId: 0, productName: '' })}
+              onInputChange={(value) => {
+                handleSearchProduct(value);
+              }}
+              onSelectionChange={(key) => {
+                const product = productsFilteredList.find((item) => item.id === Number(key))
 
-                  setSearch({
-                    ...search, productName: String(product?.name),
-                    productId: Number(key)
-                  })
-                }}
-              >
-                {productsFilteredList.map((bp) => (
-                  <AutocompleteItem key={bp.id} className="dark:text-white">
-                    {bp.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
+                setSearch({
+                  ...search, productName: String(product?.name),
+                  productId: Number(key)
+                })
+              }}
+            >
+              {productsFilteredList.map((bp) => (
+                <AutocompleteItem key={bp.id} className="dark:text-white">
+                  {bp.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
             <Input
               className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
@@ -255,9 +263,16 @@ export const KardexByProductList = () => {
         <section className="flex flex-col w-full max-w-[380px] gap-1 flex-1 dark:text-white px-3 py-2 rounded-xl bg-slate-100 shadow-sm dark:bg-slate-700">
           <span className="flex gap-1 font-semibold">
             Nombre:
-            <TooltipGlobal text={search.productName ?? ''}>
-              <p className="whitespace-nowrap overflow-hidden text-ellipsis">{search.productName ?? ''}</p>
-            </TooltipGlobal>
+            {search.productName ? (
+              <TooltipGlobal text={search.productName}>
+                <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                  {search.productName}
+                </p>
+              </TooltipGlobal>
+            ) : (
+              <p className="text-gray-400">Sin producto</p>
+            )}
+
           </span>
           <span className="font-semibold">Total de entradas: {totalEntries}</span>
           <span className="font-semibold">Total de salidas: {totalExits}</span>

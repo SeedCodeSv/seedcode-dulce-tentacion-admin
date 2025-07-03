@@ -6,11 +6,6 @@ import {
   AutocompleteItem,
   Button,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Select,
   SelectItem,
   useDisclosure
@@ -42,7 +37,6 @@ import { Employee } from '../../types/employees.types'
 import { useSalesStore } from '../../store/sales.store'
 import { FC_Receptor } from '../../types/svf_dte/fc.types'
 
-import { get_employee_by_code } from '@/services/employess.service'
 import useGlobalStyles from '@/components/global/global.styles'
 import { annulations } from '@/services/innvalidations.services'
 import { formatAnnulations01 } from '@/utils/DTE/innvalidations'
@@ -62,15 +56,15 @@ function Invalidation01({ id }: Props) {
   const [loading, setLoading] = useState(false)
   const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('')
   const modalValidation = useDisclosure()
-  const [code, setCode] = useState('')
+  // const [code, setCode] = useState('')
   const [employeeCode, setEmployeeCode] = useState<Employee | null>(null)
-  const modalInvalidation = useDisclosure()
-  const navigate = useNavigate()
+  // const modalInvalidation = useDisclosure()
+  // const navigate = useNavigate()
   const services = new SeedcodeCatalogosMhService()
   const styles = useGlobalStyles()
-  const [firstPase, setFirstPase] = useState(false)
-  const [modalInitializate, setModalInitialize] = useState(true)
-  const [employeeError, setEmployeeError] = useState('')
+  // const [firstPase, setFirstPase] = useState(false)
+  // const [modalInitializate, setModalInitialize] = useState(true)
+  // const [employeeError, setEmployeeError] = useState('')
 
   useEffect(() => {
     gettransmitter()
@@ -236,7 +230,7 @@ function Invalidation01({ id }: Props) {
                     })
 
                     toast.success('Invalidado  correctamente')
-                    setModalInitialize(false)
+                    // setModalInitialize(false)
                     setLoading(false)
                     setCurrentStep(0)
                     navigation(-1)
@@ -285,37 +279,39 @@ function Invalidation01({ id }: Props) {
 
 
 
-  const handleProccesEmployee = async () => {
-    try {
-      if (code === null) {
-        toast.error('Debes ingresar un codigo')
+  // const handleProccesEmployee = async () => {
+  //   try {
+  //     if (code === null) {
+  //       toast.error('Debes ingresar un codigo')
 
-        return
-      }
-      await get_employee_by_code(code).then((i) => {
-        if (i.data.employee.id) {
-          setEmployeeCode(i.data.employee as Employee)
-          setFirstPase(true)
-          modalInvalidation.onOpen()
-          setModalInitialize(false)
-          toast.success('Empleado confirmado')
+  //       return
+  //     }
+  //     await get_employee_by_code(code).then((i) => {
+  //       if (i.data.employee.id) {
+  //         setEmployeeCode(i.data.employee as Employee)
+  //         setFirstPase(true)
+  //         modalInvalidation.onOpen()
+  //         setModalInitialize(false)
+  //         toast.success('Empleado confirmado')
 
-        }
-      }).catch(() => {
-        setEmployeeError('No se encontraron coincidencias')
-      })
+  //       }
+  //     }).catch(() => {
+  //       setEmployeeError('No se encontraron coincidencias')
+  //     })
 
-    } catch (error) {
-      toast.error('No se proceso la solicitud')
+  //   } catch (error) {
+  //     toast.error('No se proceso la solicitud')
 
-    }
-  }
+  //   }
+  // }
 
   return (
     <>
 
       <>
-        {firstPase ? (<> <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
+        {/* {firstPase ? ( */}
+          <> 
+        <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
           <ArrowLeft />
           <p className=" whitespace-nowrap">Volver a listado</p>
         </button>
@@ -466,6 +462,8 @@ function Invalidation01({ id }: Props) {
                                   employee?.dui?.toString() ?? employee?.nit?.toString()
                                 )
                                 handleChange('typeDocResponsible')(typeNumDoc(employee))
+                              
+                              setEmployeeCode(employee)
                               } else {
 
                               }
@@ -598,8 +596,9 @@ function Invalidation01({ id }: Props) {
             <div className="w-full h-full flex flex-col justify-center items-center">
               <p className="mt-3 text-xl font-normal">No se encontró la venta solicitada</p>
             </div>
-          )}</>)
-          :
+          )}</>
+          {/* ) */}
+          {/* :
           (<>
             <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigate(-1) }}>
               <ModalContent>
@@ -634,7 +633,7 @@ function Invalidation01({ id }: Props) {
                 </ModalFooter>
               </ModalContent>
             </Modal>
-          </>)}
+          </>)} */}
 
       </>
       {loading && (

@@ -54,69 +54,167 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
 
       if (existingProduct) {
         set({
-          product_selected: get().product_selected.map((p) => {
-            if (p.id === product.id) {
-              return { ...p, quantity: p.quantity! + 1 };
-            }
-
-            return p;
-          }),
+          product_selected: get().product_selected.map((p) =>
+            p.id === product.id ? { ...p, quantity: (p.quantity ?? 0) + 1 } : p
+          ),
         });
       } else {
-        const productWithStock = { ...product, quantity: 1 };
+        if (Number(product.stock) <= 0) {
+          toast.error('Este producto no tiene suficiente stock');
+
+          return;
+        }
+
+        const productWithQuantity = { ...product, quantity: 0 };
 
         set({
-          product_selected: [...get().product_selected, productWithStock],
+          product_selected: [...get().product_selected, productWithQuantity],
         });
       }
     } catch (error) {
-      set({
-        product_selected: [],
-      });
+      set({ product_selected: [] });
       toast.error('Error al agregar o actualizar el producto');
     }
   },
-  OnPlusProductSelected(productId) {
+
+  OnPlusProductSelected(branchProductId, stock) {
     try {
-      set({
-        product_selected: get().product_selected.map((product) => {
-          if (product.id === productId) {
-            return { ...product, quantity: product.quantity! + 1 };
+      const { product_selected, response } = get();
+
+      // Actualizamos la lista de productos seleccionados
+      const updatedProductSelected = product_selected.map((product) => {
+        if (product.id === branchProductId) {
+          const newQuantity = (product.quantity ?? 0) + 1;
+
+          if (newQuantity > stock) {
+            toast.error('Cantidad supera el stock disponible');
+
+            return product;
           }
 
-          return product;
-        }),
+          return {
+            ...product,
+            quantity: newQuantity,
+            total: Number(product.price) * newQuantity,
+          };
+        }
+
+        return product;
+      });
+
+      // Actualizamos la lista de resultados
+      const updatedResults = response.results.map((item) => {
+        const selected = updatedProductSelected.find((p) => p.id === branchProductId);
+
+        if (!selected) return item;
+
+        if (item.productId === selected.product.id) {
+          const required = selected.quantity ?? 0;
+
+          return {
+            ...item,
+            required,
+            status: required > Number(item.stock) ? 'insufficient_stock' : 'ok',
+          };
+        }
+
+        return item;
+      });
+
+      set({
+        product_selected: updatedProductSelected,
+        response: {
+          ...response,
+          results: updatedResults,
+        },
       });
     } catch (error) {
-      set({
-        product_selected: [],
-      });
+      set({ product_selected: [] });
       toast.error('Error al agregar el producto');
     }
   },
-  OnMinusProductSelected(productId) {
+  OnMinusProductSelected(branchProductId) {
     try {
-      set({
-        product_selected: get().product_selected.map((product) => {
-          if (product.id === productId) {
-            return { ...product, quantity: product.quantity! - 1 };
-          }
+      const { product_selected, response } = get();
 
-          return product;
-        }),
+      const updatedProductSelected = product_selected.map((product) => {
+        if (product.id === branchProductId) {
+          const newQuantity = Math.max((product.quantity ?? 0) - 1, 0);
+
+          return {
+            ...product,
+            quantity: newQuantity,
+            total: Number(product.price) * newQuantity,
+          };
+        }
+
+        return product;
+      });
+
+      const updatedResults = response.results.map((item) => {
+        const selected = updatedProductSelected.find((p) => p.id === branchProductId);
+
+        if (!selected) return item;
+
+        if (item.productId === selected.product.id) {
+          const required = selected.quantity ?? 0;
+
+          return {
+            ...item,
+            required,
+            status: required > Number(item.stock) ? 'insufficient_stock' : 'ok',
+          };
+        }
+
+        return item;
+      });
+
+      set({
+        product_selected: updatedProductSelected,
+        response: {
+          ...response,
+          results: updatedResults,
+        },
       });
     } catch (error) {
-      set({
-        product_selected: [],
-      });
-      toast.error('Error al agregar el producto');
+      set({ product_selected: [] });
+      toast.error('Error al restar el producto');
     }
   },
-  OnClearProductSelected(productId) {
+  OnClearProductSelected(branchProductId) {
     try {
-      set({
-        product_selected: get().product_selected.filter((product) => product.id !== productId),
+      const { product_selected, response } = get();
+
+      // Buscar el producto antes de eliminarlo
+      const productToRemove = product_selected.find(p => p.id === branchProductId);
+
+      // Primero actualizamos response.results
+      const updatedResults = response.results.map((item) => {
+        if (item.productId === productToRemove?.product.id) {
+          return {
+            ...item,
+            required: 0,
+            status: 'ok',
+          };
+        }
+
+        return item;
       });
+
+      // Luego eliminamos el producto del listado seleccionado
+      const updatedProductSelected = product_selected.filter(
+        (product) => product.id !== branchProductId
+      );
+
+      // Aplicamos el nuevo estado
+      set({
+        product_selected: updatedProductSelected,
+        response: {
+          ...response,
+          results: updatedResults,
+        },
+      });
+
       toast.success('Producto eliminado');
     } catch (error) {
       set({
@@ -138,18 +236,38 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       });
     }
   },
-  OnChangeQuantityManual(branchProductId,prdId, quantity) {
-    const { response } = get()
+  OnChangeQuantityManual(branchProductId, prdId, stock, quantity) {
+    if (quantity > stock) {
+      toast.error('No tienes stock suficiente');
+    }
+
+    const clampedQuantity = Math.max(0, Math.min(quantity, stock));
+    const { response } = get();
+
     const updatedProducts = response.results.map((cp) =>
-      cp.productId === prdId ? { ...cp, required: quantity, status: quantity > Number(cp.stock)? 'insufficient_stock': 'ok'  } : cp
-    )
+      cp.productId === prdId
+        ? {
+          ...cp,
+          required: clampedQuantity,
+          status: clampedQuantity > Number(cp.stock) ? 'insufficient_stock' : 'ok',
+        }
+        : cp
+    );
+
+
 
     set({ response: { ...response, results: updatedProducts } });
-
+    // const value = this.product_selected.find((br) => br.id === branchProductId && br) ?? {} as any
 
     set((state) => ({
       product_selected: state.product_selected.map((cp) =>
-        cp.id === branchProductId ? { ...cp, total: Number(cp.price) * quantity, quantity } : cp
+        cp.id === branchProductId
+          ? {
+            ...cp,
+            total: Number(cp.price) * clampedQuantity,
+            quantity: clampedQuantity,
+          }
+          : cp
       ),
     }));
   },
@@ -185,7 +303,8 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
       if (detail.completedRequest === false)
         products.push({
           ...branchProduct,
-          quantity: pendingQuantity
+          quantity: pendingQuantity,
+          stock: 'sin definir'
         })
     }
 
@@ -210,6 +329,31 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
     })
   },
   setResponse(data) {
-    set({ response: data })
+    const { product_selected } = get();
+
+    const updatedProducts = product_selected.map((item) => {
+      const match = data.results.find((r) => r.productId === item.product.id);
+
+      if (match && match.stock !== undefined) {
+        return {
+          ...item,
+          stock: Number(match.stock),
+        };
+      }
+      if(match){
+         return {
+          ...item,
+          stock: 'sin definir',
+        };
+      }
+
+      return item;
+    });
+
+    set({
+      response: data,
+      product_selected: updatedProducts,
+    });
   }
+
 }));

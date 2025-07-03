@@ -10,9 +10,9 @@ function StatusEmployee() {
   const actionsView = statusEmployeeView?.actions?.name || [];
   
   return (
-    <Layout title="Estados del Empleado">
+    <>
         <ListStatusEmployee actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

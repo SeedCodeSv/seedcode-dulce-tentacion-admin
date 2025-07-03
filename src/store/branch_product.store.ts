@@ -2,22 +2,27 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 
 import {
+  convert_product,
   get_branch_product,
   get_branch_product_list,
   get_branch_product_orders,
+  get_branch_product_search,
   get_branches,
   update_branch_product,
 } from '../services/branch_product.service';
 import { groupBySupplier } from '../utils/filters';
 
 import { IBranchProductStore } from './types/branch_product.types';
+import { BranchProduct } from './../types/branch_products.types';
 
 import { get_branch_product_recipe, get_branch_product_recipe_supplier } from '@/services/products.service';
 import { generateUniqueId } from '@/utils/utils';
 
 export const useBranchProductStore = create<IBranchProductStore>((set, get) => ({
   branch_products: [],
-    branchProductsFilteredList: [],
+  founded_products: [],
+  loading_data: false,
+  branchProductsFilteredList: [],
   pagination_branch_products: {
     branchProducts: [],
     total: 0,
@@ -90,7 +95,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
       });
   },
   getBranchProductRecipeSupplier(id, branchProductId, page, limit, category, product, code, typeProduct) {
-    get_branch_product_recipe_supplier(id,branchProductId, page, limit, category, product, code, typeProduct)
+    get_branch_product_recipe_supplier(id, branchProductId, page, limit, category, product, code, typeProduct)
       .then(({ data }) => {
         set({
           branchProductRecipeSupplier: data.data,
@@ -134,7 +139,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
           ...products,
           {
             ...product,
-             numItem: generateUniqueId(),
+            numItem: generateUniqueId(),
             quantity: 1,
           },
         ],
@@ -144,7 +149,7 @@ export const useBranchProductStore = create<IBranchProductStore>((set, get) => (
 
     set({ orders_by_supplier: groupBySupplier(get().order_branch_products) });
   },
-deleteProductOrder(numItem) {
+  deleteProductOrder(numItem) {
     const find = get().order_branch_products.find((cp) => cp.numItem === numItem);
 
     if (find) {
@@ -176,7 +181,7 @@ deleteProductOrder(numItem) {
     set({ order_branch_products: [] });
     set({ orders_by_supplier: [] });
   },
- removeProductOrder(id) {
+  removeProductOrder(id) {
     const find = get().order_branch_products.find((cp) => cp.id === id);
 
     if (find) {
@@ -274,15 +279,32 @@ deleteProductOrder(numItem) {
       return false
     })
   },
-    async getBranchProductsFilteredList(params) {
+  async getBranchProductsFilteredList(params) {
+    set({ loading_data: true })
     try {
       const res = await get_branch_product_list(params);
 
-      if (!res.ok) return set({ branchProductsFilteredList: [] });
+      set({ branchProductsFilteredList: res.branchProducts, loading_data: false });
 
-      set({ branchProductsFilteredList: res.branchProducts });
-    } catch {
-      set({ branchProductsFilteredList: [] });
+      return { ok: true, branchPrd: res.branchProducts };
+    } catch (error) {
+      set({ branchProductsFilteredList: [], loading_data: false });
+
+      return { ok: false, branchPrd: [] as BranchProduct[] };
+    }
+  },
+  async getBranchProductsSearch(params) {
+    set({ loading_data: true })
+    try {
+      const res = await get_branch_product_search(params);
+
+      set({ founded_products: res.branchProducts, loading_data: false });
+
+      return { ok: true, branchPrd: res.branchProducts };
+    } catch (error) {
+      set({ founded_products: [], loading_data: false });
+
+      return { ok: false, branchPrd: [] as BranchProduct[] };
     }
   },
   onUpdateSupplier(numItem, supplier) {
@@ -318,5 +340,12 @@ deleteProductOrder(numItem) {
 
     set({ orders_by_supplier: groupBySupplier(updatedProducts) });
   },
-  
+  async onConvertProduct(payload) {
+    return convert_product(payload).then(() => {
+      return true
+    }).catch(() => {
+      return false
+    })
+  },
+
 }));

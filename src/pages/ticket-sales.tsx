@@ -70,7 +70,7 @@ function TicketSales() {
   };
 
   return (
-    <Layout title="Ventas por Ticket">
+    <>
       <>
         <DivGlobal>
           <Accordion isCompact defaultSelectedKeys={['1']} variant="splitted">
@@ -309,7 +309,7 @@ function TicketSales() {
           </div>
         </FullPageLayout>
       </>
-    </Layout>
+    </>
   );
 }
 

@@ -504,7 +504,7 @@ function EditShopping() {
   }, [includePerception]);
 
   return (
-    <Layout title="Editar compra">
+    <>
       <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800 dark:text-white">
         <div className="w-full h-full p-8 mt-2 custom-scrollbar overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <>
@@ -948,7 +948,7 @@ function EditShopping() {
           </Modal>
         )}
       </div>
-    </Layout>
+    </>
   );
 }
 

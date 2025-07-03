@@ -50,5 +50,5 @@ export interface IProductsStore {
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
   getProductsDetails: (id: number) => void;
-  getProductsFilteredList: (params: {productName?: string }) => void;
+  getProductsFilteredList: (params: {productName?: string, code: string }) => void;
 }

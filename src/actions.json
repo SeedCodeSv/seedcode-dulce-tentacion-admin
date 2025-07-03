@@ -329,7 +329,7 @@
         "Exportar CSV"
       ]
     },
-     {
+    {
       "view": "Anexos compras a sujetos excluidos",
       "actions": [
         "Mostrar",

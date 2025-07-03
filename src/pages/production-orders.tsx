@@ -150,7 +150,7 @@ function ProductionOrders() {
   }
 
   return (
-    <Layout title="Ordenes de producción">
+    <>
       <DivGlobal>
 
         <ResponsiveFilterWrapper withButton={false}>
@@ -369,7 +369,7 @@ function ProductionOrders() {
             setSelectedOrderId(0)
           }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }
 

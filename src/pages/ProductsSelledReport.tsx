@@ -22,7 +22,7 @@ export default function ProductSelledReportPage() {
   };
 
   return (
-    <Layout title="Total Productos Vendidos">
+    <>
       <DivGlobal>
         <Tabs
           className="mb-4"
@@ -42,6 +42,6 @@ export default function ProductSelledReportPage() {
         </Tabs>
         <Outlet context={{ actionView }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }

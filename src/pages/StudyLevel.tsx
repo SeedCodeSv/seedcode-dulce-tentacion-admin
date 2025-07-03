@@ -10,9 +10,9 @@ function EstudyLevel() {
   const actionsView = studyLevelView?.actions?.name || [];
 
   return (
-    <Layout title="Nivel de Estudio">
+    <>
       <ListStudyLevel actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

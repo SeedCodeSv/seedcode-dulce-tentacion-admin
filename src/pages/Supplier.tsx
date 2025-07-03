@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListSuppliers from '../components/supplier/ListSuppliers';
 
 import { useViewsStore } from '@/store/views.store';
@@ -9,9 +8,9 @@ function Supplier() {
   const actionsView = supplierView?.actions?.name || [];
 
   return (
-    <Layout title="Proveedores">
+    <>
       <ListSuppliers actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

@@ -28,7 +28,7 @@ export default function ContentProductBranch() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState({
     page: 1,
-    limit: 10,
+    limit: 30,
     name: '',
     category: '',
     supplier: '',
@@ -148,7 +148,7 @@ export default function ContentProductBranch() {
         <div className="space-y-6">
           <Button
             className="bg-transparent dark:text-white flex"
-            onClick={() => navigate('/note-referal')}
+            onPress={() => navigate('/note-referal')}
           >
             <ArrowLeft /> Regresar
           </Button>

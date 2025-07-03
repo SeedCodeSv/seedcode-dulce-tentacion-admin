@@ -9,9 +9,9 @@ function Employees() {
   const actionsView = pointOfSalesView?.actions?.name || [];
 
   return (
-    <Layout title="Puntos de Venta">
+    <>
       <ListPointOfSales actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

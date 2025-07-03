@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Dispatch, SetStateAction, useContext } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 
 import { ThemeContext } from '@/hooks/useTheme';
+import { useLocation } from 'react-router';
 
 interface Props {
   isOpen: boolean;
@@ -10,9 +11,14 @@ interface Props {
 }
 
 export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
-  
-  const {theme,context } = useContext(ThemeContext)
-  
+  const { theme, context } = useContext(ThemeContext);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
   return (
     <>
       <AnimatePresence>
@@ -24,9 +30,9 @@ export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
             initial={{ x: -300 }}
             style={{
               backgroundColor: theme.colors[context].menu.background,
-              color: theme.colors[context].menu.textColor
+              color: theme.colors[context].menu.textColor,
             }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.2 }}
           >
             {items()}
           </motion.div>
@@ -38,9 +44,9 @@ export const SmLayout = ({ isOpen, setIsOpen, items }: Props) => {
           className="fixed inset-0 bg-black z-40"
           exit={{ opacity: 0 }}
           initial={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           onClick={() => setIsOpen(false)}
-         />
+        />
       )}
     </>
   );

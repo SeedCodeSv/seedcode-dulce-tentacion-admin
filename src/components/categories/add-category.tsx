@@ -83,7 +83,6 @@ const AddCategory = (props: Props) => {
                   >
                     Incluir la categoría en la pantalla de ventas
                   </Checkbox>
-
                 </div>
               </ModalBody>
               <ModalFooter>

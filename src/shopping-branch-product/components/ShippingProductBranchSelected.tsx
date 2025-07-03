@@ -54,7 +54,6 @@ function ShippingProductBranchSelected(props: Props) {
     OnPlusProductSelected,
     OnMinusProductSelected,
     OnChangeQuantityManual,
-    OnUpdateCosteManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
@@ -76,7 +75,9 @@ function ShippingProductBranchSelected(props: Props) {
   const { customer_list, getCustomerByBranchId } = useCustomerStore();
   const [customerData, setCustomerData] = useState<Customer>();
   const [responsibleEmployee, setResponsibleEmployee] = useState<Employee>();
-  const [pointOfSaleId, setPointOfSaleId] = useState(0);
+  const [pointOfSaleId, setPointOfSaleId] = useState(
+    point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0
+  );
   const [movementType, setMovementType] = useState(2);
   const [observations, setObservations] = useState('');
 
@@ -101,7 +102,6 @@ function ShippingProductBranchSelected(props: Props) {
     if (props.branchDestiny) {
       setBranchData(props.branchDestiny)
     }
-
   }, [props.branchDestiny])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
@@ -127,12 +127,15 @@ function ShippingProductBranchSelected(props: Props) {
     }
   })
 
-
-
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectProduct, setSelectedProduct] = useState(0)
 
+  useEffect(() => {
+    if (point_of_sales) {
+      setPointOfSaleId(point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
+    }
+  }, [point_of_sales])
 
   useHotkeys('arrowdown', () => {
     setSelectedIndex((prev) => {
@@ -287,8 +290,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                          textValue={
+                            employee.firstName + ' ' + employee.firstLastName
+                          }
                         >
-                          {employee.firstName}
+                          {employee.firstName ?? '-'} {employee.firstLastName ?? '-'}
                         </AutocompleteItem>
                       ))}
                   </Autocomplete>
@@ -316,7 +322,7 @@ function ShippingProductBranchSelected(props: Props) {
                       'N°',
                       'Nombre',
                       'Categoria',
-                      'Costo Unitario',
+                      'Stock disponible',
                       'Cantidad',
                       'Acciones',
                     ].map((column) => (
@@ -363,34 +369,40 @@ function ShippingProductBranchSelected(props: Props) {
                         {item.product?.subCategory?.categoryProduct?.name}
                       </TdGlobal>
 
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        <Input
-                          value={Number(item.costoUnitario)!.toString()}
-                          variant="bordered"
-                          onChange={(e) => {
-                            OnUpdateCosteManual(item.id, String(e.currentTarget.value));
-                          }}
-                        />
+                     <TdGlobal className="px-6 py-4 dark:text-white">
+                        {item?.stock ?? 0}
                       </TdGlobal>
                       <TdGlobal className="px-6 py-4 dark:text-white">
                         <Input
                           value={item.quantity!.toString()}
                           variant="bordered"
                           onChange={(e) => {
+                            const value = Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                            const product = product_selected.find((val) => val.id === item.id)
+
+                            if (value > Number(product?.stock ?? 0)) {
+
+                              toast.warning('No cuentas con suficiente stock')
+
+                              return
+                            }
+
                             OnChangeQuantityManual(
                               item.id,
                               item.product.id,
+                              Number(item.stock),
                               Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                             );
                           }}
                         />
                       </TdGlobal>
+                      
                       <TdGlobal className="px-6 py-4 dark:text-white ">
                         <div className="flex gap-4">
                           <ButtonUi
                             isIconOnly
                             theme={Colors.Success}
-                            onPress={() => OnPlusProductSelected(item.id)}
+                            onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
                           >
                             <Plus />
                           </ButtonUi>
@@ -503,6 +515,7 @@ function ShippingProductBranchSelected(props: Props) {
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
+
                       onSelectionChange={(key) => {
                         if (key) {
                           const pointSale = JSON.parse(key as string) as {
@@ -559,6 +572,7 @@ function ShippingProductBranchSelected(props: Props) {
 
                             return;
                           }
+                          
                           setBranchData(branch as any);
                         }
                       }}
@@ -577,18 +591,14 @@ function ShippingProductBranchSelected(props: Props) {
                       classNames={{
                         base: 'font-semibold text-sm text-gray-900 dark:text-white',
                       }}
+                      defaultSelectedKey={pointOfSaleId.toString()}
                       label="Selecciona el punto de venta"
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const pointSale = JSON.parse(key as string) as {
-                            id: number;
-                            code: string;
-                          };
-
-                          setPointOfSaleId(pointSale.id);
+                          setPointOfSaleId(Number(key));
                         }
                       }}
                     >
@@ -596,7 +606,7 @@ function ShippingProductBranchSelected(props: Props) {
                         .filter((p) => ['NRE'].includes(p.typeVoucher))
                         .map((p) => (
                           <AutocompleteItem
-                            key={JSON.stringify(p)}
+                            key={p.id}
                             className="dark:text-white"
                           >
                             {p.code}
@@ -629,8 +639,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                           textValue={
+                            employee.firstName +  ' ' + employee.firstLastName 
+                          }
                         >
-                          {employee.firstName}
+                          {employee.firstName}{' '}{employee.firstLastName}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>

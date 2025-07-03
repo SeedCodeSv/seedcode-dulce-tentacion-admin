@@ -9,10 +9,9 @@ import {
   ButtonGroup,
   useDisclosure
 } from '@heroui/react';
-import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare } from 'lucide-react';
+import { Search, ArrowLeft, CreditCard, Table as ITable, Pencil, LibrarySquare, RefreshCcw } from 'lucide-react';
 
 import { useBranchesStore } from '../../../store/branches.store';
-import { CategoryProduct } from '../../../types/categories.types';
 import { useCategoriesStore } from '../../../store/categories.store';
 import Pagination from '../../global/Pagination';
 import SmPagination from '../../global/SmPagination';
@@ -22,6 +21,9 @@ import MobileView from './MobileView';
 import UpdateBranchProduct from './UpdateBranchProduct';
 import MenuUpdate from './MenuUpdate';
 import DeletePopUp from './DeleteMenu';
+import BranchProductExcell from './BranchProductExcell';
+import DownloadPDFButton from './BranchProductPDF';
+import ConvertProduct from './ConvertProduct';
 
 import { formatCurrency } from '@/utils/dte';
 import BottomDrawer from '@/components/global/BottomDrawer';
@@ -30,15 +32,19 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-import { IGetBranchProduct } from '@/types/branches.types';
+import { Branches, IGetBranchProduct } from '@/types/branches.types';
 import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
+import { useTransmitterStore } from '@/store/transmitter.store';
 interface Props {
   id: number;
   onclick: () => void;
   actions: string[]
 }
 export default function ListBranchProduct({ id, onclick, actions }: Props) {
+  const { transmitter, gettransmitter } = useTransmitterStore();
+  const { getBranchById, branch } = useBranchesStore()
+
   const {
     getBranchProducts,
     branch_product_Paginated,
@@ -58,9 +64,8 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   const vaul = useDisclosure();
   const library = useDisclosure()
   const [modalVisible, setModalVisible] = useState<'main' | 'product' | 'menu'>('main')
-
-  const changePage = () => {
-    getBranchProducts(id, page, limit, name, category, code);
+  const changePage = (params?: { id?: number, limit?: number, page?: number, name?: string, code?: string }) => {
+    getBranchProducts(params?.id ?? id, params?.page ?? page, params?.limit ?? limit, params?.name ?? name, category, params?.code ?? code);
   };
 
   useEffect(() => {
@@ -68,7 +73,9 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   }, [id, limit]);
 
   useEffect(() => {
+    gettransmitter()
     getListCategories();
+    getBranchById(id)
   }, []);
 
   const handleEdit = async (item: IGetBranchProduct) => {
@@ -99,7 +106,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
               <Input
                 isClearable
                 autoComplete="search"
-                className="w-full  order-1"
+                className="w-full order-1"
                 classNames={{
                   label: 'font-semibold text-gray-700',
                   inputWrapper: 'pr-0',
@@ -109,12 +116,21 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 labelPlacement="outside"
                 name="searchName"
                 placeholder="Buscar por nombre..."
-                startContent={<Search className='dark:text-white' />}
+                startContent={<Search className="dark:text-white" />}
                 value={name}
                 variant="bordered"
                 onChange={(e) => setName(e.target.value)}
-                onClear={() => setName('')}
+                onClear={() => {
+                  setName('');
+                  changePage({ name: '' })
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    changePage();
+                  }
+                }}
               />
+
               <Input
                 isClearable
                 autoComplete="search"
@@ -132,7 +148,15 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 value={code}
                 variant="bordered"
                 onChange={(e) => setCode(e.target.value)}
-                onClear={() => setCode('')}
+                onClear={() => {
+                  setCode('')
+                  changePage({ code: '' })
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    changePage();
+                  }
+                }}
               />
 
               <Autocomplete
@@ -150,7 +174,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 variant="bordered"
                 onSelectionChange={(key) => {
                   if (key) {
-                    const branchSelected = JSON.parse(key as string) as CategoryProduct;
+                    const branchSelected = JSON.parse(key as string) as Branches;
 
                     setCategory(branchSelected.name);
                   }
@@ -166,23 +190,27 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
           </div>
           <SearchBranchProduct />
           <div className="w-full flex items-end justify-between">
-            <ButtonGroup className="mt-4">
-              <ButtonUi
-                isIconOnly
-                theme={view === 'table' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('table')}
-              >
-                <ITable />
-              </ButtonUi>
-              <ButtonUi
-                isIconOnly
-                theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                onPress={() => setView('grid')}
-              >
-                <CreditCard />
-              </ButtonUi>
-            </ButtonGroup>
+            <div className='flex gap-4 items-end'>
+              <ButtonGroup className="mt-4">
+                <ButtonUi
+                  isIconOnly
+                  theme={view === 'table' ? Colors.Primary : Colors.Default}
+                  onPress={() => setView('table')}
+                >
+                  <ITable />
+                </ButtonUi>
+                <ButtonUi
+                  isIconOnly
+                  theme={view === 'grid' ? Colors.Primary : Colors.Default}
+                  onPress={() => setView('grid')}
+                >
+                  <CreditCard />
+                </ButtonUi>
+              </ButtonGroup>
 
+              <DownloadPDFButton branch={branch} transmitter={transmitter} />
+              <BranchProductExcell branch={branch} transmitter={transmitter} />
+            </div>
             <div className="flex items-end gap-5">
               <div>
                 <Select
@@ -314,7 +342,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                 {loading_branch_product ? (
                   <tr>
                     <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                      <LoadingTable/>
+                      <LoadingTable />
                     </td>
                   </tr>
                 ) : (
@@ -336,12 +364,25 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                               {formatCurrency(Number(cat.price))}
                             </td>
                             <td className="p-3 text-sm text-green-500 dark:text-green-300">
-                              { Number(cat.stock).toFixed(2)}
+                              {Number(cat.stock).toFixed(2)}
                             </td>
                             <td className="p-3 text-sm text-red-500 dark:text-red-300">
                               {cat.reserved}
                             </td>
                             <td className='flex flex-row gap-2'>
+                              {!cat.isToDivided ?
+                                <ConvertProduct branchProduct={cat} /> : (
+                                  <ButtonUi
+                                    isDisabled
+                                    isIconOnly
+                                    showTooltip
+                                    theme={Colors.Info}
+                                    tooltipText='Convertir Producto'
+                                  >
+                                    <RefreshCcw />
+                                  </ButtonUi>
+                                )
+                              }
                               {actions.includes('Editar producto') && (
                                 <ButtonUi
                                   isIconOnly
@@ -391,7 +432,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                                   )}
 
                                 </>
-
                               )}
                             </td>
                           </tr>
@@ -400,7 +440,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                     ) : (
                       <tr>
                         <td colSpan={7}>
-                          <EmptyTable/>
+                          <EmptyTable />
                         </td>
                       </tr>
                     )}
@@ -467,7 +507,6 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
         </DivGlobal>
 
       )}
-
       {modalVisible === 'product' &&
         vaul.isOpen && (
           <UpdateBranchProduct

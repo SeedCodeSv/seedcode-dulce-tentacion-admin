@@ -1,14 +1,18 @@
-import Layout from '../layout/Layout';
+import { Helmet } from 'react-helmet-async';
+
 import ListActionRol from '../components/action-rol/list-rol-actions';
 
 import DivGlobal from '@/themes/ui/div-global';
 function ActionRol() {
   return (
-    <Layout title="Acción por rol">
+    <>
+      <Helmet>
+        <title>Permisos</title>
+      </Helmet>
       <DivGlobal>
-          <ListActionRol />
-        </DivGlobal>
-    </Layout>
+        <ListActionRol />
+      </DivGlobal>
+    </>
   );
 }
 

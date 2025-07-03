@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import {
+  ConvertProduct,
   ICheckStockResponse,
   IGetBranchProductOrder,
   IGetBranchProductPaginated,
@@ -11,6 +12,7 @@ import { get_token, get_user } from '../storage/localStorage';
 
 import { IGetBranchesList } from '@/types/branches.types';
 import { UpdateBranchProductOrder } from '@/types/products.types';
+import { BasicResponse } from '@/types/global.types';
 
 export const get_branch_product = (id: number, page = 1, limit = 5, name = '', code = '') => {
   const token = get_token() ?? '';
@@ -90,3 +92,29 @@ export const verify_products_stock = async ( branchId: number, products: Product
 
   return data
 }
+
+
+export const convert_product = async ( payload: ConvertProduct ) => {
+  const data = axios.post<BasicResponse>(`${API_URL}/branch-products/convert/product`, payload)
+
+  return data
+}
+
+export const get_branch_product_search = async ({
+  branchId,
+  productName,
+}: {
+  branchId: number;
+  productName?: string;
+}) => {
+  const token = get_token() ?? '';
+  const query = `${branchId}?name=${productName ?? ''}`;
+
+  return (
+    await axios.get<IGetBranchProductPaginated>(`${API_URL}/branch-products/list/search/${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  ).data;
+};

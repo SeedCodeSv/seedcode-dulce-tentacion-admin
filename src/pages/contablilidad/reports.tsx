@@ -14,7 +14,7 @@ function Reports() {
   const modalMajorBook = useDisclosure();
   const modalDailyMajorBook = useDisclosure();
   const modalAuxiliarBook = useDisclosure();
-  const modalTrialBalance = useDisclosure()
+  const modalTrialBalance = useDisclosure();
 
   const reports = [
     {
@@ -62,30 +62,28 @@ function Reports() {
   ];
 
   return (
-    <Layout title="Reportes contables">
-      <DivGlobal>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
-            {reports.map((r) => (
-              <Card key={r.name} isPressable onPress={r.onPress}>
-                <CardHeader className="flex justify-between text-lg font-semibold dark:text-white">
-                  {r.name}
-                  {r.icon}
-                </CardHeader>
-                <CardFooter className="flex justify-end">
-                  <Button color="primary" variant="light" onPress={r.onPress}>
-                    <ArrowRight size={15} />
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        <DailyBook disclosure={modalDailyBook} />
-        <MajorBook disclosure={modalMajorBook} />
-        <DailyMajorBook disclosure={modalDailyMajorBook} />
-        <AuxiliarBook disclosure={modalAuxiliarBook} />
-        <TrialBalance disclosure={modalTrialBalance} />
-      </DivGlobal>
-    </Layout>
+    <DivGlobal>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
+        {reports.map((r) => (
+          <Card key={r.name} isPressable onPress={r.onPress}>
+            <CardHeader className="flex justify-between text-lg font-semibold dark:text-white">
+              {r.name}
+              {r.icon}
+            </CardHeader>
+            <CardFooter className="flex justify-end">
+              <Button color="primary" variant="light" onPress={r.onPress}>
+                <ArrowRight size={15} />
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      <DailyBook disclosure={modalDailyBook} />
+      <MajorBook disclosure={modalMajorBook} />
+      <DailyMajorBook disclosure={modalDailyMajorBook} />
+      <AuxiliarBook disclosure={modalAuxiliarBook} />
+      <TrialBalance disclosure={modalTrialBalance} />
+    </DivGlobal>
   );
 }
 

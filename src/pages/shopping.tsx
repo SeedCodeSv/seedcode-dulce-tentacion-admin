@@ -9,9 +9,9 @@ function Shopping() {
   const actionView = viewName?.actions.name || [];
 
   return (
-    <Layout title="Lista de compras">
+    <>
       <ListShopping actions={actionView} />
-    </Layout>
+    </>
   );
 }
 
