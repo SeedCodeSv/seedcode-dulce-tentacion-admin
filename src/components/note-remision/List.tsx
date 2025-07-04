@@ -250,10 +250,10 @@ function List() {
                         {item.id}
                       </td>
                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {item.receivingBranch?.name ?? ''}
+                        {item.branch.name}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {item.branch.name}
+                        {item.receivingBranch?.name ?? ''}
                       </td>
                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.numeroControl}
