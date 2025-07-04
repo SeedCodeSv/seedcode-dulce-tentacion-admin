@@ -11,6 +11,7 @@ import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { formatDate } from '@/utils/dates';
+import { exportToExcel } from './exportExcell';
 
 const ShippingReport = () => {
   const { actions } = useViewsStore();
@@ -67,7 +68,7 @@ const ShippingReport = () => {
               className="text-white font-semibold"
               color="success"
               style={styles.warningStyles}
-              // onPress={() => handleExportExcel(dataReport, branch, date)}
+              onPress={() => exportToExcel(dataReport, startDate, endDate)}
             >
               Exportar a excel
               <PiMicrosoftExcelLogoBold size={25} />
