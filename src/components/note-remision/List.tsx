@@ -6,6 +6,7 @@ import { Clipboard, ClipboardCheck, FileX2, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { AiOutlineFilePdf } from 'react-icons/ai';
 
 import useGlobalStyles from '../global/global.styles';
 import LoadingTable from '../global/LoadingTable';
@@ -17,6 +18,7 @@ import EmptyTable from '../global/EmptyTable';
 import { CompleteNoteModal } from './CompleteNoteRemision';
 import InvalidateNoteReferal from './Invalidate04';
 import DoublePdfExport from './ExportDoublePdf';
+import DownloadPDFButton from './ConsolidadoNotaRemision';
 
 import { formatDate } from '@/utils/dates';
 import { useAuthStore } from '@/store/auth.store';
@@ -37,6 +39,7 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
   const { transmitter, gettransmitter } = useTransmitterStore();
+  const { getBranchById, branch } = useBranchesStore()
 
   const actions = useMemo(() => returnActionsByView('Notas de remisión'), [roleActions]);
   const [state, setState] = useState({ label: 'TODOS', value: '' })
@@ -63,6 +66,7 @@ function List() {
 
   useEffect(() => {
     onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state.value, branchId);
+    getBranchById(branchId)
   }, [startDate, endDate, limit, state.value, branchId]);
 
   useEffect(() => {
@@ -156,32 +160,43 @@ function List() {
 
         </div>
         <div className='flex flex-row items-end grid grid-cols-2'>
+          <div className='flex gap-4 items-end'>
+            {actions?.includes("Exportar Excel") && (
+              <>
+                {referalNotes?.length > 0 ?
+                  <ButtonUi
+                    className="mt-4 font-semibold w-48 "
+                    color="success"
+                    theme={Colors.Success}
+                    onPress={() => {
+                      handleExportExcel(undefined, undefined)
+                    }}
+                  >
+                    <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                  </ButtonUi>
+                  :
+                  <ButtonUi
+                    className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
+                    color="success"
+                    theme={Colors.Success}
+                  >
+                    <p>Exportar Excel</p>
+                    <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                  </ButtonUi>
+                }
 
-          {actions?.includes("Exportar Excel") && (
-            <>
-              {referalNotes?.length > 0 ?
-                <ButtonUi
-                  className="mt-4 font-semibold w-48 "
-                  color="success"
-                  theme={Colors.Success}
-                  onPress={() => {
-                    handleExportExcel(undefined, undefined)
-                  }}
-                >
-                  <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
-                </ButtonUi>
-                :
-                <ButtonUi
-                  className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
-                  color="success"
-                  theme={Colors.Success}
-                >
-                  <p>Exportar Excel</p>
-                  <PiMicrosoftExcelLogoBold className="text-white" size={24} />
-                </ButtonUi>
-              }
-            </>
-          )}
+              </>
+            )}
+            {referalNotes?.length > 0 ?
+              <DownloadPDFButton branch={branch} filters={{ startDate, endDate, branchId, type: state.value }} transmitter={transmitter} /> :
+              <ButtonUi
+                isDisabled
+                theme={Colors.Primary}
+              >
+                <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+
+              </ButtonUi>}
+          </div>
           <div className='flex flex-row gap-2 justify-end items-end'>
             <Select
               className="w-44"
@@ -233,7 +248,7 @@ function List() {
             </Button>
           </div>
         </div>
-        <TableComponent headers={['No.','Sucursal Origen','Sucursal Destino', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
+        <TableComponent headers={['No.', 'Sucursal Origen', 'Sucursal Destino', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
           {loading ? (
             <tr>
               <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
@@ -249,13 +264,13 @@ function List() {
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {item.id}
                       </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {item.receivingBranch?.name ?? ''}
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                        {item.branch?.name ?? ''}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {item.branch.name}
+                        {item.receivingBranch.name}
                       </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.numeroControl}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
@@ -290,7 +305,7 @@ function List() {
                         </Chip>
                       </td>
                       <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
-                        <DoublePdfExport note={item} transmitter={transmitter}/>
+                        <DoublePdfExport note={item} transmitter={transmitter} />
                         {actions.includes('Ver comprobante') && (
                           <TooltipGlobal text="Ver comprobante">
                             <Button
@@ -349,7 +364,7 @@ function List() {
               ) : (
                 <tr>
                   <td colSpan={8}>
-                   <EmptyTable/>
+                    <EmptyTable />
                   </td>
                 </tr>
               )}
