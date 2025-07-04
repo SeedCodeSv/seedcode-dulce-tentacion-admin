@@ -78,7 +78,7 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
 
             const renderSide = (first: boolean = false, offsetX: number, offsetY: number = 5) => {
                 // Logo
-                doc.addImage(logoBase64, 'PNG', offsetX + 10, offsetY, 17, 17);
+                doc.addImage(logoBase64, 'PNG', offsetX + 10, offsetY, 17, 17, '', 'SLOW');
 
                 // Header info
                 autoTable(doc, {
