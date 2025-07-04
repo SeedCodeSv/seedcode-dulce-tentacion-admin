@@ -39,7 +39,6 @@ export default function ProductsExportExcellByBranches({ params, comercialName, 
 
   setIsGenerating(true);
 
-  // 👇 Da tiempo a React para mostrar el spinner antes del trabajo pesado
   await new Promise(resolve => setTimeout(resolve, 0));
 
   try {
@@ -136,7 +135,7 @@ export default function ProductsExportExcellByBranches({ params, comercialName, 
   } catch (err) {
     toast.error('Ocurrió un error al generar el Excel.');
   } finally {
-    setIsGenerating(false); // 👈 Restablece el estado
+    setIsGenerating(false);
   }
 };
 
