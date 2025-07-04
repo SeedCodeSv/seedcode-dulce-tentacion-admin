@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react';
 import { MdPictureAsPdf } from 'react-icons/md';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
+import { exportToExcel } from './exportExcell';
+import { exportToPDF } from './exportPdf';
+
 import EmptyTable from '@/components/global/EmptyTable';
 import useGlobalStyles from '@/components/global/global.styles';
 import LoadingTable from '@/components/global/LoadingTable';
@@ -11,7 +14,6 @@ import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { formatDate } from '@/utils/dates';
-import { exportToExcel } from './exportExcell';
 
 const ShippingReport = () => {
   const { actions } = useViewsStore();
@@ -79,7 +81,7 @@ const ShippingReport = () => {
               className="text-white font-semibold"
               color="success"
               style={styles.dangerStyles}
-              // onPress={() => exportPdf(dataReport, branch, date)}
+              onPress={() => exportToPDF(dataReport, startDate, endDate)}
             >
               Exportar a pdf
               <MdPictureAsPdf size={25} />
