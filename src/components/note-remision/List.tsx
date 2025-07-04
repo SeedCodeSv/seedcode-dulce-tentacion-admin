@@ -187,7 +187,7 @@ function List() {
 
               </>
             )}
-            {referalNotes?.length > 0 ?
+            {/* {referalNotes?.length > 0 ?
               <DownloadPDFButton branch={branch} filters={{ startDate, endDate, branchId, type: state.value }} transmitter={transmitter} /> :
               <ButtonUi
                 isDisabled
@@ -195,7 +195,7 @@ function List() {
               >
                 <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
 
-              </ButtonUi>}
+              </ButtonUi>} */}
           </div>
           <div className='flex flex-row gap-2 justify-end items-end'>
             <Select
