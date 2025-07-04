@@ -136,6 +136,6 @@ export interface IPropCustomer {
   branchLlegada?: Branches;
   employeeReceptor?: Employee;
   titleError: string;
-    socket:Socket;
+  socket:Socket;
   branchIssuingId:number
 }

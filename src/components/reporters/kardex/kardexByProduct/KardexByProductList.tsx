@@ -40,7 +40,7 @@ export const KardexByProductList = () => {
   const { actionView } = useOutletContext<ContextType>();
 
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, KardexProduct } = useReportKardex();
+  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, KardexProduct, totales } = useReportKardex();
   const { windowSize } = useWindowSize();
   const { productsFilteredList, getProductsFilteredList } = useProductsStore()
   const [branchName, setBranchName] = useState('');
@@ -81,6 +81,7 @@ export const KardexByProductList = () => {
       Number(search.branch),
       page,
       search.limit,
+      search.productName,
       search.startDate,
       search.endDate
     );
@@ -274,8 +275,9 @@ export const KardexByProductList = () => {
             )}
 
           </span>
-          <span className="font-semibold">Total de entradas: {totalEntries}</span>
-          <span className="font-semibold">Total de salidas: {totalExits}</span>
+          <span className="font-semibold">Stock Inicial: {totales.initialStock}</span>
+          <span className="font-semibold">Total de entradas: {totales.totalEntradas}</span>
+          <span className="font-semibold">Total de salidas: {totales.totalSalidas}</span>
         </section>
       </div>
 

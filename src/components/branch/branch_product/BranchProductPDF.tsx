@@ -89,7 +89,7 @@ const DownloadPDFButton = ({ branch, transmitter }: { branch: Branches, transmit
 
       const createHeader = (doc: jsPDF) => {
 
-        doc.addImage(logoBase64, 'PNG', 13, 5, 25, 25, 'logo', 'FAST');
+        doc.addImage(logoBase64, 'PNG', 13, 5, 25, 25, 'logo', 'SLOW');
         autoTable(doc, {
           showHead: false,
           body: [

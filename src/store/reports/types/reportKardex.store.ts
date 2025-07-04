@@ -3,6 +3,11 @@ import { DataKardex, IDetaiLAdjustment, Kardex, KardexByProduct } from '@/types/
 
 export interface IReportKardexStore {
   kardex: Kardex[];
+  totales: {
+    initialStock: number,
+totalEntradas: number,
+totalSalidas: number
+  }
   kardexGeneral: DataKardex[] 
   details: IDetaiLAdjustment[];
   loading: boolean;

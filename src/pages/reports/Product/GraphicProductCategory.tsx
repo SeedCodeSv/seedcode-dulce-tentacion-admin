@@ -36,16 +36,17 @@ function GraphicProductCategory(props: Props) {
 
   const [subcategorySelected, setSubcategorySelected] = useState(0);
 
-  useEffect(() => {
-    if (subcategorySelected > 0) {
-      getGraphicSubCategoryProductsForDates(
-        subcategorySelected,
-        props.startDate,
-        props.endDate,
-        props.branch
-      );
-    }
-  }, [subcategorySelected]);
+ useEffect(() => {
+  if (subcategorySelected > 0 && props.startDate && props.endDate) {
+    getGraphicSubCategoryProductsForDates(
+      subcategorySelected,
+      props.startDate,
+      props.endDate,
+      props.branch
+    );
+  }
+}, [subcategorySelected, props.startDate, props.endDate, props.branch]);
+
 
   useEffect(() => {
     if (windowSize.width < 600) setItemsPerPage(3);

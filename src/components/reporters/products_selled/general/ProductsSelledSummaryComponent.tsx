@@ -19,7 +19,6 @@ export default function ProductsSelledSummaryComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { getProductSelledSummary, summary_products_selled, loading_summary } = useProductsOrdersReportStore();
     const { transmitter, gettransmitter } = useTransmitterStore();
-    // const [selectedProducts, setSelectedProducts] = useState<{ id: number, name: string }[]>([]);
 
     const [search, setSearch] = useState({
         page: 1,

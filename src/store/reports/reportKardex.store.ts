@@ -12,6 +12,11 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
   pagination_kardex: initialPagination,
   loading: false,
   KardexProduct: [],
+  totales: {
+    initialStock: 0,
+    totalEntradas: 0,
+    totalSalidas: 0
+  },
   paginationKardexProduct: initialPagination,
   isLoadinKarProd: false,
   OnGetReportKardex(id, page, limit, name) {
@@ -63,6 +68,11 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
 
       set({
         KardexProduct: res.movements,
+        totales: {
+          initialStock: res.initialStock,
+          totalEntradas: res.totalEntradas,
+          totalSalidas: res.totalSalidas
+        },
         paginationKardexProduct: {
           total: res.total,
           totalPag: res.totalPag,
@@ -95,7 +105,7 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
           status: data.status,
           ok: data.ok,
         },
-        loading:false
+        loading: false
       })
     }).catch(() => {
       set({ kardexGeneral: [], pagination_kardex: initialPagination, loading: false })

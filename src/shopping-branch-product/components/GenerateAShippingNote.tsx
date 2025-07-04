@@ -19,9 +19,6 @@ import { Colors } from '@/types/themes.types';
 import { useAuthStore } from '@/store/auth.store';
 import { SessionContext } from '@/hooks/useSession';
 
-
-
-
 function GenerateAShippingNote(props: IPropCustomer) {
   const {
     customer,
@@ -36,6 +33,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
   } = props;
 
   const { gettransmitter, transmitter } = useTransmitterStore();
+  // const {personalization} = useConfigurationStore()
   const { getCorrelativesByBranch } = useCorrelativesDteStore();
   const { user } = useAuthStore()
   const { contingence } = useContext(SessionContext)
@@ -115,6 +113,7 @@ function GenerateAShippingNote(props: IPropCustomer) {
               props.setTitleString('Error al firmar el documento 222');
               props.setErrors(['Error al firmar el documento 222']);
             }
+
           } else {
             props.setTitleString('Error al firmar el documento 3333');
             props.setErrors(['Error al firmar el documento 333333']);
