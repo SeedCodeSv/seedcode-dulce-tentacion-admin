@@ -299,7 +299,7 @@ export default function ProductOrderComponent() {
           //   onPress={exportPdf}
           onPress={() => {
             if (selectedIds.length > 0) {
-              exportExcel();
+              exportPdf();
             } else {
               exportToPDF(dataReport, search.startDate, search.endDate);
             }
