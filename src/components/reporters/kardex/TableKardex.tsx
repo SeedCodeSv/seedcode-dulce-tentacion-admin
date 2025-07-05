@@ -68,6 +68,7 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
               'Código',
               'Descripción',
               'Cantidad',
+              'Stock inicial',
               'Costo unitario',
               'Total Movimiento',
             ]}
@@ -128,6 +129,9 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {product.quantity}
+                      </td>
+                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {product.initialStock}
                       </td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                         {product.unitCost}

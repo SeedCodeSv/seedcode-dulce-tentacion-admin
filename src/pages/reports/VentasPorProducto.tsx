@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
-import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
 
 import GraphicProductCategory from './Product/GraphicProductCategory';
@@ -167,11 +166,14 @@ function VentasPorProducto() {
                   Venta total : {formatCurrency(Number(total_sales_product))}
                 </p>
               </div>
-              <TableComponent headers={['Producto', 'Total en ventas']}>
+              <TableComponent headers={['Producto', 'Cantitad', 'Total en ventas']}>
                 {sales_products.map((product, index) => (
                   <tr key={index} className="border-b border-slate-200">
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       {product.productName}
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {product?.cantidadItemSum}
                     </td>
                     <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                       {formatCurrency(Number(product.totalItemSum))}
@@ -182,7 +184,18 @@ function VentasPorProducto() {
             </>
           )}
         </div>
-        <GraphicProductCategory branch="" endDate={endDate} startDate={startDate} />
+        {!loading_sales_products && sales_products.length > 0 ? (
+          <GraphicProductCategory
+            branch=""
+            endDate={endDate}
+            startDate={startDate}
+          />
+        ) : (
+          <p className="text-gray-500 text-sm">Cargando gráfico...</p>
+        )}
+
+
+
       </div>
     </DivGlobal>
   );

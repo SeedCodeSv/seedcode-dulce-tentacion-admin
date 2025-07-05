@@ -169,6 +169,7 @@ export interface IGraphicSubCategoryProductsForDates {
 export interface SaleProduct {
   productName: string;
   totalItemSum: string;
+  cantidadItemSum: string
 }
 
 export interface IGetSaleByProduct {
