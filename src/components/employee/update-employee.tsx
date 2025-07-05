@@ -38,7 +38,7 @@ function UpdateEmployee(props: PropsUpdateEmployee) {
       setIsCutResponsible(props.data.isResponsibleCutZ);
     }
   }, [props.data]);
-  console.log('ver el valor', isCutResponsible)
+
   useEffect(() => {
     getBranchesList();
     getChargesList();

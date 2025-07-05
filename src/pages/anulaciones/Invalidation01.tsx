@@ -229,6 +229,7 @@ function Invalidation01({ id }: Props) {
                 axios
                   .patch(API_URL + `/sales/invalidate/${id}`, {
                     selloInvalidacion: res.data.selloRecibido,
+                    reasonCancellation: motiveAnulation?.value ?? '0'
                   })
                   .then(async () => {
                     const payload = formatAnnulations01(
@@ -410,8 +411,9 @@ function Invalidation01({ id }: Props) {
 
                     setMotiveAnulation(reasonForCancellation)
                   } else {
+                    setMotiveAnulation({} as MotiveAnulations)
+
                   }
-                  setMotiveAnulation({} as MotiveAnulations)
                 }}
               >
                 {motives_anulations.map((item) => (
