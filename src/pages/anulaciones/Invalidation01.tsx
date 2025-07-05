@@ -44,23 +44,39 @@ import { formatAnnulations01 } from '@/utils/DTE/innvalidations';
 interface Props {
   id: string;
 }
-
+interface MotiveAnulations {
+  value: string,
+  label: string
+}
 function Invalidation01({ id }: Props) {
-  const { user } = useAuthStore();
-  const { json_sale, getSaleDetails, loading_sale, recentSales } = useSalesStore();
-  const { gettransmitter, transmitter } = useTransmitterStore();
-  const { getCorrelativesByDte } = useCorrelativesDteStore();
-  const { employee_list, getEmployeesList } = useEmployeeStore();
-  const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('');
-  const modalValidation = useDisclosure();
+  const { user } = useAuthStore()
+  const { json_sale, getSaleDetails, loading_sale, recentSales } = useSalesStore()
+  const { gettransmitter, transmitter } = useTransmitterStore()
+  const { getCorrelativesByDte } = useCorrelativesDteStore()
+  const { employee_list, getEmployeesList } = useEmployeeStore()
+  const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('')
+  const [motiveAnulation, setMotiveAnulation] = useState({ value: "", label: "" })
+  const modalValidation = useDisclosure()
+  // const [code, setCode] = useState('')
+  const [employeeCode, setEmployeeCode] = useState<Employee | null>(null)
+  // const modalInvalidation = useDisclosure()
+  // const navigate = useNavigate()
+  const services = new SeedcodeCatalogosMhService()
+  const styles = useGlobalStyles()
+  // const [firstPase, setFirstPase] = useState(false)
+  // const [modalInitializate, setModalInitialize] = useState(true)
+  // const [employeeError, setEmployeeError] = useState('')
+  const motives_anulations = [
+    { value: "01", label: 'Perdidas' },
+    { value: '02', label: 'Devoluciones' }
+  ]
 
-  const [employeeCode, setEmployeeCode] = useState<Employee | null>(null);
+  useEffect(() => {
 
-  const services = new SeedcodeCatalogosMhService();
-  const styles = useGlobalStyles();
+  }, [])
 
   useEffect(() => {
     gettransmitter();
@@ -380,6 +396,32 @@ function Invalidation01({ id }: Props) {
                 ))}
               </Select>
             )}
+            <div>
+              <Autocomplete
+                className="dark:text-white font-semibold text-sm z-0"
+                label="Razon de invalidación"
+                labelPlacement="outside"
+                placeholder="Selecciona la razon"
+                variant="bordered"
+                // onBlur={handleBlur}
+                onSelectionChange={(key) => {
+                  if (key) {
+                    const reasonForCancellation = JSON.parse(key as string) as MotiveAnulations;
+
+                    setMotiveAnulation(reasonForCancellation)
+                  } else {
+                  }
+                  setMotiveAnulation({} as MotiveAnulations)
+                }}
+              >
+                {motives_anulations.map((item) => (
+                  <AutocompleteItem key={JSON.stringify(item)} className=" dark:text-white">
+                    {item.label}
+                  </AutocompleteItem>
+                ))}
+              </Autocomplete>
+            </div>
+
           </div>
           <div className="mt-5">
             <Formik
@@ -567,19 +609,17 @@ function Invalidation01({ id }: Props) {
             {sending_steps.map((step, index) => (
               <div key={index} className="flex items-start py-2">
                 <div
-                  className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${
-                    index <= currentStep
-                      ? 'bg-green-600 border-green-600 text-white'
-                      : 'bg-white border-gray-300 text-gray-500'
-                  }`}
+                  className={`flex items-center justify-center w-8 h-8 border-2 rounded-full transition duration-500 ${index <= currentStep
+                    ? 'bg-green-600 border-green-600 text-white'
+                    : 'bg-white border-gray-300 text-gray-500'
+                    }`}
                 >
                   {index + 1}
                 </div>
                 <div className="ml-4">
                   <div
-                    className={`font-semibold ${
-                      index <= currentStep ? 'text-green-600' : 'text-gray-500'
-                    }`}
+                    className={`font-semibold ${index <= currentStep ? 'text-green-600' : 'text-gray-500'
+                      }`}
                   >
                     {step.label}
                   </div>
