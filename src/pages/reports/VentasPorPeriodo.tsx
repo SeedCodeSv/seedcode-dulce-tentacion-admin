@@ -5,7 +5,6 @@ import { SearchIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
-import Layout from '../../layout/Layout';
 import { formatDate } from '../../utils/dates';
 import { salesReportStore } from '../../store/reports/sales_report.store';
 import Pagination from '../../components/global/Pagination';

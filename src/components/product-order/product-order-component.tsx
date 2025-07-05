@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Drawer, DrawerBody, DrawerContent, DrawerHeader, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Checkbox, Drawer, DrawerBody, DrawerContent, DrawerHeader, Input, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { CalendarDays, Clock, Eye, Hash, Info, ReceiptText, ShoppingCart, StickyNote, Store, User } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -8,6 +8,7 @@ import { ResponsiveFilterWrapper } from "../global/ResposiveFilters";
 import Pagination from "../global/Pagination";
 
 import { RenderStatus, Status, StautsProductOrder } from "./render-order-status";
+import ExportOrdersExcell from "./ExportOrdersExcell";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import DivGlobal from "@/themes/ui/div-global";
@@ -23,6 +24,8 @@ import { limit_options } from "@/utils/constants";
 import { useBranchesStore } from "@/store/branches.store";
 import { useShippingBranchProductBranch } from "@/shopping-branch-product/store/shipping_branch_product.store";
 import { useProductionOrderStore } from "@/store/production-order.store";
+import { useTransmitterStore } from "@/store/transmitter.store";
+import ExportOrdersPdf from "./ExportOrdersPdf";
 
 export default function ProductOrderComponent() {
 
@@ -33,6 +36,7 @@ export default function ProductOrderComponent() {
     const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
+    const { transmitter, gettransmitter } = useTransmitterStore()
     const currentDate = new Date();
     const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const modalDetails = useDisclosure();
@@ -44,10 +48,34 @@ export default function ProductOrderComponent() {
         endDate: getElSalvadorDateTime().fecEmi,
         status: '',
     });
+    const [ordersIds, setOrdersIds] = useState<number[]>([]);
+
+
+    const checkIsSelectedOrder = (id: number) => ordersIds.includes(id);
+
+    // Agregar id seleccionado
+    const handleAddOrder = (id: number) => {
+        setOrdersIds(prev => [...prev, id]);
+    };
+
+    // Eliminar id seleccionado
+    const handleRemoveOrder = (id: number) => {
+        setOrdersIds(prev => prev.filter(item => item !== id));
+    };
+
+    // Alternar selección: si está seleccionado lo quita, si no lo agrega
+    const toggleOrderSelection = (id: number) => {
+        if (checkIsSelectedOrder(id)) {
+            handleRemoveOrder(id);
+        } else {
+            handleAddOrder(id);
+        }
+    };
 
     useEffect(() => {
         getBranchesList()
         getOrdersByDates(search)
+        gettransmitter()
     }, [])
 
     const handleDetails = (order: Order) => {
@@ -73,6 +101,34 @@ export default function ProductOrderComponent() {
     const handleSearch = (page: number) => {
         getOrdersByDates({ ...search, page })
     }
+    const selectAll = () => {
+        const allIds = ordersProducts.order_products.map(order => order.id);
+
+        setOrdersIds(allIds);
+    };
+
+    // Deseleccionar todos
+    const deselectAll = () => {
+        setOrdersIds([]);
+    };
+
+    const handleToggleAll = () => {
+        if (ordersProducts.order_products.length === 0) {
+            return
+        }
+        const allIds = ordersProducts.order_products.map(order => order.id);
+        const allSelected = allIds.every(id => checkIsSelectedOrder(id));
+
+        if (allSelected) {
+            deselectAll();
+        } else {
+            selectAll();
+        }
+    };
+
+    const allIds = ordersProducts.order_products.map(order => order.id);
+    const allSelected = allIds.length > 0 && allIds.every(id => checkIsSelectedOrder(id));
+    const someSelected = allIds.some(id => checkIsSelectedOrder(id)) && !allSelected;
 
     return (
         <DivGlobal>
@@ -169,7 +225,31 @@ export default function ProductOrderComponent() {
                     ))}
                 </Select>
             </ResponsiveFilterWrapper>
-            <TableComponent headers={['Nº', 'Fecha/Hora', 'Sucursal que solicita', 'Encargado', 'Estado', 'Acciones']}>
+            <div className="w-full flex gap-4">
+                <ExportOrdersExcell filters={search} orders={ordersIds} transmitter={transmitter} />
+                <ExportOrdersPdf filters={search} orders={ordersIds} transmitter={transmitter} />
+            </div>
+            <TableComponent
+                headers={['All', 'Nº', 'Fecha/Hora', 'Sucursal que solicita', 'Encargado', 'Estado', 'Acciones']}
+                renderHeader={(header) =>
+                    <div>
+                        {header === 'All' ?
+                            <div className="flex w-6">
+                                <Checkbox
+                                    checked={allSelected}
+                                    isIndeterminate={someSelected}
+                                    isSelected={allSelected}
+                                    onValueChange={handleToggleAll}
+                                    />
+                                    <span>{header}</span>
+                            </div>
+                            :
+                            <span>{header}</span>
+
+                        }
+                    </div>
+                }
+            >
                 {ordersProducts.order_products.length === 0 && (
                     <tr className="border-b border-slate-200">
                         <td
@@ -182,6 +262,15 @@ export default function ProductOrderComponent() {
                 )}
                 {ordersProducts.order_products.map((order, index) => (
                     <tr key={index} className=" cursor-pointer">
+                        <TdGlobal className="p-2 text-sm">
+                            <Checkbox
+                                checked={checkIsSelectedOrder(order.id)}
+                                isSelected={checkIsSelectedOrder(order.id)}
+                                onValueChange={() => {
+                                    toggleOrderSelection(order.id);
+                                }}
+                            />
+                        </TdGlobal>
                         <TdGlobal className="p-2 text-sm">{order.id}</TdGlobal>
                         <TdGlobal className="p-2 text-sm">{order.date} - {order.time}</TdGlobal>
                         <TdGlobal className="p-2 text-sm">{order.branch.name}</TdGlobal>
@@ -287,7 +376,7 @@ export default function ProductOrderComponent() {
                                             </Pui>
                                             <Pui>{selectedOrder.details}</Pui>
                                         </div>
-                                         <div className="">
+                                        <div className="">
                                             <Pui className="flex gap-2 font-semibold text-lg">
                                                 <Store /> Sucursal de recepción
                                             </Pui>
@@ -311,7 +400,7 @@ export default function ProductOrderComponent() {
                                                         <EmptyTable />
                                                     </td>
                                                 </tr>
-                                            ): selectedOrder.orderProductDetails.map((order, index) => (
+                                            ) : selectedOrder.orderProductDetails.map((order, index) => (
                                                 <tr key={index} className=" cursor-pointer">
                                                     <TdGlobal className="p-2 py-4">{order.id}</TdGlobal>
                                                     <TdGlobal className="p-2 py-4">

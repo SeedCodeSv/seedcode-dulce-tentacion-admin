@@ -146,7 +146,7 @@ export default function ProductsExportExcellByBranches({ params, comercialName, 
       isDisabled={isGenerating || products_selled_by_branches.data.length === 0}
       startContent={
         isGenerating ? (
-          <Loader className="animate-spinner"  />
+          <Loader className="animate-spin"  />
         ) : (
           <PiMicrosoftExcelLogo size={25} />
         )

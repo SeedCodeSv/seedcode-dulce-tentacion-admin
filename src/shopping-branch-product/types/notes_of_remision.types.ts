@@ -5,7 +5,6 @@ import { Branches } from './shipping_branch_product.types';
 
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
-import { BranchProduct } from '@/types/branch_products.types';
 import { DetailNote, ReferalNote } from '@/types/referal-note.types';
 
 export interface Identificacion {
