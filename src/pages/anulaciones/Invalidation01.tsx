@@ -40,11 +40,15 @@ import { FC_Receptor } from '../../types/svf_dte/fc.types'
 import useGlobalStyles from '@/components/global/global.styles'
 import { annulations } from '@/services/innvalidations.services'
 import { formatAnnulations01 } from '@/utils/DTE/innvalidations'
+import { json } from 'stream/consumers'
 
 interface Props {
   id: string
 }
-
+interface MotiveAnulations {
+  value: string,
+  label: string
+}
 function Invalidation01({ id }: Props) {
   const { user } = useAuthStore()
   const { json_sale, getSaleDetails, loading_sale, recentSales } = useSalesStore()
@@ -55,6 +59,7 @@ function Invalidation01({ id }: Props) {
   const [currentStep, setCurrentStep] = useState(0)
   const [loading, setLoading] = useState(false)
   const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('')
+  const [motiveAnulation, setMotiveAnulation] = useState({ value: "", label: "" })
   const modalValidation = useDisclosure()
   // const [code, setCode] = useState('')
   const [employeeCode, setEmployeeCode] = useState<Employee | null>(null)
@@ -65,6 +70,14 @@ function Invalidation01({ id }: Props) {
   // const [firstPase, setFirstPase] = useState(false)
   // const [modalInitializate, setModalInitialize] = useState(true)
   // const [employeeError, setEmployeeError] = useState('')
+  const motives_anulations = [
+    { value: "01", label: 'Perdidas' },
+    { value: '02', label: 'Devoluciones' }
+  ]
+
+  useEffect(() => {
+
+  }, [])
 
   useEffect(() => {
     gettransmitter()
@@ -103,6 +116,8 @@ function Invalidation01({ id }: Props) {
     typeDocResponsible: yup.string().required('**El tipo de documento es requerido**'),
     typeDocApplicant: yup.string().required('**El tipo de documento es requerido**')
   })
+
+  console.log('ver el json de la venta', json_sale)
 
   const modalError = useDisclosure()
   const [title, setTitle] = useState('')
@@ -277,44 +292,17 @@ function Invalidation01({ id }: Props) {
     })
   }
 
-
-
-  // const handleProccesEmployee = async () => {
-  //   try {
-  //     if (code === null) {
-  //       toast.error('Debes ingresar un codigo')
-
-  //       return
-  //     }
-  //     await get_employee_by_code(code).then((i) => {
-  //       if (i.data.employee.id) {
-  //         setEmployeeCode(i.data.employee as Employee)
-  //         setFirstPase(true)
-  //         modalInvalidation.onOpen()
-  //         setModalInitialize(false)
-  //         toast.success('Empleado confirmado')
-
-  //       }
-  //     }).catch(() => {
-  //       setEmployeeError('No se encontraron coincidencias')
-  //     })
-
-  //   } catch (error) {
-  //     toast.error('No se proceso la solicitud')
-
-  //   }
-  // }
+  const json_format = json_sale as any
 
   return (
     <>
 
       <>
-        {/* {firstPase ? ( */}
-          <> 
-        <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
-          <ArrowLeft />
-          <p className=" whitespace-nowrap">Volver a listado</p>
-        </button>
+        <>
+          <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
+            <ArrowLeft />
+            <p className=" whitespace-nowrap">Volver a listado</p>
+          </button>
           {loading_sale && (
             <div className="w-full h-full flex flex-col justify-center items-center">
               <div className="loader" />
@@ -360,6 +348,7 @@ function Invalidation01({ id }: Props) {
                   <span className="font-normal">{json_sale.identificacion.codigoGeneracion}</span>
                 </p>
               </div>
+
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 mt-10">
                 <Select
                   className="my-3"
@@ -414,16 +403,51 @@ function Invalidation01({ id }: Props) {
                     ))}
                   </Select>
                 )}
+                <div>
+                  <Autocomplete
+                    className="dark:text-white font-semibold text-sm z-0"
+                    label="Razon de invalidacion"
+                    labelPlacement="outside"
+                    placeholder="Selecciona al responsable"
+                    variant="bordered"
+                    // onBlur={handleBlur}
+                    onSelectionChange={(key) => {
+                      if (key) {
+                        const motive = JSON.parse(key as string) as MotiveAnulations
+
+                        // handleChange('nameResponsible')(formatEmployee(employee))
+                        // setFieldValue(
+                        //   'docNumberResponsible',
+                        //   employee?.dui?.toString() ?? employee?.nit?.toString()
+                        // )
+                        // handleChange('typeDocResponsible')(typeNumDoc(employee))
+
+                        setMotiveAnulation({ ...motive })
+                      } else {
+                        setMotiveAnulation({ value: "", label: "" })
+                      }
+                    }}
+                  >
+                    {motives_anulations.map((item) => (
+                      <AutocompleteItem
+                        key={JSON.stringify(item)}
+                        className=" dark:text-white"
+                      >
+                        {item?.label ?? 'N/A'}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                </div>
               </div>
               <div className="mt-5">
                 <Formik
                   initialValues={{
                     nameResponsible: '',
-                    nameApplicant: '',
+                    nameApplicant: String(json_format?.receptor?.nombre ?? 'N/A'),
                     docNumberResponsible: '',
-                    docNumberApplicant: '',
+                    docNumberApplicant:json_sale.identificacion.tipoDte === "01" ? String(json_format?.receptor?.numDocumento ?? '0') : json_sale?.receptor?.nit ,
                     typeDocResponsible: '',
-                    typeDocApplicant: ''
+                    typeDocApplicant:json_sale.identificacion.tipoDte === "01" ? String(json_format?.receptor?.tipoDocumento ?? 'N/A') :'37'
                   }}
                   validationSchema={validationSchema}
                   onSubmit={handleAnnulation}
@@ -462,8 +486,8 @@ function Invalidation01({ id }: Props) {
                                   employee?.dui?.toString() ?? employee?.nit?.toString()
                                 )
                                 handleChange('typeDocResponsible')(typeNumDoc(employee))
-                              
-                              setEmployeeCode(employee)
+
+                                setEmployeeCode(employee)
                               } else {
 
                               }
@@ -492,6 +516,7 @@ function Invalidation01({ id }: Props) {
                               services
                                 .get022TipoDeDocumentoDeIde()
                                 .find((doc) => doc.codigo === values?.typeDocResponsible)?.valores
+
                             }
                             variant="bordered"
                           />
@@ -515,6 +540,7 @@ function Invalidation01({ id }: Props) {
                         <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-4 gap-5">
                           <div>
                             <Input
+                              isDisabled
                               className="w-full text-sm dark:text-white"
                               classNames={{ label: 'text-xs font-semibold z-0' }}
                               errorMessage={errors.nameApplicant}
@@ -533,10 +559,12 @@ function Invalidation01({ id }: Props) {
                           </div>
                           <div>
                             <Select
+                              isDisabled
                               className="dark:text-white"
                               classNames={{
                                 label: 'font-semibold text-xs z-0'
                               }}
+                              defaultSelectedKeys={[values.typeDocApplicant]}
                               errorMessage={errors.typeDocApplicant}
                               isInvalid={touched.typeDocApplicant && !!errors.typeDocApplicant}
                               label="Tipo de documento de identificación"
@@ -558,6 +586,7 @@ function Invalidation01({ id }: Props) {
                             </Select>
                           </div>
                           <Input
+                            isDisabled
                             className="w-full text-sm dark:text-white"
                             classNames={{ label: 'text-xs font-semibold z-0' }}
                             errorMessage={errors.docNumberApplicant}
@@ -597,8 +626,8 @@ function Invalidation01({ id }: Props) {
               <p className="mt-3 text-xl font-normal">No se encontró la venta solicitada</p>
             </div>
           )}</>
-          {/* ) */}
-          {/* :
+        {/* ) */}
+        {/* :
           (<>
             <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigate(-1) }}>
               <ModalContent>
