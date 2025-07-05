@@ -131,7 +131,6 @@ export default function ExportOrdersExcell({ orders, filters, transmitter }: Pro
 
             worksheet.columns.forEach((col, idx) => {
                 if (headers[idx] !== 'Producto') {
-                    col.numFmt = '#,##0.00';
                     col.alignment = { horizontal: 'right' };
                 } else {
                     col.alignment = { horizontal: 'left' };
