@@ -38,6 +38,7 @@ import AddInventaryAdjustment from '@/components/inventory_aqdjusment/AddInventa
 import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusment/AddInventoryAdjustmentRecountStock';
 import DetailedBranchesProducts from '@/pages/reports/DetailedByBranchesProducts';
 import ProductSalesReportPage from '@/pages/reports/ProductReport';
+import PdfPreview from '@/components/product-order/note-refeal/Pdfs';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -202,6 +203,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           <ProductsSelledSummaryComponent />} />
         <Route element={<ProductsSelledDetailComponent />} path="detailed" />
       </Route>
+       <Route
+        element={
+          <AnimatedRoute>
+             <PdfPreview /> 
+          </AnimatedRoute>
+        }
+        path="/pdf-preview"
+      />
       <Route
         element={
           <AnimatedRoute>

@@ -32,7 +32,6 @@ export default function ProductOrderComponent() {
     const { addSelectedProducts } = useProductionOrderStore()
     const navigate = useNavigate()
     const [selectedOrder, setSelectedOrder] = useState<Order>()
-
     const { getOrdersByDates, ordersProducts } = useOrderProductStore()
     const currentDate = new Date();
     const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -237,7 +236,6 @@ export default function ProductOrderComponent() {
                     previousPage={ordersProducts.prevPag}
                     totalPages={ordersProducts.totalPag}
                     onPageChange={(page) => {
-
                         handleSearch(page)
                     }}
                 />
@@ -304,7 +302,7 @@ export default function ProductOrderComponent() {
                                             })
                                         </h2>
                                         <TableComponent headers={['Nº', 'Producto', 'Cantidad solicitada', 'Cantidad entregada', 'Cantidad Pendiente', 'Stock actual', 'Stock Anterior']}>
-                                            {ordersProducts.order_products.length === 0 && (
+                                            {ordersProducts.order_products.length === 0 ? (
                                                 <tr className="border-b border-slate-200">
                                                     <td
                                                         className="p-2 text-sm text-slate-500 w-full font-medium dark:text-slate-100"
@@ -313,8 +311,7 @@ export default function ProductOrderComponent() {
                                                         <EmptyTable />
                                                     </td>
                                                 </tr>
-                                            )}
-                                            {selectedOrder.orderProductDetails.map((order, index) => (
+                                            ): selectedOrder.orderProductDetails.map((order, index) => (
                                                 <tr key={index} className=" cursor-pointer">
                                                     <TdGlobal className="p-2 py-4">{order.id}</TdGlobal>
                                                     <TdGlobal className="p-2 py-4">
