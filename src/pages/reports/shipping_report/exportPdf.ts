@@ -45,7 +45,7 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
       startY: 25,
       theme: 'grid',
       headStyles: {
-        fillColor: [113, 163, 255], // Color celeste similar al Excel
+        fillColor: [255, 113, 163], // Color
         textColor: [255, 255, 255],
         fontStyle: 'bold',
         fontSize: 10,

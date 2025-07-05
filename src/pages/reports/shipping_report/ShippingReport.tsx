@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { MdPictureAsPdf } from 'react-icons/md';
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
-import { exportToExcel } from './exportExcell';
+import { exportToExcel } from './exportExcel';
 import { exportToPDF } from './exportPdf';
 
 import EmptyTable from '@/components/global/EmptyTable';
