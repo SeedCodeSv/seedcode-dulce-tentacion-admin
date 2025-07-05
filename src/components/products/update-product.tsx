@@ -25,6 +25,7 @@ import { useProductsStore } from '../../store/products.store';
 import { Colors } from '@/types/themes.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { useSubCategoryStore } from '@/store/sub-category';
+import { preventLetters } from '@/utils';
 
 interface Props {
   product?: Product;
@@ -58,6 +59,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
       tipoItem: product?.tipoItem || '',
       uniMedida: product?.uniMedida || '',
       code: product?.code || '',
+      price: product?.price || '',
     },
     validationSchema: yup.object().shape({
       name: yup.string().required('**El nombre es requerido**'),
@@ -97,6 +99,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
         tipoItem: product?.tipoItem || '',
         uniMedida: product?.uniMedida || '',
         code: product?.code || '',
+        price: product?.price || ''
       });
 
       setCategorySelected(product?.subCategory.categoryProduct.id.toString() || '');
@@ -271,6 +274,19 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                       />
                     </div>
                   </div>
+                  <Input
+                    isRequired
+                    className="dark:text-white pt-4"
+                    classNames={{ label: 'font-semibold ' }}
+                    label="Precio"
+                    labelPlacement="outside"
+                    placeholder="Ingresa el precio del producto"
+                    variant="bordered"
+                    {...formik.getFieldProps('price')}
+                    errorMessage={formik.errors.price}
+                    isInvalid={!!formik.errors.price && !!formik.touched.price}
+                    onKeyDown={preventLetters}
+                  />
                 </div>
               </div>
             </ModalBody>

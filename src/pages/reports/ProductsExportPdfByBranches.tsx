@@ -139,7 +139,7 @@ export default function ProductsExportPdfByBranches({ headers, params, comercial
         isDisabled={isGenerating || products_selled_by_branches.data.length === 0}
         startContent={
           isGenerating ? (
-            <Loader className="animate-spinner" size="sm"/>
+            <Loader className="animate-spin" size="sm"/>
           ) : (
             <AiOutlineFilePdf size={25} />
           )

@@ -26,7 +26,6 @@ import axios from 'axios';
 import { CodCuentaProps, Items } from './types/types';
 
 import Pagination from '@/components/global/Pagination';
-import Layout from '@/layout/Layout';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';

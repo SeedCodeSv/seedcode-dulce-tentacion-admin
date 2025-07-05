@@ -1,11 +1,11 @@
 
 import { Tab, Tabs } from '@heroui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
+import { startTransition } from 'react';
+import React from 'react';
 
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
-import { startTransition } from 'react';
-import React from 'react';
 
 export default function ProductSalesReportPage() {
   const { actions } = useViewsStore();

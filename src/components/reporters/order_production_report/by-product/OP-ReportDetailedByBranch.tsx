@@ -64,6 +64,7 @@ export default function OPReportComponentDetailed() {
         debounce((value: string) => {
             getProductsFilteredList({
                 productName: value,
+                code: ''
             });
         }, 300),
         []

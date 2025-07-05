@@ -77,6 +77,7 @@ export default function OrdenProductionComponent() {
         debounce((value: string) => {
             getProductsFilteredList({
                 productName: value,
+                code: ''
             });
         }, 300),
         []

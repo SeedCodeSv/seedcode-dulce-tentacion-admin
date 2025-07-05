@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import FullPageLayout from '@/components/global/FullOverflowLayout';
 import Pagination from '@/components/global/Pagination';
 import useWindowSize from '@/hooks/useWindowSize';
-import Layout from '@/layout/Layout';
 import { get_ticket } from '@/services/ticket.service';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTicketStore } from '@/store/ticket.store';
