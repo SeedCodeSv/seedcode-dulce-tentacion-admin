@@ -7,6 +7,7 @@ import {
   ProductAndRecipe,
   ProductPayload,
   Recipe,
+  UpdateProductPayload,
 } from '../../types/products.types';
 
 import { IPagination } from '@/types/global.types';
@@ -48,7 +49,7 @@ export interface IProductsStore {
   ) => void;
   getCat011TipoDeItem: () => void;
   postProducts: (payload: ProductPayload) => Promise<void>;
-  patchProducts: (payload: ProductPayload, id: number) => Promise<{ ok: boolean }>;
+  patchProducts: (payload: UpdateProductPayload, id: number) => Promise<{ ok: boolean }>;
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;

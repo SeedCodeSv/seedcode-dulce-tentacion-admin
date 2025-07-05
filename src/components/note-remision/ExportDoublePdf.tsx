@@ -52,7 +52,6 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
             const centerX = pageWidth / 2;
             const margin = 10;
             const halfWidth = (pageWidth - margin * 2) / 2;
-            const pageHeight = doc.internal.pageSize.getHeight();
             const headers = ['No.', 'Detalles', 'Cantidad', 'Precio Venta', 'Total'];
             const rows = detailNoteReferal.map((item, index) => {
                 const price = Number(item.branchProduct.price) || 0;
@@ -68,15 +67,7 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
                 ];
             });
 
-            doc.setDrawColor(180);
-            doc.setLineWidth(0.1);
-            doc.setLineDashPattern([2, 2], 0);
-
-            doc.line(centerX, 0, centerX, pageHeight);
-
-            doc.setLineDashPattern([], 0);
-
-            const renderSide = (first: boolean = false, offsetX: number, offsetY: number = 5) => {
+            const renderSide = (first: boolean = false, offsetX: number, dataRows: string[][], offsetY: number = 5) => {
                 // Logo
                 doc.addImage(logoBase64, 'PNG', offsetX + 10, offsetY, 17, 17, '', 'SLOW');
 
@@ -126,7 +117,7 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
 
                 autoTable(doc, {
                     head: [headers],
-                    body: rows,
+                    body: dataRows,
                     startY: startTableY + 5,
                     margin: { left: 5 + offsetX, right: first ? halfWidth + 15 : 5 },
                     theme: 'grid',
@@ -136,7 +127,7 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
                         fillColor: [255, 255, 255],
                         textColor: [0, 0, 0],
                         fontStyle: 'bold',
-                        lineWidth: 0.2,             // ✅ Bordes visibles
+                        lineWidth: 0.2,
                         lineColor: [179, 184, 189],
                     },
                     bodyStyles: { fontSize: 8 },
@@ -146,10 +137,31 @@ export default function DoublePdfExport({ note, transmitter }: { note: ReferalNo
                     },
                 });
             };
+            const chunkSize = 15;
+            const productChunks: string[][][] = [];
 
-            renderSide(true, 0);
+            for (let i = 0; i < rows.length; i += chunkSize) {
+                const chunk = rows.slice(i, i + chunkSize).map(row =>
+                    row.map(cell => String(cell))
+                );
 
-            renderSide(false, centerX);
+                productChunks.push(chunk);
+            }
+
+            productChunks.forEach((chunk, index) => {
+                if (index > 0) doc.addPage(); 
+                const pageHeight = doc.internal.pageSize.getHeight();
+
+                doc.setDrawColor(180);
+                doc.setLineWidth(0.1);
+                doc.setLineDashPattern([2, 2], 0);
+                doc.line(centerX, 0, centerX, pageHeight);
+                doc.setLineDashPattern([], 0);
+
+                renderSide(true, 0, chunk);        
+                renderSide(false, centerX, chunk); 
+            });
+
 
             const date = getElSalvadorDateTimeText().fecEmi;
 

@@ -287,6 +287,11 @@ export default function BranchProductSelectedOrder(props: Props) {
                     value={item.quantity!.toString()}
                     variant="bordered"
                     onChange={(e) => {
+                      if (item.stock === 'sin definir') {
+                        toast.error('Debes seleccionar una sucursal primero')
+
+                        return
+                      }
                       OnChangeQuantityManual(
                         item.id,
                         item.product.id,
@@ -474,7 +479,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                     {branch_list.map((branch) => (
                       <AutocompleteItem
                         key={branch.id}
-                        // value={branch.name}
                         className="dark:text-white"
                       >
                         {branch.name}

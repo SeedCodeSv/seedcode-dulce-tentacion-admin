@@ -18,6 +18,7 @@ export interface Product {
   subCategory: ISubCategory;
   recipeBook?:  RecipeBook ;
   isToDivided?: boolean,
+  price?: string,
 }
 
 export interface Verify_Code {
@@ -466,6 +467,21 @@ export interface GetConvertProduct {
   quantity: number;
   product: Product
   convertedProduct: Product
+}
+
+export interface UpdateProductPayload {
+  name: string;
+  description: string;
+  price: string;
+  costoUnitario?: string;
+  code: string;
+  subCategoryId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  branch?: { id: number }[];
+  supplierId?: number;
 }
 
 

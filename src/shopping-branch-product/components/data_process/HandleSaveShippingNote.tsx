@@ -18,7 +18,6 @@ export const HandleSaveShippingNote = ({
   socket,
   branchIssuingId,
   orderId,
-  
 }: IPropSaveShippingNote) => {
   setCurrentState(steps[3].title);
   generate_a_shipping_note({
@@ -43,6 +42,9 @@ export const HandleSaveShippingNote = ({
         })
         OnClearProductSelectedAll();
         closeModal()
+        sessionStorage.setItem('lastShippingNote', JSON.stringify(res.data.note));
+        window.open('/pdf-preview', '_blank');
+
         if(orderId === 0){
           window.location.reload();
         }

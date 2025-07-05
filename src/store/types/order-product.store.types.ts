@@ -1,5 +1,5 @@
 import { SearchGlobal } from "@/types/global.types"
-import { IGetOrdersProducts, Order } from "@/types/order-products.types"
+import { IGetOrdersProducts, IGroupedOrderData, Order, SearchOrders } from "@/types/order-products.types"
 
 export interface OrderProductState {
   orders: Order[]
@@ -7,5 +7,6 @@ export interface OrderProductState {
   loading: boolean
   loading_orders: boolean
   getOrdersByBranch: (branchId: number) => void
-  getOrdersByDates: (params: SearchGlobal) => void
+  getOrdersByDates: (params: SearchGlobal) => void;
+getGroupedOrdersExport: (params: SearchOrders) => Promise<{ ok: boolean; orders: IGroupedOrderData }>
 }

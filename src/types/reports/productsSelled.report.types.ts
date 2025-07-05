@@ -10,7 +10,7 @@ export interface IGetSummaryTotalProductsSelled {
 export interface Summary {
     date: string;
     totalGeneral: number;
-      [branchName: string]: number | string;
+    [branchName: string]: number | string;
 }
 
 export interface IGetProductsSelled extends IPagination {
@@ -35,12 +35,25 @@ export interface SearchReport {
     limit: number;
     startDate: string;
     endDate: string;
-    branchId?:number;
-    branchIds?: number[]; 
+    branchId?: number;
+    branchIds?: number[];
     productName?: string;
 }
 interface Totals {
     [branchName: string]: number;
 }
+
+export interface IGetTotalProductsSelledByBranches {
+    ok: boolean;
+    data: BranchTotals[];
+    branchTotals: Totals;
+    status: number;
+}
+
+export interface BranchTotals {
+    productName: string;
+    [branchName: string]: number | string;
+}
+
 
 

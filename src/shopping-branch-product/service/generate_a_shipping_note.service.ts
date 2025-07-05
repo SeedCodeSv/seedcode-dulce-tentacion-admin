@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-import { ICreateShippingProducts } from '../types/notes_of_remision.types';
+import { ICreateShippingProducts, NoteResponse } from '../types/notes_of_remision.types';
 import { CHECK_NUM_EXIST } from '../types/shipping_branch_product.types';
 
 import { API_URL, VITE_MH_FILTERS } from '@/utils/constants';
 import { BasicResponse } from '@/types/global.types';
 
 export const generate_a_shipping_note = (payload: ICreateShippingProducts) => {
-  return axios.post<{ ok: boolean }>(
+  return axios.post<NoteResponse>(
     import.meta.env.VITE_API_URL + '/referal-note/transaction',
     payload
   );

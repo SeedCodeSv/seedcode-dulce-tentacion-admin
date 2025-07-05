@@ -36,6 +36,9 @@ import AnexoComprasSujetoExcluido from '@/pages/anexos_iva/anexo_compras_sujeto_
 import Layout from '@/layout/Layout';
 import AddInventaryAdjustment from '@/components/inventory_aqdjusment/AddInventaryAdjustment';
 import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusment/AddInventoryAdjustmentRecountStock';
+import DetailedBranchesProducts from '@/pages/reports/DetailedByBranchesProducts';
+import ProductSalesReportPage from '@/pages/reports/ProductReport';
+import PdfPreview from '@/components/product-order/note-refeal/Pdfs';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -200,6 +203,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           <ProductsSelledSummaryComponent />} />
         <Route element={<ProductsSelledDetailComponent />} path="detailed" />
       </Route>
+       <Route
+        element={
+          <AnimatedRoute>
+             <PdfPreview /> 
+          </AnimatedRoute>
+        }
+        path="/pdf-preview"
+      />
       <Route
         element={
           <AnimatedRoute>
@@ -366,14 +377,19 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/sales-by-period"
       />
-      <Route
+      {/* <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
           </AnimatedRoute>
         }
         path="/reports/sales-by-product"
-      />
+      /> */}
+       <Route element={handleCheckPermission('Ventas por Productos') ? <ProductSalesReportPage /> : <Home />} path="/reports/sales-by-product">
+        <Route index element={
+          <VentasPorProducto />} />
+        <Route element={<DetailedBranchesProducts />} path="detailed-branches" />
+      </Route>
       <Route
         element={
           <AnimatedRoute>

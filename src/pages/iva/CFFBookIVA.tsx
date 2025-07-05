@@ -9,7 +9,6 @@ import FacturacionCcfeItem from './CCFE/FacturacionCcfe';
 import CcfeFilters from './CCFE/ccfe-filters';
 
 import useGlobalStyles from '@/components/global/global.styles';
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';

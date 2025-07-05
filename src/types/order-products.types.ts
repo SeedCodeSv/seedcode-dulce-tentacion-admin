@@ -40,3 +40,28 @@ export interface IGetOrdersProducts extends IPagination {
   order_products: Order[];
 }
 
+export interface SearchOrders {
+  ordersId?: number[];
+  branchIds?: number[];
+  startDate?: string;
+  endDate?: string;
+  status?: string
+}
+
+
+export interface Data {
+  productName: string;
+  [branchName: string]: number | string;
+}
+
+export interface IGroupedOrderData {
+  ok:           boolean;
+  data:         Data[];
+  branchTotals: Totals;
+}
+
+interface Totals {
+    [branchName: string]: number;
+}
+
+

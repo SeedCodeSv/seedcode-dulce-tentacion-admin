@@ -33,53 +33,55 @@ function Main() {
     }
   }, [role_actions_by_user]);
 
-  return (
-    <>
-      {isAuth && user ? (
-        <>
-          {loading_actions ? (
-            <div className="w-screen h-screen flex flex-col justify-center items-center">
-              <div className="loader" />
-              <p className="mt-3 text-xl font-semibold">Cargando...</p>
+  const isPdfPreview = window.location.pathname === '/pdf-preview';
+
+
+ return (
+  <>
+    {isAuth && user ? (
+      <>
+        {loading_actions && !isPdfPreview ? (
+          <div className="w-screen h-screen flex flex-col justify-center items-center">
+            <div className="loader" />
+            <p className="mt-3 text-xl font-semibold">Cargando...</p>
+          </div>
+        ) : loading_actions ? (
+          <></>
+        ) : role_actions_by_user ? (
+          <RouterProvider
+            router={router({ roleActions: role_actions_by_user.roleActions })}
+          />
+        ) : (
+          <div className="w-screen h-screen flex justify-center items-center flex-col">
+            <Lottie animationData={ERROR401} className="w-96" />
+            <p className="text-lg font-semibold dark:text-white">
+              Parece que no tiene permisos para acceder a esta sección
+            </p>
+            <div className="w-96 grid grid-cols-2 mt-4 gap-5">
+              <ButtonUi
+                className="font-semibold"
+                theme={Colors.Primary}
+                onPress={() => (window.location.href = '/')}
+              >
+                Ir a inicio
+              </ButtonUi>
+              <ButtonUi
+                className="font-semibold"
+                theme={Colors.Info}
+                onPress={() => window.location.reload()}
+              >
+                Recargar
+              </ButtonUi>
             </div>
-          ) : (
-            <>
-              {role_actions_by_user ? (
-                <RouterProvider
-                  router={router({ roleActions: role_actions_by_user.roleActions })}
-                />
-              ) : (
-                <div className="w-screen h-screen flex justify-center items-center flex-col">
-                  <Lottie animationData={ERROR401} className="w-96" />
-                  <p className="text-lg font-semibold dark:text-white">
-                    Parece que no tiene permisos para acceder a esta sección
-                  </p>
-                  <div className="w-96 grid grid-cols-2 mt-4 gap-5">
-                    <ButtonUi
-                      className="font-semibold"
-                      theme={Colors.Primary}
-                      onPress={() => (window.location.href = '/')}
-                    >
-                      Ir a inicio
-                    </ButtonUi>
-                    <ButtonUi
-                      className="font-semibold"
-                      theme={Colors.Info}
-                      onPress={() => window.location.reload()}
-                    >
-                      Recargar
-                    </ButtonUi>
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <Auth />
-      )}
-    </>
-  );
+          </div>
+        )}
+      </>
+    ) : (
+      <Auth />
+    )}
+  </>
+);
+
 }
 
 export default Main;

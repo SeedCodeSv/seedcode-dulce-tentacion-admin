@@ -37,6 +37,7 @@ export interface CF_Receptor {
     };
     telefono: string | null;
     correo: string;
+    tipoDocumento?: string;
 }
 
 export interface CF_CuerpoDocumentoItems {

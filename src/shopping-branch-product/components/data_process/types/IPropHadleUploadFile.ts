@@ -19,6 +19,6 @@ export interface IPropHadleUploadFile {
   customerId?: number;
   receivingBranchId?: number;
   receivingEmployeeId?:number;
-    socket:Socket;
+ socket:Socket;
   branchIssuingId:number
 }
