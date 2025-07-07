@@ -274,13 +274,7 @@ export const LayoutItems = (props: Props) => {
       to: '/production-report',
       icon: ShoppingBasket ,
       label: 'Reporte de produccion',
-    },
-    {
-      viewName: 'Reporte de envios',
-      to: '/shipping-report',
-      icon: Send  ,
-      label: 'Reporte de envios',
-    },
+    }
   ];
 
   const linkPlanification = [
