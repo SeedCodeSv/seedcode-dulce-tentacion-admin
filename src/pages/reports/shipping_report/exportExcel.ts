@@ -17,7 +17,7 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
 
     titleRow.font = { bold: true, size: 16 };
     titleRow.alignment = { horizontal: 'center' };
-    worksheet.mergeCells(`A1:F1`); // Cambiado a F1 ya que ahora son 6 columnas
+    worksheet.mergeCells(`A1:I1`); 
 
     // 2. Fila vacía de separación (fila 2)
     worksheet.addRow([]);
@@ -30,6 +30,9 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
       { key: 'sucursalISSS', width: 15 },
       { key: 'sucursalNahulzalco', width: 18 },
       { key: 'sucursalSonzacate', width: 18 },
+      { key: 'sucursalAdministracio', width: 18 },
+      { key: 'sucursalProductoTerminado', width: 20 },
+      { key: 'sucursalBodegaDeMateriaPrima', width: 24 },
     ];
 
     // 4. Añadir ENCABEZADOS MANUALMENTE (fila 3)
@@ -40,6 +43,9 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
       'Sucursal ISSS',
       'Sucursal Nahulzalco',
       'Sucursal Sonzacate',
+      'Administracion',
+      'Producto Terminado',
+      'Bodega de Materia Prima',
     ]);
 
     // Estilo para encabezados
@@ -68,6 +74,9 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
         item['SUCURSAL-ISSS'],
         item['SUCURSAL-NAHUIZALCO'],
         item['SUCURSAL-SONZACATE'],
+        item.ADMINISTRACION,
+        item['PRODUCTO TERMINADO'],
+        item['BODEGA DE MATERIA PRIMA']
       ];
 
       const row = worksheet.addRow(rowData);
