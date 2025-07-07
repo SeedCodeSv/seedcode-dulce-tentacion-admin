@@ -1,7 +1,12 @@
 /* eslint-disable jsx-a11y/iframe-has-title */
-import { Button, Chip, Input, Select, SelectItem, useDisclosure } from '@heroui/react';
+import { Button, Checkbox, Chip, Input, Select, SelectItem, useDisclosure } from '@heroui/react';
 import { useContext, useEffect, useMemo, useState } from 'react';
-import { PiFilePdf, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import {
+  PiFilePdf,
+  PiFilePdfDuotone,
+  PiMicrosoftExcelLogo,
+  PiMicrosoftExcelLogoBold,
+} from 'react-icons/pi';
 import { Clipboard, ClipboardCheck, FileX2, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -26,7 +31,7 @@ import { ReferalNote } from '@/types/referal-note.types';
 import { useReferalNote } from '@/store/referal-notes';
 import { export_referal_note, get_pdf_nre } from '@/services/referal-notes.service';
 import { usePermission } from '@/hooks/usePermission';
-import { limit_options } from '@/utils/constants';
+import { API_URL, limit_options } from '@/utils/constants';
 import { estadosV } from '@/utils/utils';
 import { ThemeContext } from '@/hooks/useTheme';
 import { useBranchesStore } from '@/store/branches.store';
@@ -35,44 +40,68 @@ import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { useTransmitterStore } from '@/store/transmitter.store';
+import axios from 'axios';
+import { ShippingReport } from '@/services/reports/shipping_report.service';
+import { exportToExcel } from '@/pages/reports/shipping_report/exportExcel';
+import { exportToPDF } from '@/pages/reports/shipping_report/exportPdf';
 
 function List() {
   const { roleActions, returnActionsByView } = usePermission();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  const { getBranchById, branch } = useBranchesStore()
+  const { getBranchById, branch } = useBranchesStore();
 
   const actions = useMemo(() => returnActionsByView('Notas de remisión'), [roleActions]);
-  const [state, setState] = useState({ label: 'TODOS', value: '' })
+  const [state, setState] = useState({ label: 'TODOS', value: '' });
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
-  const [limit, setLimit] = useState(30)
+  const [limit, setLimit] = useState(30);
   const { referalNotes, loading, onGetReferalNotes, pagination_referal_notes } = useReferalNote();
   const { user } = useAuthStore();
-  const [branchId, setBranchId] = useState<number>(0)
-  const { theme, context } = useContext(ThemeContext)
-  const { colors } = theme
-  const navigate = useNavigate()
+  const [branchId, setBranchId] = useState<number>(0);
+  const { theme, context } = useContext(ThemeContext);
+  const { colors } = theme;
+  const navigate = useNavigate();
 
   const style = {
     backgroundColor: colors[context].buttons.colors.success,
-    color: colors[context].buttons.textColor
-  }
+    color: colors[context].buttons.textColor,
+  };
   const [selectedNote, setSelectedNote] = useState<ReferalNote | null>(null);
-  const [items, setItems] = useState<ReferalNote | undefined>(undefined)
-  const modalInvalidate = useDisclosure()
-  const modalComplete = useDisclosure()
-  const { branch_list, getBranchesList } = useBranchesStore()
+  const [items, setItems] = useState<ReferalNote | undefined>(undefined);
+  const modalInvalidate = useDisclosure();
+  const modalComplete = useDisclosure();
+  const { branch_list, getBranchesList } = useBranchesStore();
 
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  // const [responseDate, setResponseData] = useState<[]>([]);
+
+  const handleCheckboxChange = (id: number) => {
+    setSelectedIds((prevSelectedIds) => {
+      if (prevSelectedIds.includes(id)) {
+        return prevSelectedIds.filter((itemId) => itemId !== id);
+      } else {
+        return [...prevSelectedIds, id];
+      }
+    });
+  };
 
   useEffect(() => {
-    onGetReferalNotes(Number(user?.transmitterId), 1, limit, startDate, endDate, state.value, branchId);
-    getBranchById(branchId)
+    onGetReferalNotes(
+      Number(user?.transmitterId),
+      1,
+      limit,
+      startDate,
+      endDate,
+      state.value,
+      branchId
+    );
+    getBranchById(branchId);
   }, [startDate, endDate, limit, state.value, branchId]);
 
   useEffect(() => {
-    getBranchesList()
-    gettransmitter()
-  }, [])
+    getBranchesList();
+    gettransmitter();
+  }, []);
 
   const styles = useGlobalStyles();
 
@@ -92,7 +121,7 @@ function List() {
       .catch(() => setLoadingPdf(false));
   };
 
-  useHotkeys('ctrl+f2', () => navigate('/list-referal-notes'))
+  useHotkeys('ctrl+f2', () => navigate('/list-referal-notes'));
 
   const handleExportExcel = async (searchParam: string | undefined, value: number | undefined) => {
     await export_referal_note(
@@ -103,13 +132,64 @@ function List() {
       searchParam ?? endDate,
       searchParam ?? state.value,
       value ?? branchId
-    ).then(({ data }) => {
-      exportNotesReferal(data.referalNotes, startDate, endDate)
-    }).catch(() => {
-      toast.error('No se proceso la peticion')
-    })
+    )
+      .then(({ data }) => {
+        exportNotesReferal(data.referalNotes, startDate, endDate);
+      })
+      .catch(() => {
+        toast.error('No se proceso la peticion');
+      });
+  };
 
-  }
+  const getRaferalNoteReport = async (): Promise<ShippingReport[]> => {
+    try {
+      const response = await axios.post(API_URL + '/referal-note/shipping-report', {
+        startDate: startDate,
+        endDate: endDate,
+        ids: selectedIds,
+      });
+
+      const responseData =
+        typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+
+      // setResponseData(responseData);
+
+      return responseData.data;
+    } catch (error) {
+      toast.error('Errr al obtener los datos');
+      throw error;
+    }
+  };
+
+  const exportExcel = async () => {
+    try {
+      const reportData = await getRaferalNoteReport();
+
+      if (reportData && reportData.length > 0) {
+        await exportToExcel(reportData, startDate, endDate);
+        toast.success('Exportado con éxito');
+      } else {
+        toast.error('No hay datos para exportar');
+      }
+    } catch (error) {
+      toast.error('Error al exportar: ' + (error as Error).message);
+    }
+  };
+
+  const exportPdf = async () => {
+    try {
+      const reportData = await getRaferalNoteReport();
+
+      if (reportData && reportData.length > 0) {
+        await exportToPDF(reportData, startDate, endDate);
+        toast.success('Exportado con éxito');
+      } else {
+        toast.error('No hay datos para exportar');
+      }
+    } catch (error) {
+      toast.error('Error al exportar: ' + (error as Error).message);
+    }
+  };
 
   return (
     <>
@@ -127,7 +207,7 @@ function List() {
           <Input
             classNames={{
               label: 'font-semibold dark:text-white',
-              input: 'dark:text-white'
+              input: 'dark:text-white',
             }}
             label="Fecha final"
             labelPlacement="outside"
@@ -139,7 +219,7 @@ function List() {
           <Select
             classNames={{
               label: 'font-semibold',
-              selectorIcon: 'dark:text-white'
+              selectorIcon: 'dark:text-white',
             }}
             label="Sucursales"
             labelPlacement="outside"
@@ -157,24 +237,104 @@ function List() {
             ))}
           </Select>
           <div />
-
         </div>
-        <div className='flex flex-row items-end grid grid-cols-2'>
-          <div className='flex gap-4 items-end'>
-            {actions?.includes("Exportar Excel") && (
+        <div className="flex justify-between items-end w-full gap-4">
+          <Select
+            className="w-80"
+            classNames={{
+              label: 'font-semibold',
+              selectorIcon: 'dark:text-white',
+            }}
+            defaultSelectedKeys={[limit.toString()]}
+            label="Mostrar"
+            labelPlacement="outside"
+            placeholder="Mostrar"
+            value={limit}
+            variant="bordered"
+            onChange={(e) => {
+              setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
+            }}
+          >
+            {limit_options.map((limit) => (
+              <SelectItem key={limit} className="dark:text-white">
+                {limit}
+              </SelectItem>
+            ))}
+          </Select>
+          <Select
+            className="w-80"
+            classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
+            label="Mostrar por estado"
+            labelPlacement="outside"
+            placeholder="Selecciona un estado"
+            value={state.label}
+            variant="bordered"
+            onChange={(value) =>
+              setState({
+                label: value.target.value === '' ? value.target.value : 'TODOS',
+                value: value.target.value,
+              })
+            }
+          >
+            {estadosV.map((e) => (
+              <SelectItem key={e.value} className="dark:text-white">
+                {e.label}
+              </SelectItem>
+            ))}
+          </Select>
+
+          <Button
+            isIconOnly
+            style={{ ...style, justifySelf: 'end' }}
+            type="button"
+            onPress={() => navigate('/list-referal-notes')}
+          >
+            <Plus />
+          </Button>
+        </div>
+
+        <div className="flex justify-between gap-5">
+          <div className="flex gap-4 items-end">
+            {actions?.includes('Exportar Excel') && (
               <>
-                {referalNotes?.length > 0 ?
+                <ButtonUi
+                  startContent={<PiMicrosoftExcelLogo className="" size={25} />}
+                  theme={Colors.Success}
+                  onPress={() => {
+                    exportExcel();
+                  }}
+                >
+                  Exportar a exel
+                </ButtonUi>
+              </>
+            )}
+            <ButtonUi
+              startContent={<PiFilePdfDuotone className="" size={25} />}
+              theme={Colors.Error}
+              onPress={() => {
+                exportPdf();
+              }}
+            >
+              Exportar a pdf
+            </ButtonUi>
+          </div>
+
+          <div className="flex gap-4 items-end">
+            {actions?.includes('Exportar Excel') && (
+              <>
+                {referalNotes?.length > 0 ? (
                   <ButtonUi
                     className="mt-4 font-semibold w-48 "
                     color="success"
                     theme={Colors.Success}
                     onPress={() => {
-                      handleExportExcel(undefined, undefined)
+                      handleExportExcel(undefined, undefined);
                     }}
                   >
-                    <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                    <p>Exportar Excel</p>{' '}
+                    <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
                   </ButtonUi>
-                  :
+                ) : (
                   <ButtonUi
                     className="mt-4 opacity-70 font-semibold flex-row gap-10 w-48"
                     color="success"
@@ -183,72 +343,37 @@ function List() {
                     <p>Exportar Excel</p>
                     <PiMicrosoftExcelLogoBold className="text-white" size={24} />
                   </ButtonUi>
-                }
-
+                )}
               </>
             )}
-            {referalNotes?.length > 0 ?
-              <DownloadPDFButton branch={branch} filters={{ startDate, endDate, branchId, type: state.value }} transmitter={transmitter} /> :
-              <ButtonUi
-                isDisabled
-                theme={Colors.Primary}
-              >
-                <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
-
-              </ButtonUi>}
-          </div>
-          <div className='flex flex-row gap-2 justify-end items-end'>
-            <Select
-              className="w-44"
-              classNames={{
-                label: 'font-semibold',
-                selectorIcon: 'dark:text-white'
-              }}
-              defaultSelectedKeys={[limit.toString()]}
-              label="Mostrar"
-              labelPlacement="outside"
-              placeholder="Mostrar"
-              value={limit}
-              variant="bordered"
-              onChange={(e) => {
-                setLimit(Number(e.target.value !== '' ? e.target.value : '30'));
-              }}
-            >
-              {limit_options.map((limit) => (
-                <SelectItem key={limit} className="dark:text-white">
-                  {limit}
-                </SelectItem>
-              ))}
-            </Select>
-            <Select
-              className="w-44"
-              classNames={{ label: 'text-sm font-semibold dark:text-white ' }}
-              label="Mostrar por estado"
-              labelPlacement="outside"
-              placeholder="Selecciona un estado"
-              value={state.label}
-              variant="bordered"
-              onChange={(value) => setState({ label: value.target.value === '' ? value.target.value : "TODOS", value: value.target.value })}
-            >
-              {estadosV.map((e) => (
-                <SelectItem key={e.value} className="dark:text-white">
-                  {e.label}
-                </SelectItem>
-              ))}
-            </Select>
-
-
-            <Button
-              isIconOnly
-              style={{ ...style, justifySelf: "end" }}
-              type="button"
-              onPress={() => navigate('/list-referal-notes')}
-            >
-              <Plus />
-            </Button>
+            {referalNotes?.length > 0 ? (
+              <DownloadPDFButton
+                branch={branch}
+                filters={{ startDate, endDate, branchId, type: state.value }}
+                transmitter={transmitter}
+              />
+            ) : (
+              <ButtonUi isDisabled theme={Colors.Primary}>
+                <AiOutlineFilePdf className="" size={25} />{' '}
+                <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+              </ButtonUi>
+            )}
           </div>
         </div>
-        <TableComponent headers={['No.', 'Sucursal Origen', 'Sucursal Destino', 'Numero control', 'Código generación', 'Empleado', 'Estado', 'Acciones']}>
+
+        <TableComponent
+          headers={[
+            '',
+            'No.',
+            'Sucursal Origen',
+            'Sucursal Destino',
+            'Numero control',
+            'Código generación',
+            'Empleado',
+            'Estado',
+            'Acciones',
+          ]}
+        >
           {loading ? (
             <tr>
               <td className="p-3 text-sm text-center text-slate-500" colSpan={6}>
@@ -262,8 +387,13 @@ function List() {
                   {referalNotes.map((item) => (
                     <tr key={item.id} className="border-b border-slate-200">
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {item.id}
+                        <Checkbox
+                          key={item.id}
+                          checked={selectedIds.includes(item.id)}
+                          onValueChange={() => handleCheckboxChange(item.id)}
+                        />
                       </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{item.id}</td>
                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                         {item.branch?.name ?? ''}
                       </td>
@@ -319,24 +449,20 @@ function List() {
                         )}
                         {item?.status.name.includes('PROCESADO') && (
                           <TooltipGlobal text="Invalidar">
-
                             <Button
                               isIconOnly
                               style={styles.dangerStyles}
                               onPress={() => {
-                                modalInvalidate.onOpen()
-                                setItems(item)
+                                modalInvalidate.onOpen();
+                                setItems(item);
                               }}
                             >
                               <FileX2 size={25} />
                             </Button>
-
                           </TooltipGlobal>
                         )}
                         {!!item.employee && item.status.name.includes('PENDIENTE') && (
-                          <TooltipGlobal
-                            text={item?.isCompleted ? 'Completado' : 'Completar'}
-                          >
+                          <TooltipGlobal text={item?.isCompleted ? 'Completado' : 'Completar'}>
                             <Button
                               isIconOnly
                               style={
@@ -345,8 +471,8 @@ function List() {
                                   : { backgroundColor: '#2E8B57', color: 'white' }
                               }
                               onPress={() => {
-                                setSelectedNote(item)
-                                modalComplete.onOpen()
+                                setSelectedNote(item);
+                                modalComplete.onOpen();
                               }}
                             >
                               {!item?.isCompleted ? (
@@ -380,7 +506,15 @@ function List() {
                 previousPage={pagination_referal_notes.prevPag}
                 totalPages={pagination_referal_notes.totalPag}
                 onPageChange={(page) => {
-                  onGetReferalNotes(Number(user?.transmitterId), page, limit, startDate, endDate, state.value, branchId);
+                  onGetReferalNotes(
+                    Number(user?.transmitterId),
+                    page,
+                    limit,
+                    startDate,
+                    endDate,
+                    state.value,
+                    branchId
+                  );
                 }}
               />
             </div>
@@ -417,11 +551,19 @@ function List() {
           <CompleteNoteModal
             note={selectedNote}
             reload={() => {
-              onGetReferalNotes(Number(user?.branchId), 1, limit, startDate, endDate, state.value, branchId)
+              onGetReferalNotes(
+                Number(user?.branchId),
+                1,
+                limit,
+                startDate,
+                endDate,
+                state.value,
+                branchId
+              );
             }}
             visibled={modalComplete}
             onClose={() => {
-              setSelectedNote(null), modalComplete.onClose()
+              setSelectedNote(null), modalComplete.onClose();
             }}
           />
         )}
@@ -430,7 +572,15 @@ function List() {
         item={items}
         modalInvalidate={modalInvalidate}
         reload={() => {
-          onGetReferalNotes(Number(user?.transmitterId), 1, 10, startDate, endDate, state.value, branchId)
+          onGetReferalNotes(
+            Number(user?.transmitterId),
+            1,
+            10,
+            startDate,
+            endDate,
+            state.value,
+            branchId
+          );
         }}
       />
     </>
