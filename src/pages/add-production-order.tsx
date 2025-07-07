@@ -269,7 +269,7 @@ function AddProductionOrder() {
                   <Select
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
-                    label="Extraer producto de"
+                    label="Extraer producto de 111"
                     placeholder="Selecciona la sucursal de origen"
                     selectedKeys={selectedBranch}
                     variant="bordered"
@@ -356,7 +356,7 @@ function AddProductionOrder() {
           <div className="w-full h-full overflow-y-auto flex flex-col">
             {selectedProducts.length > 0 && (
               <>
-                <div className="grid grid-cols-2 lg:grid-cols-2">
+                <div className="grid grid-cols-2 lg:grid-cols-2 mt-2 mb-2">
                   <p>PROCESO: {selectedProducts[0].branchProduct?.product?.name}</p>
                   <div className="flex gap-5 items-center">
                     <p>PRODUCCIÓN: </p>
@@ -373,7 +373,7 @@ function AddProductionOrder() {
                 {selectedProducts[0].recipeBook && (
                   <>
                     <TableComponent
-                      className=" hidden md:flex flex-col"
+                      className="md:flex flex-col"
                       headers={[
                         'Producto',
                         'Código',
@@ -406,7 +406,7 @@ function AddProductionOrder() {
                   {selectedProducts.map((_product, index) => (
                     <AccordionItem
                       key={`costs-${index}`}
-                      className="dark:bg-gray-800"
+                      className="dark:bg-gray-800 mb-2"
                       indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
                       startContent={
                         <DollarSign className="text-green-700 dark:text-slate-200" size={25} />

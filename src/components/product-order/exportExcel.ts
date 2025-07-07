@@ -1,23 +1,23 @@
 import ExcelJS from 'exceljs';
 import { toast } from 'sonner';
 
-import { ShippingReport } from '@/services/reports/shipping_report.service';
+import { IOrderProduct } from './exportPdf';
 
-export const exportToExcel = async (data: ShippingReport[], startDate: string, endDate: string) => {
+export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate: string, endDate: string) => {
   try {
     const workbook = new ExcelJS.Workbook();
 
     workbook.creator = 'Mi Aplicación';
     workbook.created = new Date();
 
-    const worksheet = workbook.addWorksheet('Reporte de envios');
+    const worksheet = workbook.addWorksheet('Ordenes de producto');
 
     // 1. Título principal (fila 1)
-    const titleRow = worksheet.addRow([`Reporte de Envíos del ${startDate} al ${endDate}`]);
+    const titleRow = worksheet.addRow([`Ordenes de producto del ${startDate} al ${endDate}`]);
 
     titleRow.font = { bold: true, size: 16 };
     titleRow.alignment = { horizontal: 'center' };
-    worksheet.mergeCells(`A1:I1`); 
+    worksheet.mergeCells(`A1:H1`); 
 
     // 2. Fila vacía de separación (fila 2)
     worksheet.addRow([]);
@@ -25,7 +25,6 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
     // 3. Configurar columnas (sin Sucursal Terminal)
     worksheet.columns = [
       { key: 'nombre', width: 30 },
-      { key: 'produccion', width: 12 },
       { key: 'sucursalCentro', width: 15 },
       { key: 'sucursalISSS', width: 15 },
       { key: 'sucursalNahulzalco', width: 18 },
@@ -38,7 +37,6 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
     // 4. Añadir ENCABEZADOS MANUALMENTE (fila 3)
     const headerRow = worksheet.addRow([
       'Nombre del Producto',
-      'Producción',
       'Sucursal Centro',
       'Sucursal ISSS',
       'Sucursal Nahulzalco',
@@ -69,7 +67,6 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
     data.forEach((item) => {
       const rowData = [
         item.producto,
-        item.produccion,
         item['SUCURSAL-CENTRO'],
         item['SUCURSAL-ISSS'],
         item['SUCURSAL-NAHUIZALCO'],
@@ -104,7 +101,7 @@ export const exportToExcel = async (data: ShippingReport[], startDate: string, e
     const link = document.createElement('a');
 
     link.href = url;
-    link.download = `Reporte_Envios_${startDate}_a_${endDate}.xlsx`;
+    link.download = `Ordenes_de_Producto_${startDate}_a_${endDate}.xlsx`;
     link.click();
     toast.success('Archivo generado exitosamente.');
     setTimeout(() => {

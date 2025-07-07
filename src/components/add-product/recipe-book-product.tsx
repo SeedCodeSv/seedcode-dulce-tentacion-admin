@@ -71,7 +71,7 @@ function RecipeBookProduct({ selectedProducts, setSelectedProducts, performance 
             key={sp.id}
             className="items-center gap-2 py-2 shadow border rounded-[12px] p-4 flex flex-col"
           >
-            <div className="flex justify-between w-full">
+            <div className="flex justify-between w-full mb-2">
               <p className="text-sm font-semibold w-full dark:text-white">{sp.name}</p>
               <ButtonUi
                 isIconOnly
