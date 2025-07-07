@@ -71,6 +71,11 @@ function ListSubCategory({ actions }: PProps) {
 
   return (
     <DivGlobal>
+      <div className="flex md:hidden">
+        <ButtonUi isIconOnly theme={Colors.Info} onPress={dislosureFilters.onOpen}>
+          <Filter />
+        </ButtonUi>
+      </div>
       <div className="hidden md:flex">
         <Filters
           active={isActive}
@@ -114,11 +119,7 @@ function ListSubCategory({ actions }: PProps) {
 
         <div className="flex gap-10 items-end">
           <DisplayView setView={setView} view={view} />
-          <div className="flex md:hidden">
-            <ButtonUi isIconOnly theme={Colors.Info} onPress={dislosureFilters.onOpen}>
-              <Filter />
-            </ButtonUi>
-          </div>
+
           {actions.includes('Agregar') && (
             <AddButton
               onClick={() => {
@@ -270,7 +271,7 @@ export const DeletePopUp = ({ subcategory }: Props) => {
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
               ¿Estas seguro de eliminar este registro?
             </p>
-            <div className="mt-4">
+            <div className="mt-4 flex justify-center gap-5">
               <ButtonUi theme={Colors.Default} onPress={deleteDisclosure.onClose}>
                 No, cancelar
               </ButtonUi>

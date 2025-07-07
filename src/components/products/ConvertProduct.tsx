@@ -9,6 +9,7 @@ import { Colors } from "@/types/themes.types";
 import { messages } from "@/utils/constants";
 import { Product } from "@/types/products.types";
 import { useProductsStore } from "@/store/products.store";
+import useWindowSize from "@/hooks/useWindowSize";
 interface Props {
   product: Product | undefined
   onClose: () => void
@@ -111,15 +112,21 @@ export default function ConvertProduct({ product, onClose, isOpen }: Props) {
     }
   };
 
+  const { windowSize } = useWindowSize();
+
+  const isMobile = windowSize.width < 768;
+
 
   return (
     <ModalGlobal
       isBlurred={true}
       isOpen={isOpen}
-      size="w-full lg:w-[30vw]"
+      // size="w-full lg:w-[30vw] "
+      size={isMobile ? 'w-[95vw] p-2 border rounded-xl' : 'w-[30vw] p-4 border rounded-xl'}
       title={isEditing ? 'Editar Conversión' : 'Convertir Producto'}
       onClose={onClose}
     >
+      {/* <div></div> */}
       <div className="p-4 flex flex-col gap-2">
         <Input
           isReadOnly

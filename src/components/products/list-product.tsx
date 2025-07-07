@@ -57,6 +57,15 @@ function ListProducts({ actions }: Props) {
   );
   const [active, setActive] = useState(true);
 
+
+  // const [view, setView] = useState<'table' | 'grid'>('table');
+
+  // useEffect(() => {
+  //   if (typeof windowSize?.width === 'number') {
+  //     setView(windowSize.width < 768 ? 'grid' : 'table');
+  //   }
+  // }, [windowSize?.width]);
+
   useEffect(() => {
     getPaginatedProducts(
       1,
@@ -184,6 +193,9 @@ function ListProducts({ actions }: Props) {
             actions={actions}
             handleActivate={(id) => handleActivate(id)}
             handleShowRecipe={(id) => handleOpenModalRecipe(id)}
+            modalConvertOpen={() => {
+              modalConvert.onOpen()
+            }}
             openEditModal={(prd) => {
               setSelectedProduct(prd);
               setIsOpenModalUpdate(true);
@@ -226,10 +238,10 @@ function ListProducts({ actions }: Props) {
                                 isIconOnly
                                 showTooltip
                                 theme={Colors.Info}
-                                tooltipText='Convertir Producto'
-                                onPress={() =>{
+                                tooltipText='Convertir Producto 111'
+                                onPress={() => {
                                   setSelectProduct(product)
-                                   modalConvert.onOpen()
+                                  modalConvert.onOpen()
                                 }}
                               >
                                 <RefreshCcw />
@@ -264,7 +276,7 @@ function ListProducts({ actions }: Props) {
                                   isIconOnly
                                   showTooltip
                                   className="border border-white"
-                                  theme={Colors.Info}
+                                  theme={Colors.Secondary}
                                   tooltipText="Asignar a productos"
                                   onPress={() => navigate(`/create-branch-product/${product.id}`)}
                                 >
@@ -341,11 +353,12 @@ function ListProducts({ actions }: Props) {
           onOpenChange={modalRecipe.onOpenChange}
         />
         <ConvertProduct
-         isOpen={modalConvert.isOpen}
-         product={product!}
-         onClose={() => {modalConvert.onClose();
-          setSelectProduct(undefined)
-         }}
+          isOpen={modalConvert.isOpen}
+          product={product!}
+          onClose={() => {
+            modalConvert.onClose();
+            setSelectProduct(undefined)
+          }}
         />
       </DivGlobal>
     </>

@@ -108,8 +108,8 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
 
   return (
     <>
-      <Modal isDismissable={false} isOpen={isOpen} size="2xl" onClose={onCloseModal}>
-        <ModalContent>
+      <Modal isDismissable={false} isOpen={isOpen} onClose={onCloseModal}>
+        {/* <ModalContent>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -296,6 +296,196 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               </ButtonUi>
             </ModalFooter>
           </form>
+        </ModalContent> */}
+        {/* <ModalContent > */}
+        <ModalContent className="w-full max-w-[95vw] md:max-w-3xl max-h-[90vh] overflow-y-auto mb-2">
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              formik.handleSubmit(e);
+            }}
+          >
+            <ModalHeader className="dark:text-white">Editar Producto</ModalHeader>
+            <ModalBody>
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+                <div>
+                  <Input
+                    className="dark:text-white"
+                    classNames={{
+                      label: 'font-semibold text-gray-500 dark:text-gray-200 text-sm',
+                    }}
+                    defaultValue={product?.name}
+                    label="Nombre"
+                    labelPlacement="outside"
+                    placeholder="Ingresa el nombre"
+                    variant="bordered"
+                    {...formik.getFieldProps('name')}
+                    errorMessage={formik.errors.name}
+                    isInvalid={!!formik.errors.name && !!formik.touched.name}
+                  />
+
+                  <div className="mt-2">
+                    <Textarea
+                      className="dark:text-white"
+                      classNames={{ label: 'font-semibold text-gray-500 text-sm text-left' }}
+                      defaultValue={product?.description}
+                      label="Descripción"
+                      labelPlacement="outside"
+                      placeholder="Ingresa la descripción"
+                      variant="bordered"
+                      {...formik.getFieldProps('description')}
+                      errorMessage={formik.errors.description}
+                      isInvalid={!!formik.errors.description && !!formik.touched.description}
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <Autocomplete
+                      className="dark:text-white"
+                      classNames={{ base: 'font-semibold text-sm' }}
+                      label="Categoría producto"
+                      labelPlacement="outside"
+                      placeholder="Selecciona la categoría"
+                      selectedKey={categorySelected}
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const categorySelected = key.toString();
+
+                          setCategorySelected(categorySelected);
+                          getSubcategories(Number(categorySelected));
+                        }
+                      }}
+                    >
+                      {list_categories.map((category) => (
+                        <AutocompleteItem key={category.id} className="dark:text-white">
+                          {category.name}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+
+                  <Select
+                    className="dark:text-white pt-3"
+                    classNames={{ base: 'font-semibold text-sm' }}
+                    label="Sub-categoría"
+                    labelPlacement="outside"
+                    placeholder="Selecciona la sub-categoría"
+                    selectedKeys={[formik.values.subCategoryId.toString()]}
+                    variant="bordered"
+                    {...formik.getFieldProps('subCategoryId')}
+                  >
+                    {subcategories?.map((sub) => (
+                      <SelectItem key={sub.id} className="dark:text-white">
+                        {sub.name}
+                      </SelectItem>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <div className="mt-2">
+                    <Select
+                      className="dark:text-white"
+                      classNames={{ base: 'font-semibold' }}
+                      label="Tipo de item"
+                      labelPlacement="outside"
+                      placeholder="Selecciona el item"
+                      selectedKeys={[formik.values.tipoItem]}
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const item = itemTypes.find((it) => it.codigo === key.currentKey);
+
+                          if (item) {
+                            formik.setFieldValue('tipoDeItem', item.valores),
+                              formik.setFieldValue('tipoItem', item.codigo);
+
+                            return;
+                          }
+                        }
+                        formik.setFieldValue('tipoDeItem', ''),
+                          formik.setFieldValue('tipoItem', '');
+                      }}
+                    >
+                      {itemTypes.map((item) => (
+                        <SelectItem key={item.codigo} className="dark:text-white">
+                          {item.valores}
+                        </SelectItem>
+                      ))}
+                    </Select>
+                  </div>
+                  <div className="mt-2">
+                    <Autocomplete
+                      className="pt-5 dark:text-white"
+                      classNames={{ base: 'font-semibold' }}
+                      defaultInputValue={product?.unidaDeMedida || ''}
+                      label="Unidad de medida"
+                      labelPlacement="outside"
+                      name="unidadDeMedida"
+                      placeholder="Selecciona unidad de medida"
+                      variant="bordered"
+                      onSelectionChange={(key) => {
+                        if (key) {
+                          const item = unidadDeMedidaList.find(
+                            (it) => it.codigo === key.toString()
+                          );
+
+                          if (item) {
+                            formik.setFieldValue('unidaDeMedida', item.valores),
+                              formik.setFieldValue('uniMedida', item.codigo);
+
+                            return;
+                          }
+                        }
+                        formik.setFieldValue('unidaDeMedida', ''),
+                          formik.setFieldValue('uniMedida', '');
+                      }}
+                    >
+                      {unidadDeMedidaList.map((item) => (
+                        <AutocompleteItem key={item.codigo} className="dark:text-white">
+                          {item.valores}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+
+                  <div className="flex gap-2 mt-5">
+                    <div className="w-full mt-2">
+                      <Input
+                        className="dark:text-white"
+                        classNames={{ label: 'font-semibold text-sm' }}
+                        defaultValue={product?.code}
+                        label="Código"
+                        labelPlacement="outside"
+                        placeholder="Ingresa o genera el código"
+                        variant="bordered"
+                        {...formik.getFieldProps('code')}
+                        isInvalid={!!formik.errors.code && !!formik.touched.code}
+                      />
+                    </div>
+                  </div>
+                  <Input
+                    isRequired
+                    className="dark:text-white pt-4"
+                    classNames={{ label: 'font-semibold ' }}
+                    label="Precio"
+                    labelPlacement="outside"
+                    placeholder="Ingresa el precio del producto"
+                    variant="bordered"
+                    {...formik.getFieldProps('price')}
+                    errorMessage={formik.errors.price}
+                    isInvalid={!!formik.errors.price && !!formik.touched.price}
+                    onKeyDown={preventLetters}
+                  />
+                </div>
+              </div>
+            </ModalBody>
+          </form>
+          <ModalFooter>
+            <ButtonUi className="px-10" theme={Colors.Primary} type="submit">
+              Guardar producto
+            </ButtonUi>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

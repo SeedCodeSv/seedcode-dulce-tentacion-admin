@@ -22,7 +22,7 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, orderQuantity, stat
   return (
     <div className="px-4 py-3 sm:px-6">
       <h4 className="text-md font-medium text-gray-900 dark:text-gray-200 mb-3">Requisitos de Receta</h4>
-      <div className="overflow-hidden border border-gray-200 sm:rounded-lg">
+      <div className="overflow-hidden border border-gray-200 sm:rounded-lg overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-800">
             <tr>
