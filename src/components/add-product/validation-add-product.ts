@@ -21,6 +21,8 @@ export const initialValues: ProductPayloadForm = {
   stock: 1,
   suppliers: [],
   minimumStock: 1,
+  MOP: 0,
+  CIF: 0,
   productType: typesProduct[0],
   menu: {
     noDeadline: false,

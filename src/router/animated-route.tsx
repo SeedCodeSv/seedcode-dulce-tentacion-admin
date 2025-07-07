@@ -17,7 +17,7 @@ const AnimatedRoute = ({ children }: { children: ReactNode }) => {
         <Suspense
           fallback={
             <div className="w-screen h-screen bg-white dark:bg-gray-800 flex flex-col justify-center items-center dark:text-white">
-              <p>Preparando</p>
+              <p>Preparando...</p>
             </div>
           }
         >

@@ -37,6 +37,7 @@ import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
 import { get_pdf_fe_cfe } from "@/services/pdf.service";
 import { useAuthStore } from "@/store/auth.store";
 import { verifyApplyAnulation } from "@/utils/filters";
+import TdGlobal from "@/themes/ui/td-global";
 
 function ListSales() {
   const styles = global_styles();
@@ -64,7 +65,7 @@ function ListSales() {
     getSalesByDatesAndStatus(
       1,
       limit,
-      branch,
+      branch ?? 0,
       dateInitial,
       dateEnd,
       state,
@@ -115,7 +116,7 @@ function ListSales() {
       const link = document.createElement('a');
 
       link.href = URL.createObjectURL(jsonBlob);
-      link.download = `${sale.numeroControl}_document.json`;
+      link.download = `${sale.codigoGeneracion}.json`;
       link.click();
     } catch (error) {
       toast.error('No se pudo descargar el JSON');
@@ -189,13 +190,16 @@ function ListSales() {
         </div>
       </div>
       <TableComponent
-        headers={['Nº', 'Fecha - Hora', 'Número de control', 'SubTotal', 'IVA', 'Estado', 'Acciones']}>
+        headers={['Nº', 'Fecha - Hora','Sucursal', 'Número de control', 'SubTotal', 'IVA', 'Estado', 'Acciones']}>
         {sales_dates?.map((sale, index) => (
           <tr key={index} className="border-b border-slate-200">
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {sale.fecEmi + ' - ' + sale.horEmi}
             </td>
+            <TdGlobal>
+              {sale.employee.branch.name}
+            </TdGlobal>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {sale.numeroControl}
             </td>
