@@ -21,7 +21,7 @@ export const exportToPDFOrderProduct = async (data: IOrderProduct[], startDate: 
     });
 
     // 1. Configuración inicial
-    const title = `Reporte de Envíos del ${startDate} al ${endDate}`;
+    const title = `Ordenes de productos del ${startDate} al ${endDate}`;
     const headers = [
       'Nombre del Producto',
       'Sucursal Centro',
@@ -85,7 +85,7 @@ export const exportToPDFOrderProduct = async (data: IOrderProduct[], startDate: 
     });
 
     // 5. Guardar PDF
-    doc.save(`Reporte_Envios_${startDate}_a_${endDate}.pdf`);
+    doc.save(`Ordenes_de_productos${startDate}_a_${endDate}.pdf`);
     toast.success('PDF generado exitosamente');
   } catch (error) {
     toast.error('Error al generar PDF');
