@@ -7,7 +7,7 @@ import { ShippingReport } from '@/services/reports/shipping_report.service';
 export const exportToPDF = async (data: ShippingReport[], startDate: string, endDate: string) => {
   try {
     const doc = new jsPDF({
-      orientation: 'portrait',
+      orientation: 'landscape',
       unit: 'mm',
     });
 
@@ -20,6 +20,9 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
       'Sucursal ISSS',
       'Sucursal Nahulzalco',
       'Sucursal Sonzacate',
+      'Administracion',
+      'Producto Terminado',
+      'Bodega de materia prima',
     ];
 
     // 2. Datos formateados
@@ -30,6 +33,9 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
       item['SUCURSAL-ISSS'].toString(),
       item['SUCURSAL-NAHUIZALCO'].toString(),
       item['SUCURSAL-SONZACATE'].toString(),
+      item.ADMINISTRACION.toString(),
+      item['PRODUCTO TERMINADO'].toString(),
+      item['BODEGA DE MATERIA PRIMA'].toString()
     ]);
 
     // 3. Estilo personalizado
@@ -61,6 +67,9 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
         3: { cellWidth: 28, halign: 'center' }, // Sucursal ISSS
         4: { cellWidth: 28, halign: 'center' }, // Sucursal Nahulzalco
         5: { cellWidth: 28, halign: 'center' }, // Sucursal Sonzacate
+        6: { cellWidth: 28, halign: 'center' }, // Sucursal administracion
+        7: { cellWidth: 28, halign: 'center' }, // Sucursal producto terminado
+        8: { cellWidth: 28, halign: 'center' }, // Sucursal bodega de materia prima
       },
       styles: {
         lineColor: [200, 200, 200],
