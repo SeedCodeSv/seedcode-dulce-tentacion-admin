@@ -2,9 +2,18 @@ import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 import { toast } from 'sonner';
 
-import { ShippingReport } from '@/services/reports/shipping_report.service';
+export interface IOrderProduct {
+  producto: string;
+  ADMINISTRACION: number;
+  'SUCURSAL-CENTRO': number;
+  'SUCURSAL-ISSS': number;
+  'SUCURSAL-SONZACATE': number;
+  'SUCURSAL-NAHUIZALCO': number;
+  'PRODUCTO TERMINADO': number;
+  'BODEGA DE MATERIA PRIMA': number;
+}
 
-export const exportToPDF = async (data: ShippingReport[], startDate: string, endDate: string) => {
+export const exportToPDFOrderProduct = async (data: IOrderProduct[], startDate: string, endDate: string) => {
   try {
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -15,7 +24,6 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
     const title = `Reporte de Envíos del ${startDate} al ${endDate}`;
     const headers = [
       'Nombre del Producto',
-      'Producción',
       'Sucursal Centro',
       'Sucursal ISSS',
       'Sucursal Nahulzalco',
@@ -28,7 +36,6 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
     // 2. Datos formateados
     const body = data.map((item) => [
       item.producto,
-      item.produccion.toString(),
       item['SUCURSAL-CENTRO'].toString(),
       item['SUCURSAL-ISSS'].toString(),
       item['SUCURSAL-NAHUIZALCO'].toString(),
@@ -62,14 +69,13 @@ export const exportToPDF = async (data: ShippingReport[], startDate: string, end
       },
       columnStyles: {
         0: { cellWidth: 30 }, // Nombre del Producto (reducido)
-        1: { cellWidth: 21, halign: 'center' }, // Producción
-        2: { cellWidth: 21, halign: 'center' }, // Sucursal Centro
-        3: { cellWidth: 21, halign: 'center' }, // Sucursal ISSS
-        4: { cellWidth: 21, halign: 'center' }, // Sucursal Nahulzalco
-        5: { cellWidth: 21, halign: 'center' }, // Sucursal Sonzacate
-        6: { cellWidth: 21, halign: 'center' }, // Administracion
-        7: { cellWidth: 21, halign: 'center' }, // Producto Terminado
-        8: { cellWidth: 21, halign: 'center' }, // Bodega de materia prima
+        1: { cellWidth: 24, halign: 'center' }, // Sucursal Centro
+        2: { cellWidth: 24, halign: 'center' }, // Sucursal ISSS
+        3: { cellWidth: 24, halign: 'center' }, // Sucursal Nahulzalco
+        4: { cellWidth: 24, halign: 'center' }, // Sucursal Sonzacate
+        5: { cellWidth: 24, halign: 'center' }, // Administracion
+        6: { cellWidth: 24, halign: 'center' }, // Producto Terminado
+        7: { cellWidth: 24, halign: 'center' }, // Bodega de materia prima
       },
       styles: {
         lineColor: [200, 200, 200],
