@@ -34,6 +34,8 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import Pagination from '../global/Pagination';
 
 import { RenderStatus, Status, StautsProductOrder } from './render-order-status';
+import { exportToExcelOrderProduct } from './exportExcel';
+import { exportToPDFOrderProduct, IOrderProduct } from './exportPdf';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import DivGlobal from '@/themes/ui/div-global';
@@ -49,10 +51,6 @@ import { API_URL, limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
-import { ShippingReport } from '@/services/reports/shipping_report.service';
-import { exportToExcel } from '@/pages/reports/shipping_report/exportExcel';
-import { exportToPDF } from '@/pages/reports/shipping_report/exportPdf';
-import { useShippingStore } from '@/store/reports/shipping_report_store';
 
 export default function ProductOrderComponent() {
   const { backgroundColor, textColor } = useColors();
@@ -76,7 +74,6 @@ export default function ProductOrderComponent() {
   });
 
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
-  const { dataReport, getShippingReport } = useShippingStore();
 
   const handleCheckboxChange = (id: number) => {
     setSelectedIds((prevSelectedIds) => {
@@ -91,7 +88,6 @@ export default function ProductOrderComponent() {
   useEffect(() => {
     getBranchesList();
     getOrdersByDates(search);
-    getShippingReport(search.startDate, search.endDate);
   }, []);
   const handleDetails = (order: Order) => {
     setSelectedOrder(order);
@@ -115,29 +111,15 @@ export default function ProductOrderComponent() {
 
   const handleSearch = (page: number) => {
     getOrdersByDates({ ...search, page });
-    getShippingReport(search.startDate, search.endDate);
   };
 
-  const disabledExport = () => {
-    if (selectedIds.length < 0) {
-      return true;
-    }
-    if (dataReport && Array.isArray(dataReport) && dataReport.length > 0) {
-      return false;
-    }
-    if (selectedIds.length > 0 && !dataReport) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const getShippingReportByOrder = async (): Promise<ShippingReport[]> => {
+  const getOrderProductReport = async (): Promise<IOrderProduct[]> => {
     try {
-      const response = await axios.post(
-        API_URL + '/referal-note/shipping-report/referal-note-by-order',
-        { orderProductIds: selectedIds }
-      );
+      const response = await axios.post(API_URL + '/order-product/order-report', {
+        startDate: search.startDate,
+        endDate: search.endDate,
+        ids: selectedIds,
+      });
 
       const responseData =
         typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
@@ -151,10 +133,10 @@ export default function ProductOrderComponent() {
 
   const exportExcel = async () => {
     try {
-      const reportData = await getShippingReportByOrder();
+      const reportData = await getOrderProductReport();
 
       if (reportData && reportData.length > 0) {
-        await exportToExcel(reportData, search.startDate, search.endDate);
+        await exportToExcelOrderProduct(reportData, search.startDate, search.endDate);
         toast.success('Exportado con éxito');
       } else {
         toast.error('No hay datos para exportar');
@@ -166,10 +148,10 @@ export default function ProductOrderComponent() {
 
   const exportPdf = async () => {
     try {
-      const reportData = await getShippingReportByOrder();
+      const reportData = await getOrderProductReport();
 
       if (reportData && reportData.length > 0) {
-        await exportToPDF(reportData, search.startDate, search.endDate);
+        await exportToPDFOrderProduct(reportData, search.startDate, search.endDate);
         toast.success('Exportado con éxito');
       } else {
         toast.error('No hay datos para exportar');
@@ -279,30 +261,19 @@ export default function ProductOrderComponent() {
       </ResponsiveFilterWrapper>
       <div className="flex gap-4">
         <ButtonUi
-          isDisabled={disabledExport()}
           startContent={<PiMicrosoftExcelLogo className="" size={25} />}
           theme={Colors.Success}
           onPress={() => {
-            if (selectedIds.length > 0) {
-              exportExcel();
-            } else {
-              exportToExcel(dataReport, search.startDate, search.endDate);
-            }
+            exportExcel();
           }}
         >
           Exportar a exel
         </ButtonUi>
         <ButtonUi
-          isDisabled={disabledExport()}
           startContent={<PiFilePdfDuotone className="" size={25} />}
           theme={Colors.Error}
-          //   onPress={exportPdf}
           onPress={() => {
-            if (selectedIds.length > 0) {
-              exportPdf();
-            } else {
-              exportToPDF(dataReport, search.startDate, search.endDate);
-            }
+            exportPdf();
           }}
         >
           Exportar a pdf
@@ -335,7 +306,6 @@ export default function ProductOrderComponent() {
               <Checkbox
                 key={order.id}
                 checked={selectedIds.includes(order.id)}
-                isDisabled={order.status === 'Abierta' || order.status === 'En Proceso'}
                 onValueChange={() => handleCheckboxChange(order.id)}
               />
             </TdGlobal>
