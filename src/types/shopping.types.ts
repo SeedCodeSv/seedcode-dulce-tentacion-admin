@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from "react"
 
-import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 import { BasicResponse } from "./global.types"
+
+import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
 
 // export interface ICreateShopping {
 //   branchId: number
@@ -333,5 +334,6 @@ export interface DetailShopping {
   ventaGravada: number;
   totalItem: number;
   uniMedida: string
+  codigo: string
   isActive: boolean;
 }

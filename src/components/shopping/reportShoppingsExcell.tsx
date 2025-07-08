@@ -100,10 +100,10 @@ export default function ShooppingExportExcell({ params, transmitter }: { transmi
             { width: 20 }
         ];
 
-        details.forEach((item, index) => {
+        details.forEach((item) => {
             const row = worksheet.addRow([
                 item.shopping.fecEmi,
-                index + 1,
+                item.codigo,
                 item.descripcion,
                 Number(item.totalItem),
                 formatUnidadDeMedida(item.uniMedida),

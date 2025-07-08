@@ -4,7 +4,6 @@ import { PiFileCsv, PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 
 import { annexes_iva_shopping, csvmaker } from './utils';
 
-import Layout from '@/layout/Layout';
 import { formatCurrency } from '@/utils/dte';
 import { months } from '@/utils/constants';
 import { useShoppingStore } from '@/store/shopping.store';

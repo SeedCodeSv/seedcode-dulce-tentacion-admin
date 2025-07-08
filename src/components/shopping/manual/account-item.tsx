@@ -41,6 +41,8 @@ function AccountItem({
   isReadOnly,
   editAccount,
   setExenta,
+  setErrorP,
+  errorP
 }: AccountItemProps) {
   const { list_type_of_account, getListTypeOfAccount } = useTypeOfAccountStore();
 
@@ -76,39 +78,37 @@ function AccountItem({
     const inputValue = value.replace(/[^0-9.]/g, ''); // Filtra el valor para permitir solo números y puntos
     const updatedItems = [...items]; // Crea una copia del estado actual
     const currentItem = updatedItems[index];
-  
+
     // Actualiza el campo correspondiente
     currentItem[field] = inputValue;
-  
+
     // Limpia el campo opuesto si el valor es mayor que 0
     if (Number(inputValue) > 0) {
       currentItem[field === 'debe' ? 'haber' : 'debe'] = '';
     }
-  
+
     // Si es una fila EXENTA y el valor es 0, no resetear la descripción
     if (currentItem.isExenta && inputValue === '') {
       currentItem.descTran = 'Exenta: ';
     }
-  
+
     // Calcula el total excluyendo el último y penúltimo elemento
     const total = updatedItems
       .slice(0, -2) // Excluye los últimos dos elementos
       .filter(item => !item.isExenta) // Excluye las filas EXENTA
       .map((item) => Number(item.debe) + Number(item.haber))
       .reduce((a, b) => a + b, 0);
-  
+
     const result = Number(total.toFixed(2)); // Redondea a 2 decimales
     const iva13 = Number((result * 0.13).toFixed(2)); // Calcula el IVA del 13%
-  
+
     // Actualiza el penúltimo elemento (IVA)
     updatedItems[updatedItems.length - 2].debe = iva13.toFixed(2);
     updatedItems[updatedItems.length - 2].haber = '0';
-  
-    // Actualiza el último elemento (total + IVA)
+
     updatedItems[updatedItems.length - 1].haber = (result + iva13).toFixed(2);
     updatedItems[updatedItems.length - 1].debe = '0';
-  
-    // Actualiza el estado
+
     setItems(updatedItems);
   };
 
@@ -121,7 +121,6 @@ function AccountItem({
       setExenta!('0');
     }
 
-    // Calcula el total excluyendo el último y penúltimo elemento
     const total = newItems
       .map((item) => Number(item.debe) + Number(item.haber))
       .reduce((a, b) => a + b, 0);
@@ -131,20 +130,27 @@ function AccountItem({
     const lastItem = items[items.length - 1];
     const prevItem = items[items.length - 2];
 
-    // Agrega el penúltimo y último elemento con los valores de IVA y total + IVA
     newItems.push(
-      { ...prevItem, debe: iva13.toFixed(2), haber: '0' }, // Penúltimo elemento (IVA)
+      { ...prevItem, debe: iva13.toFixed(2), haber: '0' },
       { ...lastItem, debe: '0', haber: (total + iva13).toFixed(2) } // Último elemento (total + IVA)
     );
 
-    // Actualiza el estado con los nuevos ítems
     setItems(newItems);
   };
 
   return (
     <>
-      <div className="w-full mt-4 border p-3 rounded-[12px]">
-        <Accordion>
+      <div
+        className={`w-full mt-4 p-3 rounded-[12px] shadow ${errorP ? 'border-2 border-red-300' : 'border'
+          }`}
+      >
+        <Accordion
+          onSelectionChange={() => {
+            if (setErrorP) {
+              setErrorP(false);
+            }
+          }}
+        >
           <AccordionItem
             key="1"
             textValue="Partida contable"
@@ -163,7 +169,7 @@ function AccountItem({
                   value={date}
                   variant="bordered"
                   onChange={(e) => setDate(e.target.value)}
-                 />
+                />
                 <Select
                   classNames={{
                     base: 'font-semibold',

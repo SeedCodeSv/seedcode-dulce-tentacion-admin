@@ -56,7 +56,7 @@ function ShoppingPage({ actions }: ArrayAction) {
   const { user } = useAuthStore();
   const { getBranchesList, branches_list } = useBranchProductStore();
   const [branchId, setBranchId] = useState(search_params.branchId ?? 0);
-  const  {transmitter, gettransmitter} = useTransmitterStore()
+  const { transmitter, gettransmitter } = useTransmitterStore()
 
   useEffect(() => {
     getPaginatedShopping(
@@ -69,8 +69,8 @@ function ShoppingPage({ actions }: ArrayAction) {
     );
   }, [limit]);
 
-   useEffect(() => {
-   gettransmitter()
+  useEffect(() => {
+    gettransmitter()
     getBranchesList();
   }, []);
 
@@ -84,6 +84,7 @@ function ShoppingPage({ actions }: ArrayAction) {
       branchId
     );
   };
+
   const navigate = useNavigate();
 
   const onDeleteConfirm = (id: number) => {
@@ -259,7 +260,7 @@ function ShoppingPage({ actions }: ArrayAction) {
           </ResponsiveFilterWrapper>
           <div className="flex justify-between mt-0 flex-grow gap-4">
             <div className='flex gap-2'>
-              <ShooppingExportExcell params={{page: 0,limit, branchId: 0,startDate: dateInitial, endDate: dateEnd}} transmitter={transmitter}/>
+              <ShooppingExportExcell params={{ page: 0, limit, branchId: 0, startDate: dateInitial, endDate: dateEnd }} transmitter={transmitter} />
             </div>
             {actions.includes('Agregar') && (
               <AddButton onClick={() => navigate('/create-shopping')} />
@@ -271,7 +272,7 @@ function ShoppingPage({ actions }: ArrayAction) {
         >
           {loading_shopping ? (
             <tr>
-              <td className="p-3 text-sm text-center text-slate-500" colSpan={8}>
+              <td className="p-6 text-sm text-center text-slate-500" colSpan={8}>
                 <LoadingTable />
               </td>
             </tr>

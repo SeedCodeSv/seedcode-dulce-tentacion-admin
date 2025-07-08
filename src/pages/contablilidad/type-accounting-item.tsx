@@ -6,7 +6,6 @@ import Pagination from '@/components/global/Pagination';
 import AddTypeAccounting from '@/components/type-accounting/add-type-account';
 import DeleteModal from '@/components/type-accounting/delete-modal';
 import UpdateTypeAccounting from '@/components/type-accounting/update-type-account';
-import Layout from '@/layout/Layout';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import ThGlobal from '@/themes/ui/th-global';

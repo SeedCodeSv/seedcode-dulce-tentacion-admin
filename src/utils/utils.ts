@@ -204,7 +204,7 @@ export const formatUnidadDeMedida = (cod: string) => {
        case '99':
       return 'Otra';
     default:
-      return 'No se encontró';
+      return '';
     }
 }
 

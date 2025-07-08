@@ -3,11 +3,6 @@ import {
   AutocompleteItem,
   Button,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Select,
   SelectItem,
   Spinner,
@@ -42,7 +37,6 @@ import { getElSalvadorDateTime } from '@/utils/dates';
 import { generate_uuid } from '@/utils/random/random';
 import { annulations } from "@/services/innvalidations.services";
 import { formatAnnulations06 } from "@/utils/DTE/innvalidations";
-import { get_employee_by_code } from "@/services/employess.service";
 
 interface Props {
   id: string;

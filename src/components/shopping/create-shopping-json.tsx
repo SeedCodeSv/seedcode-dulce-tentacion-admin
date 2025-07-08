@@ -1,6 +1,6 @@
 import {
+  Button,
   Card,
-  CardBody,
   Input,
   Modal,
   ModalBody,
@@ -9,19 +9,18 @@ import {
   ModalHeader,
   Select,
   SelectItem,
-  Tab,
-  Tabs,
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { X } from 'lucide-react';
+import { LockIcon, UnlockIcon, X } from 'lucide-react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
 
 import HeadlessModal from '../global/HeadlessModal';
 import ERROR from '../../assets/error.png';
+import useGlobalStyles from '../global/global.styles';
 
 import AddTributeSupplier from './add-supplier';
 import CreateShoppingManual from './create-shopping-manual';
@@ -62,51 +61,70 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
+import TdGlobal from '@/themes/ui/td-global';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
-  const viewName = actions.find((v) => v.view.name == 'Compras');
-  const actionView = viewName?.actions.name || [];
+  const styles = useGlobalStyles()
+  const navigate = useNavigate()
+  const viewName = actions.find((v) => v.view.name === 'Compras');
+  const actionView = Array.isArray(viewName?.actions?.name)
+    ? viewName.actions.name
+    : [];
+
+  const [activeTab, setActiveTab] = useState(1);
+
+  if (!actionView.includes('Agregar')) {
+    return <NoAuthorization />;
+  }
+
+  const tabs = [
+    { id: 1, label: 'Manual', content: <CreateShoppingManual /> },
+    { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
+  ];
+
+  const handleTabChange = (value: number) => {
+    setActiveTab(value);
+  };
 
   return (
-    <>
-      {actionView.includes('Agregar') ? (
-        <>
-          <DivGlobal>
-            <Tabs
-              aria-label="Dynamic tabs"
-              classNames={{
-                base: 'w-full flex justify-center',
-              }}
-              items={[
-                {
-                  id: 1,
-                  label: 'Manual',
-                  content: <CreateShoppingManual />,
-                },
-                { id: 2, label: 'Archivo JSON', content: <JSONMode /> },
-              ]}
-            >
-              {(item) => (
-                <Tab key={item.id} title={item.label}>
-                  <Card className="bg-white dark:bg-gray-900">
-                    <CardBody>{item.content}</CardBody>
-                  </Card>
-                </Tab>
-              )}
-            </Tabs>
-          </DivGlobal>
-        </>
-      ) : (
-        <NoAuthorization />
-      )}
-    </>
+    <DivGlobal className="flex flex-col items-center p-5 xl:p-8">
+      <div className='grid grid-cols-2 w-full items-center'>
+        <X className="cursor-pointer" onClick={() => {
+          navigate('/shopping')
+        }} />
+        <div className='flex'>
+          <div className="bg-slate-100 shadow rounded-[15px] flex gap-2 p-1 ">
+            {tabs.map((tab) => (
+              <Button
+                key={tab.id}
+                style={activeTab === tab.id ? {
+                  ...styles.thirdStyle,
+                  opacity: 10
+                } : {
+                  background: styles.thirdStyle.color,
+                  color: styles.thirdStyle.backgroundColor
+                }}
+                onPress={() => handleTabChange(tab.id)}
+              >
+                {tab.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Card className="bg-white dark:bg-gray-900 w-full mt-4 mx-auto">
+        {tabs.find((tab) => tab.id === activeTab)?.content}
+      </Card>
+    </DivGlobal>
   );
 }
-export default CreateShopping;
-const JSONMode = () => {
-  const { user } = useAuthStore();
 
+export default CreateShopping;
+
+const JSONMode = () => {
+  const [errorP, setErrorP] = useState(false)
+  const { user } = useAuthStore();
   const { actions } = useViewsStore();
   const viewName = actions.find((v) => v.view.name == 'Compras');
   const actionView = viewName?.actions.name || [];
@@ -240,6 +258,7 @@ const JSONMode = () => {
       setBranchSelected(user?.pointOfSale?.branch.name ?? '');
     }
   }, [user]);
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -279,16 +298,17 @@ const JSONMode = () => {
       if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
         toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
         formik.setSubmitting(false);
+        setErrorP(true)
 
         return;
       }
 
       if (!selectedType) {
-        toast.warning('Debes el tipo de partida');
+        toast.warning('Debes seleccionar el tipo de partida');
+        setErrorP(true)
 
         return;
       }
-
 
       const transmitterId = user?.pointOfSale?.branch.transmitter.id ?? 0;
 
@@ -330,9 +350,13 @@ const JSONMode = () => {
 
       formData.append('itemCatalog', JSON.stringify(itemsS));
 
-      if (file) {
-        formData.append('dte', file);
+      if (jsonData) {
+        const updatedBlob = new Blob([JSON.stringify(jsonData)], { type: 'application/json' });
+        const updatedFile = new File([updatedBlob], file?.name ?? 'dte.json', { type: 'application/json' });
+
+        formData.append('dte', updatedFile);
       }
+
       try {
         verify_code(jsonData?.identificacion.codigoGeneracion ?? '').then(({ data }) => {
           if (data.shopping) {
@@ -363,7 +387,6 @@ const JSONMode = () => {
     },
   });
   const [providerModal, setProviderModal] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -390,8 +413,10 @@ const JSONMode = () => {
           setJsonData(result);
           setIsOpen(false);
         }
+
       };
       reader.readAsText(file);
+
     }
   }, [file]);
 
@@ -439,6 +464,28 @@ const JSONMode = () => {
   const TotalLetras = jsonData?.resumen?.totalLetras ?? '';
   const MontoDeOperacion = jsonData?.resumen?.totalPagar ?? 0;
   const [isOpen, setIsOpen] = useState(false);
+
+  const [lockedStates, setLockedStates] = useState<boolean[]>([]);
+  const [locksInitialized, setLocksInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!locksInitialized && jsonData?.cuerpoDocumento) {
+      setLockedStates(jsonData.cuerpoDocumento.map(() => true));
+      setLocksInitialized(true);
+    }
+  }, [jsonData, locksInitialized]);
+
+
+  const toggleLock = (index: number) => {
+    setLockedStates((prev) => {
+      const newState = [...prev];
+
+      newState[index] = !newState[index];
+
+      return newState;
+    });
+  };
+
 
   return (
     <>
@@ -529,7 +576,6 @@ const JSONMode = () => {
                   >
                     Cargar Archivo JSON
                   </ButtonUi>
-                  <X className="cursor-pointer" onClick={() => window.location.href = '/shopping'} />
                 </div>
               </div>
               <form
@@ -906,6 +952,7 @@ const JSONMode = () => {
                   canAddItem={false}
                   date={dateItem}
                   description={description}
+                  errorP={errorP}
                   handleDeleteItem={() => { }}
                   index={0}
                   isReadOnly={false}
@@ -916,6 +963,7 @@ const JSONMode = () => {
                   selectedType={selectedType}
                   setDate={setDateItem}
                   setDescription={setDescription}
+                  setErrorP={setErrorP}
                   setItems={setItems}
                   setSelectedIndex={setSelectedIndex}
                   setSelectedType={setSelectedType}
@@ -930,30 +978,55 @@ const JSONMode = () => {
                       <TableComponent headers={['Tipo de item', 'Un. de medida', 'Cantidad', 'Código', 'Descripción', 'Pre. unitario', 'Total Gravada']}>
                         {jsonData.cuerpoDocumento.map((item, index) => (
                           <tr key={index}>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.tipoItem}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.uniMedida}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.cantidad}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.codigo}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.descripcion}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.precioUni}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {item.ventaGravada}
-                            </td>
+                            <TdGlobal className="p-3">{item.tipoItem}</TdGlobal>
+                            <TdGlobal className="p-3">{item.uniMedida}</TdGlobal>
+                            <TdGlobal className="p-3">{item.cantidad}</TdGlobal>
+                            <TdGlobal className="p-3 flex w-1/7">
+                              <Input
+                                className='flex w-1/7'
+                                classNames={{ label: 'font-semibold' }}
+                                isDisabled={lockedStates[index]}
+                                name="codigo"
+                                placeholder=""
+                                value={item.codigo}
+                                variant="bordered"
+                                onChange={(e) => {
+                                  if (!jsonData) return;
+
+                                  const updatedItems = [...jsonData.cuerpoDocumento];
+
+                                  updatedItems[index] = {
+                                    ...updatedItems[index],
+                                    codigo: e.target.value,
+                                  };
+
+                                  setJsonData({
+                                    ...jsonData,
+                                    cuerpoDocumento: updatedItems,
+                                    apendice: jsonData.apendice ?? null,
+                                    documentoRelacionado: jsonData.documentoRelacionado ?? null,
+                                    extension: jsonData.extension ?? null,
+                                    ventaTercero: jsonData.ventaTercero ?? null,
+                                  });
+                                }}
+                              />
+                              <Button
+                                isIconOnly
+                                className='bg-transparent'
+                                size='sm'
+                                type="button"
+                                onPress={() => toggleLock(index)}
+                              >
+                                {lockedStates[index] ? <LockIcon size={20} /> : <UnlockIcon />}
+                              </Button>
+                            </TdGlobal>
+                            <TdGlobal className="p-3 w-1/3">{item.descripcion}</TdGlobal>
+                            <TdGlobal className="p-3">{item.precioUni}</TdGlobal>
+                            <TdGlobal className="p-3">{item.ventaGravada}</TdGlobal>
                           </tr>
                         ))}
                       </TableComponent>
+
                     </div>
                   </div>
                 )}
