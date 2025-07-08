@@ -5,9 +5,9 @@ import SummaryCutExportExcell from "./SummaryCutExportExecll";
 import SummaryCutExportPdf from "./SummaryCutExportPdf";
 import SummaryCutReportTable from "./SummaryCutReportTable";
 
-import RenderViewButton from "@/components/global/render-view-button";
+// import RenderViewButton from "@/components/global/render-view-button";
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
-import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
+// import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
 import { useBranchesStore } from "@/store/branches.store";
 import { useCutReportStore } from "@/store/reports/cashCuts.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
@@ -20,8 +20,8 @@ export default function GeneralCashCutReportComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const [branchName, setBranchName] = useState('');
     const { transmitter, gettransmitter } = useTransmitterStore();
-    const isMovil = useIsMobileOrTablet()
-    const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
+    // const isMovil = useIsMobileOrTablet()
+    // const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
 
     const currentDate = new Date();
     const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);

@@ -1,9 +1,10 @@
 import { PiMicrosoftExcelLogo } from "react-icons/pi";
 import ExcelJS from 'exceljs';
+import { useState } from "react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
+import { IGetCutsReportSummary, SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { formatDateSimple, getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToARGB } from "@/utils/utils";
@@ -18,7 +19,18 @@ interface Props {
 
 
 export default function SummaryCutExportExcell({ branch, params, comercialName }: Props) {
-    const { cashCutsSummary } = useCutReportStore()
+    const { cashCutsSummary, onGetCashCutReportSummaryExport} = useCutReportStore()
+    const [loading_data, setLoadingData] = useState(false)
+        
+            const handle = async () => {
+                setLoadingData(true)
+                const res = await onGetCashCutReportSummaryExport({...params, limit: cashCutsSummary.total})
+        
+                if (res) {
+                    await exportToExcel(res.cashCutsSummary)
+                    setLoadingData(false)
+                }
+            }
 
     const styles = useGlobalStyles();
 
@@ -26,7 +38,7 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
     const fontColor = hexToARGB(styles.darkStyle.color);
 
 
-    const exportToExcel = async () => {
+    const exportToExcel = async (cashCutsSummary: IGetCutsReportSummary) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Cortes');
 
@@ -126,10 +138,10 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
 
     return (
         <ButtonUi
-            isDisabled={cashCutsSummary.cash_cuts_summary.length === 0}
+            isDisabled={loading_data || cashCutsSummary.cash_cuts_summary.length === 0}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
-            onPress={exportToExcel}
+            onPress={handle}
         >
             <p className="font-medium hidden lg:flex"> Exportar a excel</p>
         </ButtonUi>

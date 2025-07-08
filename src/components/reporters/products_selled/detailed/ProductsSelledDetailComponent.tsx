@@ -22,6 +22,7 @@ export default function ProductsSelledDetailComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { products_selled, getProductsSelled, loading } = useProductsOrdersReportStore()
     const { transmitter, gettransmitter } = useTransmitterStore();
+    
 
     const [search, setSearch] = useState({
         page: 1,
@@ -139,6 +140,7 @@ export default function ProductsSelledDetailComponent() {
                     <ProductsDetailedExportExcell comercialName={transmitter.nombreComercial} params={search} />
                 </div>
             </div>
+            <div>
             <TableComponent
                 headers={['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría']}
             >
@@ -171,6 +173,7 @@ export default function ProductsSelledDetailComponent() {
 
                 )}
             </TableComponent>
+            </div>
             {products_selled.totalPag > 1 &&
                 <Pagination
                     currentPage={products_selled.currentPag}
