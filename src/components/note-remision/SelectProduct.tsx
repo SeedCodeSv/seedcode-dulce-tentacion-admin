@@ -1,7 +1,6 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  ButtonGroup,
   Checkbox,
   Drawer,
   DrawerBody,
@@ -17,33 +16,32 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import {
   ArrowLeft,
   Badge,
-  BarChart3,
   Barcode,
   Check,
-  CreditCard,
   DollarSign,
   Grid3X3,
   Hash,
   Package,
   Search,
   Sparkles,
-  Table,
   Tag,
 } from 'lucide-react';
 import classNames from 'classnames';
 import { toast } from 'sonner';
 
 import Pagination from '../global/Pagination';
+import RenderViewButton from '../global/render-view-button';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import { Branches } from '@/shopping-branch-product/types/shipping_branch_product.types';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { useCategoriesStore } from '@/store/categories.store';
-import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import TdGlobal from '@/themes/ui/td-global';
 import { ThemeContext } from '@/hooks/useTheme';
 import { limit_options } from '@/utils/constants';
+import useWindowSize from '@/hooks/useWindowSize';
 
 type DisclosureProps = ReturnType<typeof useDisclosure>;
 
@@ -83,12 +81,17 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
   const { context, theme } = useContext(ThemeContext);
   const productRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const { windowSize } = useWindowSize()
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : "table"
+  )
 
   useEffect(() => {
     getListCategories();
+    // toast.success(`TAMANO ${windowSize.width}`)
   }, []);
 
-  const [view, setView] = useState<'grid' | 'table'>('table');
+  // const [view, setView] = useState<'grid' | 'table'>('table');
 
   useHotkeys(['right', 'down'], () => {
     setSelectedIndex((prev) => {
@@ -155,167 +158,143 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
         onOpenChange={modalProducts.onOpenChange}
       >
         <DrawerContent>
-          <DrawerBody className="p-0">
-            <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-gray-100 ">
-              <div className="bg-white/80 dark:bg-black backdrop-blur-xl dark:border-gray-200/50 px-6 py-6 h-auto">
-                <button
-                  className="flex flex-row gap-2 items-center mb-4 p-2 rounded-xl"
-                  onClick={() => {
-                    modalProducts.onClose();
+          <button
+            className="flex flex-row gap-2 items-center mb-4 p-2 rounded-xl"
+            onClick={() => {
+              modalProducts.onClose();
+            }}
+          >
+            <ArrowLeft size={24} />
+            <p className="dark:text-white">Regresar</p>
+          </button>
+          <div className='flex justify-between p-1'>
+            <div className="flex items-center col-span-full gap-4 mb-4">
+              <div className="relative">
+                <div
+                  className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg"
+                  style={{
+                    background: `linear-gradient(to bottom right, ${colorPrim}, ${colorfrom})`,
                   }}
                 >
-                  <ArrowLeft size={24} />
-                  <p className="dark:text-white">Regresar</p>
-                </button>
-                <div className="mb-6">
-                  <div className="p-6 rounded-2xl bg-white dark:bg-black shadow-md">
-                    <div className="flex flex-wrap gap-6 items-center justify-between">
-                      {/* Icono y Título */}
-                      <div className="flex items-center gap-4 flex-shrink-0">
-                        <div className="relative">
-                          <div
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg`}
-                            style={{
-                              background: `linear-gradient(to bottom right, ${colorPrim}, ${colorfrom})`,
-                            }}
-                          >
-                            <Package className="w-6 h-6 text-white" />
-                          </div>
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
-                            <Sparkles className="w-2.5 h-2.5 text-white" />
-                          </div>
-                        </div>
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                          Productos
-                        </h1>
-                      </div>
-
-                      <div className="flex-1 min-w-[200px] relative group">
-                        <Input
-                          className="w-full"
-                          classNames={{
-                            label: 'text-xs font-semibold',
-                          }}
-                          defaultValue={filter?.name}
-                          label="Buscar por nombre"
-                          labelPlacement="outside"
-                          placeholder="Buscar productos..."
-                          startContent={<Search className="w-5 h-5 text-gray-400" />}
-                          variant="bordered"
-                          onChange={(e) => setFilter({ ...filter, name: e.target.value })}
-                        />
-                      </div>
-
-                      <div className="flex-1 min-w-[200px] relative group">
-                        <Autocomplete
-                          className="pl-12 w-full"
-                          classNames={{ base: 'w-full text-xs font-semibold' }}
-                          clearButtonProps={{
-                            onClick: () => setFilter({ ...filter, category: '' }),
-                          }}
-                          label={<p className="text-xs font-semibold">Buscar por categoría</p>}
-                          labelPlacement="outside"
-                          placeholder="Seleccionar categoría"
-                          startContent={<Tag className="w-5 h-5 text-gray-400" />}
-                          variant="bordered"
-                          onSelectionChange={(key) => {
-                            if (key) setFilter({ ...filter, category: String(key) });
-                          }}
-                        >
-                          {list_categories.map((b) => (
-                            <AutocompleteItem
-                              key={b.name}
-                              className="py-2 px-3 text-gray-700 dark:text-white data-[hover=true]:bg-gray-200 dark:data-[hover=true]:bg-gray-700 data-[hover=true]:text-black-800 rounded-lg"
-                            >
-                              {b.name}
-                            </AutocompleteItem>
-                          ))}
-                        </Autocomplete>
-                      </div>
-
-                      <div className="flex-1 min-w-[200px] relative group">
-                        <Input
-                          className="w-full"
-                          classNames={{
-                            label: 'text-xs font-semibold',
-                          }}
-                          label="Buscar por código"
-                          placeholder="Código del producto"
-                          startContent={<Barcode className="w-5 h-5 text-gray-400" />}
-                          variant="bordered"
-                          onChange={(e) => setFilter({ ...filter, code: e.target.value })}
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-6 flex-shrink-0">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-gray-900 dark:text-sky-400">
-                            {branchProducts.length}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-300">Productos</div>
-                        </div>
-                        <div className="w-px h-8 bg-gray-300" />
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-emerald-600">
-                            {product_selected.length}
-                          </div>
-                          <div className="text-xs text-gray-500 dark:text-white">Seleccionados</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <Package className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex items-center justify-between bottom-14 mb-4">
-                  <div className="flex items-center gap-3">
-                    <BarChart3 className="w-5 h-5 text-gray-500" />
-                    <span className="text-gray-700 dark:text-white">
-                      Mostrando{' '}
-                      <span className="font-semibold dark:text-sky-300">
-                        {branchProducts.length}
-                      </span>{' '}
-                      productos
-                    </span>
-                  </div>
-
-                  <div className="flex items-end gap-5 text-sm text-gray-500">
-                    <ButtonGroup>
-                      <ButtonUi
-                        isIconOnly
-                        color="secondary"
-                        theme={view === 'table' ? Colors.Primary : Colors.Default}
-                        onPress={() => setView('table')}
-                      >
-                        <Table />
-                      </ButtonUi>
-
-                      <ButtonUi
-                        isIconOnly
-                        color="default"
-                        theme={view === 'grid' ? Colors.Primary : Colors.Default}
-                        onPress={() => setView('grid')}
-                      >
-                        <CreditCard />
-                      </ButtonUi>
-                    </ButtonGroup>
-                    <div className="min-w-44">
-                      <Select
-                        classNames={{
-                          label: 'text-xs font-semibold',
-                        }}
-                        label="Cantidad a mostrar"
-                        labelPlacement="outside"
-                        selectedKeys={[`${filter.limit}`]}
-                        variant="bordered"
-                        onChange={(e) => setFilter({ ...filter, limit: Number(e.target.value ?? 30) })}
-                      >
-                        {limit_options.map((l) => (
-                          <SelectItem key={l}>{l}</SelectItem>
-                        ))}
-                      </Select>
-                    </div>
-                  </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <Sparkles className="w-2.5 h-2.5 text-white" />
                 </div>
               </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Productos</h1>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-center">
+                <div className="text-xl font-bold text-gray-900 dark:text-sky-400">
+                  {branchProducts.length}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-300">Productos</div>
+              </div>
+              <div className="w-px h-6 bg-gray-300" />
+              <div className="text-center">
+                <div className="text-xl font-bold text-emerald-600">{product_selected.length}</div>
+                <div className="text-xs text-gray-500 dark:text-white">Seleccionados</div>
+              </div>
+            </div>
+
+          </div>
+          <section className='ml-4 flex gap-3 mb-2'>
+            {/* <div className="bg-white/80 dark:bg-black backdrop-blur-xl dark:border-gray-200/50 px-6 py-6 h-auto"> */}
+            {/* <div className="flex items-center justify-between bottom-14 mb-4">
+
+
+                  <div className="flex items-end gap-5 text-sm text-gray-500"> */}
+
+
+            {/* </div>
+                </div> */}
+            {/* </div> */}
+            <ResponsiveFilterWrapper
+              classButtonLg="col-start-5"
+              classLg="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end"
+            >
+              <Input
+                className="w-full"
+                defaultValue={filter?.name}
+                label="Nombre"
+                labelPlacement="outside"
+                placeholder="Buscar productos..."
+                size="sm"
+                startContent={<Search className="w-5 h-5 text-gray-400" />}
+                variant="bordered"
+                onChange={(e) => setFilter({ ...filter, name: e.target.value })}
+              />
+
+              <Autocomplete
+                className="w-full"
+                clearButtonProps={{
+                  onClick: () => setFilter({ ...filter, category: '' }),
+                }}
+                label={<p className="text-xs font-semibold">Categoría</p>}
+                labelPlacement="outside"
+                placeholder="Seleccionar categoría"
+                size="sm"
+                startContent={<Tag className="w-5 h-5 text-gray-400" />}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) setFilter({ ...filter, category: String(key) });
+                }}
+              >
+                {list_categories.map((b) => (
+                  <AutocompleteItem key={b.name}>{b.name}</AutocompleteItem>
+                ))}
+              </Autocomplete>
+
+              <Input
+                className="w-full"
+                label="Código"
+                labelPlacement="outside"
+                placeholder="Código del producto"
+                size="sm"
+                startContent={<Barcode className="w-5 h-5 text-gray-400" />}
+                variant="bordered"
+                onChange={(e) => setFilter({ ...filter, code: e.target.value })}
+              />
+
+              <div className="min-w-44">
+                <Select
+                  classNames={{
+                    label: 'text-xs font-semibold',
+                  }}
+                  label="Cantidad a mostrar"
+                  labelPlacement="outside"
+                  selectedKeys={[`${filter.limit}`]}
+                  variant="bordered"
+                  onChange={(e) => setFilter({ ...filter, limit: Number(e.target.value ?? 30) })}
+                >
+                  {limit_options.map((l) => (
+                    <SelectItem key={l}>{l}</SelectItem>
+                  ))}
+                </Select>
+              </div>
+            </ResponsiveFilterWrapper>
+            {windowSize.width < 746 && (
+              <RenderViewButton setView={setView} view={view} />
+
+            )}
+          </section>
+
+          <DrawerBody className="p-0">
+            <div className="flex flex-col h-full bg-gradient-to-br from-slate-50 to-gray-100 ">
+              {windowSize.width > 748 && (
+                <div className="bg-white/80 dark:bg-black backdrop-blur-xl dark:border-gray-200/50 px-6 py-6 h-auto">
+                  <div className="flex items-center justify-between bottom-14 mb-4">
+
+
+                    <div className="flex items-end gap-5 text-sm text-gray-500">
+                      <RenderViewButton setView={setView} view={view} />
+
+                    </div>
+                  </div>
+                </div>
+              )}
+
 
               <div className="flex-1 overflow-y-auto p-6 dark:bg-black ">
                 {branchProducts.length === 0 ? (
@@ -435,7 +414,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                       </section>
                     )}
                     {view === 'table' && (
-                      <section className="w-full h-full shadow text-white overflow-auto">
+                      <section className="w-full h-full  text-white overflow-y">
                         <table className="w-full">
                           <thead className="sticky top-0 z-10 bg-gray-700">
                             <tr className="text-left text-sm">
@@ -499,6 +478,7 @@ function SelectProductNote({ modalProducts, setFilter, filter, selectedBranch }:
                         </table>
                       </section>
                     )}
+
                   </>
                 )}
               </div>

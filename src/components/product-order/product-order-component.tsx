@@ -32,10 +32,12 @@ import { toast } from 'sonner';
 import EmptyTable from '../global/EmptyTable';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import Pagination from '../global/Pagination';
+import RenderViewButton from '../global/render-view-button';
 
 import { RenderStatus, Status, StautsProductOrder } from './render-order-status';
 import { exportToExcelOrderProduct } from './exportExcel';
 import { exportToPDFOrderProduct, IOrderProduct } from './exportPdf';
+import CardProductOrderComponent from './card-product-order-component';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import DivGlobal from '@/themes/ui/div-global';
@@ -51,6 +53,7 @@ import { API_URL, limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
+import useWindowSize from '@/hooks/useWindowSize';
 
 export default function ProductOrderComponent() {
   const { backgroundColor, textColor } = useColors();
@@ -64,6 +67,10 @@ export default function ProductOrderComponent() {
   const currentDate = new Date();
   const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const modalDetails = useDisclosure();
+  const { windowSize } = useWindowSize()
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : "table"
+  )
   const [search, setSearch] = useState({
     page: 1,
     limit: 20,
@@ -259,7 +266,8 @@ export default function ProductOrderComponent() {
           ))}
         </Select>
       </ResponsiveFilterWrapper>
-      <div className="flex gap-4">
+      <div className="flex gap-4 mt-1">
+
         <ButtonUi
           startContent={<PiMicrosoftExcelLogo className="" size={25} />}
           theme={Colors.Success}
@@ -278,93 +286,115 @@ export default function ProductOrderComponent() {
         >
           Exportar a pdf
         </ButtonUi>
+        {/* <div
+        className='xl:align-end'
+        > */}
+        <RenderViewButton setView={setView} view={view} />
+
+        {/* </div> */}
+
       </div>
-      <TableComponent
-        headers={[
-          '',
-          'Nº',
-          'Fecha/Hora',
-          'Sucursal que solicita',
-          'Encargado',
-          'Estado',
-          'Acciones',
-        ]}
-      >
-        {ordersProducts.order_products.length === 0 && (
-          <tr className="border-b border-slate-200">
-            <td
-              className="p-2 text-sm text-slate-500 w-full font-medium dark:text-slate-100"
-              colSpan={7}
-            >
-              <EmptyTable />
-            </td>
-          </tr>
-        )}
-        {ordersProducts.order_products.map((order, index) => (
-          <tr key={index} className=" cursor-pointer">
-            <TdGlobal className="p-2 text-sm">
-              <Checkbox
-                key={order.id}
-                checked={selectedIds.includes(order.id)}
-                onValueChange={() => handleCheckboxChange(order.id)}
-              />
-            </TdGlobal>
-            <TdGlobal className="p-2 text-sm">{order.id}</TdGlobal>
-            <TdGlobal className="p-2 text-sm">
-              {order.date} - {order.time}
-            </TdGlobal>
-            <TdGlobal className="p-2 text-sm">{order.branch.name}</TdGlobal>
-            <TdGlobal className="p-2 text-sm">
-              {order.employee.firstName} {order.employee.secondName} {order.employee.firstLastName}{' '}
-              {order.employee.secondLastName}
-            </TdGlobal>
-            <TdGlobal className="p-2 text-sm">
-              {RenderStatus({ status: order.status as Status }) || order.status}
-            </TdGlobal>
-            <TdGlobal className="p-2 text-sm flex gap-2">
-              <ButtonUi
-                isIconOnly
-                showTooltip
-                theme={Colors.Info}
-                tooltipText="Detalles"
-                onPress={() => handleDetails(order)}
+      {view === 'table' && (
+        <TableComponent
+          headers={[
+            '',
+            'Nº',
+            'Fecha/Hora',
+            'Sucursal que solicita',
+            'Encargado',
+            'Estado',
+            'Acciones',
+          ]}
+        >
+          {ordersProducts.order_products.length === 0 && (
+            <tr className="border-b border-slate-200">
+              <td
+                className="p-2 text-sm text-slate-500 w-full font-medium dark:text-slate-100"
+                colSpan={7}
               >
-                <Eye />
-              </ButtonUi>
-              <ButtonUi
-                isIconOnly
-                showTooltip
-                isDisabled={order.status === 'Completada'}
-                theme={Colors.Primary}
-                tooltipText="Nota de Remisión"
-                onPress={() => {
-                  navigate('/order-products-nota');
-                  onAddBydetail(order.orderProductDetails);
-                  onAddBranchDestiny(order.branch);
-                  onAddOrderId(order.id);
-                }}
-              >
-                <StickyNote />
-              </ButtonUi>
-              <ButtonUi
-                isIconOnly
-                showTooltip
-                isDisabled={order.status === 'Completada'}
-                theme={Colors.Error}
-                tooltipText="Orden de Producción"
-                onPress={() => {
-                  navigate('/order-products-production');
-                  addSelectedProducts(order.orderProductDetails);
-                  onAddBranchDestiny(order.branch);
-                  onAddOrderId(order.id);
-                }}
-              >
-                <ReceiptText />
-              </ButtonUi>
-            </TdGlobal>
-          </tr>
-        ))}
-      </TableComponent>
+                <EmptyTable />
+              </td>
+            </tr>
+          )}
+          {ordersProducts.order_products.map((order, index) => (
+            <tr key={index} className=" cursor-pointer">
+              <TdGlobal className="p-2 text-sm">
+                <Checkbox
+                  key={order.id}
+                  checked={selectedIds.includes(order.id)}
+                  onValueChange={() => handleCheckboxChange(order.id)}
+                />
+              </TdGlobal>
+              <TdGlobal className="p-2 text-sm">{order.id}</TdGlobal>
+              <TdGlobal className="p-2 text-sm">
+                {order.date} - {order.time}
+              </TdGlobal>
+              <TdGlobal className="p-2 text-sm">{order.branch.name}</TdGlobal>
+              <TdGlobal className="p-2 text-sm">
+                {order.employee.firstName} {order.employee.secondName} {order.employee.firstLastName}{' '}
+                {order.employee.secondLastName}
+              </TdGlobal>
+              <TdGlobal className="p-2 text-sm">
+                {RenderStatus({ status: order.status as Status }) || order.status}
+              </TdGlobal>
+              <TdGlobal className="p-2 text-sm flex gap-2">
+                <ButtonUi
+                  isIconOnly
+                  showTooltip
+                  theme={Colors.Info}
+                  tooltipText="Detalles"
+                  onPress={() => handleDetails(order)}
+                >
+                  <Eye />
+                </ButtonUi>
+                <ButtonUi
+                  isIconOnly
+                  showTooltip
+                  isDisabled={order.status === 'Completada'}
+                  theme={Colors.Primary}
+                  tooltipText="Nota de Remisión"
+                  onPress={() => {
+                    navigate('/order-products-nota');
+                    onAddBydetail(order.orderProductDetails);
+                    onAddBranchDestiny(order.branch);
+                    onAddOrderId(order.id);
+                  }}
+                >
+                  <StickyNote />
+                </ButtonUi>
+                <ButtonUi
+                  isIconOnly
+                  showTooltip
+                  isDisabled={order.status === 'Completada'}
+                  theme={Colors.Error}
+                  tooltipText="Orden de Producción"
+                  onPress={() => {
+                    navigate('/order-products-production');
+                    addSelectedProducts(order.orderProductDetails);
+                    onAddBranchDestiny(order.branch);
+                    onAddOrderId(order.id);
+                  }}
+                >
+                  <ReceiptText />
+                </ButtonUi>
+              </TdGlobal>
+            </tr>
+          ))}
+        </TableComponent>
+      )}
+
+      {view === 'grid' && (
+        <CardProductOrderComponent
+          addSelectedProducts={addSelectedProducts}
+          handleCheckboxChange={handleCheckboxChange}
+          handleDetails={handleDetails}
+          selectedIds={selectedIds}
+          onAddBranchDestiny={onAddBranchDestiny}
+          onAddBydetail={onAddBydetail}
+          onAddOrderId={onAddOrderId}
+        />
+      )}
+
       {ordersProducts.totalPag > 1 && (
         <Pagination
           currentPage={ordersProducts.currentPag}
@@ -383,7 +413,7 @@ export default function ProductOrderComponent() {
         onClose={() => modalDetails.onClose()}
       >
         <DrawerContent style={{ ...backgroundColor, ...textColor }}>
-          <DrawerHeader>Detalles de la orden</DrawerHeader>
+          <DrawerHeader>Detalles de la orden </DrawerHeader>
           <DrawerBody>
             {selectedOrder && (
               <>
@@ -428,19 +458,20 @@ export default function ProductOrderComponent() {
                       </Pui>
                       <Pui>{selectedOrder.details}</Pui>
                     </div>
-                    <div className="">
+                    <div className="md:ml-0 ml-20">
                       <Pui className="flex gap-2 font-semibold text-lg">
                         <Store /> Sucursal de recepción
                       </Pui>
                       <Pui>{selectedOrder.branch.name}</Pui>
                     </div>
                   </section>
-                  <section className="bg-[rgba(255,255,255,0.1)] rounded-[12px] shadow-md p-6 mt-5">
+                  {/* <section className="bg-[rgba(255,255,255,0.1)] rounded-[12px] shadow-md p-6 mt-5">
                     <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
                       <ShoppingCart className="w-5 h-5 mr-2 text-blue-600" />
                       Productos ({selectedOrder.orderProductDetails.length})
                     </h2>
                     <TableComponent
+                    className='flex w-full'
                       headers={[
                         'Nº',
                         'Producto',
@@ -475,7 +506,52 @@ export default function ProductOrderComponent() {
                         </tr>
                       ))}
                     </TableComponent>
+                  </section> */}
+                  <section className="bg-[rgba(255,255,255,0.1)] rounded-[12px] shadow-md p-6 mt-5">
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+                      <ShoppingCart className="w-5 h-5 mr-2 text-blue-600" />
+                      Productos ({selectedOrder.orderProductDetails.length})
+                    </h2>
+
+                    <div className="overflow-x-auto">
+                      <TableComponent
+                        headers={[
+                          'Nº',
+                          'Producto',
+                          'Cantidad solicitada',
+                          'Cantidad entregada',
+                          'Cantidad Pendiente',
+                          'Stock actual',
+                          'Stock Anterior',
+                        ]}
+                      >
+                        {ordersProducts.order_products.length === 0 && (
+                          <tr className="border-b border-slate-200">
+                            <td
+                              className="p-2 text-sm text-slate-500 w-full font-medium dark:text-slate-100"
+                              colSpan={7}
+                            >
+                              <EmptyTable />
+                            </td>
+                          </tr>
+                        )}
+                        {selectedOrder.orderProductDetails.map((order, index) => (
+                          <tr key={index} className="cursor-pointer">
+                            <TdGlobal className="p-2 py-4">{order.id}</TdGlobal>
+                            <TdGlobal className="p-2 py-4">
+                              {order.branchProduct.product.name}
+                            </TdGlobal>
+                            <TdGlobal className="p-2 py-4">{order.quantity}</TdGlobal>
+                            <TdGlobal className="p-2 py-4">{order.finalQuantitySend}</TdGlobal>
+                            <TdGlobal>{order.pendingQuantity}</TdGlobal>
+                            <TdGlobal className="p-2 py-4">{order.branchProduct.stock}</TdGlobal>
+                            <TdGlobal className="p-2 py-4">{order.stockWhenSend}</TdGlobal>
+                          </tr>
+                        ))}
+                      </TableComponent>
+                    </div>
                   </section>
+
                 </div>
               </>
             )}

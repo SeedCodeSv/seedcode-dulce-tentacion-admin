@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { Product } from '../../../types/products.types';
+import { OrderProductDetail } from '@/types/order-products.types';
 
 export interface IMobileView {
   DeletePopover: ({ product }: { product: Product }) => JSX.Element;
@@ -18,4 +19,14 @@ export interface IMobileViewOrderProducst {
   modalMoreInformation: () => void
   setSelectedOrderId: Dispatch<SetStateAction<number>>
 
+}
+
+export interface IMobileOrderProductsComp {
+  handleDetails: (data: any) => void
+  onAddBydetail: (data: any) => void
+  onAddBranchDestiny: (data: any) => void
+  onAddOrderId: (id: number) => void
+  addSelectedProducts: (data: OrderProductDetail[]) => void
+  selectedIds:number[]
+  handleCheckboxChange: (id: number) => void
 }
