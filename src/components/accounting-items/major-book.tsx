@@ -40,9 +40,7 @@ function MajorBook({ disclosure }: Props) {
   const { user } = useAuthStore();
 
   const handleGetItems = () => {
-    const transId = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    const transId = user?.pointOfSale?.branch.transmitter.id ?? 0;
 
     getItemsByMajor(transId, startDate, endDate);
   };
@@ -248,7 +246,7 @@ function MajorBook({ disclosure }: Props) {
           didDrawPage: () => {
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('MADNESS', doc.internal.pageSize.width / 2, 10, {
+            doc.text(`${user?.pointOfSale.branch.transmitter.nombreComercial}`, doc.internal.pageSize.width / 2, 10, {
               align: 'center',
             });
             doc.text('Libro mayor', doc.internal.pageSize.width / 2, 15, {

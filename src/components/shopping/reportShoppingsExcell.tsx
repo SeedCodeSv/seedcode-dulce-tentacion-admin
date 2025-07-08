@@ -110,7 +110,7 @@ export default function ShooppingExportExcell({ params, transmitter }: { transmi
                 Number(item.precioUni) || 0,
                 item.shopping.supplier.nombre,
                 1,
-                '',
+                'INGRESO A BODEGA',
                 item.shopping.controlNumber,
                 formatTipoDte(item.shopping.typeDte),
                 Number(item.ventaGravada) || 0,

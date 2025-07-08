@@ -27,6 +27,7 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import { useTransmitterStore } from '@/store/transmitter.store';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -39,6 +40,7 @@ function AuxiliarBook({ disclosure }: Props) {
   const [endDate, setEndDate] = useState(formatDate());
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [accounts, setAccounts] = useState<Selection>(new Set([]));
+  const { transmitter, gettransmitter } = useTransmitterStore()
   const {
     getItemsByDailyMajorAccount,
     dailyMajorItemsAccount,
@@ -242,7 +244,7 @@ function AuxiliarBook({ disclosure }: Props) {
           didDrawPage: () => {
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('MADNESS', doc.internal.pageSize.width / 2, 10, {
+            doc.text(`${transmitter.nombreComercial}`, doc.internal.pageSize.width / 2, 10, {
               align: 'center',
             });
             doc.text('Libro auxiliar', doc.internal.pageSize.width / 2, 15, {
@@ -378,6 +380,10 @@ function AuxiliarBook({ disclosure }: Props) {
   };
 
   const previewModal = useDisclosure();
+
+  useEffect(() => {
+    gettransmitter()
+  }, [])
 
   return (
     <>

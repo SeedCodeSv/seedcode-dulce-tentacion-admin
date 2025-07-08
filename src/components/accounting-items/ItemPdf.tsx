@@ -4,6 +4,7 @@ import autoTable from 'jspdf-autotable';
 
 import { ReportForItem } from '@/types/accounting-items.types';
 import { completeDateFormat } from '@/utils/date';
+import { useAuthStore } from '@/store/auth.store';
 
 interface Data {
   account: string;
@@ -22,6 +23,7 @@ interface Props {
 
 function ItemPdf({ JSONData, date, correlative }: Props) {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+const {user} = useAuthStore()
 
   function consolidateAccounts(data: Data[][]) {
     const consolidatedMap = new Map();
@@ -345,7 +347,7 @@ function ItemPdf({ JSONData, date, correlative }: Props) {
       doc.roundedRect(5, 34, rectWidth, 8, 2, 2, 'S');
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
-      doc.text('MADNESS', doc.internal.pageSize.getWidth() / 2, 15, {
+      doc.text(`${user?.pointOfSale.branch.transmitter.nombreComercial}`, doc.internal.pageSize.getWidth() / 2, 15, {
         align: 'center',
       });
       doc.text('Partida contable', doc.internal.pageSize.getWidth() / 2, 20, {

@@ -1,5 +1,7 @@
-import { Input, Select, SelectItem } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
+import { useCallback, useEffect, useState } from "react";
+import { SearchIcon } from "lucide-react";
+import debounce from "debounce";
 
 import ProductsExportExcell from "./ProductsExportExcell";
 import ProductsExportPdf from "./ProductsExportPdf";
@@ -14,11 +16,13 @@ import EmptyTable from "@/components/global/EmptyTable";
 import { formatCurrency } from "@/utils/dte";
 import TdGlobal from "@/themes/ui/td-global";
 import { useTransmitterStore } from "@/store/transmitter.store";
+import { useProductsStore } from "@/store/products.store";
 
 export default function ProductsSelledSummaryComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { getProductSelledSummary, summary_products_selled, loading_summary } = useProductsOrdersReportStore();
     const { transmitter, gettransmitter } = useTransmitterStore();
+  const { productsFilteredList, getProductsFilteredList } = useProductsStore()
 
     const [search, setSearch] = useState({
         page: 1,
@@ -26,10 +30,15 @@ export default function ProductsSelledSummaryComponent() {
         startDate: getElSalvadorDateTime().fecEmi,
         endDate: getElSalvadorDateTime().fecEmi,
         branchIds: [] as number[],
-        productName: ''
+        productName: '',
+        productId: 0
     });
 
     useEffect(() => {
+         getProductsFilteredList({
+      productName: '',
+      code: ''
+    });
         gettransmitter()
         getBranchesList()
         getProductSelledSummary(search)
@@ -50,18 +59,19 @@ export default function ProductsSelledSummaryComponent() {
         })),
     ];
 
-
+    const handleSearchProduct = useCallback(
+        debounce((value: string) => {
+          getProductsFilteredList({
+            productName: value,
+            code: ''
+          });
+        }, 300),
+        [search]
+      );
+    
 
     return (
         <div className="p-4">
-            {/* <div className="w-full flex items-end justify-end">
-                <div className="w-full max-w-[20vw]">
-            <MultiSelectProductAutocomplete
-                    selectedProducts={selectedProducts}
-                    onChange={setSelectedProducts}
-                />
-                </div>
-                </div> */}
             <ResponsiveFilterWrapper classButtonLg="col-start-5" classLg='w-full grid grid-cols-5 gap-4 items-end pb-4' onApply={() => handleSearch(1)}>
                 <Select
                     className="w-full"
@@ -99,24 +109,37 @@ export default function ProductsSelledSummaryComponent() {
                         </SelectItem>
                     ))}
                 </Select>
-                <Input
-                    isClearable
-                    className="dark:text-white"
-                    classNames={{ label: 'font-semibold' }}
-                    label="Producto"
-                    labelPlacement="outside"
-                    placeholder="Escriba el nombre"
-                    type="text"
-                    value={search.productName}
-                    variant="bordered"
-                    onChange={(e) => {
-                        setSearch({ ...search, productName: e.target.value });
-                    }}
-                    onClear={() => {
-                        setSearch({ ...search, productName: '' });
-                        getProductSelledSummary({ ...search, productName: '' })
-                    }}
-                />
+               <Autocomplete
+              isClearable
+              className="font-semibold dark:text-white w-full"
+              label="Producto"
+              labelPlacement="outside"
+              listboxProps={{
+                emptyContent: "Escribe para buscar",
+              }}
+              placeholder="Selecciona un producto"
+              selectedKey={String(search.productId)}
+              startContent={<SearchIcon />}
+              variant="bordered"
+              onClear={() => setSearch({ ...search, productId: 0, productName: '' })}
+              onInputChange={(value) => {
+                handleSearchProduct(value);
+              }}
+              onSelectionChange={(key) => {
+                const product = productsFilteredList.find((item) => item.id === Number(key))
+
+                setSearch({
+                  ...search, productName: String(product?.name),
+                  productId: Number(key)
+                })
+              }}
+            >
+              {productsFilteredList.map((bp) => (
+                <AutocompleteItem key={bp.id} className="dark:text-white">
+                  {bp.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
                 <Input
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}

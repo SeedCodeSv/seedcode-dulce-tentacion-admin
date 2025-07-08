@@ -35,8 +35,7 @@ import {
   ScanBarcode,
   ScrollText,
   Scroll,
-  StickyNote,
-  Send 
+  StickyNote, 
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';

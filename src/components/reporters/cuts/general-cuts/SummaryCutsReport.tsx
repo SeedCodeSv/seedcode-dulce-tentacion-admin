@@ -125,7 +125,7 @@ export default function GeneralCashCutReportComponent() {
                             </SelectItem>
                         ))}
                     </Select>
-                    <RenderViewButton setView={setView} view={view} />
+                    {/* <RenderViewButton setView={setView} view={view} /> */}
                 </div>
                 <div className="flex gap-2">
                     <SummaryCutExportExcell branch={branchName} comercialName={transmitter.nombreComercial} params={search} />
