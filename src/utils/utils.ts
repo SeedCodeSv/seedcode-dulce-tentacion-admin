@@ -180,3 +180,43 @@ export const generateUniqueId = () => {
   return `${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 };
 
+
+export const formatUnidadDeMedida = (cod: string) => {
+  switch (cod) {
+     case '22':
+       return 'Galón';
+        case '23':
+      return 'Litro';
+       case '34':
+      return 'Kilogramo';
+    case '36':
+      return 'Libra';
+    case '38':
+      return 'Onza';
+       case '39':
+      return 'Gramo';
+    case '40':
+      return 'Miligramo';
+       case '58':
+      return 'Docena';
+    case '59':
+      return 'Unidad';
+       case '99':
+      return 'Otra';
+    default:
+      return 'No se encontró';
+    }
+}
+
+export const formatTipoDte = (typeDte: string) => {
+  switch (typeDte) {
+    case '03':
+      return 'CCF';
+    case '01':
+      return 'F';
+    case '14':
+      return 'FSE';
+    default:
+      return '';
+  }
+};

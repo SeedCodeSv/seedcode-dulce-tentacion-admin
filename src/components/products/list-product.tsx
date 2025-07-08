@@ -50,7 +50,7 @@ function ListProducts({ actions }: Props) {
 
   const [category, setCategory] = useState<Key | null>();
   const [subCategory, setSubCategory] = useState<Key | null>();
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(30);
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
@@ -146,13 +146,13 @@ function ListProducts({ actions }: Props) {
                 classNames={{
                   label: 'font-semibold',
                 }}
-                defaultSelectedKeys={['5']}
+                defaultSelectedKeys={[limit.toString()]}
                 label="Cantidad a mostrar"
                 labelPlacement="outside"
                 value={limit}
                 variant="bordered"
                 onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  setLimit(Number(e.target.value !== '' ? e.target.value : limit));
                 }}
               >
                 {limit_options.map((limit) => (

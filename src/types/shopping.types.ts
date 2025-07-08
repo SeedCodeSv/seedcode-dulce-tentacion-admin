@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react"
 
 import { ClassDocumentCode, ClassDocumentValue, ClassificationCode, ClassificationValue, OperationTypeCode, OperationTypeValue, SectorCode, SectorValue, TypeCostSpentCode, TypeCostSpentValue } from "@/enums/shopping.enum"
+import { BasicResponse } from "./global.types"
 
 // export interface ICreateShopping {
 //   branchId: number
@@ -314,4 +315,23 @@ export interface GeneralInfoProps {
   setSupplierSelected: (supplierSelected: ISupplier | undefined) => void;
   setSearchNRC: (searchNRC: string) => void;
   setBranchName: Dispatch<SetStateAction<string>>;
+}
+
+export interface IGetProductShoppingReport extends BasicResponse{
+  detailsShopping: DetailShopping[]
+}
+
+export interface DetailShopping {
+  shopping: ShoppingReport;
+  shoppingId: number;
+  precioUni: number;
+  descripcion: string;
+  id: number;
+  montoDescu: number;
+  ventaNoSuj: number;
+  ventaExenta: number;
+  ventaGravada: number;
+  totalItem: number;
+  uniMedida: string
+  isActive: boolean;
 }

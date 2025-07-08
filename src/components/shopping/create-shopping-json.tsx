@@ -30,7 +30,6 @@ import CatalogItemsPaginated from './manual/catalog-items-paginated';
 
 import { create_shopping, isErrorSupplier, verify_code } from '@/services/shopping.service';
 import { useAuthStore } from '@/store/auth.store';
-import Layout from '@/layout/Layout';
 import { formatCurrency } from '@/utils/dte';
 import { IResponseFromDigitalOceanDTE } from '@/store/types/sub_interface_shopping/response_from_digitalocean_DTE_types';
 import { useViewsStore } from '@/store/views.store';
@@ -61,8 +60,8 @@ import { useBranchesStore } from '@/store/branches.store';
 import { get_supplier_by_nit } from '@/services/supplier.service';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-import ThGlobal from '@/themes/ui/th-global';
 import DivGlobal from '@/themes/ui/div-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 function CreateShopping() {
   const { actions } = useViewsStore();
@@ -283,6 +282,13 @@ const JSONMode = () => {
 
         return;
       }
+
+      if (!selectedType) {
+        toast.warning('Debes el tipo de partida');
+
+        return;
+      }
+
 
       const transmitterId = user?.pointOfSale?.branch.transmitter.id ?? 0;
 
@@ -523,7 +529,7 @@ const JSONMode = () => {
                   >
                     Cargar Archivo JSON
                   </ButtonUi>
-                  <X className="cursor-pointer" onClick={() => navigate('/shopping')} />
+                  <X className="cursor-pointer" onClick={() => window.location.href = '/shopping'} />
                 </div>
               </div>
               <form
@@ -900,7 +906,7 @@ const JSONMode = () => {
                   canAddItem={false}
                   date={dateItem}
                   description={description}
-                  handleDeleteItem={() => {}}
+                  handleDeleteItem={() => { }}
                   index={0}
                   isReadOnly={false}
                   items={items}
@@ -921,48 +927,33 @@ const JSONMode = () => {
                       DATOS DEL PRODUCTO
                     </p>
                     <div className="flex flex-col w-full">
-                      <div className="max-h-full  overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
-                        <table className="w-full">
-                          <thead className="sticky top-0 z-20 bg-white">
-                            <tr>
-                              <ThGlobal className="text-left p-3">Tipo de item</ThGlobal>
-                              <ThGlobal className="text-left p-3">Un. de medida</ThGlobal>
-                              <ThGlobal className="text-left p-3">Cod. generación</ThGlobal>
-                              <ThGlobal className="text-left p-3">Cantidad</ThGlobal>
-                              <ThGlobal className="text-left p-3">Código</ThGlobal>
-                              <ThGlobal className="text-left p-3">Descripción</ThGlobal>
-                              <ThGlobal className="text-left p-3">Pre. unitario</ThGlobal>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {jsonData.cuerpoDocumento.map((item, index) => (
-                              <tr key={index}>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.tipoItem}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.uniMedida}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.tipoItem}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.cantidad}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.codigo}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.descripcion}
-                                </td>
-                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                  {item.precioUni}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                      <TableComponent headers={['Tipo de item', 'Un. de medida', 'Cantidad', 'Código', 'Descripción', 'Pre. unitario', 'Total Gravada']}>
+                        {jsonData.cuerpoDocumento.map((item, index) => (
+                          <tr key={index}>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.tipoItem}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.uniMedida}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.cantidad}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.codigo}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.descripcion}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.precioUni}
+                            </td>
+                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                              {item.ventaGravada}
+                            </td>
+                          </tr>
+                        ))}
+                      </TableComponent>
                     </div>
                   </div>
                 )}

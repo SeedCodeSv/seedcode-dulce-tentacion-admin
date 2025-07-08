@@ -520,7 +520,7 @@ function UpdatePromotionsByProduct(props: Props) {
                 <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
                 <p className="flex gap-3 mt-2 dark:text-white">
-                  <Truck /> {branch_product.supplier.nombre}
+                  <Truck /> {branch_product?.suppliers[0]?.nombre}
                 </p>
                 <p className="flex gap-3 mt-2 dark:text-white">
                   <ScrollText /> {branch_product.product.subCategory.name}
@@ -533,7 +533,7 @@ function UpdatePromotionsByProduct(props: Props) {
                     <Button
                       className="px-8 my-3"
                       style={global_styles().warningStyles}
-                      onClick={() => handleRemoveProduct(branch_product.id)}
+                      onPress={() => handleRemoveProduct(branch_product.id)}
                     >
                       Eliminar
                     </Button>

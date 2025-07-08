@@ -134,6 +134,7 @@ function GeneralInfo({
               formik.setFieldValue('tipoDte', e.currentTarget.value);
               setTipoDte(e.currentTarget.value);
             }}
+            
           />
           <Select
             classNames={{ label: 'font-semibold' }}

@@ -40,9 +40,7 @@ function DailyBook({ disclosure }: Props) {
   const { user } = useAuthStore();
 
   const handleGetItems = () => {
-    const transId = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    const transId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
     getItemsByDates(transId, startDate, endDate);
   };

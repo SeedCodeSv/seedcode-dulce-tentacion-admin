@@ -13,6 +13,7 @@ import { useSupplierStore } from '@/store/supplier.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import Layout from '@/layout/Layout';
+import DivGlobal from '@/themes/ui/div-global';
 function UpdateNormalSupplier() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -98,7 +99,7 @@ function UpdateNormalSupplier() {
 
   return (
     <>
-      <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
+      <DivGlobal>
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             className="w-32 flex gap-2 mb-4 cursor-pointer"
@@ -324,7 +325,7 @@ function UpdateNormalSupplier() {
             </div>
           </form>
         </div>
-      </div>
+      </DivGlobal>
     </>
   );
 }

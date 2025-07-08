@@ -38,9 +38,7 @@ function GeneralData() {
 
   useEffect(() => {
     if (user) {
-      const transId = user.correlative
-        ? user.correlative.branch.transmitter.id
-        : user.pointOfSale
+      const transId = user.pointOfSale
           ? user.pointOfSale.branch.transmitter.id
           : 0;
 
@@ -52,7 +50,7 @@ function GeneralData() {
 
   useEffect(() => {
     const transmitterId =
-      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+      user?.pointOfSale?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id;
 
     getAccountCatalogs(transmitterId ?? 0, '', '');
   }, []);
@@ -76,9 +74,7 @@ function GeneralData() {
     },
     onSubmit(values, formikHelpers) {
       if (user) {
-        const transId = user.correlative
-          ? user.correlative.branch.transmitter.id
-          : user.pointOfSale
+        const transId = user.pointOfSale
             ? user.pointOfSale.branch.transmitter.id
             : 0;
 
@@ -400,10 +396,9 @@ function GeneralData() {
             className="px-20 font-semibold"
             isLoading={formik.isSubmitting}
             style={styles.dangerStyles}
-            type="submit"
-            onClick={() => navigation('/configuration')}
+            onPress={() => navigation('/configuration')}
           >
-            Cacelar
+            Cancelar
           </Button>
           <Button
             className="px-20 font-semibold"

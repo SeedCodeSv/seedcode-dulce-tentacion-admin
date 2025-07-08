@@ -38,7 +38,7 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
         set({
           details_order_purchase: res.data.detailPurchaseOrders.map((detail) => ({
             id: detail.id,
-             numItem: generateUniqueId(),
+            numItem: generateUniqueId(),
             sellingPrice: detail.sellingPrice,
             isActive: detail.isActive,
             subtractedProduct: detail.subtractedProduct,
@@ -269,19 +269,11 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
     prchase_product_add.splice(0, prchase_product_add.length);
     details_order_purchase.splice(0, details_order_purchase.length);
   },
-  removeProductFromPrchaseProductAdd(productId) {
-    const prchase_product_add = get().prchase_product_add;
-    const details_order_purchase = get().details_order_purchase;
-    const productIndex = prchase_product_add.findIndex((product) => product.id === productId);
+  removeProductFromPrchaseProductAdd(numItem) {
 
-    if (productIndex !== -1) {
-      details_order_purchase.splice(productIndex, 1);
-      set({ details_order_purchase });
-
-      toast.success('Producto eliminado');
-    } else {
-      toast.error('Ocurrio un error');
-    }
+    set((state) => ({
+      details_order_purchase: state.details_order_purchase.filter((item) => item.numItem !== numItem)
+    }))
   },
   async OnAddProductOrder(purchaseId, data): Promise<{ ok: boolean }> {
     try {
@@ -307,16 +299,17 @@ export const usePurchaseOrdersStore = create<PurchaseOrderStore>((set, get) => (
       ),
     }));
   },
-   duplicateProduct(item) {
-          const { details_order_purchase } = get();
+  duplicateProduct(item) {
+    const { details_order_purchase } = get();
 
-          set({
-            details_order_purchase: [
-              ...details_order_purchase,
-              { ...item, isNew: true,
-                numItem: generateUniqueId(),
-               }
-            ]
-          });
-        },
+    set({
+      details_order_purchase: [
+        ...details_order_purchase,
+        {
+          ...item, isNew: true,
+          numItem: generateUniqueId(),
+        }
+      ]
+    });
+  },
 }));

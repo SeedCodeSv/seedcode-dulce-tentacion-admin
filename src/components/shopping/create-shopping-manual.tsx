@@ -10,6 +10,7 @@ import GeneralInfo from './manual/general-info';
 import ResumeShopping from './manual/resume-shopping';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
 import AccountItem from './manual/account-item';
+import AddProductsShopping from './manual/AddProductsShopping';
 
 import { get_correlative_shopping } from '@/services/shopping.service';
 import { API_URL } from '@/utils/constants';
@@ -90,13 +91,9 @@ function CreateShoppingManual() {
   }, [fiscalDataAndParameter, account_catalog_pagination]);
 
   useEffect(() => {
-    getSupplierPagination(1, 15, searchNRC, '', '','', 1);
-    get_correlative_shopping(Number(user?.pointOfSale?.branchId ?? 0))
-      .then(({ data }) => {
-        setCorrelative(data.correlative + 1);
-      })
-      .catch(() => setCorrelative(0));
+    getSupplierPagination(1, 15, searchNRC, '', '', '', 1);
   }, [searchNRC]);
+
 
   useEffect(() => {
     if (nrc !== '') {
@@ -307,6 +304,12 @@ function CreateShoppingManual() {
         return;
       }
 
+      if (!selectedType) {
+        toast.warning('Debes el tipo de partida');
+
+        return;
+      }
+
       try {
         const transId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
@@ -374,6 +377,14 @@ function CreateShoppingManual() {
     },
   });
 
+  useEffect(() => {
+    get_correlative_shopping(Number(formik.values.branchId ?? 0))
+      .then(({ data }) => {
+        setCorrelative(data.correlative + 1);
+      })
+      .catch(() => setCorrelative(0));
+  }, [formik.values.branchId]);
+
   return (
     <>
       <div className="w-full h-full">
@@ -436,7 +447,7 @@ function CreateShoppingManual() {
               total={$totalItems}
               totalIva={$totalIva}
             />
-
+            {/* <AddProductsShopping /> */}
             <div className="w-full flex justify-end mt-4">
               <ButtonUi
                 className="px-16"

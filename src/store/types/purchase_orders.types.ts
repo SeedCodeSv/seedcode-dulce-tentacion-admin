@@ -16,7 +16,7 @@ export interface PurchaseOrderStore {
   details_order_purchase: DetailPurchaseOrder[];
    loading_complete: boolean;
   prchase_product_add: BranchProduct[];
-  removeProductFromPrchaseProductAdd: (productId: number) => void;
+  removeProductFromPrchaseProductAdd: (numItem: string) => void;
   getPurchaseOrderDetail: (id: number) => Promise<void>;
   getPurchaseOrders: (
     startDate: string,
