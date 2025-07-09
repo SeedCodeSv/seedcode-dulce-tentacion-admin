@@ -12,7 +12,6 @@ import { global_styles } from '@/styles/global.styles';
 import { useSupplierStore } from '@/store/supplier.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
 function UpdateNormalSupplier() {
   const { id } = useParams();

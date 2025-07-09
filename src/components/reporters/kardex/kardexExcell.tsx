@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import ButtonUi from "@/themes/ui/button-ui";
-import { Branches } from "@/types/branches.types";
 import { IReportKardexGeneral } from "@/types/reports/reportKardex.types";
 import { Colors } from "@/types/themes.types";
 import { ITransmitter } from "@/types/transmitter.types";

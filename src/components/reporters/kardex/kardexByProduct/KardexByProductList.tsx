@@ -5,7 +5,7 @@ import {
   Select,
   SelectItem,
 } from '@heroui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SearchIcon } from 'lucide-react';
 import debounce from 'debounce';
 import { useOutletContext } from 'react-router';
@@ -20,7 +20,6 @@ import LoadingTable from '@/components/global/LoadingTable';
 import Pagination from '@/components/global/Pagination';
 import useWindowSize from '@/hooks/useWindowSize';
 import { get_user } from '@/storage/localStorage';
-import { TypeOfMovements } from '@/types/reports/reportKardex.types';
 import { limit_options } from '@/utils/constants';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { useBranchesStore } from '@/store/branches.store';
@@ -223,13 +222,13 @@ export const KardexByProductList = () => {
             <RenderViewButton isList setView={setView} view={view} />
             <div className="flex gap-3 items-center">
               {JSON.stringify(actionView).includes('Descargar PDF') && (
-                <DownloadKardexProductPDFButton search={search}
-                   branchName= {branchName}
+                <DownloadKardexProductPDFButton branchName= {branchName}
+                   search={search}
                 />
               )}
               {JSON.stringify(actionView).includes('Exportar Excel') && (
-                <DownloadKardexProductExcelButton search={search}
-                   branchName= {branchName}
+                <DownloadKardexProductExcelButton branchName= {branchName}
+                   search={search}
                 />
               )}
             </div>

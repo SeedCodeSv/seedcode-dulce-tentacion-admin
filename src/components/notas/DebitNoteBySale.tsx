@@ -14,7 +14,6 @@ import {
 import useGlobalStyles from '../global/global.styles';
 
 import { formatCurrency } from '@/utils/dte';
-import Layout from '@/layout/Layout';
 import { useReportNoteSalesStore } from '@/store/reports/report_notes_sale.store';
 import { get_sale_pdf_debit_note } from '@/services/sales.service';
 import { TableComponent } from '@/themes/ui/table-ui';

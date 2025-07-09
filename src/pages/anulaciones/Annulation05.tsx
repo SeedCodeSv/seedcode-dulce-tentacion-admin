@@ -45,13 +45,11 @@ function Invalidation05({ id }: Props) {
   const services = new SeedcodeCatalogosMhService();
   const styles = global_styles();
   const { user } = useAuthStore();
-  const [modalInitializate, setModalInitialize] = useState(true)
   const { json_credit, onGetSaleAndCredit, loading_credit, recent_credit_notes } = useCreditNotes();
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const [employeeCode, setEmployeeCode] = useState<Employee>()
-  const [code, setCode] = useState<string | null>(null)
   // const [firstPase, setFirstPase] = useState(false)
   const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1);
   const [currentStep, setCurrentStep] = useState(0);

@@ -10,7 +10,6 @@ import { getElSalvadorDateTime } from '../utils/dates';
 import { useBranchesStore } from '../store/branches.store';
 import { formatCurrency } from '../utils/dte';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import { useTransmitterStore } from '@/store/transmitter.store';

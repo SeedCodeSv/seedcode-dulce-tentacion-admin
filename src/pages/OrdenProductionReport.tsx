@@ -1,7 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
 
 export default function OrdenProductionReport() {

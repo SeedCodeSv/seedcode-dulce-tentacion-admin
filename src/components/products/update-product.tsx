@@ -10,7 +10,6 @@ import {
   ModalFooter,
   Select,
   SelectItem,
-  Checkbox,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';

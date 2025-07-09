@@ -1,7 +1,5 @@
 import { useContext, useMemo } from 'react';
 
-import Layout from '../layout/Layout';
-
 import { PermissionContext } from '@/hooks/usePermission';
 import ListPurchasesOrders from '@/components/list_purchase/ListPurchasesOrders';
 

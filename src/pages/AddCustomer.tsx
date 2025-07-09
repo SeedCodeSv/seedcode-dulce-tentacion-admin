@@ -3,15 +3,14 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@heroui/react';
+import { Helmet } from 'react-helmet-async';
 
 import AddClientContributor from '../components/clients/AddClientContributor';
 import AddClientNormal from '../components/clients/AddClientNormal';
-import Layout from '../layout/Layout';
 
 import { useCustomerStore } from '@/store/customers.store';
 import GlobalLoading from '@/components/global/GlobalLoading';
 import DivGlobal from '@/themes/ui/div-global';
-import { Helmet } from 'react-helmet-async';
 
 function AddCustomer() {
   const [selected, setSelected] = useState<string | undefined>('normal');

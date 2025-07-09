@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Minus, MoveLeft, Plus, Trash } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Autocomplete,

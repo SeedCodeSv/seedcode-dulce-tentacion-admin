@@ -11,7 +11,6 @@ import { useBillingStore } from '../../store/facturation/billing.store';
 import { useEmployeeStatusStore } from '../../store/employee_status.store';
 import { useContractTypeStore } from '../../store/contract_type.store';
 import { useStudyLevelStore } from '../../store/study_level.store';
-import Layout from '../../layout/Layout';
 import { useEmployeeStore } from '../../store/employee.store';
 import { EmployeePayload } from '../../types/employees.types';
 
