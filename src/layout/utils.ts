@@ -88,9 +88,9 @@ export const returnTitleByPathname = (pathname: string) => {
       return 'ESTADO DE EMPLEADO';
     case '/anexos-iva-compras':
       return 'ANEXOS IVA COMPRAS';
-    case '/anexos-fe':
+    case '/anexos-fe/anexos-fe':
       return 'ANEXOS FE';
-    case '/anexos-ccfe':
+    case '/anexos-ccfe/anexos-ccfe':
       return 'ANEXOS CCFE';
     case '/iva/shopping-book':
       return 'LIBRO DE IVA DE COMPRAS';

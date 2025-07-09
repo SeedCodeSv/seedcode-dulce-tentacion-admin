@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
-import { RefreshCcw, EditIcon } from 'lucide-react';
+import { RefreshCcw, EditIcon, RectangleEllipsis } from 'lucide-react';
 
 import { useEmployeeStore } from '../../store/employee.store';
 
@@ -10,6 +10,7 @@ import ContractPDF from './../employee/employees-pdfs/pdfContract';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { get_codes_employees } from '@/services/employess.service';
 
 function MobileView(props: IMobileView) {
   const { openEditModal, DeletePopover, actions, handleActivate } = props;
@@ -30,7 +31,7 @@ function MobileView(props: IMobileView) {
               {item.branch.name}
             </p>
           </CardBody>
-          <CardHeader className="flex gap-5">
+          <CardHeader className="flex gap-5 overflow-auto">
             {actions.includes('Editar') && item.isActive && (
               <ButtonUi isIconOnly showTooltip theme={Colors.Success}
                 tooltipText='Editar'
@@ -52,6 +53,24 @@ function MobileView(props: IMobileView) {
             <ContractPDF employee={item} />
             <ProofSalary actions={actions} employee={item} />
             <ProofeOfEmployment actions={actions} employee={item} />
+            <ButtonUi
+              isIconOnly
+              showTooltip
+              theme={Colors.Default}
+              tooltipText="Generar códigos"
+              onPress={async () => {
+                props.setSelectedId(item?.id)
+                props.setSelectedEmployee(item) ?? undefined
+                props.generateCodeModal.onOpen!();
+                await get_codes_employees(item?.id)
+                const data = (await get_codes_employees(item?.id)).data
+
+                props.setCodes(data)
+
+              }}
+            >
+              <RectangleEllipsis />
+            </ButtonUi>
           </CardHeader>
         </Card>
       ))}

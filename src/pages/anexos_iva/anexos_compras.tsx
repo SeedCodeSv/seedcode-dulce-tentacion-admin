@@ -12,6 +12,7 @@ import DivGlobal from '@/themes/ui/div-global';
 import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function AnexosCompras() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -56,13 +57,136 @@ function AnexosCompras() {
     link.download = `iva-compras_${month}_${yearSelected}.csv`;
     link.click();
   };
+  const { windowSize } = useWindowSize()
 
   return (
     <DivGlobal>
-      <div className="w-full flex justify-between gap-5">
+      {windowSize.width < 768 ? (
+        <>
+          <div className="w-full overflow-auto">
+            <div className="min-w-[640px] flex gap-5 items-end">
+              {/* Select Meses */}
+              <Select
+                className="w-44"
+                classNames={{ label: 'font-semibold', innerWrapper: 'w-full' }}
+                label="Meses"
+                labelPlacement="outside"
+                selectedKeys={[`${monthSelected}`]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setMonthSelected(Number(new Set(key).values().next().value));
+                  }
+                }}
+              >
+                {months.map((month) => (
+                  <SelectItem key={month.value}>{month.name}</SelectItem>
+                ))}
+              </Select>
+
+              {/* Select Año */}
+              <Select
+                className="w-44"
+                classNames={{ label: 'font-semibold', innerWrapper: 'w-full' }}
+                label="Año"
+                labelPlacement="outside"
+                selectedKeys={[`${yearSelected}`]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setYearSelected(Number(new Set(key).values().next().value));
+                  }
+                }}
+              >
+                {years.map((year) => (
+                  <SelectItem key={year.value}>{year.name}</SelectItem>
+                ))}
+              </Select>
+
+              <Button
+                className="px-6"
+                color="secondary"
+                endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                onPress={exportAnnexes}
+              >
+                Exportar anexo
+              </Button>
+              <Button
+                className="px-6"
+                color="primary"
+                endContent={<PiFileCsv size={20} />}
+                onPress={exportAnnexesCSV}
+              >
+                Exportar CSV
+              </Button>
+            </div>
+          </div>
+
+        </>
+      ) : (
+        <>
+          <div className="w-full flex justify-between gap-5">
+            <Select
+              className={`${windowSize.width < 768 ? 'w-full' : "w-44"}`}
+              classNames={{ label: 'font-semibold', innerWrapper: 'w-full' }}
+              label="Meses"
+              labelPlacement="outside"
+              selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value}>{month.name}</SelectItem>
+              ))}
+            </Select>
+            <Select
+              className="w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
+              selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value}>{years.name}</SelectItem>
+              ))}
+            </Select>
+
+            <div className="w-full flex justify-end gap-5 mt-4">
+              <Button
+                className="px-10 "
+                color="secondary"
+                endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                onPress={() => exportAnnexes()}
+              >
+                Exportar anexo
+              </Button>
+              <Button
+                className="px-10"
+                color="primary"
+                endContent={<PiFileCsv size={20} />}
+                onPress={() => exportAnnexesCSV()}
+              >
+                Exportar CSV
+              </Button>
+            </div>
+          </div>
+        </>
+      )
+      }
+      {/* <div className="w-full flex justify-between gap-5 overflow-auto">
         <Select
-          className="w-44"
-          classNames={{ label: 'font-semibold' }}
+          className={`${windowSize.width < 768 ? 'w-full' :"w-44"}`}
+          classNames={{ label: 'font-semibold', innerWrapper:'w-full' }}
           label="Meses"
           labelPlacement="outside"
           selectedKeys={[`${monthSelected}`]}
@@ -113,63 +237,67 @@ function AnexosCompras() {
             Exportar CSV
           </Button>
         </div>
-      </div>
-      {loading_shopping ? (
-        <LoadingTable />
-      ) : annexes_list.length > 0 ? (
-        <>
-          <TableComponent
-            headers={[
-              'Fecha de emisión del documento',
-              'Clase de documento',
-              'Tipo de comprobante',
-              'Número de documento',
-              'NIT o NRC del proveedor',
-              'Nombre del proveedor',
-              'Iva',
-              'Total',
-            ]}
-          >
-            {annexes_list.map((shopping, index) => (
-              <tr key={index} className="border-b border-slate-200">
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.fecEmi}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.classDocumentCode}. {shopping.classDocumentValue}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.typeDte === '03'
-                    ? '03 - COMPROBANTE DE CREDITO FISCAL'
-                    : '01 - FACTURA'}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.supplier.numDocumento}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.supplier.nrc}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {shopping.supplier.nombre}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {formatCurrency(Number(shopping.totalIva))}
-                </td>
-                <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
-                  {formatCurrency(Number(shopping.montoTotalOperacion))}
-                </td>
-              </tr>
-            ))}
-          </TableComponent>
-        </>
-      ) : (
-        <>
-          <div className="p-5">
-            <EmptyTable />
-          </div>
-        </>
-      )}
-    </DivGlobal>
+      </div> */}
+
+      {
+        loading_shopping ? (
+          <LoadingTable />
+        ) : annexes_list.length > 0 ? (
+          <>
+            <TableComponent
+              className='overflow-auto'
+              headers={[
+                'Fecha de emisión del documento',
+                'Clase de documento',
+                'Tipo de comprobante',
+                'Número de documento',
+                'NIT o NRC del proveedor',
+                'Nombre del proveedor',
+                'Iva',
+                'Total',
+              ]}
+            >
+              {annexes_list.map((shopping, index) => (
+                <tr key={index} className="border-b border-slate-200">
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.fecEmi}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.classDocumentCode}. {shopping.classDocumentValue}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.typeDte === '03'
+                      ? '03 - COMPROBANTE DE CREDITO FISCAL'
+                      : '01 - FACTURA'}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.supplier.numDocumento}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.supplier.nrc}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {shopping.supplier.nombre}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {formatCurrency(Number(shopping.totalIva))}
+                  </td>
+                  <td className="p-3 text-xs text-slate-500 dark:text-slate-100">
+                    {formatCurrency(Number(shopping.montoTotalOperacion))}
+                  </td>
+                </tr>
+              ))}
+            </TableComponent>
+          </>
+        ) : (
+          <>
+            <div className="p-5">
+              <EmptyTable />
+            </div>
+          </>
+        )
+      }
+    </DivGlobal >
   );
 }
 

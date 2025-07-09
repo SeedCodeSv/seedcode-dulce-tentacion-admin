@@ -1,8 +1,9 @@
-import { Input, Select, SelectItem } from "@heroui/react";
+import { Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { useEffect, useState } from "react";
 
 import ProductsExportPdfByBranches from "./ProductsExportPdfByBranches";
 import ProductsExportExcellByBranches from "./ProductsExportExcellByBranches";
+import CardDetailByBranchesProducts from "./CardDetailByBranchesProducts";
 
 import EmptyTable from "@/components/global/EmptyTable";
 import LoadingTable from "@/components/global/LoadingTable";
@@ -13,12 +14,18 @@ import { useTransmitterStore } from "@/store/transmitter.store";
 import { TableComponent } from "@/themes/ui/table-ui";
 import { getElSalvadorDateTime } from "@/utils/dates";
 import TdGlobal from "@/themes/ui/td-global";
+import useWindowSize from "@/hooks/useWindowSize";
+import RenderViewButton from "@/components/global/render-view-button";
 
 export default function DetailedBranchesProducts() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { transmitter, gettransmitter } = useTransmitterStore();
     const { getProductSaledByBranches, products_selled_by_branches, loading_data } = useProductsOrdersReportStore();
-
+    const { windowSize } = useWindowSize()
+    const [view, setView] = useState<'grid' | 'list' | 'table'>(
+        windowSize.width < 768 ? 'grid' : 'table'
+    )
+    const DetailTotal = useDisclosure()
     const currentDate = new Date();
     const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const [search, setSearch] = useState({
@@ -119,48 +126,107 @@ export default function DetailedBranchesProducts() {
                     ))}
                 </Select>
             </ResponsiveFilterWrapper>
-            <div className="flex gap-3 mt-2">
-                <ProductsExportPdfByBranches comercialName={transmitter.nombreComercial} headers={['Producto', ...branchNames, 'Total General']} params={search} />
-                <ProductsExportExcellByBranches comercialName={transmitter.nombreComercial} headers={['Producto', ...branchNames, 'Total General']} params={search} />
+            <div className="flex gap-3 justify-between mt-4">
+                <div className="flex gap-2">
+
+                    <ProductsExportPdfByBranches comercialName={transmitter.nombreComercial} headers={['Producto', ...branchNames, 'Total General']} params={search} />
+                    <ProductsExportExcellByBranches comercialName={transmitter.nombreComercial} headers={['Producto', ...branchNames, 'Total General']} params={search} />
+                </div>
+                <div className="flex gap-2">
+                    {view.includes('grid') && (
+                        <div className="content-center">
+                            <button
+                                className="flex px-5 py-1 bg-emerald-500 text-white rounded-md"
+                                onClick={() => {
+                                    DetailTotal.onOpen()
+                                }}
+                            >
+                                {windowSize.width < 768 ? 'Totales' : 'Detalles totales'}
+                            </button>
+                        </div>
+                    )}
+
+                    <RenderViewButton setView={setView} view={view} />
+                </div>
+
             </div>
             {loading_data ? (
                 <LoadingTable />
             ) : products_selled_by_branches.data.length === 0 ? (
                 <EmptyTable />
             ) : (
-                <TableComponent
-                    headers={['Producto', ...branchNames, 'Total General']}
-                >
-                    <>
-                        {products_selled_by_branches.data.map((row, i) => (
-                            <tr key={i} className="border-t text-sm">
-                                <TdGlobal className="px-4 py-2">{row.productName}</TdGlobal>
-                                {branchNames.map(branch => (
-                                    <TdGlobal key={branch} className="px-4 py-2">
-                                        {Number(row[branch] ?? 0)}
-                                    </TdGlobal>
+                <>
+                    {view === 'table' && (
+                        <TableComponent
+                            className="overflow-auto"
+                            headers={['Producto', ...branchNames, 'Total General']}
+                        >
+                            <>
+                                {products_selled_by_branches.data.map((row, i) => (
+                                    <tr key={i} className="border-t text-sm">
+                                        <TdGlobal className="px-4 py-2">{row.productName}</TdGlobal>
+                                        {branchNames.map(branch => (
+                                            <TdGlobal key={branch} className="px-4 py-2">
+                                                {Number(row[branch] ?? 0)}
+                                            </TdGlobal>
+                                        ))}
+                                        <TdGlobal className="px-4 py-2 font-semibold text-blue-700">
+                                            {Number(row.totalGeneral)}
+                                        </TdGlobal>
+                                    </tr>
                                 ))}
-                                <TdGlobal className="px-4 py-2 font-semibold text-blue-700">
-                                    {Number(row.totalGeneral)}
-                                </TdGlobal>
-                            </tr>
-                        ))}
 
-                        {/* FOOTER */}
-                        <tr className="bg-gray-100 font-bold border-t">
-                            <TdGlobal className="px-4 py-2">Totales</TdGlobal>
-                            {branchNames.map(branch => (
-                                <TdGlobal key={branch} className="px-4 py-2">
-                                    {Number(products_selled_by_branches.branchTotals[branch] ?? 0)}
-                                </TdGlobal>
-                            ))}
-                            <TdGlobal className="px-4 py-2 text-blue-700">
-                                {Number(products_selled_by_branches.branchTotals.totalGeneral ?? 0)}
-                            </TdGlobal>
-                        </tr>
-                    </>
-                </TableComponent>
+                                {/* FOOTER */}
+                                <tr className="bg-gray-100 font-bold border-t">
+                                    <TdGlobal className="px-4 py-2">Totales</TdGlobal>
+                                    {branchNames.map(branch => (
+                                        <TdGlobal key={branch} className="px-4 py-2">
+                                            {Number(products_selled_by_branches.branchTotals[branch] ?? 0)}
+                                        </TdGlobal>
+                                    ))}
+                                    <TdGlobal className="px-4 py-2 text-blue-700">
+                                        {Number(products_selled_by_branches.branchTotals.totalGeneral ?? 0)}
+                                    </TdGlobal>
+                                </tr>
+                            </>
+                        </TableComponent>
+                    )}
+                    {view === 'grid' && (
+                        <CardDetailByBranchesProducts
+
+                        />
+                    )}
+                </>
             )}
+            <Modal isOpen={DetailTotal.isOpen} onClose={() => {
+                DetailTotal.onClose()
+            }}>
+
+                <ModalContent>
+                    <ModalHeader>
+                        {/* Totales */}
+                    </ModalHeader>
+                    <ModalBody>
+                        {/* <Card className="border shadow-md bg-gray-100">
+                            <CardHeader> */}
+                        <h3 className="text-lg font-bold text-gray-700">Totales</h3>
+                        {/* </CardHeader>
+                            <CardBody> */}
+                        {branchNames.map(branch => (
+                            <p key={branch} className="text-sm mb-1">
+                                <span className="font-semibold">{branch}:</span> {Number(products_selled_by_branches.branchTotals[branch] ?? 0)}
+                            </p>
+                        ))}
+                        <hr className="my-2" />
+                        <p className="text-blue-700 font-semibold">
+                            Total general: {Number(products_selled_by_branches.branchTotals.totalGeneral ?? 0)}
+                        </p>
+                        {/* </CardBody>
+                        </Card> */}
+                    </ModalBody>
+                </ModalContent>
+
+            </Modal>
         </>
     )
 }

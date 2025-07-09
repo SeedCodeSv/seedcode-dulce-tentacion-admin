@@ -352,7 +352,7 @@ function ShoppingBookIVA() {
           </Link>
         </div>
         <div className="w-full  mt-2">
-          <div className="w-full flex justify-between gap-5">
+          {/* <div className="w-full flex justify-between gap-5 overflow-auto">
             <Select
               className="w-44"
               classNames={{ label: 'font-semibold' }}
@@ -421,7 +421,81 @@ function ShoppingBookIVA() {
                 </ButtonUi>
               )}
             </div>
+          </div> */}
+          <div className="w-full flex  justify-between gap-5 overflow-auto items-end">
+            <Select
+              className="min-w-[160px] w-full sm:w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Meses"
+              labelPlacement="outside"
+              selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value}>{month.name}</SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              className="min-w-[160px] w-full sm:w-44"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
+              selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value}>{years.name}</SelectItem>
+              ))}
+            </Select>
+
+            <div className="w-full sm:w-auto flex justify-end gap-4">
+              {actionView.includes('Imprimir') && (
+                <ButtonUi
+                  className="w-full sm:w-auto px-10"
+                  endContent={<Printer size={20} />}
+                  theme={Colors.Info}
+                  onPress={() => showPdf()}
+                >
+                  Ver e imprimir
+                </ButtonUi>
+              )}
+
+              {actionView.includes('Exportar PDF') && (
+                <ButtonUi
+                  className="w-full sm:w-auto px-10"
+                  endContent={<PiFilePdfDuotone size={20} />}
+                  theme={Colors.Error}
+                  onPress={() => export_to_pdf('download')}
+                >
+                  Exportar a PDF
+                </ButtonUi>
+              )}
+
+              {actionView.includes('Exportar Excel') && (
+                <ButtonUi
+                  className="w-full sm:w-auto px-10"
+                  endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                  theme={Colors.Success}
+                  onPress={handleExportExcel}
+                >
+                  Exportar a excel
+                </ButtonUi>
+              )}
+            </div>
           </div>
+
+
           <div>
             <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
               {loading_shopping ? (

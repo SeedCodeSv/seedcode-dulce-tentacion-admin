@@ -1,3 +1,6 @@
+import { UseDisclosureProps } from '@heroui/react';
+import { Dispatch, SetStateAction } from 'react';
+
 import { User } from '../../../types/users.types';
 
 export interface IMobileViewProps {
@@ -6,6 +9,8 @@ export interface IMobileViewProps {
   openKeyModal: (user: User) => void;
   actions: string[];
   handleActivate: (id: number) => void;
+  setSelectedId: Dispatch<SetStateAction<number>>
+  generateCodeModal: UseDisclosureProps
 }
 
 export interface GridProps extends IMobileViewProps {
@@ -17,4 +22,5 @@ export interface IPropsSearchUser {
   nameRol: (name: string) => void;
   active: boolean;
   setActive: (active: boolean) => void;
+
 }

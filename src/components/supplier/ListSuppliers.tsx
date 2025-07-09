@@ -167,7 +167,7 @@ function ListSuppliers({ actions }: ArrayAction) {
             <div className="flex gap-3 w-full justify-end items-end">
               <Select
                 disallowEmptySelection
-                className="w-72 sm:w-44 dark:text-white"
+                className="w-32 sm:w-44 dark:text-white"
                 classNames={{
                   label: 'font-semibold',
                 }}
@@ -219,6 +219,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
         {view === 'table' && (
           <TableComponent
+          className='overflow-auto'
             headers={['Nº', 'Nombre', 'Telefono', 'Correo', 'Tipo de Proveedor', 'Acciones']}>
             {loading ? (
               <tr>

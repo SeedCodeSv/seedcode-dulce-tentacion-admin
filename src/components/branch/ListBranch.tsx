@@ -223,6 +223,7 @@ function ListBranch({ actions }: ArrayAction) {
 
             {view === 'table' && (
               <TableBranch
+              
                 actionsElement={(item) => (
                   <>
                     <div className="flex w-full gap-5">
@@ -296,6 +297,8 @@ function ListBranch({ actions }: ArrayAction) {
                   handleBox={handleBox}
                   handleBranchProduct={handleBranchProduct}
                   handleEdit={handleEdit}
+                  handleInactive={handleInactive}
+                  handlePointOfSales={handlePointOfSales}
                   layout={view as 'grid' | 'list'}
                 />
               </>

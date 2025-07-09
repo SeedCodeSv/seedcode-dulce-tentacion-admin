@@ -13,6 +13,7 @@ import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import TdGlobal from '@/themes/ui/td-global';
 import LoadingTable from '@/components/global/LoadingTable';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function AnexoCcfe() {
   const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
@@ -54,10 +55,67 @@ function AnexoCcfe() {
     link.download = 'ANEXO_CONTRIBUYENTES.csv';
     link.click();
   };
+  const { windowSize } = useWindowSize()
 
   return (
     <DivGlobal>
-      <div className="w-full flex justify-between gap-5">
+      {windowSize.width < 768 ? (
+        <div className="w-full overflow-x-auto">
+          <div className="min-w-[600px] flex items-end gap-4">
+            <Select
+              className="w-44 min-w-[11rem]"
+              classNames={{ label: 'font-semibold' }}
+              label="Meses"
+              labelPlacement="outside"
+              selectedKeys={[`${monthSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setMonthSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {months.map((month) => (
+                <SelectItem key={month.value}>{month.name}</SelectItem>
+              ))}
+            </Select>
+
+            <Select
+              className="w-44 min-w-[11rem]"
+              classNames={{ label: 'font-semibold' }}
+              label="Año"
+              labelPlacement="outside"
+              selectedKeys={[`${yearSelected}`]}
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setYearSelected(Number(new Set(key).values().next().value));
+                }
+              }}
+            >
+              {years.map((years) => (
+                <SelectItem key={years.value}>{years.name}</SelectItem>
+              ))}
+            </Select>
+
+            <Button
+              className="min-w-[160px] px-6"
+              style={global_styles().thirdStyle}
+              onPress={exportAnnexes}
+            >
+              Exportar anexo
+            </Button>
+
+            <Button
+              className="min-w-[160px] px-6"
+              style={global_styles().secondaryStyle}
+              onPress={exportAnnexesCSV}
+            >
+              Exportar a CSV
+            </Button>
+          </div>
+        </div>
+      ) : (<div className="w-full flex justify-between gap-5">
         <Select
           className="w-44"
           classNames={{ label: 'font-semibold' }}
@@ -100,7 +158,8 @@ function AnexoCcfe() {
             Exportar a CSV
           </Button>
         </div>
-      </div>
+      </div>)}
+
 
       <>
         {loading_annexes_iva_ccfe ? (
@@ -112,6 +171,7 @@ function AnexoCcfe() {
             {annexes_iva_ccfe.length > 0 ? (
               <>
                 <TableComponent
+                  className='overflow-auto'
                   headers={[
                     'Fecha',
                     'Cliente',

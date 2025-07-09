@@ -11,9 +11,9 @@ import { useSupplierStore } from '../../store/supplier.store';
 import { supplierSchemaNormal } from './types/validation_supplier_yup.types';
 import { SelectedItem } from './select-account';
 
-import Layout from '@/layout/Layout';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function AddNormalSupplier() {
   const [selectedCodeDep, setSelectedCodeDep] = useState('');
@@ -28,6 +28,7 @@ function AddNormalSupplier() {
 
   const { getAccountCatalogs } = useAccountCatalogsStore();
   const { user } = useAuthStore();
+  const { windowSize } = useWindowSize()
 
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
@@ -291,8 +292,16 @@ function AddNormalSupplier() {
                 />
               </div>
               <div className="flex gap-4 justify-end w-full">
-                <Button
+                {/* <Button
                   className="mt-4 px-20 text-sm font-semibold"
+                  style={global_styles().dangerStyles}
+                  type="submit"
+                >
+                  Cancelar
+                </Button> */}
+
+                <Button
+                  className={`${windowSize.width < 768 ? 'w-full font-semibold mt-4' : 'mt-4 px-20 text-sm font-semibold"'}`}
                   style={global_styles().dangerStyles}
                   type="submit"
                 >

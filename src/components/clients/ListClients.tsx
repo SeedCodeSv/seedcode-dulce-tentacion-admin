@@ -50,7 +50,7 @@ const ListClients = ({ actions }: Props) => {
   useEffect(() => {
     getBranchesList();
   }, []);
-  
+
   useEffect(() => {
     getCustomersPagination(1, limit, search, email, branch, tipeCustomer, active ? 1 : 0);
   }, [limit, tipeCustomer, active]);
@@ -274,6 +274,7 @@ const ListClients = ({ actions }: Props) => {
               {view === 'table' && (
                 <>
                   <TableComponent
+                    className='overflow-auto'
                     headers={['Nº', 'Nombre', 'Teléfono', 'Correo', 'Contribuyente', 'Acciones']}>
                     {loading_customer ? (
                       <tr>

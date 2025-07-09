@@ -59,99 +59,100 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
   }, [sortedProducts]);
 
   return (
-        <>
-          <TableComponent
-            headers={[
-              'No.',
-              'Fecha/Hora',
-              'Movimiento/Tipo',
-              'Código',
-              'Descripción',
-              'Cantidad',
-              'Stock inicial',
-              'Costo unitario',
-              'Total Movimiento',
-            ]}
+    <>
+      <TableComponent
+        className='overflow-auto'
+        headers={[
+          'No.',
+          'Fecha/Hora',
+          'Movimiento/Tipo',
+          'Código',
+          'Descripción',
+          'Cantidad',
+          'Stock inicial',
+          'Costo unitario',
+          'Total Movimiento',
+        ]}
 
-            renderHeader={(header) => (
-              <div className="flex items-center">
-                <span>{header}</span>
-                {(header === 'Cantidad' || header === 'Costo Unitario') && (
-                  <span className="ml-1 flex items-center">
-                    {sortConfig.key === (header === 'Cantidad' ? 'quantity' : 'unitCost') &&
-                      (sortConfig.direction === 'asc' ? (
-                        <ChevronUp size={20} />
-                      ) : (
-                        <ChevronDown size={20} />
-                      ))}
-                  </span>
-                )}
-              </div>
+        renderHeader={(header) => (
+          <div className="flex items-center">
+            <span>{header}</span>
+            {(header === 'Cantidad' || header === 'Costo Unitario') && (
+              <span className="ml-1 flex items-center">
+                {sortConfig.key === (header === 'Cantidad' ? 'quantity' : 'unitCost') &&
+                  (sortConfig.direction === 'asc' ? (
+                    <ChevronUp size={20} />
+                  ) : (
+                    <ChevronDown size={20} />
+                  ))}
+              </span>
             )}
+          </div>
+        )}
 
-            onThClick={(header) => {
-              if (header === 'Cantidad') {
-                handleSort('quantity');
-              } else if (header === 'Costo Unitario') {
-                handleSort('unitCost');
-              } else {
-                setSortConfig({ key: null, direction: 'asc' });
-              }
-            }}
-          >
+        onThClick={(header) => {
+          if (header === 'Cantidad') {
+            handleSort('quantity');
+          } else if (header === 'Costo Unitario') {
+            handleSort('unitCost');
+          } else {
+            setSortConfig({ key: null, direction: 'asc' });
+          }
+        }}
+      >
 
-            {loading ? (
+        {loading ? (
+          <tr>
+            <td className="p-3 text-sm text-center text-slate-500" colSpan={9}>
+              <LoadingTable />
+            </td>
+          </tr>
+        ) : (
+          <>
+            {sortedProducts.length > 0 ? (
+              sortedProducts.map((product, index) => (
+                <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {' '}
+                    {index + 1}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.date}  - {product.time}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.movementType}  - {product.inventoryType}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                    {product.productCode}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                    {product.productName}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.quantity}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.initialStock}
+                  </td>
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    {product.unitCost}
+                  </td>
+
+                  <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                    ${product.totalMovement}
+                  </td>
+                </tr>
+              ))
+            ) : (
               <tr>
-                <td className="p-3 text-sm text-center text-slate-500" colSpan={9}>
-                  <LoadingTable />
+                <td colSpan={9}>
+                  <EmptyTable />
                 </td>
               </tr>
-            ) : (
-              <>
-                {sortedProducts.length > 0 ? (
-                  sortedProducts.map((product, index) => (
-                    <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {' '}
-                        {index + 1}
-                      </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.date}  - {product.time}
-                      </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.movementType}  - {product.inventoryType}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {product.productCode}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                        {product.productName}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.quantity}
-                      </td>
-                       <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.initialStock}
-                      </td>
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        {product.unitCost}
-                      </td>
-                      
-                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                        ${product.totalMovement}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={9}>
-                      <EmptyTable />
-                    </td>
-                  </tr>
-                )}
-              </>
             )}
-          </TableComponent>
-        </>
+          </>
+        )}
+      </TableComponent>
+    </>
   );
 }

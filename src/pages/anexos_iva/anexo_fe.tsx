@@ -14,6 +14,7 @@ import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
 import TdGlobal from '@/themes/ui/td-global';
 import LoadingTable from '@/components/global/LoadingTable';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function AnexoFe() {
   const { user } = useAuthStore();
@@ -58,9 +59,64 @@ function AnexoFe() {
     link.click();
   };
 
+  const { windowSize } = useWindowSize()
+
   return (
     <DivGlobal>
-      <div className="w-full flex justify-between gap-5">
+      {windowSize.width < 768 ? (<div className="w-full flex justify-between gap-5 overflow-auto">
+        <Select
+          className="min-w-[160px] w-full sm:w-44"
+          classNames={{ label: 'font-semibold' }}
+          label="Meses"
+          labelPlacement="outside"
+          selectedKeys={[`${monthSelected}`]}
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              setMonthSelected(Number(new Set(key).values().next().value));
+            }
+          }}
+        >
+          {months.map((month) => (
+            <SelectItem key={month.value}>{month.name}</SelectItem>
+          ))}
+        </Select>
+
+        <Select
+          className="min-w-[160px] w-full sm:w-44"
+          classNames={{ label: 'font-semibold' }}
+          label="Año"
+          labelPlacement="outside"
+          selectedKeys={[`${yearSelected}`]}
+          variant="bordered"
+          onSelectionChange={(key) => {
+            if (key) {
+              setYearSelected(Number(new Set(key).values().next().value));
+            }
+          }}
+        >
+          {years.map((years) => (
+            <SelectItem key={years.value}>{years.name}</SelectItem>
+          ))}
+        </Select>
+
+        <div className="flex gap-2 mt-6">
+          <Button
+            className="w-full md:w-auto"
+            style={global_styles().thirdStyle}
+            onPress={exportAnnexes}
+          >
+            Exportar anexo
+          </Button>
+          <Button
+            className="w-full md:w-auto"
+            style={global_styles().secondaryStyle}
+            onPress={exportAnnexesCSV}
+          >
+            Exportar a CSV
+          </Button>
+        </div>
+      </div>) : (<div className="w-full flex justify-between gap-5">
         <Select
           className="w-44"
           classNames={{ label: 'font-semibold' }}
@@ -104,7 +160,8 @@ function AnexoFe() {
             Exportar a CSV
           </Button>
         </div>
-      </div>
+      </div>)}
+
       <>
         {loading_annexes_fe ? (
           <>
@@ -116,6 +173,7 @@ function AnexoFe() {
               <>
                 {' '}
                 <TableComponent
+                  className='overflow-auto'
                   headers={[
                     'Fecha',
                     'Numero control del',

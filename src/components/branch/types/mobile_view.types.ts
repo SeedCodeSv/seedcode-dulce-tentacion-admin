@@ -8,6 +8,8 @@ export interface MobileViewProps {
   handleBranchProduct: (id: number) => void;
   handleBox: (branch: Branches) => void;
   handleActive: (id: number) => void;
+  handlePointOfSales?: (id: number) => void
+  handleInactive?: (branches: Branches) => void
 }
 
 export interface GridProps extends MobileViewProps {

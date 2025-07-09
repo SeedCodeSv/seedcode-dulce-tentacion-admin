@@ -10,6 +10,7 @@ import ContingenceNRE from './contingence/ContingenceNRE';
 import { useEmployeeStore } from '@/store/employee.store';
 // import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function ContingenceSection() {
   const { getEmployeesList } = useEmployeeStore();
@@ -17,6 +18,7 @@ function ContingenceSection() {
   useEffect(() => {
     getEmployeesList();
   }, []);
+  const { windowSize } = useWindowSize()
 
   const [activeTab, setActiveTab] = useState<'ventas' | 'nd' | 'nc' | 'fse' | 'nre'>('ventas');
 
@@ -92,7 +94,7 @@ function ContingenceSection() {
           </Tab>
         </Tabs> */}
         <div className="w-full space-y-6">
-          <div className="flex flex-wrap gap-4">
+          <div className={`${windowSize.width < 768 ? 'grid grid-cols-2 gap-2' : 'flex flex-wrap gap-4 grid-cols-5'}`}>
             <button className={buttonStyle('ventas')} onClick={() => setActiveTab('ventas')}>
               <BadgeDollarSign />
               VENTAS (FC - CCF)

@@ -22,7 +22,6 @@ import { supplierSchemaContribuyente } from './types/validation_supplier_yup.typ
 import { SelectedItem } from './select-account';
 
 import { useSupplierStore } from '@/store/supplier.store';
-import Layout from '@/layout/Layout';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 function AddTributeSupplier() {

@@ -276,7 +276,7 @@ export default function OPReportComponentDetailed() {
                                     </>
                                 }>
                                 <TableComponent
-                                    className="text-[15px]"
+                                    className="text-[15px] overflow-auto"
                                     headers={["Nº", "Fecha/Hora de inicio", 'Fecha/Hora de fin', 'Cantidad', 'Producido', 'Dañado', 'Estado',]}
                                     renderHeader={(header) => (
                                         <div className="flex items-center">

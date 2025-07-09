@@ -180,7 +180,7 @@ export default function KardexComponent() {
             ))}
           </Select>
         </ResponsiveFilterWrapper>
-        <div className="w-full flex gap-5 justify-between items-end">
+        <div className="w-full flex gap-5 justify-between items-end overflow-auto">
           <RenderViewButton isList setView={setView} view={view} />
           {view === 'table' && (
             <div className="flex gap-3">

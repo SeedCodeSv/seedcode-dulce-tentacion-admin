@@ -1,10 +1,17 @@
-import { Employee, MonthsAttendance } from '../../../types/employees.types';
+import { UseDisclosureProps } from '@heroui/react';
+import { Dispatch, SetStateAction } from 'react';
+
+import { Employee, IResponseCodes, MonthsAttendance } from '../../../types/employees.types';
 
 export interface IMobileView {
   DeletePopover: ({ employee }: { employee: Employee }) => JSX.Element;
   openEditModal: (employee: Employee) => void;
   actions: string[];
   handleActivate: (id: number) => void;
+  generateCodeModal: UseDisclosureProps
+  setSelectedId: Dispatch<SetStateAction<number>>
+  setSelectedEmployee: Dispatch<SetStateAction<Employee | undefined>>
+   setCodes: Dispatch<SetStateAction<IResponseCodes | undefined>>
 }
 
 export interface GridProps extends IMobileView {

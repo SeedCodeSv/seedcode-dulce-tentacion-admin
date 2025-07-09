@@ -11,6 +11,7 @@ export default function SummaryCutReportTable() {
 
     return (
         <TableComponent
+            className="overflow-auto"
             headers={['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado', 'Sum.Gastos']}
         >
             {loadindSummary ? (

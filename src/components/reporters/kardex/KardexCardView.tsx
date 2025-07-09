@@ -36,7 +36,7 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
 
   return (
     <div>
-      <div className="flex gap-2 md:justify-between mt-2">
+      <div className="flex gap-2 md:justify-between mt-2 overflow-auto">
         <div className='flex gap-4'>
           {actions.includes('Descargar PDF') && (
             <DownloadPDFButton branch={branch} tableData={sortedProducts} transmitter={transmitter} />

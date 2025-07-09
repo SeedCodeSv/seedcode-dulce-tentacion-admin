@@ -10,6 +10,7 @@ export default function DetailedCutTable() {
 
     return (
         <TableComponent
+            className="overflow-auto"
             headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero', 'Sucursal']}
         >
             {loadingDetailed ? (
@@ -64,7 +65,7 @@ export default function DetailedCutTable() {
                             </div>
                         </TdGlobal>
                         <TdGlobal >
-                           {item.branchName}
+                            {item.branchName}
                         </TdGlobal>
                     </tr>
                 ))

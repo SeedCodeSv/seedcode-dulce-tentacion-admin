@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Card, CardBody, CardHeader, Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 
 
@@ -17,12 +17,17 @@ import EmptyTable from "@/components/global/EmptyTable";
 import { formatCurrency } from "@/utils/dte";
 import Pagination from "@/components/global/Pagination";
 import { useTransmitterStore } from "@/store/transmitter.store";
+import useWindowSize from "@/hooks/useWindowSize";
+import RenderViewButton from "@/components/global/render-view-button";
 
 export default function ProductsSelledDetailComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
     const { products_selled, getProductsSelled, loading } = useProductsOrdersReportStore()
     const { transmitter, gettransmitter } = useTransmitterStore();
-    
+    const { windowSize } = useWindowSize()
+    const [view, setView] = useState<'grid' | 'list' | 'table'>(
+        windowSize.width < 768 ? 'grid' : "table"
+    )
 
     const [search, setSearch] = useState({
         page: 1,
@@ -136,43 +141,55 @@ export default function ProductsSelledDetailComponent() {
                     ))}
                 </Select>
                 <div className="flex gap-3 mt-2 lg:mt-0">
-                    <ProductsDetailedExportPdf comercialName={transmitter.nombreComercial} params={search} />
-                    <ProductsDetailedExportExcell comercialName={transmitter.nombreComercial} params={search} />
+                    <div className="flex gap-2">
+                        <ProductsDetailedExportPdf comercialName={transmitter.nombreComercial} params={search} />
+                        <ProductsDetailedExportExcell comercialName={transmitter.nombreComercial} params={search} />
+
+                    </div>
+
+                    <RenderViewButton setView={setView} view={view} />
+
                 </div>
             </div>
             <div>
-            <TableComponent
-                headers={['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría']}
-            >
-                {loading ? (
-                    <tr>
-                        <TdGlobal className="p-3 text-sm text-center text-slate-500" colSpan={11}>
-                            <LoadingTable />
-                        </TdGlobal>
-                    </tr>
-                ) : products_selled.products_sellled.length === 0 ? (
-                    <tr>
-                        <TdGlobal className="p-3 text-sm text-center text-slate-500" colSpan={11}>
-                            <EmptyTable />
-                        </TdGlobal>
-                    </tr>
-                ) : (
-                    products_selled.products_sellled.map((item, index) => (
-                        <tr key={index} className="border-b dark:border-slate-600 border-slate-200 p-3">
-                            <TdGlobal className="p-3">{item.date} </TdGlobal>
-                            <TdGlobal className="p-3">{item.branchName}</TdGlobal>
-                            <TdGlobal className="p-3">{item.code}</TdGlobal>
-                            <TdGlobal className="p-3">{item.productName}</TdGlobal>
-                            <TdGlobal className="p-3">{item.unitMessure}</TdGlobal>
-                            <TdGlobal className="p-3">{item.quantity}</TdGlobal>
-                            <TdGlobal className="p-3">{formatCurrency(Number(item.price ?? 0))}</TdGlobal>
-                            <TdGlobal className="p-3">{formatCurrency(Number(item.total ?? 0))}</TdGlobal>
-                            <TdGlobal className="p-3">{item.category}</TdGlobal>
-                        </tr>
-                    ))
+                {view === 'table' && (
+                    <TableComponent
+                        className="overflow-auto"
+                        headers={['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría']}
+                    >
+                        {loading ? (
+                            <tr>
+                                <TdGlobal className="p-3 text-sm text-center text-slate-500" colSpan={11}>
+                                    <LoadingTable />
+                                </TdGlobal>
+                            </tr>
+                        ) : products_selled.products_sellled.length === 0 ? (
+                            <tr>
+                                <TdGlobal className="p-3 text-sm text-center text-slate-500" colSpan={11}>
+                                    <EmptyTable />
+                                </TdGlobal>
+                            </tr>
+                        ) : (
+                            products_selled.products_sellled.map((item, index) => (
+                                <tr key={index} className="border-b dark:border-slate-600 border-slate-200 p-3">
+                                    <TdGlobal className="p-3">{item.date} </TdGlobal>
+                                    <TdGlobal className="p-3">{item.branchName}</TdGlobal>
+                                    <TdGlobal className="p-3">{item.code}</TdGlobal>
+                                    <TdGlobal className="p-3">{item.productName}</TdGlobal>
+                                    <TdGlobal className="p-3">{item.unitMessure}</TdGlobal>
+                                    <TdGlobal className="p-3">{item.quantity}</TdGlobal>
+                                    <TdGlobal className="p-3">{formatCurrency(Number(item.price ?? 0))}</TdGlobal>
+                                    <TdGlobal className="p-3">{formatCurrency(Number(item.total ?? 0))}</TdGlobal>
+                                    <TdGlobal className="p-3">{item.category}</TdGlobal>
+                                </tr>
+                            ))
 
+                        )}
+                    </TableComponent>
                 )}
-            </TableComponent>
+                {view === 'grid' && (
+                    <CardProductSellesDetail />
+                )}
             </div>
             {products_selled.totalPag > 1 &&
                 <Pagination
@@ -185,6 +202,47 @@ export default function ProductsSelledDetailComponent() {
                     }}
                 />
             }
+        </>
+    )
+}
+
+
+const CardProductSellesDetail = () => {
+    const { products_selled, loading } = useProductsOrdersReportStore()
+
+    return (
+        <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mt-3 overflow-y-auto p-2">
+                {loading ? (
+                    <div className="col-span-full flex justify-center items-center">
+                        <LoadingTable />
+                    </div>
+                ) : products_selled.products_sellled.length === 0 ? (
+                    <div className="col-span-full flex justify-center items-center">
+                        <EmptyTable />
+                    </div>
+                ) : (
+                    products_selled.products_sellled.map((item, index) => (
+                        <Card key={index} className="border shadow-sm">
+                            <CardHeader>
+                                <h3 className="text-md font-bold text-gray-800">{item.productName}</h3>
+                                {/* <p className="text-xs text-gray-500">{item.date} • {item.branchName}</p> */}
+                            </CardHeader>
+                            <CardBody className="text-sm space-y-1 bottom-4">
+                                <p><span className="font-semibold">Fecha:</span> {item?.date}</p>
+                                <p><span className="font-semibold">Sucursal:</span> {item.branchName}</p>
+                                <p><span className="font-semibold">Código:</span> {item.code}</p>
+                                <p><span className="font-semibold">Unidad de Medida:</span> {item.unitMessure}</p>
+                                <p><span className="font-semibold">Cantidad:</span> {item.quantity}</p>
+                                <p><span className="font-semibold">Precio:</span> {formatCurrency(Number(item.price ?? 0))}</p>
+                                <p><span className="font-semibold">Total:</span> {formatCurrency(Number(item.total ?? 0))}</p>
+                                <p><span className="font-semibold">Categoría:</span> {item.category}</p>
+                            </CardBody>
+                        </Card>
+                    ))
+                )}
+            </div>
+
         </>
     )
 }

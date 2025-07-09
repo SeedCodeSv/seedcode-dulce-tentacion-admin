@@ -92,7 +92,7 @@ function ListMovements({ actions }: Props) {
   const backgroundColorRGB = hexToRgb(styles.darkStyle.backgroundColor || '#0d83ac');
   const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
 
-  const downloadPDF =async (movements: InventoryMoment[]) => {
+  const downloadPDF = async (movements: InventoryMoment[]) => {
 
     if (!movements || movements.length === 0) {
       toast.warning('No hay datos disponibles para generar el PDF.');
@@ -319,28 +319,7 @@ function ListMovements({ actions }: Props) {
           </tr>
         )}
       </TableComponent>
-      {pagination_inventory_movement.totalPag > 1 && (
-        <>
-          <Pagination
-            currentPage={pagination_inventory_movement.currentPag}
-            nextPage={pagination_inventory_movement.nextPag}
-            previousPage={pagination_inventory_movement.prevPag}
-            totalPages={pagination_inventory_movement.totalPag}
-            onPageChange={(page) => {
-              OnGetInventoryMovement(
-                user?.transmitterId ?? 0,
-                page,
-                limit,
-                filter.startDate,
-                filter.endDate,
-                filter.branch,
-                filter.typeOfInventory,
-                filter.typeOfMoviment
-              );
-            }}
-          />
-        </>
-      )}
+
 
       {inventoryMoments.length > 0 ? (
         <div className="w-full xl:hidden  mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
@@ -377,6 +356,30 @@ function ListMovements({ actions }: Props) {
       ) : (
         <div className="md:flex flex xl:hidden justify-center items-end">
           <NoDataInventory title="No se encontraron  movimientos" />
+        </div>
+      )}
+      {pagination_inventory_movement.totalPag > 1 && (
+        <div
+        className='mt-4'
+        >
+          <Pagination
+            currentPage={pagination_inventory_movement.currentPag}
+            nextPage={pagination_inventory_movement.nextPag}
+            previousPage={pagination_inventory_movement.prevPag}
+            totalPages={pagination_inventory_movement.totalPag}
+            onPageChange={(page) => {
+              OnGetInventoryMovement(
+                user?.transmitterId ?? 0,
+                page,
+                limit,
+                filter.startDate,
+                filter.endDate,
+                filter.branch,
+                filter.typeOfInventory,
+                filter.typeOfMoviment
+              );
+            }}
+          />
         </div>
       )}
     </DivGlobal>

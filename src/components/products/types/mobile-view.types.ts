@@ -42,3 +42,19 @@ export interface IMobileAddProdcutOrder {
   handleSaveOrder: () => void
 }
 
+
+export interface IMobileListSales {
+  pdfPath: string
+  verifyNotes: (id: number) => void
+  downloadPDF: (data: any) => void
+  handleShowPdf: (id: number, val: string) => void
+  downloadJSON: (data: any) => void
+  setUnseen: Dispatch<SetStateAction<boolean>>,
+  // verifyApplyAnulation: (data: string, fecEmi: string) => void
+  isMovil: boolean,
+  unseen: boolean,
+  notes: {
+    debits: number;
+    credits: number;
+  }
+}

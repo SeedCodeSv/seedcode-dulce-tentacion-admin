@@ -415,15 +415,20 @@ function ListEmployee({ actions }: Props) {
               <MobileView
                 DeletePopover={DeletePopover}
                 actions={actions}
+                generateCodeModal={generateCodeModal}
                 handleActivate={handleActivate}
                 openEditModal={(employee) => {
                   setDataUpdate(employee);
                 }}
+                setCodes={setCodes}
+                setSelectedEmployee={setSelectedEmployee}
+                setSelectedId={setSelectedId}
               />
             )}
             {view === 'table' && (
               <>
                 <TableComponent
+                  className='overflow-auto'
                   headers={['Nº', 'Nombre', 'Apellido', 'Teléfono', 'Sucursal', 'Codigo', 'Acciones']}
                 >
                   {loading_employees ? (

@@ -36,6 +36,7 @@ import { Branches, IGetBranchProduct } from '@/types/branches.types';
 import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
 import { useTransmitterStore } from '@/store/transmitter.store';
+import useWindowSize from '@/hooks/useWindowSize';
 interface Props {
   id: number;
   onclick: () => void;
@@ -57,7 +58,10 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
   const [page, serPage] = useState(1);
   const [name, setName] = useState('');
   const [limit, setLimit] = useState(10);
-  const [view, setView] = useState<'table' | 'grid' | 'list'>('table');
+  const { windowSize } = useWindowSize()
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  );
 
   const [openVaul, setOpenVaul] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<IGetBranchProduct>();
@@ -189,6 +193,32 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
             </div>
           </div>
           <SearchBranchProduct />
+          {windowSize.width < 768 && (
+            <div className='absolute left-48'>
+              <Select
+                className="w-44"
+                classNames={{
+                  label: 'font-semibold',
+                  selectorIcon: 'dark:text-white'
+                }}
+                label="Mostrar"
+                labelPlacement="outside"
+                placeholder="Mostrar"
+                value={limit}
+                variant="bordered"
+                onChange={(e) => {
+                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                }}
+              >
+                {limit_options.map((limit) => (
+                  <SelectItem key={limit} className="dark:text-white">
+                    {limit}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+          )}
+
           <div className="w-full flex items-end justify-between">
             <div className='flex gap-4 items-end'>
               <ButtonGroup className="mt-4">
@@ -211,7 +241,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
               <DownloadPDFButton branch={branch} transmitter={transmitter} />
               <BranchProductExcell branch={branch} transmitter={transmitter} />
             </div>
-            <div className="flex items-end gap-5">
+            <div className="hidden flex items-end gap-5">
               <div>
                 <Select
                   className="w-44"
@@ -337,6 +367,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
           {view === 'table' && (
             <>
               <TableComponent
+                className='overflow-auto'
                 headers={["Nº", "Nombre", "Codigo", "Precio", 'Stock', 'Reservado', 'Acciones']}
               >
                 {loading_branch_product ? (

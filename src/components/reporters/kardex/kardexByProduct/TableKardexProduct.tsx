@@ -10,6 +10,7 @@ export default function TableKardexProduct() {
 
   return (
     <TableComponent
+      className='overflow-auto'
       headers={[
         'No.',
         'Fecha',
