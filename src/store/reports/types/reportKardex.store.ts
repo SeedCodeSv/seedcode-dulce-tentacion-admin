@@ -1,14 +1,16 @@
 import { IPagination } from '@/types/global.types';
-import { DataKardex, IDetaiLAdjustment, Kardex, KardexByProduct } from '@/types/reports/reportKardex.types';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
+import { DataKardex, IDetaiLAdjustment, IReportKardexByProduct, IReportKardexGeneral, Kardex, KardexByProduct } from '@/types/reports/reportKardex.types';
 
 export interface IReportKardexStore {
   kardex: Kardex[];
   totales: {
     initialStock: number,
-totalEntradas: number,
-totalSalidas: number
+    totalEntradas: number,
+    totalSalidas: number,
+    productName: string
   }
-  kardexGeneral: DataKardex[] 
+  kardexGeneral: DataKardex[]
   details: IDetaiLAdjustment[];
   loading: boolean;
   pagination_kardex: IPagination;
@@ -26,12 +28,8 @@ totalSalidas: number
     endDate?: string,
     branchProductId?: number,
   ) => void;
-  getReportKardexGeneral: (
-    id: number,
-    page: number,
-    limit: number,
-    name?: string,
-    dateFrom?: string,
-    dateTo?: string
-  ) => void;
+    getReportKardexByProductExport: (params: SearchReport) => Promise<{ok: boolean, KardexProduct: IReportKardexByProduct}>;
+  getReportKardexGeneral: (params: SearchReport) => void;
+  getReportKardexGeneralExport: (params: SearchReport
+  ) => Promise<{ ok: boolean, kardexGeneral: IReportKardexGeneral }>;
 }

@@ -30,7 +30,9 @@ export const close_x = (payload: CloseZ) => {
 
 export const get_cuts_report = async (params: SearchCutReport) => {
   const token = get_token() ?? '';
-  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts/${params.branchId}?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}&employee=${params.employee}`;
+    const branchQuery = params.branchIds?.map(id => `branchIds=${id}`).join('&') ?? '';
+
+  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}&employee=${params.employee}&${branchQuery}`;
 
   const response = await axios.get<IGetCutsReport>(url, {
     headers: {
@@ -44,7 +46,10 @@ export const get_cuts_report = async (params: SearchCutReport) => {
 
 export const get_cuts_report_summary = async (params: SearchCutReport) => {
   const token = get_token() ?? '';
-  const url = import.meta.env.VITE_API_URL + `/reports/cash-cuts-summary/${params.branchId}?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}`;
+
+  const branchQuery = params.branchIds?.map(id => `branchIds=${id}`).join('&') ?? '';
+
+  const url = `${import.meta.env.VITE_API_URL}/reports/cash-cuts-summary?page=${params.page}&limit=${params.limit}&dateFrom=${params.dateFrom}&dateTo=${params.dateTo}&${branchQuery}`;
 
   const response = await axios.get<IGetCutsReportSummary>(url, {
     headers: {
@@ -53,7 +58,8 @@ export const get_cuts_report_summary = async (params: SearchCutReport) => {
   });
 
   return response.data;
-}
+};
+
 
 export const get_data_box = (branchId: number, date: string) => {
   const token = get_token();

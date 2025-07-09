@@ -201,9 +201,9 @@ export default function ContentProductBranch() {
               </Autocomplete>
               <div className={`${windowSize.width > 780 && 'right-2 absolute'}`}>
                 <ButtonUi
+                  className='flex mt-8 '
                   isDisabled={!isEnabled}
                   theme={!branchData ? Colors.Warning : Colors.Success}
-                  className='flex mt-8 '
                   // style={{
                   //   backgroundColor: isEnabled ? '#2E8B57' : 'gray',
                   //   color: 'white',

@@ -23,7 +23,6 @@ import { CodCuentaPropsEdit, ItemsEdit } from './types/types';
 
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAccountingItemsStore } from '@/store/accounting-items.store';
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useTypeOfAccountStore } from '@/store/type-of-aacount.store';
 import { formatDate } from '@/utils/dates';

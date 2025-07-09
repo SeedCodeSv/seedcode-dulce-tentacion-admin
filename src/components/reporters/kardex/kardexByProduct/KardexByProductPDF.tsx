@@ -1,11 +1,12 @@
-import { FileDown } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import moment from 'moment';
 import autoTable, { HAlignType, ThemeType } from 'jspdf-autotable';
 import { jsPDF } from 'jspdf';
 import { useEffect, useState } from 'react';
+import { AiOutlineFilePdf } from 'react-icons/ai';
 
-import { KardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
+import { IReportKardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
 import { formatSimpleDate, getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
 import { useAuthStore } from '@/store/auth.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
@@ -15,6 +16,9 @@ import { Colors } from '@/types/themes.types';
 import { hexToRgb } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
 import { wrapText } from '@/utils/pdf-utils';
+import { useReportKardex } from '@/store/reports/reportKardex.store';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
+import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 
 interface jsPDFWithAutoTable extends jsPDF {
   lastAutoTable: {
@@ -22,19 +26,16 @@ interface jsPDFWithAutoTable extends jsPDF {
   };
 }
 
-export const DownloadKardexProductPDFButton = ({ tableData, search }: {
-  tableData: KardexByProduct[], search: {
-    branchName: string,
-    branchId: number,
-    startDate: string,
-    endDate: string,
-  }
+export const DownloadKardexProductPDFButton = ({ search, branchName}: {
+  search: SearchReport, branchName: string
 }) => {
   const { user } = useAuthStore();
   const { transmitter, getTransmitter } = useTransmitterStore();
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
   const [logoUrl, setLogoUrl] = useState<string | undefined>();
   const styles = useGlobalStyles();
+  const { getReportKardexByProductExport, paginationKardexProduct, KardexProduct } = useReportKardex();
+  const [loading_data, setLoadingData] = useState(false)
 
   const backgroundColorRGB = styles.darkStyle.backgroundColor || '#0d83ac';
   const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
@@ -45,15 +46,25 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
     const logoUrl =
       personalization[0]?.logo?.trim() !== ''
         ? personalization[0]?.logo
-        : undefined;
+        : DEFAULT_LOGO;
 
     setLogoUrl(logoUrl);
   }, []);
 
-  const handleDownloadSelectedProductPDF = () => {
+   const handle = async () => {
+    setLoadingData(true)
+    const res = await getReportKardexByProductExport({ ...search, limit: paginationKardexProduct.total })
+
+    if (res) {
+      await handleDownloadSelectedProductPDF(res.KardexProduct)
+      setLoadingData(false)
+    }
+  }
+
+  const handleDownloadSelectedProductPDF = (KardexProduct: IReportKardexByProduct) => {
 
     try {
-      if (!tableData || tableData.length === 0) {
+      if (!KardexProduct.movements || KardexProduct.movements.length === 0) {
         toast.error('No hay datos disponibles para generar el PDF.');
 
         return;
@@ -64,17 +75,8 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
 
-      const totalEntries = tableData.reduce((acc, current) => {
-        if (current.typeOfMovement === TypeOfMovements.Entries) acc += Number(current.quantity);
-
-        return acc;
-      }, 0);
-
-      const totalExits = tableData.reduce((acc, current) => {
-        if (current.typeOfMovement === TypeOfMovements.Exits) acc += Number(current.quantity);
-
-        return acc;
-      }, 0);
+      const totalEntries = KardexProduct.totalEntradas
+      const totalExits = KardexProduct.totalSalidas
 
       let startY = 5
       const maxLineChars = 25;
@@ -88,7 +90,7 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
             [{ content: transmitter.nombreComercial, styles: { halign: 'left' } }],
             [
               {
-                content: 'Sucursal: ' + tableData[0].branchProduct.branch.name,
+                content: 'Sucursal: ' + branchName,
                 styles: { halign: 'left' },
               },
             ],
@@ -108,7 +110,7 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         const rectWidth = 62;
         const x = pageWidth - rectWidth - marginX;
 
-        const productName = tableData[0].branchProduct.product.name;
+        const productName = KardexProduct.productName;
         const lineHeight = 5;
         const paddingY = 6;
 
@@ -149,7 +151,7 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         'Total Movimiento',
       ];
 
-      const rows = tableData.map((item, index) => [
+      const rows = KardexProduct.movements.map((item, index) => [
         index + 1,
         formatSimpleDate(`${item.date}|${item.time}`),
         item.typeOfInventory || '',
@@ -238,7 +240,7 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
         },
       });
 
-      const name = tableData[0].branchProduct.product.name.replace(/ /g, '-');
+      const name = KardexProduct.productName.replace(/ /g, '-');
       const productName = wrapText(name, maxLineChars, 2);
 
       doc.save(`REPORTE_KARDEX_${productName[0]}_${date}.pdf`);
@@ -255,10 +257,22 @@ export const DownloadKardexProductPDFButton = ({ tableData, search }: {
   return (
     <>
       <ButtonUi
-        isIconOnly
+        isDisabled={loading_data || KardexProduct.length === 0}
         theme={Colors.Primary}
-        onPress={handleDownloadSelectedProductPDF}
-      > <FileDown size={20} /></ButtonUi>
+        onPress={() => {
+          if (!loading_data) {
+            handle()
+          }
+          else return
+        }}
+      >
+        {loading_data ?
+          <Loader className='animate-spin' /> :
+          <>
+            <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+          </>
+        }
+      </ButtonUi>
     </>
   );
 };

@@ -33,6 +33,18 @@ export const useCutReportStore = create<ICutReportStore>((set) => ({
             })
         })
     },
+    onGetCashCutReportDetailedExport(params) {
+        return get_cuts_report(params).then((data) => {
+            return { ok: true, cashCutsDetailed: data }
+        }).catch(() => {
+            return {
+                ok: false, cashCutsDetailed: {
+                    ...initialPagination,
+                    cash_cuts_report: []
+                },
+            }
+        })
+    },
     onGetCashCutReportSummary(params) {
         set({ loadindSummary: true })
 

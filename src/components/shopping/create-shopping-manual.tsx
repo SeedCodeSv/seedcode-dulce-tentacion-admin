@@ -327,7 +327,7 @@ function CreateShoppingManual() {
         productsDetails.length > 0 &&
         productsDetails.some(
           (item) =>
-            !item.uniMedida || item.cantidad === 0 || item.precioUni === 0
+            !item.codigo || !item.uniMedida || item.cantidad === 0 || item.precioUni === 0
         )
       ) {
         toast.warning('Completa todos los campos de los productos o desactiva la opción de ingresar productos.');

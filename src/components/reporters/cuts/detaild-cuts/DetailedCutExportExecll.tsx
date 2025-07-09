@@ -1,9 +1,10 @@
 import { PiMicrosoftExcelLogo } from "react-icons/pi";
 import ExcelJS from 'exceljs';
+import { useState } from "react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
+import { IGetCutsReport, SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToARGB } from "@/utils/utils";
@@ -11,22 +12,32 @@ import { useCutReportStore } from "@/store/reports/cashCuts.store";
 
 
 interface Props {
-    branch: string;
+    branch: string[];
     params: SearchCutReport
     comercialName: string
 }
 
 
 export default function DetailedCutExportExcell({ branch, params, comercialName }: Props) {
-    const { cashCutsDetailed } = useCutReportStore()
-
     const styles = useGlobalStyles();
-
+    const { cashCutsDetailed, onGetCashCutReportDetailedExport } = useCutReportStore()
     const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
     const fontColor = hexToARGB(styles.darkStyle.color);
 
+    const [loading_data, setLoadingData] = useState(false)
 
-    const exportToExcel = async () => {
+    const handle = async () => {
+        setLoadingData(true)
+        const res = await onGetCashCutReportDetailedExport({ ...params, limit: cashCutsDetailed.total })
+
+        if (res) {
+            await exportToExcel(res.cashCutsDetailed)
+            setLoadingData(false)
+        }
+    }
+
+
+    const exportToExcel = async (cashCutsDetailed: IGetCutsReport) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Cortes');
 
@@ -34,7 +45,7 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
 
         const extraInfo = [
             [`${comercialName}`],
-            [`${branch !== '' ? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
+            [`${branch.length > 0? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
             [`Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`],
             [`Reporte desde ${params.dateFrom} hasta ${params.dateTo}`]
         ];
@@ -48,10 +59,14 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
             newRow.alignment = { horizontal: 'center' }
         });
 
-        worksheet.addRow([]);
 
         const headers = ['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero'];
         const headerRow = worksheet.addRow(headers);
+
+        worksheet.autoFilter = {
+            from: { row: headerRow.number, column: 1 },
+            to: { row: headerRow.number, column: worksheet.columns.length },
+        };
 
         headerRow.eachCell((cell) => {
             cell.fill = {
@@ -111,10 +126,10 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
 
     return (
         <ButtonUi
-            isDisabled={cashCutsDetailed.cash_cuts_report.length === 0}
+            isDisabled={loading_data || cashCutsDetailed.cash_cuts_report.length === 0}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
-            onPress={exportToExcel}
+            onPress={handle}
         >
             <p className="font-medium hidden lg:flex"> Exportar a excel</p>
         </ButtonUi>

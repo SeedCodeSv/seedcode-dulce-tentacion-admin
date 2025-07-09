@@ -5,7 +5,6 @@ import { useNavigate, useParams } from 'react-router';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useCategoriesStore } from '@/store/categories.store';
 import { Product, ProductPayloadFormTwo } from '@/types/products.types';

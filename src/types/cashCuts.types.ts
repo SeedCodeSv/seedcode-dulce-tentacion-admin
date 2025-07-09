@@ -113,12 +113,13 @@ export interface CashCutsReportSummary {
 }
 
 export interface SearchCutReport {
-    branchId: number;
+    branchId?: number;
     page: number;
     limit: number;
     dateFrom?: string;
     dateTo?: string;
     employee?: string;
+    branchIds?: number[]
 }
 
 export interface IGetDataBox {

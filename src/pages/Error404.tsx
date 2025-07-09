@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 
-import Layout from '../layout/Layout';
 import ERROR404 from '../assets/page_not_found.png';
 
 import { ThemeContext } from '@/hooks/useTheme';

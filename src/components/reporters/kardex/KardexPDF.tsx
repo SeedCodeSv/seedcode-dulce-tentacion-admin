@@ -4,17 +4,20 @@ import autoTable, { ThemeType, HAlignType } from 'jspdf-autotable';
 import { toast } from 'sonner';
 import moment from 'moment';
 import { AiOutlineFilePdf } from "react-icons/ai";
+import { useEffect, useState } from 'react';
+import { Loader } from 'lucide-react';
 
-import { DataKardex } from '@/types/reports/reportKardex.types';
-import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
 import { hexToRgb } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
-import DEFAULT_LOGO from '@/assets/dulce-logo.png';
 import { useConfigurationStore } from '@/store/perzonalitation.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
+import { useReportKardex } from '@/store/reports/reportKardex.store';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
+import { IReportKardexGeneral } from '@/types/reports/reportKardex.types';
+
 
 
 interface jsPDFWithAutoTable extends jsPDF {
@@ -23,7 +26,7 @@ interface jsPDFWithAutoTable extends jsPDF {
   };
 }
 
-const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: DataKardex[]; transmitter: ITransmitter, branch: Branches }) => {
+const DownloadPDFButton = ({ transmitter, branch, params }: { sorted: string; transmitter: ITransmitter, branch: string[], params: SearchReport }) => {
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
   const styles = useGlobalStyles();
 
@@ -31,58 +34,51 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Data
   const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
 
   const { personalization } = useConfigurationStore();
+  const { pagination_kardex, kardexGeneral, getReportKardexGeneralExport } = useReportKardex();
+  const [logoUrl, setLogoUrl] = useState<string | undefined>();
 
-  const convertImageToBase64 = (url: string): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
 
-      img.crossOrigin = 'Anonymous';
-      img.src = url;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
+  const [loading_data, setLoadingData] = useState(false)
 
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
+  const handle = async () => {
+    setLoadingData(true)
+    const res = await getReportKardexGeneralExport({ ...params, limit: pagination_kardex.total })
 
-        ctx?.drawImage(img, 0, 0);
-        const dataURL = canvas.toDataURL('image/png');
+    if (res) {
+      await handleDownloadPDF(res.kardexGeneral)
+      setLoadingData(false)
+    }
+  }
 
-        resolve(dataURL);
-      };
-      img.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
+  useEffect(() => {
+    const logoUrl =
+      personalization[0]?.logo?.trim() !== ''
+        ? personalization[0]?.logo
+        : undefined;
 
-  const handleDownloadPDF = async () => {
+    setLogoUrl(logoUrl);
+  }, []);
+
+
+  const handleDownloadPDF = async (kardexGeneral: IReportKardexGeneral) => {
     try {
-      if (!tableData || tableData.length === 0) {
+      if (!kardexGeneral || kardexGeneral.data.length === 0) {
         toast.warning('No hay datos disponibles para generar el PDF.');
 
         return;
       }
 
       const doc = new jsPDF();
-      const logo = personalization && personalization[0]?.logo ? personalization[0].logo : DEFAULT_LOGO;
-
-      const logoBase64 = await convertImageToBase64(logo);
 
       const createHeader = (doc: jsPDF) => {
 
-        doc.addImage(logoBase64, 'PNG', 13, 5, 25, 25, 'logo', 'FAST');
+        logoUrl && doc.addImage(logoUrl, 'PNG', 10, 5, 25, 25, 'logo', 'FAST');
         autoTable(doc, {
           showHead: false,
           body: [
             [{ content: transmitter.nombre, styles: { halign: 'left', fontStyle: 'bold' } }],
             [{ content: transmitter.nombreComercial, styles: { halign: 'left' } }],
-            [
-              {
-                content: 'Sucursal: ' + branch.name,
-                styles: { halign: 'left' },
-              },
-            ],
+            [{ content: `${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
             [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi}`, styles: { halign: 'left' } }],
             [{ content: 'Hora: ' + `${getElSalvadorDateTime().horEmi}`, styles: { halign: 'left' } }],
           ],
@@ -107,7 +103,7 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Data
         'Total Movimiento',
       ];
 
-      const rows = tableData.map((item, index) => [
+      const rows = kardexGeneral.data.map((item, index) => [
         index + 1,
         `${item.date} - ${item.time}`,
         `${item.movementType} - ${item.inventoryType}`,
@@ -209,12 +205,21 @@ const DownloadPDFButton = ({ tableData, transmitter, branch }: { tableData: Data
 
   return (
     <ButtonUi
-      isDisabled={tableData.length === 0}
-      startContent={<AiOutlineFilePdf className="" size={25} />}
+      isDisabled={loading_data || kardexGeneral.length === 0}
       theme={Colors.Primary}
-      onPress={handleDownloadPDF}
+      onPress={() => {
+        if (!loading_data) {
+          handle()
+        }
+        else return
+      }}
     >
-      <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+      {loading_data ?
+        <Loader className='animate-spin' /> :
+        <>
+          <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+        </>
+      }
     </ButtonUi>
   );
 };

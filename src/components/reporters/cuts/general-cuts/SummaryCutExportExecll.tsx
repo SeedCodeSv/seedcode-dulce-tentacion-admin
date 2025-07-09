@@ -12,7 +12,7 @@ import { useCutReportStore } from "@/store/reports/cashCuts.store";
 import { formatCurrency } from "@/utils/dte";
 
 interface Props {
-    branch: string;
+    branch: string[];
     params: SearchCutReport
     comercialName: string
 }
@@ -46,7 +46,7 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
 
         const extraInfo = [
             [`${comercialName}`],
-            [`${branch !== '' ? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
+            [`${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
             [`Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`],
             [`Reporte desde ${params.dateFrom} hasta ${params.dateTo}`]
         ];

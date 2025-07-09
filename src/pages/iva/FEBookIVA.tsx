@@ -7,7 +7,6 @@ import saveAs from 'file-saver';
 import { export_excel_facturacion } from '../excel/generate_excel';
 
 import useGlobalStyles from '@/components/global/global.styles';
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useSalesStore } from '@/store/sales.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
