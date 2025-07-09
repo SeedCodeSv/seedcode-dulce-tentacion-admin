@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 import EmptyTable from '@/components/global/EmptyTable';
@@ -8,7 +8,7 @@ import { useReportKardex } from '@/store/reports/reportKardex.store';
 import { TableComponent } from '@/themes/ui/table-ui';
 
 
-export default function KardexTable({ data }: { data: (data: DataKardex[]) => void }) {
+export default function KardexTable({ setSorted }: { setSorted: (sorted: string) => void }) {
   const { loading, kardexGeneral } = useReportKardex();
 
   const [sortConfig, setSortConfig] = useState<{
@@ -23,6 +23,7 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
   const sortedProducts = useMemo(() => {
     return [...kardexGeneral].sort((a, b) => {
       if (sortConfig.key) {
+        setSorted(String(sortConfig.key))
         let aValue = a[sortConfig.key];
         let bValue = b[sortConfig.key];
 
@@ -54,9 +55,6 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
     setSortConfig({ key, direction });
   };
 
-  useEffect(() => {
-    data(sortedProducts);
-  }, [sortedProducts]);
 
   return (
         <>
@@ -69,7 +67,7 @@ export default function KardexTable({ data }: { data: (data: DataKardex[]) => vo
               'Descripción',
               'Cantidad',
               'Stock inicial',
-              'Costo unitario',
+              'Costo Unitario',
               'Total Movimiento',
             ]}
 

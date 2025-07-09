@@ -8,7 +8,7 @@ import { useReportKardex } from '@/store/reports/reportKardex.store';
 import { TypeOfMovements } from '@/types/reports/reportKardex.types';
 
 export default function KardexProductCardView({ view }: { view: string }) {
-  const { KardexProduct: kardex } = useReportKardex();
+  const { KardexProduct: kardex, totales } = useReportKardex();
 
   return (
     <div className='h-full min-h-[500px] w-full overflow-y-auto custom-scrollbar'>
@@ -21,7 +21,7 @@ export default function KardexProductCardView({ view }: { view: string }) {
             >
               <span className="flex gap-2">
                 <Box className="text-blue-500" size={24} />
-                <h2 className="text-lg font-bold">{item.branchProduct.product.name}</h2>
+                <h2 className="text-lg font-bold">{totales.productName}</h2>
               </span>
               <p className="mt-3 text-sm text-gray-500 dark:text-gray-300">
                 Fecha: {item.date}
@@ -68,7 +68,7 @@ export default function KardexProductCardView({ view }: { view: string }) {
               <div className="flex-grow">
                 <span className="flex gap-2">
                   <Box className="text-blue-500" size={24} />
-                  <h2 className="text-lg font-bold">{item.branchProduct.product.name}</h2>
+                  <h2 className="text-lg font-bold">{totales.productName}</h2>
                 </span>
                 <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                   Fecha: {item.date}

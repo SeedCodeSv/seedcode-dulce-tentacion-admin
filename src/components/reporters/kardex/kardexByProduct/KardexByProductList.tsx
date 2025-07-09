@@ -52,9 +52,10 @@ export const KardexByProductList = () => {
   const currentDate = new Date();
   const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const [search, setSearch] = useState({
+    page: 1,
     limit: 20,
     productId: 0,
-    branch: user?.branchId,
+    branchId: user?.branchId,
     startDate: defaultStartDate.toISOString().split('T')[0],
     endDate: getElSalvadorDateTime().fecEmi,
     productName: ''
@@ -62,7 +63,7 @@ export const KardexByProductList = () => {
   
   const changePage = (page: number) => {
     getReportKardexByProduct(
-      Number(search.branch),
+      Number(search.branchId),
       page,
       search.limit,
       search.productName,
@@ -83,7 +84,7 @@ export const KardexByProductList = () => {
         code: ''
       });
     }, 300),
-    [search.branch]
+    [search.branchId]
   );
 
   useEffect(() => {
@@ -96,17 +97,17 @@ export const KardexByProductList = () => {
 
   useEffect(() => {
     getReportKardexByProduct(
-      Number(search.branch),
+      Number(search.branchId),
       1,
       search.limit,
       search.productName,
       search.startDate,
       search.endDate
     );
-  }, [search.branch, search.startDate, search.endDate, search.productName]);
+  }, [search.branchId, search.startDate, search.endDate, search.productName, search.limit]);
 
   useEffect(() => {
-    const branchName = branch_list.find((branch) => branch.id === search.branch)?.name ?? '';
+    const branchName = branch_list.find((branch) => branch.id === search.branchId)?.name ?? '';
 
     setBranchName(branchName);
   }, [branch_list])
@@ -118,7 +119,7 @@ export const KardexByProductList = () => {
           <ResponsiveFilterWrapper classLg='grid grid-cols-4 gap-4 w-full' withButton={false}>
             <Autocomplete
               className="font-semibold dark:text-white w-full"
-              defaultSelectedKey={String(search.branch)}
+              defaultSelectedKey={String(search.branchId)}
               label="Sucursal"
               labelPlacement="outside"
               placeholder="Selecciona la sucursal"
@@ -129,7 +130,7 @@ export const KardexByProductList = () => {
 
                 setSearch({
                   ...search,
-                  branch: newBranchId,
+                  branchId: newBranchId,
                 });
 
                 setBranchName(branchName);
@@ -222,23 +223,13 @@ export const KardexByProductList = () => {
             <RenderViewButton isList setView={setView} view={view} />
             <div className="flex gap-3 items-center">
               {JSON.stringify(actionView).includes('Descargar PDF') && (
-                <DownloadKardexProductPDFButton search={{
-                  branchId: search.branch ?? 0,
-                  branchName: branchName,
-                  startDate: search.startDate,
-                  endDate: search.endDate
-                }}
-                  tableData={KardexProduct}
+                <DownloadKardexProductPDFButton search={search}
+                   branchName= {branchName}
                 />
               )}
               {JSON.stringify(actionView).includes('Exportar Excel') && (
-                <DownloadKardexProductExcelButton search={{
-                  branchId: search.branch ?? 0,
-                  branchName: branchName,
-                  startDate: search.startDate,
-                  endDate: search.endDate
-                }}
-                  tableData={KardexProduct}
+                <DownloadKardexProductExcelButton search={search}
+                   branchName= {branchName}
                 />
               )}
             </div>

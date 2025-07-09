@@ -22,7 +22,7 @@ interface jsPDFWithAutoTable extends jsPDF {
 }
 
 interface Props {
-  branch: string;
+  branch: string[];
   params: SearchCutReport
   comercialName: string
 }
@@ -81,7 +81,7 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
           showHead: false,
           body: [
             [{ content: comercialName, styles: { halign: 'center', fontStyle: 'bold' } }],
-            [{ content: `${branch !== '' ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
+            [{ content: `${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
             [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
             [{ content: `Reporte desde ${params.dateFrom} hasta ${params.dateTo}`, styles: { halign: 'center' } }],
             [{ content: '(Resumen)', styles: { halign: 'center' } }],

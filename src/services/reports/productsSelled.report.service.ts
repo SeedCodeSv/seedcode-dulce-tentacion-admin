@@ -26,8 +26,6 @@ export const get_products_selled_summary = async (params: SearchReport) => {
     params.branchIds.forEach(id => queryParams.append('branchIds', String(id)));
   }
 
-  if (params.page) queryParams.append('page', String(params.page));
-  if (params.limit) queryParams.append('limit', String(params.limit));
   if (params.startDate) queryParams.append('startDate', params.startDate);
   if (params.endDate) queryParams.append('endDate', params.endDate);
   if (params.productName) queryParams.append('productName', params.productName);

@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { get_token } from '@/storage/localStorage';
 import { IReportKardex, IReportKardexByProduct, IReportKardexGeneral, IResponseDetailsByProduct } from '@/types/reports/reportKardex.types';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
 
 
 export const get_kardex_report = (id: number, page: number, limit: number, name: string) => {
@@ -55,19 +56,13 @@ export const get_kardex_report_by_product = async (
 };
 
 
-export const get_kardex_report_general = async (
-  branchId: number,
-  page: number,
-  limit: number,
-  name: string = '',
-  dateFrom: string = '',
-  dateTo: string = ''
-) => {
+export const get_kardex_report_general = async (params: SearchReport) => {
   const token = get_token() ?? '';
+    const branchQuery = params.branchIds?.map(id => `branchIds=${id}`).join('&') ?? '';
 
   const url =
     import.meta.env.VITE_API_URL +
-    `/reports/kardex/general/${branchId}?page=${page}&limit=${limit}&name=${name}&dateFrom=${dateFrom}&dateTo=${dateTo}`;
+    `/reports/kardex-general?page=${params.page}&limit=${params.limit}&name=${params.name}&dateFrom=${params.startDate}&dateTo=${params.endDate}&${branchQuery}`;
 
   const response = await axios.get<IReportKardexGeneral>(url, {
     headers: {

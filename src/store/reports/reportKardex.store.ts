@@ -15,7 +15,8 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
   totales: {
     initialStock: 0,
     totalEntradas: 0,
-    totalSalidas: 0
+    totalSalidas: 0,
+    productName: ''
   },
   paginationKardexProduct: initialPagination,
   isLoadinKarProd: false,
@@ -71,7 +72,8 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
         totales: {
           initialStock: res.initialStock,
           totalEntradas: res.totalEntradas,
-          totalSalidas: res.totalSalidas
+          totalSalidas: res.totalSalidas,
+          productName: res.productName
         },
         paginationKardexProduct: {
           total: res.total,
@@ -89,10 +91,30 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
       set({ isLoadinKarProd: false });
     }
   },
-  async getReportKardexGeneral(id, page, limit, name, dateFrom, dateTo) {
+  async getReportKardexByProductExport(params) {
+
+    try {
+      const res = await get_kardex_report_by_product(Number(params.branchId), params.page, params.limit, params.productName,params.startDate, params.endDate);
+
+      return { ok: true, KardexProduct: res };
+
+    } catch {
+      return {
+        ok: false, KardexProduct: {
+          movements: [],
+          totalEntradas: 0,
+          totalSalidas: 0,
+          initialStock: 0,
+          productName: '',
+          ...initialPagination
+        }
+      };
+    }
+  },
+  async getReportKardexGeneral(params) {
     set({ loading: true })
 
-    return await get_kardex_report_general(id, page, limit, name, dateFrom, dateTo).then((data) => {
+    return await get_kardex_report_general(params).then((data) => {
 
       set({
         kardexGeneral: data.data,
@@ -109,6 +131,18 @@ export const useReportKardex = create<IReportKardexStore>((set) => ({
       })
     }).catch(() => {
       set({ kardexGeneral: [], pagination_kardex: initialPagination, loading: false })
+    })
+  },
+  async getReportKardexGeneralExport(params) {
+    return await get_kardex_report_general(params).then((data) => {
+      return { ok: true, kardexGeneral: data }
+    }).catch(() => {
+      return {
+        ok: false, kardexGeneral: {
+          ...initialPagination,
+          data: []
+        }
+      }
     })
   },
 

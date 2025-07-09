@@ -26,7 +26,7 @@ export default function ProductsSelledSummaryComponent() {
 
     const [search, setSearch] = useState({
         page: 1,
-        limit: 20,
+        limit: 5,
         startDate: getElSalvadorDateTime().fecEmi,
         endDate: getElSalvadorDateTime().fecEmi,
         branchIds: [] as number[],

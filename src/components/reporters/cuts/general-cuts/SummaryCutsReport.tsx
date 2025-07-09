@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
+import { Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
 
 import SummaryCutExportExcell from "./SummaryCutExportExecll";
@@ -18,7 +18,7 @@ import Pagination from "@/components/global/Pagination";
 export default function GeneralCashCutReportComponent() {
     const { onGetCashCutReportSummary, cashCutsSummary } = useCutReportStore()
     const { getBranchesList, branch_list } = useBranchesStore();
-    const [branchName, setBranchName] = useState('');
+    const [branchName, setBranchName] = useState<string[]>([]);
     const { transmitter, gettransmitter } = useTransmitterStore();
     // const isMovil = useIsMobileOrTablet()
     // const [view, setView] = useState<'table' | 'grid' | 'list'>(isMovil ? 'grid' : 'table');
@@ -28,7 +28,7 @@ export default function GeneralCashCutReportComponent() {
     const [search, setSearch] = useState({
         page: 1,
         limit: 20,
-        branchId: 0,
+        branchIds: [] as number[],
         dateFrom: defaultStartDate.toISOString().split('T')[0],
         dateTo: currentDate.toISOString().split('T')[0],
     });
@@ -52,30 +52,65 @@ export default function GeneralCashCutReportComponent() {
         ...limit_options.map((option) => ({ label: option, value: option })),
     ];
 
+    const branchesOptions = [
+        { label: 'Todos', value: 'all' },
+        ...branch_list.map((option) => ({
+            label: option.name,
+            value: String(option.id),
+        })),
+    ];
+
     return (
         <>
             <ResponsiveFilterWrapper classButtonLg="w-1/2" onApply={() => changePage(1)}>
-                <Autocomplete
-                    className="font-semibold dark:text-white w-full"
-                    defaultSelectedKey={String(search.branchId)}
-                    label="Sucursal"
-                    labelPlacement="outside"
-                    placeholder="Selecciona la sucursal"
-                    variant="bordered"
-                    onSelectionChange={(key) => {
-                        const newBranchId = Number(key);
-                        const name = branch_list.find((branch) => branch.id === newBranchId)?.name ?? '';
-
-                        setSearch({ ...search, branchId: newBranchId });
-                        setBranchName(name);
+                <Select
+                    className="w-full"
+                    classNames={{
+                        label: 'font-semibold',
+                        innerWrapper: 'uppercase'
                     }}
+                    label="Sucursales"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una o más sucursales"
+                    selectedKeys={new Set(search.branchIds.map(id => id.toString()))}
+                    selectionMode="multiple"
+                    variant="bordered"
+                    onSelectionChange={(keys) => {
+                        const selected = Array.from(keys);
+                        const allIds = branch_list.map((b) => b.id);
+                        const allSelected = search.branchIds.length === allIds.length;
+
+                        if (selected.includes("all")) {
+                            if (allSelected) {
+                                setSearch({ ...search, branchIds: [] });
+                                setBranchName([]);
+                            } else {
+                                setSearch({ ...search, branchIds: allIds });
+                                const allNames = branch_list.map((b) => b.name);
+
+                                setBranchName(allNames);
+                            }
+                        } else {
+                            const ids = selected.map(Number).filter((id) => !isNaN(id));
+
+                            setSearch({ ...search, branchIds: ids });
+
+                            // Obtener los nombres de las sucursales seleccionadas
+                            const selectedNames = branch_list
+                                .filter((b) => ids.includes(b.id))
+                                .map((b) => b.name);
+
+                            setBranchName(selectedNames);
+                        }
+                    }}
+
                 >
-                    {branch_list.map((branch) => (
-                        <AutocompleteItem key={branch.id} className="dark:text-white">
-                            {branch.name}
-                        </AutocompleteItem>
+                    {branchesOptions.map(({ label, value }) => (
+                        <SelectItem key={value.toString()} className="uppercase">
+                            {label}
+                        </SelectItem>
                     ))}
-                </Autocomplete>
+                </Select>
                 <Input
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}

@@ -50,6 +50,7 @@ export interface IReportKardexByProduct extends IPagination {
   initialStock: number,
   totalEntradas: number,
   totalSalidas: number,
+  productName: string
   movements: KardexByProduct[];
   status: number;
 }

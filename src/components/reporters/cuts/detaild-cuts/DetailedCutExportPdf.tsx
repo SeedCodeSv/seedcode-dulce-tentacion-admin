@@ -3,12 +3,13 @@ import autoTable, { ThemeType } from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import { AiOutlineFilePdf } from "react-icons/ai";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import { useConfigurationStore } from "@/store/perzonalitation.store";
 import { useCutReportStore } from "@/store/reports/cashCuts.store";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
+import { IGetCutsReport, SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToRgb } from "@/utils/utils";
@@ -21,13 +22,13 @@ interface jsPDFWithAutoTable extends jsPDF {
 }
 
 interface Props {
-  branch: string;
+  branch: string[];
   params: SearchCutReport
   comercialName: string
 }
 
 export default function DetailedCutExportPdf({ branch, params, comercialName }: Props) {
-  const { cashCutsDetailed } = useCutReportStore()
+  const { cashCutsDetailed, onGetCashCutReportDetailedExport } = useCutReportStore()
 
   const [logoUrl, setLogoUrl] = useState<string | undefined>();
   const styles = useGlobalStyles();
@@ -46,7 +47,19 @@ export default function DetailedCutExportPdf({ branch, params, comercialName }: 
     setLogoUrl(logoUrl);
   }, []);
 
-  const handleDownloadPDF = () => {
+    const [loading_data, setLoadingData] = useState(false)
+
+  const handle = async () => {
+    setLoadingData(true)
+    const res = await onGetCashCutReportDetailedExport({ ...params, limit: cashCutsDetailed.total })
+
+    if (res) {
+      await handleDownloadPDF(res.cashCutsDetailed)
+      setLoadingData(false)
+    }
+  }
+
+  const handleDownloadPDF = (cashCutsDetailed: IGetCutsReport) => {
 
     try {
       if (!cashCutsDetailed.cash_cuts_report || cashCutsDetailed.cash_cuts_report.length === 0) {
@@ -68,7 +81,7 @@ export default function DetailedCutExportPdf({ branch, params, comercialName }: 
           showHead: false,
           body: [
             [{ content: comercialName, styles: { halign: 'center', fontStyle: 'bold' } }],
-            [{ content: `${branch !== '' ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
+            [{ content: `${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
             [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
             [{ content: `Reporte desde ${params.dateFrom} hasta ${params.dateTo}`, styles: { halign: 'center' } }],
             [{ content: '(Detallado)', styles: { halign: 'center' } }],
@@ -185,13 +198,22 @@ export default function DetailedCutExportPdf({ branch, params, comercialName }: 
 
   return (
     <>
-      <ButtonUi
-        isDisabled={cashCutsDetailed.cash_cuts_report.length === 0}
-        startContent={<AiOutlineFilePdf className="" size={25} />}
+     <ButtonUi
+        isDisabled={loading_data || cashCutsDetailed.cash_cuts_report.length === 0}
         theme={Colors.Primary}
-        onPress={handleDownloadPDF}
+        onPress={() => {
+          if (!loading_data) {
+            handle()
+          }
+          else return
+        }}
       >
-        <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+        {loading_data ?
+          <Loader className='animate-spin' /> :
+          <>
+            <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+          </>
+        }
       </ButtonUi>
     </>
   );

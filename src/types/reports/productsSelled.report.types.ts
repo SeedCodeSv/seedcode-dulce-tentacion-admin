@@ -38,6 +38,7 @@ export interface SearchReport {
     branchId?: number;
     branchIds?: number[];
     productName?: string;
+    name?: string
 }
 interface Totals {
     [branchName: string]: number;
