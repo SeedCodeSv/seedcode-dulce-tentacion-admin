@@ -1,4 +1,3 @@
-import { Tab, Tabs } from '@heroui/react';
 import { ArrowDown01, ArrowUp01, BadgeDollarSign, HelpCircle, NotebookIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 

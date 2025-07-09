@@ -45,7 +45,7 @@ import { TableComponent } from '@/themes/ui/table-ui';
 import TdGlobal from '@/themes/ui/td-global';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import useWindowSize from '@/hooks/useWindowSize';
-import { useCategoriesStore } from '@/store/categories.store';
+// import { useCategoriesStore } from '@/store/categories.store';
 
 function ShoppingPage({ actions }: ArrayAction) {
   const {
@@ -93,6 +93,7 @@ function ShoppingPage({ actions }: ArrayAction) {
       branchId
     );
   };
+
   const navigate = useNavigate();
 
   const onDeleteConfirm = (id: number) => {

@@ -20,7 +20,6 @@ function EditResumeShopping({
     const numericExenta = parseFloat(exenta) || 0;
 
     if (numericExenta > 0) {
-      // Verificar si ya existe una fila con `debe` igual a `exenta`
       const existingExentaIndex = items.findIndex(
         (item) => parseFloat(item.debe) === numericExenta || item.isExenta
       );

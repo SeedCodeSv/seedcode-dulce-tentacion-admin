@@ -9,7 +9,7 @@ import {
   ModalHeader,
   useDisclosure,
 } from '@heroui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { X } from 'lucide-react';
@@ -23,6 +23,7 @@ import { Item } from '@/types/items.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import Pui from '@/themes/ui/p-ui';
+import { useTransmitterStore } from '@/store/transmitter.store';
 
 type UseDisclosureReturn = ReturnType<typeof useDisclosure>;
 
@@ -34,7 +35,7 @@ function DailyBook({ disclosure }: Props) {
   const [startDate, setStartDate] = useState(formatDate());
   const [endDate, setEndDate] = useState(formatDate());
   const [loadingPdf, setLoadingPdf] = useState(false);
-
+  const { transmitter, gettransmitter } = useTransmitterStore()
   const { getItemsByDates, items, loadingItems } = useItemsStore();
 
   const { user } = useAuthStore();
@@ -104,7 +105,7 @@ function DailyBook({ disclosure }: Props) {
       }
       doc.setFontSize(13);
       doc.setFont('helvetica', 'bold');
-      doc.text('MADNESS', doc.internal.pageSize.getWidth() / 2, 15, {
+      doc.text(`${transmitter.nombreComercial}`, doc.internal.pageSize.getWidth() / 2, 15, {
         align: 'center',
       });
       doc.setFontSize(10);
@@ -387,6 +388,10 @@ function DailyBook({ disclosure }: Props) {
   };
 
   const previewModal = useDisclosure();
+
+  useEffect(() => {
+      gettransmitter()
+    }, [])
 
   return (
     <>

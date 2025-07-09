@@ -20,7 +20,6 @@ import { formatCurrency } from '@/utils/dte';
 import { formatDateToMMDDYYYY } from '@/utils/dates';
 import { months } from '@/utils/constants';
 import { useTransmitterStore } from '@/store/transmitter.store';
-import Layout from '@/layout/Layout';
 import FullPageLayout from '@/components/global/FullOverflowLayout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';

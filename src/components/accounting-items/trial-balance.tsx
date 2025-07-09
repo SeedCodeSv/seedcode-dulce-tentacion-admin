@@ -49,9 +49,7 @@ function TrialBalance({ disclosure }: Props) {
   const { user } = useAuthStore();
 
   const handleGetItems = () => {
-    const transId = user?.correlative
-      ? user.correlative.branch.transmitter.id
-      : (user?.pointOfSale?.branch.transmitter.id ?? 0);
+    const transId = (user?.pointOfSale?.branch.transmitter.id ?? 0);
 
     getItemsForBalance(transId, startDate, endDate);
   };
@@ -385,7 +383,7 @@ function TrialBalance({ disclosure }: Props) {
         didDrawPage: () => {
           jsPdf.setFontSize(12);
           jsPdf.setFont('helvetica', 'bold');
-          jsPdf.text('MADNESS', jsPdf.internal.pageSize.width / 2, 10, {
+          jsPdf.text(`${user?.pointOfSale.branch.transmitter.nombreComercial}`, jsPdf.internal.pageSize.width / 2, 10, {
             align: 'center',
           });
           jsPdf.text('Balance de comprobación', jsPdf.internal.pageSize.width / 2, 15, {

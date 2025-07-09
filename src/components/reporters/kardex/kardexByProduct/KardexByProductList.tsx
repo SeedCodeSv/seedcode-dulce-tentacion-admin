@@ -59,23 +59,7 @@ export const KardexByProductList = () => {
     endDate: getElSalvadorDateTime().fecEmi,
     productName: ''
   });
-
-  const totalEntries = useMemo(() => {
-    return KardexProduct?.reduce((acc, current) => {
-      if (current.typeOfMovement === TypeOfMovements.Entries) acc += Number(current.quantity);
-
-      return acc;
-    }, 0);
-  }, [KardexProduct]);
-
-  const totalExits = useMemo(() => {
-    return KardexProduct?.reduce((acc, current) => {
-      if (current.typeOfMovement === TypeOfMovements.Exits) acc += Number(current.quantity);
-
-      return acc;
-    }, 0);
-  }, [KardexProduct]);
-
+  
   const changePage = (page: number) => {
     getReportKardexByProduct(
       Number(search.branch),

@@ -71,9 +71,9 @@ export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate
         item['SUCURSAL-ISSS'],
         item['SUCURSAL-NAHUIZALCO'],
         item['SUCURSAL-SONZACATE'],
-        item.ADMINISTRACION,
-        item['PRODUCTO TERMINADO'],
-        item['BODEGA DE MATERIA PRIMA']
+        item.ADMINISTRACION ?? 0,
+        item['PRODUCTO TERMINADO'] ?? 0,
+        item['BODEGA DE MATERIA PRIMA'] ?? 0
       ];
 
       const row = worksheet.addRow(rowData);

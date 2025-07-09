@@ -38,6 +38,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { CuerpoDocumento } from '@/shopping-branch-product/types/notes_of_remision.types';
 
 function CreateShoppingManual() {
   const { user } = useAuthStore();
@@ -52,6 +53,8 @@ function CreateShoppingManual() {
   const [description, setDescription] = useState('');
   const [dateItem, setDateItem] = useState(formatDate());
   const [selectedType, setSelectedType] = useState(0);
+  const [productsDetails, setProductsDetails] = useState<CuerpoDocumento[]>([])
+  const [errorP, setErrorP] = useState(false)
 
   const { getBranchesList } = useBranchesStore();
   const [tipoDte, setTipoDte] = useState('03');
@@ -304,8 +307,30 @@ function CreateShoppingManual() {
         return;
       }
 
+      if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
+        toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
+        formikHelpers.setSubmitting(false);
+        setErrorP(true)
+
+        return;
+      }
+
+
       if (!selectedType) {
-        toast.warning('Debes el tipo de partida');
+        toast.warning('Debes seeccionar el tipo de partida');
+        setErrorP(true)
+
+        return;
+      }
+
+      if (
+        productsDetails.length > 0 &&
+        productsDetails.some(
+          (item) =>
+            !item.uniMedida || item.cantidad === 0 || item.precioUni === 0
+        )
+      ) {
+        toast.warning('Completa todos los campos de los productos o desactiva la opción de ingresar productos.');
 
         return;
       }
@@ -346,14 +371,8 @@ function CreateShoppingManual() {
               conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
             })),
           },
+          ...(productsDetails.length > 0 && { productsDetails })
         };
-
-        if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
-          toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
-          formikHelpers.setSubmitting(false);
-
-          return;
-        }
 
         axios
           .post(API_URL + '/shoppings/create', payload)
@@ -421,6 +440,7 @@ function CreateShoppingManual() {
               canAddItem={true}
               date={dateItem}
               description={description}
+              errorP={errorP}
               handleDeleteItem={handleDeleteItem}
               index={0}
               isReadOnly={false}
@@ -431,6 +451,7 @@ function CreateShoppingManual() {
               selectedType={selectedType}
               setDate={setDateItem}
               setDescription={setDescription}
+              setErrorP={setErrorP}
               setExenta={setExenta}
               setItems={setItems}
               setSelectedIndex={setSelectedIndex}
@@ -447,7 +468,7 @@ function CreateShoppingManual() {
               total={$totalItems}
               totalIva={$totalIva}
             />
-            {/* <AddProductsShopping /> */}
+            <AddProductsShopping setDetails={(products) => setProductsDetails(products)} />
             <div className="w-full flex justify-end mt-4">
               <ButtonUi
                 className="px-16"

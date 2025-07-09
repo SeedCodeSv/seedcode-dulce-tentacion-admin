@@ -39,6 +39,8 @@ export interface AccountItemProps {
     editAccount: boolean
     setExenta?: Dispatch<SetStateAction<string>>
     exenta?: string
+    setErrorP?: Dispatch<SetStateAction<boolean>>
+    errorP?: boolean
 }
 
 export interface CodCuentaProps {

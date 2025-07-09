@@ -7,7 +7,8 @@ export interface IProductSelledStore {
     loading: boolean;
     loading_data: boolean;
     loading_summary: boolean;
-    getProductsSelled: (params: SearchReport) => void
+    getProductsSelled: (params: SearchReport) => Promise<{ok: boolean, products_selled: IGetProductsSelled}>
+    getProductsSelledExport: (params: SearchReport) => Promise<{ok: boolean, products_selled: IGetProductsSelled}>
     getProductSelledSummary: (params: SearchReport) => void
      getProductSaledByBranches: (params: SearchReport) => void
 }

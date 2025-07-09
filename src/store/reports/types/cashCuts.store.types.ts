@@ -9,6 +9,8 @@ export interface ICutReportStore {
     loadingDataBox: boolean,
     onGetCashCutReportDetailed: (params: SearchCutReport) => void
     onGetCashCutReportSummary: (params: SearchCutReport) => void
+    onGetCashCutReportSummaryExport: (params: SearchCutReport) => Promise<{ok: boolean, cashCutsSummary:IGetCutsReportSummary }>
+
     onGetDataBox: (branchId: number, date: string) => void;
 
 }

@@ -5,6 +5,7 @@ import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
 import { Pen, SearchIcon, Trash } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { Helmet } from 'react-helmet-async';
 
 import NO_DATA from '../assets/no.png';
 
@@ -12,14 +13,12 @@ import { API_URL } from '@/utils/constants';
 import { generate_catalog_de_cuentas } from '@/components/account-catalogs/accountCatalogs';
 import AddButton from '@/components/global/AddButton';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import Layout from '@/layout/Layout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
 import { useAuthStore } from '@/store/auth.store';
 import DivGlobal from '@/themes/ui/div-global';
-import { Helmet } from 'react-helmet-async';
 
 function AddAccountCatalogs() {
   const [name, setName] = useState('');

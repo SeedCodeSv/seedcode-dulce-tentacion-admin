@@ -100,17 +100,17 @@ export default function ShooppingExportExcell({ params, transmitter }: { transmi
             { width: 20 }
         ];
 
-        details.forEach((item, index) => {
+        details.forEach((item) => {
             const row = worksheet.addRow([
                 item.shopping.fecEmi,
-                index + 1,
+                item.codigo,
                 item.descripcion,
                 Number(item.totalItem),
                 formatUnidadDeMedida(item.uniMedida),
                 Number(item.precioUni) || 0,
                 item.shopping.supplier.nombre,
                 1,
-                '',
+                'INGRESO A BODEGA',
                 item.shopping.controlNumber,
                 formatTipoDte(item.shopping.typeDte),
                 Number(item.ventaGravada) || 0,

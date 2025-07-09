@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 
 import List from '@/components/multiple-warehouse-stock-control/List';
 

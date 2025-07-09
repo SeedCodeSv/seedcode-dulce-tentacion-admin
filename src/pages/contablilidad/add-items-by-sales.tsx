@@ -19,7 +19,6 @@ import { DateTime } from 'luxon';
 
 import { ItemListProps, Items } from './types/types';
 
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import { useSalesStore } from '@/store/sales.store';

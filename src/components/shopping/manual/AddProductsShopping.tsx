@@ -1,5 +1,5 @@
-import { Accordion, AccordionItem, Checkbox, Input, Select, SelectItem } from "@heroui/react";
-import { useMemo, useState } from "react";
+import { Autocomplete, AutocompleteItem, Checkbox, Input, Select, SelectItem } from "@heroui/react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus, Trash } from "lucide-react";
 import { SeedcodeCatalogosMhService } from "seedcode-catalogos-mh";
 
@@ -10,16 +10,16 @@ import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 import { preventLetters } from "@/utils";
 
-export default function AddProductsShopping() {
+export default function AddProductsShopping({ setDetails }: { setDetails: (products: CuerpoDocumento[]) => void }) {
     const services = useMemo(() => new SeedcodeCatalogosMhService(), []);
     const [addProducts, setAddProducts] = useState(false)
     const [products, setProducts] = useState<CuerpoDocumento[]>([
         {
             numItem: 1,
             tipoItem: 1,
-            uniMedida: 59,
+            uniMedida: 0,
             numeroDocumento: null,
-            cantidad: 9,
+            cantidad: 0,
             codigo: "",
             codTributo: null,
             descripcion: "",
@@ -38,9 +38,9 @@ export default function AddProductsShopping() {
         itemss.push({
             numItem: products.length + 1,
             tipoItem: 1,
-            uniMedida: 59,
+            uniMedida: 0,
             numeroDocumento: null,
-            cantidad: 9,
+            cantidad: 0,
             codigo: "",
             codTributo: null,
             descripcion: "",
@@ -66,9 +66,6 @@ export default function AddProductsShopping() {
         setProducts(newProducts);
     };
 
-
-
-
     const handleChangePrice = (index: number, price: string, quantity: string) => {
         const products_selected = [...products];
         const cantidad = Number(quantity);
@@ -84,34 +81,38 @@ export default function AddProductsShopping() {
     };
 
     const remove = (numItem: number) => {
+        if(numItem !==1 ){
         const updatedItems = products.filter((item) => item.numItem !== numItem);
 
-        setProducts(updatedItems);
+        setProducts(updatedItems);}
     };
+
+    useEffect(() => {
+        if (addProducts) {
+            setDetails(products)
+        } else {
+            setDetails([])
+        }
+    }, [addProducts, products])
 
     return (
         <>
             <Checkbox
+            className="pt-5"
                 isSelected={addProducts}
                 size="lg"
                 onValueChange={setAddProducts}
             >
                 Ingresar Productos
             </Checkbox>
-
-
             {addProducts &&
                 <div className="my-2">
-                    <ButtonUi isIconOnly theme={Colors.Success} onPress={addItem}>
-                        <Plus size={20} />
-                    </ButtonUi>
                     <div className="w-full mt-4 border p-3 rounded-[12px]">
-                        <Accordion defaultExpandedKeys={['1']}>
-                            <AccordionItem
-                                key={'1'}
-                                textValue="Resumen"
-                                title={<p className="text-xl font-semibold">Productos</p>}
-                            >
+                      <div className="flex justify-between text-xl font-semibold">Productos
+                                    <ButtonUi isIconOnly theme={Colors.Success} onPress={addItem}>
+                                        <Plus size={20} />
+                                    </ButtonUi>
+                                </div>
                                 <TableComponent
                                     headers={[' Tipo de item ', 'Un. de medida', 'Cantidad', 'Código', 'Descripción', 'Pre. unitario', 'Total Gravada', '']}
 
@@ -138,15 +139,20 @@ export default function AddProductsShopping() {
                                                     ))}
                                                 </Select>
                                             </TdGlobal>
-                                            <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                <Input
-                                                    classNames={{ label: 'font-semibold' }}
-                                                    name="uniMedida"
-                                                    placeholder=""
-                                                    value={String(item.uniMedida)}
+                                            <TdGlobal className="p-3 w-1/6">
+                                                <Autocomplete
+                                                    classNames={{ base: 'font-semibold' }}
+                                                    placeholder="Selecciona la unidad de medida del producto"
+                                                    selectedKey={item.uniMedida.toString()}
                                                     variant="bordered"
-                                                    onChange={(e) => onChange(index, 'uniMedida', e.target.value)}
-                                                />
+                                                    onSelectionChange={(key) => {
+                                                        onChange(index, 'uniMedida', String(key))
+                                                    }}
+                                                >
+                                                    {services.get014UnidadDeMedida().map((uni) => (
+                                                        <AutocompleteItem key={uni.codigo}>{uni.valores}</AutocompleteItem>
+                                                    ))}
+                                                </Autocomplete>
                                             </TdGlobal>
                                             <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
                                                 <Input
@@ -158,6 +164,7 @@ export default function AddProductsShopping() {
                                                     value={String(item.cantidad)}
                                                     variant="bordered"
                                                     onChange={(e) => {
+
                                                         onChange(index, 'cantidad', e.target.value);
                                                         handleChangePrice(index, String(item.ventaGravada), e.target.value);
                                                     }}
@@ -213,6 +220,7 @@ export default function AddProductsShopping() {
                                             <TdGlobal>
                                                 <ButtonUi
                                                     isIconOnly
+                                                    isDisabled={item.numItem === 1}
                                                     theme={Colors.Error}
                                                     onPress={() => {
                                                         remove(item.numItem)
@@ -224,8 +232,6 @@ export default function AddProductsShopping() {
                                         </tr>
                                     ))}
                                 </TableComponent>
-                            </AccordionItem>
-                        </Accordion>
                     </div>
                 </div>
             }
