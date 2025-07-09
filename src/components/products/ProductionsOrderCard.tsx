@@ -30,7 +30,7 @@ function ProductionsOrderCard({
               <span className="font-semibold">Fecha - Hora de inicio:</span>
               {prd.date} - {prd.time}
             </p>
-           
+
             <p>
               <span className="font-semibold">Fecha - Hora de fin:</span>
               {prd.endDate || 'No definido'} -  {prd.endTime || 'No definido'}
@@ -43,63 +43,67 @@ function ProductionsOrderCard({
             </p>
           </CardBody>
           <CardHeader className="flex justify-between">
-
-            {prd.statusOrder === 'Abierta' && (
-              <div className="flex gap-20">
-                <ButtonUi
-                  isIconOnly
-                  showTooltip
-                  theme={Colors.Success}
-                  tooltipText="Iniciar orden de producción"
-                  onPress={() => {
-                    setSelectedOrderId(prd.id);
-                    modalVerifyOrder()
-                  }}
-                >
-                  <Play />
-                </ButtonUi>
-                <ButtonUi
-                  isIconOnly
-                  showTooltip
-                  theme={Colors.Error}
-                  tooltipText="Cancelar orden de producción"
-                  onPress={() => {
-                    setSelectedOrderId(prd.id);
-                    modalCancelOrder()
-                  }}
-                >
-                  <TbCancel size={20} />
-                </ButtonUi>
-              </div>
-            )}
-            {prd.statusOrder === 'En Proceso' && (
-              <div className=''>
-                <ButtonUi
-                  isIconOnly
-                  showTooltip
-                  theme={Colors.Success}
-                  tooltipText="Completar orden de producción"
-                  onPress={() => {
-                    setSelectedOrderId(prd.id);
-                    modalCompleteOrder()
-                  }}
-                >
-                  <TbCheck size={20} />
-                </ButtonUi>
-                <ButtonUi
-                  isIconOnly
-                  showTooltip
-                  theme={Colors.Error}
-                  tooltipText="Cancelar orden de producción"
-                  onPress={() => {
-                    setSelectedOrderId(prd.id);
-                    modalCancelOrder()
-                  }}
-                >
-                  <TbCancel size={20} />
-                </ButtonUi>
-              </div>
-            )}
+            <div>
+              {prd.statusOrder === 'Abierta' && (
+                <>
+                  <ButtonUi
+                    isIconOnly
+                    showTooltip
+                    theme={Colors.Success}
+                    tooltipText="Iniciar orden de producción"
+                    onPress={() => {
+                      setSelectedOrderId(prd.id);
+                      modalVerifyOrder()
+                    }}
+                  >
+                    <Play />
+                  </ButtonUi>
+                  <ButtonUi
+                    isIconOnly
+                    showTooltip
+                    theme={Colors.Error}
+                    tooltipText="Cancelar orden de producción"
+                    onPress={() => {
+                      setSelectedOrderId(prd.id);
+                      modalCancelOrder()
+                    }}
+                  >
+                    <TbCancel size={20} />
+                  </ButtonUi>
+                </>
+              )}
+            </div>
+            <div>
+              {prd.statusOrder === 'En Proceso' && (
+                <div className=''>
+                  <ButtonUi
+                    isIconOnly
+                    showTooltip
+                    className='right-24'
+                    theme={Colors.Success}
+                    tooltipText="Completar orden de producción"
+                    onPress={() => {
+                      setSelectedOrderId(prd.id);
+                      modalCompleteOrder()
+                    }}
+                  >
+                    <TbCheck size={20} />
+                  </ButtonUi>
+                  <ButtonUi
+                    isIconOnly
+                    showTooltip
+                    theme={Colors.Error}
+                    tooltipText="Cancelar orden de producción"
+                    onPress={() => {
+                      setSelectedOrderId(prd.id);
+                      modalCancelOrder()
+                    }}
+                  >
+                    <TbCancel size={20} />
+                  </ButtonUi>
+                </div>
+              )}
+            </div>
             <div>
               <ButtonUi
                 isIconOnly
@@ -114,6 +118,7 @@ function ProductionsOrderCard({
                 <Eye size={20} />
               </ButtonUi>
             </div>
+
 
           </CardHeader>
         </Card>

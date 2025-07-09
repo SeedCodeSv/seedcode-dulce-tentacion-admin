@@ -269,7 +269,7 @@ function AddProductionOrder() {
                   <Select
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
-                    label="Extraer producto de 111"
+                    label="Extraer producto de"
                     placeholder="Selecciona la sucursal de origen"
                     selectedKeys={selectedBranch}
                     variant="bordered"

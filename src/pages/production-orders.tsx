@@ -225,12 +225,13 @@ function ProductionOrders() {
             modalMoreInformation={() => modalMoreInformation.onOpen()}
             modalVerifyOrder={() => modalVerifyOrder.onOpen()}
             setSelectedOrderId={setSelectedOrderId}
-         
+
           />
         )}
         {view === 'table' && (
 
           <TableComponent
+            className='overflow-auto'
             headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin", 'Hora de fin', 'Estado', 'Acciones']}
           >
             {productionOrders.length === 0 && (

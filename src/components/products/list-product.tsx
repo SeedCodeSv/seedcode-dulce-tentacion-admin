@@ -205,6 +205,7 @@ function ListProducts({ actions }: Props) {
         {view === 'table' && (
           <>
             <TableComponent
+            className='overflow-auto'
               headers={["Nº", "Nombre", "Código", "Sub categoría", 'Acciones']}
             >
               {loading_products ? (
@@ -238,7 +239,7 @@ function ListProducts({ actions }: Props) {
                                 isIconOnly
                                 showTooltip
                                 theme={Colors.Info}
-                                tooltipText='Convertir Producto 111'
+                                tooltipText='Convertir Producto'
                                 onPress={() => {
                                   setSelectProduct(product)
                                   modalConvert.onOpen()

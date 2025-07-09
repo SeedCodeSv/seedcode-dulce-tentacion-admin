@@ -165,7 +165,9 @@ function ListCategories({ actions }: PProps) {
       )}
       {view === 'table' && (
         <>
-          <TableComponent headers={['Nº', 'Nombre', 'Acciones']}>
+          <TableComponent 
+          className='overflow-auto'
+          headers={['Nº', 'Nombre', 'Acciones']}>
             {loading_categories ? (
               <tr>
                 <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>

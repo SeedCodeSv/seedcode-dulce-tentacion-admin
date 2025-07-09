@@ -1,9 +1,10 @@
 import { Button, Input, Select, SelectItem } from '@heroui/react';
-import { ArrowLeft, Copy, Printer, Trash } from 'lucide-react';
+import { ArrowLeft, Copy, Printer, Save, Trash } from 'lucide-react';
 import autoTable from 'jspdf-autotable';
 import jsPDF from 'jspdf';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 import { useBranchProductStore } from '../../store/branch_product.store';
 import { global_styles } from '../../styles/global.styles';
@@ -13,15 +14,22 @@ import NoData from '../global/NoData';
 import AddButton from '../global/AddButton';
 import useGlobalStyles from '../global/global.styles';
 import EmptyTable from '../global/EmptyTable';
+// eslint-disable-next-line import/order
 import TooltipGlobal from '../global/TooltipGlobal';
 
-import Layout from '@/layout/Layout';
+// import Layout from '@/layout/Layout';
+import RenderViewButton from '../global/render-view-button';
+
+import CardAddProductOrder from './CardAddProductOrder';
+
 import { useViewsStore } from '@/store/views.store';
 import { getElSalvadorDateTime } from '@/utils/dates';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
 import { IBranchProductOrderQuantity } from '@/types/branch_product_order.types';
 import TdGlobal from '@/themes/ui/td-global';
+import useWindowSize from '@/hooks/useWindowSize';
+
 function AddPurchaseOrders() {
   const {
     updateQuantityOrders,
@@ -33,7 +41,10 @@ function AddPurchaseOrders() {
     onDuplicateProduct
   } = useBranchProductStore();
   const styles = useGlobalStyles();
-
+  const { windowSize } = useWindowSize()
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : 'table'
+  )
   const handlePrint = (index: number) => {
     try {
       const order = orders_by_supplier[index];
@@ -155,6 +166,46 @@ function AddPurchaseOrders() {
             </div>
 
             <div className="flex  justify-end">
+
+              <div className='flex flex-row gap-2 mr-4'>
+                {windowSize.width > 780 && view === 'grid' && (
+                  <>
+                    {orders_by_supplier.map((item) => (
+                      <>
+                        {item ? item.products.length > 0 && (
+                          <>
+                            <div className="w-full flex justify-end">
+                              <Button
+                                className="py-5 w-full flex font-semibold"
+                                style={styles.darkStyle}
+                                onPress={() => handleSaveOrder()}
+                              >
+                                <Save />
+                              </Button>
+                            </div>
+                            <div className="w-full flex justify-end">
+                              <Button
+                                className="py-5 w-full flex font-semibold"
+
+                                style={global_styles().warningStyles}
+                                onPress={() => handlePrint(0)}
+                              >
+                                <Printer />
+                              </Button>
+                            </div>
+                          </>
+                        ) : (<></>)}
+                      </>
+                    ))}
+
+                  </>
+                )}
+              </div>
+              <div className='mr-2'>
+                <RenderViewButton setView={setView} view={view} />
+
+              </div>
+
               <AddButton
                 onClick={() => {
                   navigate('/add-product-purchase-order');
@@ -169,120 +220,135 @@ function AddPurchaseOrders() {
             </div>
           )}
 
-          {orders_by_supplier.map((supplier, index) => (
-            <div key={index} className="w-full">
-              <TableComponent
-                headers={[
-                  'No.',
-                  'Nombre',
-                  'Proveedor',
-                  'Cantidad',
-                  'Código',
-                  'Stock',
-                  'Precio',
-                  'Acciones',
-                ]}
-              >
-                {supplier ? (
-                  supplier.products.map((item, idx) => (
-                    <tr key={idx}>
-                      <TdGlobal className='p-3'>{idx + 1}</TdGlobal>
-                      <TdGlobal>{item.product.name}</TdGlobal>
-                      <TdGlobal className='py-3'>
-                        <Select
-                          className="w-72 dark:text-white"
-                          classNames={{ label: 'font-semibold' }}
-                          placeholder="Selecciona el proveedor"
-                          selectedKeys={[Number(item.supplier?.id).toString()]}
-                          size='sm'
-                          variant="bordered"
-                        >
-                          {item.suppliers.map((sup) => (
-                            <SelectItem
-                              key={sup.id}
-                              className="dark:text-white"
-                              onPress={() => onUpdateSupplier(item.numItem, sup)}
+          {view === 'table' && (
+            <>
+              {orders_by_supplier.map((supplier, index) => (
+                <div key={index} className="w-full">
+                  <TableComponent
+                    className='overflow-auto'
+                    headers={[
+                      'No.',
+                      'Nombre',
+                      'Proveedor',
+                      'Cantidad',
+                      'Código',
+                      'Stock',
+                      'Precio',
+                      'Acciones',
+                    ]}
+                  >
+                    {supplier ? (
+                      supplier.products.map((item, idx) => (
+                        <tr key={idx}>
+                          <TdGlobal className='p-3'>{idx + 1}</TdGlobal>
+                          <TdGlobal>{item.product.name}</TdGlobal>
+                          <TdGlobal className='py-3'>
+                            <Select
+                              className="w-72 dark:text-white"
+                              classNames={{ label: 'font-semibold' }}
+                              placeholder="Selecciona el proveedor"
+                              selectedKeys={[Number(item.supplier?.id).toString()]}
+                              size='sm'
+                              variant="bordered"
                             >
-                              {sup.nombre}
-                            </SelectItem>
-                          ))}
-                        </Select>
-                      </TdGlobal>
-                      <TdGlobal>
-                        <Input
-                          className="w-32"
-                          defaultValue={item.quantity.toString()}
-                          lang="es"
-                          type="number"
-                          variant="bordered"
-                          onChange={(e) => {
-                            updateQuantityOrders(item.numItem, Number(e.target.value));
-                          }}
-                        />
-                      </TdGlobal>
-                      <TdGlobal>{item.product.code}</TdGlobal>
+                              {item.suppliers.map((sup) => (
+                                <SelectItem
+                                  key={sup.id}
+                                  className="dark:text-white"
+                                  onPress={() => onUpdateSupplier(item.numItem, sup)}
+                                >
+                                  {sup.nombre}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                          </TdGlobal>
+                          <TdGlobal>
+                            <Input
+                              className="w-32"
+                              defaultValue={item.quantity.toString()}
+                              lang="es"
+                              type="number"
+                              variant="bordered"
+                              onChange={(e) => {
+                                updateQuantityOrders(item.numItem, Number(e.target.value));
+                              }}
+                            />
+                          </TdGlobal>
+                          <TdGlobal>{item.product.code}</TdGlobal>
 
-                      <TdGlobal>{item.stock}</TdGlobal>
-                      <TdGlobal>
-                        <Input
-                          className="w-32 text-green-600"
-                          defaultValue={item.price.toString()}
-                          lang="es"
-                          startContent="$"
-                          type="number"
-                          variant="bordered"
-                          onChange={(e) => {
-                            updatePriceOrders(item.numItem, Number(e.target.value));
-                          }}
-                        />
-                      </TdGlobal>
-                      <TdGlobal className="flex gap-3">
-                        <TooltipGlobal text="Eliminar">
-                          <Button
-                            isIconOnly
-                            style={global_styles().dangerStyles}
-                            onPress={() => deleteProductOrder(item.numItem)}
-                          >
-                            <Trash size={18} />
-                          </Button>
-                        </TooltipGlobal>
-                        <TooltipGlobal text="Duplicar fila">
-                          <Button
-                            isIconOnly
-                            style={global_styles().warningStyles}
-                            onPress={() => onDuplicateProduct(item)}
-                          >
-                            <Copy size={18} />
-                          </Button>
-                        </TooltipGlobal>
-                      </TdGlobal>
-                    </tr>
-                  ))
-                ) : (
-                  <tr className="max-h-16">
-                    <td className="py-6 text-center" colSpan={6}>
-                      <EmptyTable />
-                    </td>
-                  </tr>
-                )}
-              </TableComponent>
-              <div className="w-full py-5 flex justify-start">
-                <Button style={global_styles().warningStyles} onPress={() => handlePrint(index)}>
-                  <Printer />
+                          <TdGlobal>{item.stock}</TdGlobal>
+                          <TdGlobal>
+                            <Input
+                              className="w-32 text-green-600"
+                              defaultValue={item.price.toString()}
+                              lang="es"
+                              startContent="$"
+                              type="number"
+                              variant="bordered"
+                              onChange={(e) => {
+                                updatePriceOrders(item.numItem, Number(e.target.value));
+                              }}
+                            />
+                          </TdGlobal>
+                          <TdGlobal className="flex gap-3">
+                            <TooltipGlobal text="Eliminar">
+                              <Button
+                                isIconOnly
+                                style={global_styles().dangerStyles}
+                                onPress={() => deleteProductOrder(item.numItem)}
+                              >
+                                <Trash size={18} />
+                              </Button>
+                            </TooltipGlobal>
+                            <TooltipGlobal text="Duplicar fila">
+                              <Button
+                                isIconOnly
+                                style={global_styles().warningStyles}
+                                onPress={() => onDuplicateProduct(item)}
+                              >
+                                <Copy size={18} />
+                              </Button>
+                            </TooltipGlobal>
+                          </TdGlobal>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr className="max-h-16">
+                        <td className="py-6 text-center" colSpan={6}>
+                          <EmptyTable />
+                        </td>
+                      </tr>
+                    )}
+                  </TableComponent>
+                  <div className="w-full py-5 flex justify-start">
+                    <Button style={global_styles().warningStyles}
+                      onPress={() => handlePrint(index)}
+                    >
+                      <Printer />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+
+              <div className="w-full flex justify-end mt-4">
+                <Button
+                  className="px-16 font-semibold"
+                  style={styles.darkStyle}
+                  onPress={() => handleSaveOrder()}
+                >
+                  Guardar
                 </Button>
               </div>
-            </div>
-          ))}
+            </>
+          )}
 
-          <div className="w-full flex justify-end mt-4">
-            <Button
-              className="px-16 font-semibold"
-              style={styles.darkStyle}
-              onPress={() => handleSaveOrder()}
-            >
-              Guardar
-            </Button>
-          </div>
+          {view === 'grid' && (
+            <CardAddProductOrder
+              handlePrint={handlePrint}
+              handleSaveOrder={handleSaveOrder}
+
+            />
+          )}
         </DivGlobal>
       ) : (
         <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">

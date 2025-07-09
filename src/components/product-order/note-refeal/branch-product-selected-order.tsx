@@ -255,7 +255,7 @@ export default function BranchProductSelectedOrder(props: Props) {
               Guardar
             </ButtonUi>
           </div>
-          <TableComponent className='uppercase' headers={[
+          <TableComponent className='uppercase overflow-auto' headers={[
             'N°',
             'Nombre',
             'Categoria',

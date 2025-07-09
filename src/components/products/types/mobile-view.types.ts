@@ -27,6 +27,18 @@ export interface IMobileOrderProductsComp {
   onAddBranchDestiny: (data: any) => void
   onAddOrderId: (id: number) => void
   addSelectedProducts: (data: OrderProductDetail[]) => void
-  selectedIds:number[]
+  selectedIds: number[]
   handleCheckboxChange: (id: number) => void
 }
+
+export interface IMobileShopping {
+  handleVerify: (id: number) => void
+  // modalConfirm: () => void
+  onDeleteConfirm: (id: number) => void
+}
+
+export interface IMobileAddProdcutOrder {
+  handlePrint: (index: number) => void
+  handleSaveOrder: () => void
+}
+

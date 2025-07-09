@@ -33,8 +33,9 @@ import { Employee } from '@/types/employees.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useSocket } from '@/hooks/useSocket';
-import { ThemeContext } from '@/hooks/useTheme';
+// import { ThemeContext } from '@/hooks/useTheme';
 import TdGlobal from '@/themes/ui/td-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 interface Props {
   branchData: Branches;
@@ -60,7 +61,7 @@ function ShippingProductBranchSelected(props: Props) {
   const { branch_list, getBranchesList } = useBranchesStore();
   const { point_of_sales, getPointOfSales } = usePointOfSales();
   const { socket } = useSocket()
-  const { theme, context } = useContext(ThemeContext);
+  // const { theme, context } = useContext(ThemeContext);
 
   useEffect(() => {
     getEmployeesList();
@@ -263,7 +264,7 @@ function ShippingProductBranchSelected(props: Props) {
             </div>
           ) : (
             <>
-              <div className="flex justify-between">
+              <div className='flex gap-5 items-start mt-4'>
                 <div>
                   <Autocomplete
                     ref={autocomplete}
@@ -311,13 +312,13 @@ function ShippingProductBranchSelected(props: Props) {
                   </Button>
                 </div>
               </div>
-              <table className="  w-full mt-2 text-sm text-left text-gray-500 dark:text-gray-400">
-                <motion.thead
+              {/* <table className=" w-full mt-2 text-sm text-left text-gray-500 dark:text-gray-400 overflow-auto"> */}
+              {/* <motion.thead
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs h-[100%]  text-gray-700 uppercase "
+                  className="text-xs h-[100%]  text-gray-700 uppercase"
                   initial={{ opacity: 0, y: -20 }}
-                >
-                  <tr>
+                > */}
+              {/* <tr>
                     {[
                       'N°',
                       'Nombre',
@@ -345,87 +346,99 @@ function ShippingProductBranchSelected(props: Props) {
                         </div>
                       </motion.th>
                     ))}
-                  </tr>
-                </motion.thead>
-                <tbody>
-                  {product_selected.map((item, index) => (
-                    <motion.tr
-                      key={item.id}
-                      ref={(el) => (rowRefs.current[index] = el)}
-                      animate={{ opacity: 1, x: 0 }}
-                      className={`transition-colors
+                  </tr> */}
+              {/* </motion.thead> */}
+
+              <TableComponent className='uppercase overflow-auto' headers={[
+                'N°',
+                'Nombre',
+                'Categoria',
+                'Stock disponible',
+                'Cantidad',
+                'Acciones',
+              ]}>
+
+                {product_selected.map((item, index) => (
+                  <motion.tr
+                    key={item.id}
+                    ref={(el) => (rowRefs.current[index] = el)}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={`transition-colors
                         focus:outline-none ${index === selectedIndex ? 'ring-2 ring-emerald-500 rounded-lg' : ''
-                        }`}
+                      }`}
 
-                      initial={{ opacity: 0, x: -20 }}
-                      tabIndex={-1}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                    >
-                      <TdGlobal className="px-6 py-4 dark:text-white">{index + 1}</TdGlobal>
-                      <TdGlobal className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {item?.product.name}
-                      </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        {item.product?.subCategory?.categoryProduct?.name}
-                      </TdGlobal>
+                    initial={{ opacity: 0, x: -20 }}
+                    tabIndex={-1}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <TdGlobal className="px-6 py-4 dark:text-white">{index + 1}</TdGlobal>
+                    <TdGlobal className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      {item?.product.name}
+                    </TdGlobal>
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      {item.product?.subCategory?.categoryProduct?.name}
+                    </TdGlobal>
 
-                     <TdGlobal className="px-6 py-4 dark:text-white">
-                        {item?.stock ?? 0}
-                      </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        <Input
-                          value={item.quantity!.toString()}
-                          variant="bordered"
-                          onChange={(e) => {
-                            const value = Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
-                            const product = product_selected.find((val) => val.id === item.id)
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      {item?.stock ?? 0}
+                    </TdGlobal>
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      <Input
+                        value={item.quantity!.toString()}
+                        variant="bordered"
+                        onChange={(e) => {
+                          const value = Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                          const product = product_selected.find((val) => val.id === item.id)
 
-                            if (value > Number(product?.stock ?? 0)) {
+                          if (value > Number(product?.stock ?? 0)) {
 
-                              toast.warning('No cuentas con suficiente stock')
+                            toast.warning('No cuentas con suficiente stock')
 
-                              return
-                            }
+                            return
+                          }
 
-                            OnChangeQuantityManual(
-                              item.id,
-                              item.product.id,
-                              Number(item.stock),
-                              Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
-                            );
-                          }}
-                        />
-                      </TdGlobal>
-                      
-                      <TdGlobal className="px-6 py-4 dark:text-white ">
-                        <div className="flex gap-4">
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Success}
-                            onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
-                          >
-                            <Plus />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Primary}
-                            onPress={() => OnMinusProductSelected(item.id)}
-                          >
-                            <Minus />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Error}
-                            onPress={() => OnClearProductSelected(item.id)}
-                          >
-                            <Trash />
-                          </ButtonUi>
-                        </div>
-                      </TdGlobal>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+                          OnChangeQuantityManual(
+                            item.id,
+                            item.product.id,
+                            Number(item.stock),
+                            Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                          );
+                        }}
+                      />
+                    </TdGlobal>
+
+                    <TdGlobal className="px-6 py-4 dark:text-white ">
+                      <div className="flex gap-4">
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Success}
+                          onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
+                        >
+                          <Plus />
+                        </ButtonUi>
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
+                          onPress={() => OnMinusProductSelected(item.id)}
+                        >
+                          <Minus />
+                        </ButtonUi>
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Error}
+                          onPress={() => OnClearProductSelected(item.id)}
+                        >
+                          <Trash />
+                        </ButtonUi>
+                      </div>
+                    </TdGlobal>
+                  </motion.tr>
+                ))}
+              </TableComponent>
+              {/* <tbody>
+               
+              </tbody> */}
+              {/* </table> */}
             </>
           )}
         </motion.div>
@@ -572,7 +585,7 @@ function ShippingProductBranchSelected(props: Props) {
 
                             return;
                           }
-                          
+
                           setBranchData(branch as any);
                         }
                       }}
@@ -639,8 +652,8 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
-                           textValue={
-                            employee.firstName +  ' ' + employee.firstLastName 
+                          textValue={
+                            employee.firstName + ' ' + employee.firstLastName
                           }
                         >
                           {employee.firstName}{' '}{employee.firstLastName}

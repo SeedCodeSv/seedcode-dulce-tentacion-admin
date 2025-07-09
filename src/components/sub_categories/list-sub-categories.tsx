@@ -144,7 +144,9 @@ function ListSubCategory({ actions }: PProps) {
       )}
       {view === 'table' && (
         <>
-          <TableComponent headers={['Nº', 'Nombre', 'Categoría', 'Acciones']}>
+          <TableComponent
+            className='overflow-auto'
+            headers={['Nº', 'Nombre', 'Categoría', 'Acciones']}>
             {loading_sub_categories ? (
               <tr>
                 <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>

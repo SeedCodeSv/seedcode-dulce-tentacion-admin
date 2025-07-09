@@ -34,7 +34,7 @@ type ProductRecipe = ResponseVerifyProduct & {
   quantity: number;
 };
 
-type TypeSearch = 'MP' | 'RENDIMIENTO';
+// type TypeSearch = 'MP' | 'RENDIMIENTO';
 
 interface Props {
   branchOrigin: Branches
@@ -42,7 +42,7 @@ interface Props {
   setSelectedProduct: (product: ProductRecipe | undefined) => void
 }
 
-export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct }: Props) {  
+export default function AddProductionOrderByProductOrder({ branchOrigin, selectedProduct, setSelectedProduct }: Props) {
 
   const handleChangePerformance = (performance: string) => {
     const performanceNumber = Number(performance);
@@ -57,7 +57,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
     const updatedProduct = {
       ...selectedProduct,
       recipeBook: {
-        ...selectedProduct.recipeBook,
+        ...selectedProduct?.recipeBook,
         performance: performanceNumber,
         productRecipeBookDetails: updatedDetails,
       },
@@ -71,16 +71,16 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
   const isMovil = useIsMobileOrTablet();
   const { show, close } = useAlert()
 
-  const { branchDestiny , orderId} = useShippingBranchProductBranch();
+  const { branchDestiny, orderId } = useShippingBranchProductBranch();
   const [selectedEmployee, setSelectedEmployee] = useState<Selection>(new Set([]));
   const [observation, setObservation] = useState('Orden de producción a partir de orden de productos');
-  
-  const modalRecipe = useDisclosure();
-  const typeSearch = ['RENDIMIENTO', 'MP'];
 
-  const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>(
-    'RENDIMIENTO'
-  );
+  const modalRecipe = useDisclosure();
+  // const typeSearch = ['RENDIMIENTO', 'MP'];
+
+  // const [selectedTypeSearch, setSelectedTypeSearch] = useState<'RENDIMIENTO' | 'MP'>(
+  //   'RENDIMIENTO'
+  // );
 
   const { getEmployeesList, employee_list } = useEmployeeStore();
 
@@ -208,8 +208,9 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
 
 
   const calcMp = () => {
+    // const productSelected = selectedProduct.recipeBook?.productRecipeBookDetails[index]
 
-    const total = selectedProduct.recipeBook?.productRecipeBookDetails?.reduce(
+    const total = selectedProduct?.recipeBook?.productRecipeBookDetails?.reduce(
       (acc, detail) =>
         acc + Number(detail.branchProduct?.costoUnitario) * Number(detail.quantityPerPerformance),
       0
@@ -223,16 +224,22 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
       return '0';
     }
 
-    if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
-      return '0';
+    // if (mod === '0' || mod === undefined || mod === null || isNaN(Number(mod))) {
+    //   return '0';
+    // }
+    const mod = selectedProduct?.recipeBook?.MOP ?? '0'
+
+    if (selectedProduct?.recipeBook?.MOP) {
+      return selectedProduct?.recipeBook?.MOP ?? '0'
     }
 
-    const base = selectedTypeSearch === 'MP' ? calcMp() : selectedProduct.recipeBook?.performance;
+    // const base = selectedTypeSearch === 'MP' ? calcMp() : 
+  const base=  selectedProduct.recipeBook?.performance;
 
     return (Number(mod) * base).toFixed(2);
   };
 
-  const [mod, setMod] = useState('0');
+  // const [mod, setMod] = useState('0');
 
   const calcCostoPrimo = () => {
     const mp = calcMp();
@@ -241,28 +248,38 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
       return 0;
     }
 
-    if (calcMod() === '0' || calcMod() === undefined || mod === null || isNaN(Number(calcMod()))) {
+
+
+    if (calcMod() === '0' || calcMod() === undefined || isNaN(Number(calcMod()))) {
       return 0;
     }
 
     return mp + Number(calcMod());
   };
 
-  const [costCif, setCostCif] = useState('0');
+  // const [costCif, setCostCif] = useState('0');
 
   const calcCif = () => {
     if (!selectedProduct) {
       return '0';
     }
+    const costCif = selectedProduct?.recipeBook?.CIF ?? '0'
 
-    if (costCif === '0' || costCif === undefined || costCif === null || isNaN(Number(costCif))) {
-      return '0';
+    if (selectedProduct?.recipeBook?.CIF) {
+      return selectedProduct?.recipeBook?.CIF ?? '0'
     }
+    // if (costCif === '0' || costCif === undefined || costCif === null || isNaN(Number(costCif))) {
+    //   return '0';
+    // }
 
     const performance = selectedProduct?.recipeBook?.performance;
 
     return (Number(costCif) * Number(performance))?.toFixed(2);
   };
+
+  const getCif = () => {
+    return selectedProduct?.recipeBook?.CIF ?? '0.00'
+  }
 
   const totalCost = () => {
     if (!selectedProduct) {
@@ -275,6 +292,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
     return (Number(cif) + Number(mod))?.toFixed(2);
   };
 
+
   return (
     <>
       <RecipeBook
@@ -283,7 +301,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
         onOpenChange={modalRecipe.onOpenChange}
       />
       <DivGlobal>
-        <div className='pb-2'>
+        <div className='mb-'>
           <ButtonUi
             startContent={<ArrowBigLeft />}
             theme={Colors.Info}
@@ -350,7 +368,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
             </ResponsiveFilterWrapper>
           </div>
         </div>
-        <div className="w-full h-full overflow-y-auto flex flex-col py-2">
+        <div className="w-full h-full overflow-y-auto flex flex-col py-2 ">
           {selectedProduct && (
             <>
               <div className="grid grid-cols-2 lg:grid-cols-2 items-center">
@@ -369,7 +387,7 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
               {selectedProduct?.recipeBook && (
                 <>
                   <TableComponent
-                    className=' hidden md:flex flex-col'
+                    className=' md:flex flex-col'
                     headers={[
                       'Producto',
                       'Código',
@@ -401,20 +419,30 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
             </>
           )}
         </div>
+        <div className="h-full overflow-y-auto flex md:hidden" />
         <Accordion defaultExpandedKeys={['costs']} variant="splitted" >
-          <AccordionItem
-            key="costs"
-            className='dark:bg-gray-800'
-            indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
-            startContent={<DollarSign className="text-green-700 dark:text-slate-200" size={25} />}
-            title={<p className="font-semibold">Costos</p>}
-          >
-            <div className="flex flex-col">
-              <div className="grid grid-cols-3 gap-3">
-                <Input
+            <AccordionItem
+              // key={`costs-${index}`}
+
+              key="costs"
+              // className='dark:bg-gray-800 overflow-auto w-full'
+              className="dark:bg-gray-800 mb-2"
+
+              indicator={<ArrowDown className="text-slate-700 dark:text-slate-200" />}
+              // startContent={<DollarSign className="text-green-700 dark:text-slate-200" size={25} />}
+              startContent={
+                <DollarSign className="text-green-700 dark:text-slate-200" size={25} />
+              }
+              // title={<p className="font-semibold">Costos</p>}
+              title={<p className="font-semibold">Costos</p>}
+
+            >
+              <div className="flex flex-col">
+                <div className="grid grid-cols-3 gap-3">
+                  {/* <Input
                   readOnly
                   classNames={{
-                    label: 'font-semibold text-[10px]',
+                    label: 'font-semibold text-[10px] ',
                     input: 'text-xs',
                   }}
                   label="MP"
@@ -423,12 +451,13 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                   size="sm"
                   value={selectedProduct ? calcMp()?.toFixed(2) : '0'}
                   variant="bordered"
-                />
-                <div className="flex gap-1 items-end col-span-2">
-                  <Input
+                /> */}
+                  {/* <div className="flex gap-1 items-end col-span-2 w-full"> */}
+                  {/* <Input
+                    className='w-24'
                     classNames={{
                       label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
+                      input: 'text-xs w-24',
                     }}
                     label="VALOR"
                     labelPlacement="outside"
@@ -438,8 +467,35 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                     variant="bordered"
                     onKeyDown={preventLetters}
                     onValueChange={(e) => setMod(e)}
+                  /> */}
+                  <Input
+                    readOnly
+                    classNames={{
+                      label: 'font-semibold text-[10px]',
+                      input: 'text-xs',
+                    }}
+                    label="MP"
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    size="sm"
+                    value={calcMp()?.toFixed(2) || '0.00'}
+                    variant="bordered"
                   />
-                  <span className="font-semibold text-3xl">*</span>
+                  <Input
+                    readOnly
+                    classNames={{
+                      label: 'font-semibold text-[10px]',
+                      input: 'text-xs',
+                    }}
+                    label="MOD"
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    size="sm"
+                    // value={String(getMod())}
+                    value={calcMod().toString()}
+                    variant="bordered"
+                  />
+                  {/* <span className="font-semibold text-3xl">*</span>
                   <Input
                     readOnly
                     classNames={{
@@ -472,11 +528,12 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                     }
                     variant="bordered"
                   />
-                  <span className="font-semibold text-3xl">=</span>
-                  <Input
+                  <span className="font-semibold text-3xl">=</span> */}
+                  {/* <Input
+                    className='w-24'
                     classNames={{
                       label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
+                      input: 'text-xs w-24',
                     }}
                     label="MOD"
                     labelPlacement="outside"
@@ -485,8 +542,9 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                     value={calcMod()}
                     variant="bordered"
                     onKeyDown={preventLetters}
-                  />
+                  /> */}
                   <Input
+                    readOnly
                     classNames={{
                       label: 'font-semibold text-[10px]',
                       input: 'text-xs',
@@ -498,41 +556,66 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                     value={selectedProduct ? calcCostoPrimo().toFixed(2) : '0'}
                     variant="bordered"
                   />
-                </div>
-                <div className="flex gap-1 items-end col-span-2">
-                  <Input
-                    classNames={{
-                      label: 'font-semibold text-[10px]',
-                      input: 'text-xs',
-                    }}
-                    label="VALOR"
-                    labelPlacement="outside"
-                    placeholder="0.00"
-                    size="sm"
-                    value={costCif}
-                    variant="bordered"
-                    onKeyDown={preventLetters}
-                    onValueChange={(e) => setCostCif(e)}
-                  />
-                  <span className="font-semibold text-3xl">*</span>
                   <Input
                     readOnly
                     classNames={{
                       label: 'font-semibold text-[10px]',
                       input: 'text-xs',
                     }}
-                    label="RENDIMIENTO"
+                    label="CIF"
                     labelPlacement="outside"
                     placeholder="0.00"
                     size="sm"
-                    value={
-                      selectedProduct ? String(selectedProduct?.recipeBook?.performance)
-                        : '0'
-                    }
+                    value={String(getCif())}
                     variant="bordered"
                   />
-                  <span className="font-semibold text-3xl">=</span>
-                  <Input
+                  {/* <Input
+                    classNames={{
+                      label: 'font-semibold text-[10px]',
+                      input: 'text-xs',
+                    }}
+                    label="COSTO PRIMO"
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    size="sm"
+                    value={selectedProduct ? calcCostoPrimo().toFixed(2) : '0'}
+                    variant="bordered"
+                  /> */}
+                  {/* </div> */}
+                  {/* <div className="flex gap-1 items-end col-span-2"> */}
+                  {/* <Input
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="VALOR"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={costCif}
+                      variant="bordered"
+                      onKeyDown={preventLetters}
+                      onValueChange={(e) => setCostCif(e)}
+                    />
+                    <span className="font-semibold text-3xl">*</span>
+                    <Input
+                      readOnly
+                      classNames={{
+                        label: 'font-semibold text-[10px]',
+                        input: 'text-xs',
+                      }}
+                      label="RENDIMIENTO"
+                      labelPlacement="outside"
+                      placeholder="0.00"
+                      size="sm"
+                      value={
+                        selectedProduct ? String(selectedProduct?.recipeBook?.performance)
+                          : '0'
+                      }
+                      variant="bordered"
+                    /> */}
+                  {/* <span className="font-semibold text-3xl">=</span> */}
+                  {/* <Input
                     readOnly
                     classNames={{
                       label: 'font-semibold text-[10px]',
@@ -544,24 +627,38 @@ export default function AddProductionOrderByProductOrder({ branchOrigin, selecte
                     size="sm"
                     value={calcCif()}
                     variant="bordered"
+                  /> */}
+                  {/* </div> */}
+                  {/* <Input
+                    readOnly
+                    classNames={{
+                      label: 'font-semibold text-[10px]',
+                      input: 'text-xs',
+                    }}
+                    label="COSTO TOTAL"
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    size="sm"
+                    value={selectedProduct ? totalCost() : '0'}
+                    variant="bordered"
+                  /> */}
+                  <Input
+                    readOnly
+                    classNames={{
+                      label: 'font-semibold text-[10px]',
+                      input: 'text-xs',
+                    }}
+                    label="COSTO TOTAL"
+                    labelPlacement="outside"
+                    placeholder="0.00"
+                    size="sm"
+                    value={totalCost()}
+                    variant="bordered"
                   />
                 </div>
-                <Input
-                  readOnly
-                  classNames={{
-                    label: 'font-semibold text-[10px]',
-                    input: 'text-xs',
-                  }}
-                  label="COSTO TOTAL"
-                  labelPlacement="outside"
-                  placeholder="0.00"
-                  size="sm"
-                  value={selectedProduct ? totalCost() : '0'}
-                  variant="bordered"
-                />
               </div>
-            </div>
-          </AccordionItem>
+            </AccordionItem>
+
         </Accordion>
 
         <div className="flex justify-between md:justify-end gap-0 md:gap-4 items-end mt-3">
