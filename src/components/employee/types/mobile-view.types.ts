@@ -19,14 +19,23 @@ export interface GridProps extends IMobileView {
 }
 
 export interface IPropsSearchEmployee {
-  nameEmployee: (name: string) => void;
-  phoneEmployee: (phone: string) => void;
-  branchName: (name: string) => void;
-  codeEmpleyee: (code: string) => void;
-  startDate: (date: string) => void;
-  endDate: (date: string) => void;
+  filters: ChangePageParams;
+  setFilters: (filters: ChangePageParams) => void
 }
 
 export interface IContentBirthday {
   employee: MonthsAttendance[];
 }
+
+export interface ChangePageParams {
+  page?: number
+  name?: string;
+  firstLastName?: string;
+  branch?: string;
+  phone?: string;
+  codeEmployee?: string;
+  active?: boolean;
+  isDate?: boolean;
+  startDate?: string;
+  endDate?: string;
+};

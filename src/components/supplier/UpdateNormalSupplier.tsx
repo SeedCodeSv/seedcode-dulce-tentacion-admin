@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
@@ -8,11 +8,12 @@ import { toast } from 'sonner';
 
 import { SelectedItem } from './select-account';
 
-import { global_styles } from '@/styles/global.styles';
 import { useSupplierStore } from '@/store/supplier.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import DivGlobal from '@/themes/ui/div-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 function UpdateNormalSupplier() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -305,21 +306,21 @@ function UpdateNormalSupplier() {
                   isInvalid={formik.touched.complemento && !!formik.errors.complemento}
                 />
               </div>
-              <div className="w-full mt-5 flex justify-end gap-5">
-                <Button
-                  className="px-20 font-semibold"
-                  style={global_styles().dangerStyles}
-                  onClick={() => navigate('/suppliers')}
+              <div className="flex gap-4 justify-between lg:justify-end w-full">
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Error}
+                  onPress={() => navigate('/suppliers')}
                 >
                   Cancelar
-                </Button>
-                <Button
-                  className="px-20 font-semibold"
-                  style={global_styles().darkStyle}
+                </ButtonUi>
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Primary}
                   type="submit"
                 >
                   Guardar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </form>

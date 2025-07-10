@@ -151,8 +151,8 @@ function AddEmployee() {
           <button className="flex flex-row justify-start mr-8 border border-sky-200 rounded-xl p-2">
             <Checkbox
               checked={isCutResponsible}
-              size="md"
               color={'warning'}
+              size="md"
               onChange={() => setIsCutResponsible(!isCutResponsible)}
             />
             <p className="dark:text-white mt-1 text-sky-500">Responsable de corte Z</p>

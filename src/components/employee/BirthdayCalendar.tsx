@@ -8,7 +8,6 @@ import SlideInModalGlobal from '../global/SlideInModalGlobal';
 
 import ParticipantList from './ContentBirthday';
 
-import Layout from '@/layout/Layout';
 import { useEmployeeStore } from '@/store/employee.store';
 import { MonthsAttendance } from '@/types/employees.types';
 import { useViewsStore } from '@/store/views.store';

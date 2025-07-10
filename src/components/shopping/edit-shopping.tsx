@@ -16,6 +16,8 @@ import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 
+import LoadingTable from '../global/LoadingTable';
+
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
 import EditResumeShopping from './edit-resumen-shopping';
 import AccountItemEdit from './account-item-edit';
@@ -48,7 +50,6 @@ import {
 } from '@/enums/shopping.enum';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-import LoadingTable from '../global/LoadingTable';
 import DivGlobal from '@/themes/ui/div-global';
 
 function EditShopping() {

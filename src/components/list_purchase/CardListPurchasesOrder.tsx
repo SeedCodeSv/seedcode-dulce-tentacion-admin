@@ -1,24 +1,16 @@
-import { Button, Card, CardBody, CardHeader } from '@heroui/react';
-// eslint-disable-next-line import/order
-import { AlignJustify, ClipboardCheck } from 'lucide-react';
 
 // import { IMobileViewOrderProducst } from './types/mobile-view.types';
-
-
-// eslint-disable-next-line import/order
-
 // import { RenderStatus, Status } from './render-order-status';
-
 // import { formatEmployee } from '@/utils/dates';
+
+import { Button, Card, CardBody, CardHeader } from '@heroui/react';
+import { AlignJustify, ClipboardCheck } from 'lucide-react';
 import { useNavigate } from 'react-router';
 
 import TooltipGlobal from '../global/TooltipGlobal';
 import useGlobalStyles from '../global/global.styles';
 
 import { usePurchaseOrdersStore } from '@/store/purchase_orders.store';
-
-
-
 
 function CardListPurcharseOrder({
     // handleDetails,
@@ -41,9 +33,6 @@ function CardListPurcharseOrder({
 
     return (
         <>
-
-
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4 mt-3 overflow-y-auto p-2">
                 {/* {purchase_orders.map((prd) => ( */}
                 <>

@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { Dispatch, SetStateAction, useContext, useEffect } from 'react';
+import { useLocation } from 'react-router';
 
 import { ThemeContext } from '@/hooks/useTheme';
-import { useLocation } from 'react-router';
 
 interface Props {
   isOpen: boolean;

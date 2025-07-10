@@ -54,6 +54,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
 import { useProductionOrderStore } from '@/store/production-order.store';
 import useWindowSize from '@/hooks/useWindowSize';
+import { useTransmitterStore } from '@/store/transmitter.store';
 
 export default function ProductOrderComponent() {
   const { backgroundColor, textColor } = useColors();
@@ -62,7 +63,7 @@ export default function ProductOrderComponent() {
   const { addSelectedProducts } = useProductionOrderStore();
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<Order>();
-
+const {transmitter, gettransmitter} = useTransmitterStore()
   const { getOrdersByDates, ordersProducts } = useOrderProductStore();
   const currentDate = new Date();
   const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -93,6 +94,7 @@ export default function ProductOrderComponent() {
   };
 
   useEffect(() => {
+    gettransmitter()
     getBranchesList();
     getOrdersByDates(search);
   }, []);
@@ -143,7 +145,7 @@ export default function ProductOrderComponent() {
       const reportData = await getOrderProductReport();
 
       if (reportData && reportData.length > 0) {
-        await exportToExcelOrderProduct(reportData, search.startDate, search.endDate);
+        await exportToExcelOrderProduct(reportData, search.startDate, search.endDate, transmitter);
         toast.success('Exportado con éxito');
       } else {
         toast.error('No hay datos para exportar');
@@ -158,7 +160,7 @@ export default function ProductOrderComponent() {
       const reportData = await getOrderProductReport();
 
       if (reportData && reportData.length > 0) {
-        await exportToPDFOrderProduct(reportData, search.startDate, search.endDate);
+        await exportToPDFOrderProduct(reportData, search.startDate, search.endDate, transmitter);
         toast.success('Exportado con éxito');
       } else {
         toast.error('No hay datos para exportar');
@@ -275,7 +277,7 @@ export default function ProductOrderComponent() {
             exportExcel();
           }}
         >
-          Exportar a exel
+          Exportar a excel
         </ButtonUi>
         <ButtonUi
           startContent={<PiFilePdfDuotone className="" size={25} />}

@@ -6,12 +6,12 @@ import { CircleX, EllipsisVertical } from 'lucide-react';
 
 import { useNavigate } from 'react-router';
 
-import { IMobileListSales } from '../products/types/mobile-view.types';
 
 // import { RenderStatus, Status } from './render-order-status';
 
 // import ResendEmail from '../reporters/ResendEmail';
 
+import { IMobileListSales } from '../products/types/mobile-view.types';
 import ResendEmail from '../reporters/ResendEmail';
 
 import { formatEmployee } from '@/utils/dates';

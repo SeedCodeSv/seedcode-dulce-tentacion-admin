@@ -19,7 +19,7 @@ function MobileView(props: IMobileView) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-3 overflow-y-auto p-2">
       {employee_paginated.employees.map((item, index) => (
-        <Card key={index}>
+        <Card key={index} >
           <CardHeader>{`${item.firstName} ${item.firstLastName} ${item.firstLastName} ${item.secondLastName}`}</CardHeader>
           <CardBody>
             <p>

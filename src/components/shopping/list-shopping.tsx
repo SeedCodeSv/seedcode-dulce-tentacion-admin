@@ -14,7 +14,6 @@ import {
   Select,
   SelectItem,
   useDisclosure,
-  UseDisclosureProps,
 } from '@heroui/react';
 import { Pen, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -170,10 +169,10 @@ function ShoppingPage({ actions }: ArrayAction) {
 
   return (
     <>
-      <Modal onClose={() => {
+      <Modal isOpen={modalDelete.isOpen}
+        onClose={() => {
         modalDelete.onClose()
       }}
-        isOpen={modalDelete.isOpen}
       >
 
         <ModalContent>

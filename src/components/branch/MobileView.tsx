@@ -55,7 +55,6 @@ const GridItem = (props: GridProps) => {
     handleActive,
     branch,
     actions,
-    handleInactive,
     handlePointOfSales
   } = props;
 

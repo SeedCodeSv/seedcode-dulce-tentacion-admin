@@ -10,7 +10,6 @@ import { useEffect } from 'react';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { API_URL } from '@/utils/constants';
 import { AccountCatalogPayload } from '@/types/accountCatalogs.types';
-import Layout from '@/layout/Layout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useAuthStore } from '@/store/auth.store';

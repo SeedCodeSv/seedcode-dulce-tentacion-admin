@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Formik, Form } from 'formik';
 
 import { useBillingStore } from '../../store/facturation/billing.store';
-import { global_styles } from '../../styles/global.styles';
 import { useSupplierStore } from '../../store/supplier.store';
 
 import { supplierSchemaNormal } from './types/validation_supplier_yup.types';
@@ -13,7 +12,8 @@ import { SelectedItem } from './select-account';
 
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import useWindowSize from '@/hooks/useWindowSize';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function AddNormalSupplier() {
   const [selectedCodeDep, setSelectedCodeDep] = useState('');
@@ -28,7 +28,6 @@ function AddNormalSupplier() {
 
   const { getAccountCatalogs } = useAccountCatalogsStore();
   const { user } = useAuthStore();
-  const { windowSize } = useWindowSize()
 
   useEffect(() => {
     getCat022TipoDeDocumentoDeIde();
@@ -80,7 +79,7 @@ function AddNormalSupplier() {
         }}
       >
         {({ errors, touched, handleChange, handleBlur, setFieldValue, values, getFieldProps }) => (
-          <Form className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+          <Form className="w-full h-full p-5 lg:pt-10">
             <div className="w-full h-full border-white border p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
               <button className="w-32  flex gap-2 mb-4 cursor-pointer" onClick={() => navigate(-1)}>
                 <ArrowLeft className="dark:text-white" size={20} />
@@ -291,29 +290,21 @@ function AddNormalSupplier() {
                   onChange={handleChange}
                 />
               </div>
-              <div className="flex gap-4 justify-end w-full">
-                {/* <Button
+              <div className="flex gap-4 justify-between lg:justify-end w-full">
+                <ButtonUi
                   className="mt-4 px-20 text-sm font-semibold"
-                  style={global_styles().dangerStyles}
-                  type="submit"
+                  theme={Colors.Error}
+                  onPress={() => navigate('/suppliers')}
                 >
                   Cancelar
-                </Button> */}
-
-                <Button
-                  className={`${windowSize.width < 768 ? 'w-full font-semibold mt-4' : 'mt-4 px-20 text-sm font-semibold"'}`}
-                  style={global_styles().dangerStyles}
-                  type="submit"
-                >
-                  Cancelar
-                </Button>
-                <Button
+                </ButtonUi>
+                <ButtonUi
                   className="mt-4 px-20 text-sm font-semibold"
-                  style={global_styles().darkStyle}
+                  theme={Colors.Primary}
                   type="submit"
                 >
                   Guardar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </Form>

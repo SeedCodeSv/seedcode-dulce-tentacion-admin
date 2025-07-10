@@ -411,11 +411,11 @@ function ListSales() {
           downloadPDF={downloadPDF}
           handleShowPdf={handleShowPdf}
           isMovil={isMovil}
+          notes={notes}
           pdfPath={pdfPath}
           setUnseen={setUnseen}
           unseen={unseen}
           verifyNotes={verifyNotes}
-          notes={notes}
         />
       )}
 

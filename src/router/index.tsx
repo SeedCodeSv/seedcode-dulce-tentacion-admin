@@ -377,14 +377,6 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/sales-by-period"
       />
-      {/* <Route
-        element={
-          <AnimatedRoute>
-            {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
-          </AnimatedRoute>
-        }
-        path="/reports/sales-by-product"
-      /> */}
        <Route element={handleCheckPermission('Ventas por Productos') ? <ProductSalesReportPage /> : <Home />} path="/reports/sales-by-product">
         <Route index element={
           <VentasPorProducto />} />
