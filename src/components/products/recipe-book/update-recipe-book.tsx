@@ -25,6 +25,7 @@ import { preventLetters } from '@/utils';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
+import useWindowSize from '@/hooks/useWindowSize';
 
 type ProductOrder = Product & {
   quantity: number;
@@ -180,6 +181,7 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
         setLoadingSave(false);
       });
   };
+  const { windowSize } = useWindowSize()
 
   return (
     <div className=" w-full h-full bg-white dark:bg-gray-900">
@@ -202,7 +204,7 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
             </div>
           )}
 
-          <div className="w-full mt-3  overflow-y-auto grid grid-cols-3 gap-4">
+          <div className={`w-full mt-3  overflow-y-auto gap-4 grid ${windowSize.width < 768 ? 'grid-cols-1 mb-2' : 'grid-cols-3'}`}>
             {productsRecipe.map((sp: ProductOrder) => (
               <div
                 key={sp.id}
@@ -210,7 +212,7 @@ function UpdateRecipeBook({ productId }: { productId: number }) {
                   'items-center gap-2 h-full py-2 shadow border rounded-[12px] p-4 flex flex-col'
                 )}
               >
-                <p className="text-sm font-semibold w-full">{sp.name}</p>
+                <p className={`text-sm font-semibold w-full`}>{sp.name}</p>
                 <div
                   className={classNames(
                     sp.delete && 'opacity-50',

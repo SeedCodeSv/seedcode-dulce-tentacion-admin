@@ -19,6 +19,8 @@ import ThGlobal from '@/themes/ui/th-global';
 import useThemeColors from '@/themes/use-theme-colors';
 import { useAuthStore } from '@/store/auth.store';
 import DivGlobal from '@/themes/ui/div-global';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function AddAccountCatalogs() {
   const [name, setName] = useState('');
@@ -65,6 +67,7 @@ function AddAccountCatalogs() {
         toast.error('Error al eliminar');
       });
   };
+  const { windowSize } = useWindowSize()
 
   return (
     <>
@@ -74,72 +77,99 @@ function AddAccountCatalogs() {
       <DivGlobal>
         <div className="w-full mt-2">
           <div className="w-full flex flex-col lg:flex-row justify-between gap-5 mt-4">
-            <div className="w-full">
+            {/* <div className="w-full">
               <div className="mt-2 flex flex-row w-full justify-between items-end gap-5">
-                <Input
-                  isClearable
-                  className="w-full dark:text-white border border-white rounded-xl"
-                  classNames={{
-                    label: 'font-semibold text-gray-700',
-                    inputWrapper: 'pr-0',
-                  }}
-                  label="Nombre"
-                  labelPlacement="outside"
-                  placeholder="Escribe para buscar..."
-                  startContent={<SearchIcon />}
-                  value={name}
-                  variant="bordered"
-                  onChange={(e) => setName(e.target.value)}
-                  onClear={() => {
-                    setName('');
-                    handleSearch('');
-                  }}
-                />
-                <Input
-                  isClearable
-                  className="w-full dark:text-white border border-white rounded-xl"
-                  classNames={{
-                    label: 'font-semibold text-gray-700',
-                    inputWrapper: 'pr-0',
-                  }}
-                  label="Código"
-                  labelPlacement="outside"
-                  placeholder="Escribe para buscar..."
-                  startContent={<SearchIcon />}
-                  value={code}
-                  variant="bordered"
-                  onChange={(e) => setCode(e.target.value)}
-                  onClear={() => {
-                    setCode('');
-                    handleSearch('');
-                  }}
-                />
-                <ButtonUi
-                  startContent={<SearchIcon className="w-10" />}
-                  theme={Colors.Primary}
-                  onPress={() => {
-                    handleSearch(undefined);
-                  }}
-                >
-                  Buscar
-                </ButtonUi>
+               
               </div>
-            </div>
-            <div className="w-full flex flex-col lg:flex-row justify-end items-end gap-5 pb-5 mt-6 lg:mt-9">
-              <ButtonUi
-                color="secondary"
-                endContent={<PiMicrosoftExcelLogoBold size={20} />}
-                theme={Colors.Info}
-                onPress={() => exportAnnexes()}
-              >
-                Exportar Catálogo
-              </ButtonUi>
-              <AddButton
-                onClick={() => {
-                  navigate('/add-account-catalog');
+            </div> */}
+            <ResponsiveFilterWrapper
+              onApply={() => {
+                handleSearch(undefined);
+
+              }}
+            >
+              <Input
+                isClearable
+                className="w-full dark:text-white border border-white rounded-xl"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                label="Nombre"
+                labelPlacement="outside"
+                placeholder="Escribe para buscar..."
+                startContent={<SearchIcon />}
+                value={name}
+                variant="bordered"
+                onChange={(e) => setName(e.target.value)}
+                onClear={() => {
+                  setName('');
+                  handleSearch('');
                 }}
               />
-            </div>
+              <Input
+                isClearable
+                className="w-full dark:text-white border border-white rounded-xl"
+                classNames={{
+                  label: 'font-semibold text-gray-700',
+                  inputWrapper: 'pr-0',
+                }}
+                label="Código"
+                labelPlacement="outside"
+                placeholder="Escribe para buscar..."
+                startContent={<SearchIcon />}
+                value={code}
+                variant="bordered"
+                onChange={(e) => setCode(e.target.value)}
+                onClear={() => {
+                  setCode('');
+                  handleSearch('');
+                }}
+              />
+              {/* <ButtonUi
+                startContent={<SearchIcon className="w-10" />}
+                theme={Colors.Primary}
+                onPress={() => {
+                  handleSearch(undefined);
+                }}
+              >
+                Buscar
+              </ButtonUi> */}
+            </ResponsiveFilterWrapper>
+            {windowSize.width < 768 ? (
+              <div className="w-full flex gap-4 absolute left-36">
+                <ButtonUi
+                  color="secondary"
+                  endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                  theme={Colors.Info}
+                  onPress={() => exportAnnexes()}
+                >
+                  Exportar Catálogo
+                </ButtonUi>
+                <AddButton
+                  onClick={() => {
+                    navigate('/add-account-catalog');
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="w-full flex flex-col lg:flex-row justify-end items-end gap-5 pb-5 mt-6 lg:mt-9">
+                <ButtonUi
+                  color="secondary"
+                  endContent={<PiMicrosoftExcelLogoBold size={20} />}
+                  theme={Colors.Info}
+                  onPress={() => exportAnnexes()}
+                >
+                  Exportar Catálogo
+                </ButtonUi>
+                <AddButton
+                  onClick={() => {
+                    navigate('/add-account-catalog');
+                  }}
+                />
+              </div>
+            )}
+
           </div>
 
           <div className="w-full max-h-[500px] lg:max-h-[600px] xl:max-h-[700px] 2xl:max-h-[800px] overflow-y-auto overflow-x-auto custom-scrollbar mt-4">
@@ -152,7 +182,7 @@ function AddAccountCatalogs() {
               <>
                 {account_catalog_pagination.accountCatalogs.length > 0 ? (
                   <>
-                    <table className="w-full">
+                    <table className="w-full overflow-auto">
                       <thead className="sticky top-0 z-20 bg-white">
                         <tr>
                           <ThGlobal className="text-left p-3">No.</ThGlobal>
@@ -245,8 +275,8 @@ function AddAccountCatalogs() {
               </>
             )}
           </div>
-        </div>
-      </DivGlobal>
+        </div >
+      </DivGlobal >
     </>
   );
 }

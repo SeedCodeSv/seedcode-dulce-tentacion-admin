@@ -131,6 +131,13 @@ function Invalidation01({ id }: Props) {
       return;
     }
 
+    if (motiveAnulation.value === '') {
+      toast.warning('Debes seleccionar una razón de la invalidación');
+
+      return;
+    }
+
+
     if (!motivo) {
       toast.error('Debes seleccionar el motivo de la anulación');
 

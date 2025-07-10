@@ -22,6 +22,7 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCutReportStore } from '@/store/reports/cashCuts.store';
 import { hexToARGB } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 const CushCatsBigZ = () => {
   const { actions } = useViewsStore();
@@ -82,7 +83,6 @@ const CushCatsBigZ = () => {
       const body = iframe.contentDocument?.body;
 
       if (!body) return;
-      // Añadir estilos para ocultar encabezados y pies de página
       const style = document.createElement('style');
 
       style.innerHTML = `
@@ -178,8 +178,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-        )}</span>
+        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -192,8 +192,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-          Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
-        )}</strong></span>
+        Number(selectedBox?.totalSales01Card ?? 0) + Number(selectedBox?.totalSales01Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -211,8 +211,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>GRAVADAS:</span>
         <span> ${formatCurrency(
-          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-        )}</span>
+        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</span>
       </div>
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span>EXENTAS:</span>
@@ -225,8 +225,8 @@ const CushCatsBigZ = () => {
       <div style="display: flex; justify-content: space-between; margin-top: 10px;">
         <span><strong>TOTAL:</strong></span>
         <span><strong>  ${formatCurrency(
-          Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
-        )}</strong></span>
+        Number(selectedBox?.totalSales03Card ?? 0) + Number(selectedBox?.totalSales03Cash ?? 0)
+      )}</strong></span>
       </div>
           </div>
             <div style=" border-top: 1px dashed black;  height: 1px;  width: 100%; margin-top: 10px; "></div>
@@ -323,38 +323,45 @@ const CushCatsBigZ = () => {
               variant="bordered"
               onChange={(e) => setParams({ ...params, dateEnd: e.target.value })}
             /> */}
-          <Input
-            className="dark:text-white"
-            classNames={{ base: 'font-semibold' }}
-            label="Fecha"
-            labelPlacement="outside"
-            type="date"
-            value={params.date}
-            variant="bordered"
-            onChange={(e) => {
-              setParams({ ...params, date: e.target.value });
+          <ResponsiveFilterWrapper
+            onApply={() => {
+              handleSearch()
             }}
-          />
-          <Autocomplete
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
           >
-            {branch_list.map((item) => (
-              <AutocompleteItem
-                key={item.id}
-                onPress={() => {
-                  setParams({ ...params, branch: item });
-                }}
-              >
-                {item.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <ButtonUi theme={Colors.Info} onPress={handleSearch}>
-            Buscar
-          </ButtonUi>
+            <Input
+              className="dark:text-white"
+              classNames={{ base: 'font-semibold' }}
+              label="Fecha"
+              labelPlacement="outside"
+              type="date"
+              value={params.date}
+              variant="bordered"
+              onChange={(e) => {
+                setParams({ ...params, date: e.target.value });
+              }}
+            />
+            <Autocomplete
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+            >
+              {branch_list.map((item) => (
+                <AutocompleteItem
+                  key={item.id}
+                  onPress={() => {
+                    setParams({ ...params, branch: item });
+                  }}
+                >
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+            {/* <ButtonUi theme={Colors.Info} onPress={handleSearch}>
+              Buscar
+            </ButtonUi> */}
+          </ResponsiveFilterWrapper>
+
         </div>
 
         <CashCutComponent

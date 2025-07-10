@@ -35,7 +35,7 @@ import {
   ScanBarcode,
   ScrollText,
   Scroll,
-  StickyNote, 
+  StickyNote,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -271,7 +271,7 @@ export const LayoutItems = (props: Props) => {
     {
       viewName: 'Reporte de produccion',
       to: '/production-report',
-      icon: ShoppingBasket ,
+      icon: ShoppingBasket,
       label: 'Reporte de produccion',
     }
   ];
@@ -425,7 +425,7 @@ export const LayoutItems = (props: Props) => {
   };
 
   return (
-    <>
+    <div className='overflow-auto h-full'>
       <div className="flex justify-between items-center h-[70px]">
         {personalization.length === 0 ? (
           <div className="flex items-center pl-5 w-full shadow">
@@ -941,6 +941,6 @@ export const LayoutItems = (props: Props) => {
           </p>
         </Switch>
       </div>
-    </>
+    </div>
   );
 };

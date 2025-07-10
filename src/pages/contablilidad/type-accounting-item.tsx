@@ -13,6 +13,8 @@ import { Colors } from '@/types/themes.types';
 import { TypeOfAccount } from '@/types/type-of-account.types';
 import { limit_options } from '@/utils/constants';
 import DivGlobal from '@/themes/ui/div-global';
+import useWindowSize from '@/hooks/useWindowSize';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 function TypeAccountingItem() {
   const { getTypeOfAccounts, type_of_account, loading, type_of_account_pagination } =
@@ -24,7 +26,7 @@ function TypeAccountingItem() {
 
   useEffect(() => {
     getTypeOfAccounts(1, limit, name);
-  }, [name]);
+  }, []);
   const updateModal = useDisclosure();
   const deleteModal = useDisclosure();
   const [selectedType, setSelectedType] = useState<TypeOfAccount>();
@@ -41,43 +43,59 @@ function TypeAccountingItem() {
     deleteModal.onOpen();
   };
 
+  const handleSearch = (value: string | undefined) => {
+    getTypeOfAccounts(1, limit, value ?? name);
+
+  }
+
+  const { windowSize } = useWindowSize()
+
   return (
     <>
       <DivGlobal>
-        <div className="flex gap-3 md:gap-10 items-end">
-          <Input
-            className="w-full"
-            classNames={{
-              base: 'font-semibold',
-            }}
-            label="Buscar por nombre"
-            labelPlacement="outside"
-            placeholder="Ingresa el nombre del tipo de partida"
-            variant="bordered"
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Select
-            className="w-64"
-            classNames={{
-              base: 'font-semibold',
-            }}
-            label="Cantidad a mostrar"
-            labelPlacement="outside"
-            placeholder="Selecciona un limite"
-            variant="bordered"
-            onSelectionChange={(key) => {
-              if (key) {
-                setLimit(Number(key.currentKey));
-              }
+
+        <div className={`flex flex-row justify-between ${windowSize.width > 768 && 'gap-2'}`}>
+          <ResponsiveFilterWrapper
+            onApply={() => {
+              handleSearch(undefined)
             }}
           >
-            {limit_options.map((option, index) => (
-              <SelectItem key={index}>{option}</SelectItem>
-            ))}
-          </Select>
-          <AddTypeAccounting />
-        </div>
+            <Input
+              className="w-full"
+              classNames={{
+                base: 'font-semibold',
+              }}
+              label="Buscar por nombre"
+              labelPlacement="outside"
+              placeholder="Ingresa el nombre del tipo de partida"
+              variant="bordered"
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Select
+              className="w-64"
+              classNames={{
+                base: 'font-semibold',
+              }}
+              label="Cantidad a mostrar"
+              labelPlacement="outside"
+              placeholder="Selecciona un limite"
+              variant="bordered"
+              onSelectionChange={(key) => {
+                if (key) {
+                  setLimit(Number(key.currentKey));
+                }
+              }}
+            >
+              {limit_options.map((option, index) => (
+                <SelectItem key={index}>{option}</SelectItem>
+              ))}
+            </Select>
+          </ResponsiveFilterWrapper>
+          <div className={`${windowSize.width < 768 ? '' : 'mt-8'}`}>
+            <AddTypeAccounting />
 
+          </div>
+        </div>
         <div className="overflow-x-auto flex flex-col h-full custom-scrollbar mt-4">
           <table className="w-full">
             <thead className="sticky top-0 z-20 bg-white">

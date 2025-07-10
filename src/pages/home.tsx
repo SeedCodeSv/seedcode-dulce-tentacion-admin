@@ -221,149 +221,171 @@ function Home() {
 
     return null;
   };
+  const [selectedTab, setSelectedTab] = useState('Details');
+
 
   return (
-      <DivGlobal>
-        <div className="grid w-full gap-5 mt-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
-          <Charts />
-        </div>
-        <div >
-          <p className="my-3 text-lg font-semibold dark:text-white">Ventas del dia</p>
-          <Tabs
-            classNames={{
-              tabList: "flex w-full bg-blue-50 p-1 gap-2 mb-4 overflow-x-auto",
-            }}
-            defaultSelectedKey='Details'
-          >
-            <Tab key='Summary' className='w-full' title="Resumen por sucursal" >
-              <div className="w-full max-h-[400px] md:max-h-full overflow-y-auto">
-                <div className="col-span-3 dark:border-gray-500 dark:bg-gray-900">
-                  {loading_sales_by_table_date ? (
-                    <>
-                      <LoadingTable />
-                    </>
-                  ) : (
-                    <div>
-                      <TableComponent
-                        className='pt-0'
-                        headers={["Nº", "Nombre", "Total"]}
-                      >
-                        {sales_table_day.map((sl, index) => (
-                          <tr key={index} className="border-b border-slate-200 dark:border-slate-500">
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {index + 1}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {sl.branch}
-                            </td>
-                            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                              {formatCurrency(+sl.totalSales)}
-                            </td>
-                          </tr>
-                        ))}
-                      </TableComponent>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Tab>
-            <Tab key='Details' title="Ventas detalladas">
-              {loading_sales_by_table_details ? (
-                <>
+    <DivGlobal>
+      <div className="grid w-full gap-5 mt-3 grid-cols-2 lg:grid-cols-4 xl:grid-cols-4">
+        <Charts />
+      </div>
+      <div >
+        <p className="my-3 text-lg font-semibold dark:text-white">Ventas del dia</p>
+
+        <>
+          <div className="flex gap-2 mb-4">
+            <button
+              className={`px-4 py-2 rounded ${selectedTab === 'Summary'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-100 text-blue-800'
+                }`}
+              onClick={() => setSelectedTab('Summary')}
+            >
+              Resumen por sucursal
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${selectedTab === 'Details'
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-blue-100 text-blue-800'
+                }`}
+              onClick={() => setSelectedTab('Details')}
+            >
+              Ventas detalladas
+            </button>
+          </div>
+
+          {selectedTab === 'Summary' && (
+            <div className="w-full max-h-[400px] md:max-h-full overflow-y-auto">
+              <div className="col-span-3 dark:border-gray-500 dark:bg-gray-900">
+                {loading_sales_by_table_date ? (
                   <LoadingTable />
-                </>
+                ) : (
+                  <TableComponent
+                    className="pt-0"
+                    headers={['Nº', 'Nombre', 'Total']}
+                  >
+                    {sales_table_day.map((sl, index) => (
+                      <tr
+                        key={index}
+                        className="border-b border-slate-200 dark:border-slate-500"
+                      >
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {index + 1}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {sl.branch}
+                        </td>
+                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                          {formatCurrency(+sl.totalSales)}
+                        </td>
+                      </tr>
+                    ))}
+                  </TableComponent>
+                )}
+              </div>
+            </div>
+          )}
+
+          {selectedTab === 'Details' && (
+            <>
+              {loading_sales_by_table_details ? (
+                <LoadingTable />
               ) : (
                 <TableComponent
                   headers={['Nº de control', 'Sucursal', 'Estado', 'Total', 'Acciones']}
                 >
                   {sales_table_day_details.map((sale, index) => (
-                    <>
-
-                      <tr key={index} className="border-b dark:border-slate-600 border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {sale.numeroControl}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {sale.employee.branch.name}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <>
-                            <Chip
-                              classNames={{
-                                content: 'text-white text-sm !font-bold px-3',
-                              }}
-                              color={
-                                sale.salesStatus.name === 'CONTINGENCIA'
-                                  ? 'warning'
-                                  : sale.salesStatus.name === 'PROCESADO'
-                                    ? 'success'
-                                    : 'danger'
-                              }
+                    <tr
+                      key={index}
+                      className="border-b dark:border-slate-600 border-slate-200"
+                    >
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {sale.numeroControl}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        {sale.employee.branch.name}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <Chip
+                          classNames={{
+                            content: 'text-white text-sm !font-bold px-3',
+                          }}
+                          color={
+                            sale.salesStatus.name === 'CONTINGENCIA'
+                              ? 'warning'
+                              : sale.salesStatus.name === 'PROCESADO'
+                                ? 'success'
+                                : 'danger'
+                          }
+                        >
+                          {sale.salesStatus.name}
+                        </Chip>
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        ${sale.montoTotalOperacion}
+                      </td>
+                      <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                        <Popover
+                          classNames={{
+                            content: unseen
+                              ? 'opacity-0 invisible pointer-events-none'
+                              : 'bg-white dark:bg-gray-800',
+                          }}
+                          isOpen={openPopover === sale.pathJson}
+                          showArrow={!unseen}
+                          onOpenChange={() => togglePopover(sale.pathJson)}
+                        >
+                          <PopoverTrigger>
+                            <Button
+                              isIconOnly
+                              onPress={() => togglePopover(sale.pathJson)}
                             >
-                              {sale.salesStatus.name}
-                            </Chip>
-                          </>
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          ${sale.montoTotalOperacion}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <Popover
-                            classNames={{
-                              content: unseen
-                                ? 'opacity-0 invisible pointer-events-none'
-                                : 'bg-white dark:bg-gray-800',
-                            }}
-                            isOpen={openPopover === sale.pathJson}
-                            showArrow={!unseen}
-                            onOpenChange={() => togglePopover(sale.pathJson)}
-                          >
-                            <PopoverTrigger>
-                              <Button isIconOnly onPress={() => togglePopover(sale.pathJson)}>
-                                <EllipsisVertical size={20} />
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="p-1">
-                              {renderSaleActions(sale)}
-                            </PopoverContent>
-                          </Popover>
-                        </td>
-                      </tr>
-                    </>
+                              <EllipsisVertical size={20} />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="p-1">
+                            {renderSaleActions(sale)}
+                          </PopoverContent>
+                        </Popover>
+                      </td>
+                    </tr>
                   ))}
-                </TableComponent>)}
-            </Tab>
-          </Tabs>
+                </TableComponent>
+              )}
+            </>
+          )}
+        </>
+
+      </div>
+      <FullPageLayout show={showPdf.isOpen}>
+        <div className="w-full h-full bg-white rounded-2xl relative">
+          <Button
+            isIconOnly
+            className="absolute bottom-6 left-6"
+            color="danger"
+            onPress={() => {
+              showPdf.onClose();
+              setPdfUrl(null);
+            }}
+          >
+            <X />
+          </Button>
+          {loadingPdf ? (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+              <div className="loader" />
+              <p className="mt-5 text-xl">Cargando...</p>
+            </div>
+          ) : pdfUrl ? (
+            // eslint-disable-next-line jsx-a11y/iframe-has-title
+            <iframe className="w-full h-full" src={pdfUrl} />
+          ) : (
+            <p className="w-full h-full flex justify-center items-center">
+              No se pudo cargar el PDF.
+            </p>
+          )}
         </div>
-        <FullPageLayout show={showPdf.isOpen}>
-          <div className="w-full h-full bg-white rounded-2xl relative">
-            <Button
-              isIconOnly
-              className="absolute bottom-6 left-6"
-              color="danger"
-              onPress={() => {
-                showPdf.onClose();
-                setPdfUrl(null);
-              }}
-            >
-              <X />
-            </Button>
-            {loadingPdf ? (
-              <div className="w-full h-full flex flex-col justify-center items-center">
-                <div className="loader" />
-                <p className="mt-5 text-xl">Cargando...</p>
-              </div>
-            ) : pdfUrl ? (
-              // eslint-disable-next-line jsx-a11y/iframe-has-title
-              <iframe className="w-full h-full" src={pdfUrl} />
-            ) : (
-              <p className="w-full h-full flex justify-center items-center">
-                No se pudo cargar el PDF.
-              </p>
-            )}
-          </div>
-        </FullPageLayout>
-      </DivGlobal>
+      </FullPageLayout>
+    </DivGlobal>
   );
 }
 

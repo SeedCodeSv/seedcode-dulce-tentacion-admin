@@ -33,6 +33,8 @@ import { create_period, find_period, update_period } from '@/services/items-peri
 import ThGlobal from '@/themes/ui/th-global';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import useWindowSize from '@/hooks/useWindowSize';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 function AddItemsBySales() {
   const [startDate, setStartDate] = useState(formatDate());
@@ -368,52 +370,112 @@ function AddItemsBySales() {
     }
   };
 
+  const { windowSize } = useWindowSize()
+  const inputWidtht = windowSize.width < 768 && 'w-24'
+
   return (
     <div className="w-full h-full flex flex-col bg-gray-50 dark:bg-gray-800">
       <div className="w-full h-full flex flex-col p-3 pt-8 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-        <div className="grid grid-cols-2 gap-x-5 gap-y-2 mt-2 md:grid-cols-3">
-          <Input
-            classNames={{ label: 'font-semibold' }}
-            label="Fecha inicial"
-            labelPlacement="outside"
-            type="date"
-            value={startDate}
-            variant="bordered"
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <Input
-            classNames={{ label: 'font-semibold' }}
-            label="Fecha final"
-            labelPlacement="outside"
-            type="date"
-            value={endDate}
-            variant="bordered"
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-          <div className="flex gap-5 items-end">
-            <Select
-              multiple
-              className="col-span-2 md:col-span-1"
-              classNames={{ label: 'font-semibold' }}
-              isLoading={loadingSalesByItem}
-              isRequired={loadingSalesByItem}
-              label="Sucursal"
-              labelPlacement="outside"
-              placeholder="Seleccione una sucursal"
-              selectedKeys={branches}
-              selectionMode="multiple"
-              variant="bordered"
-              onSelectionChange={setBranches}
+        {windowSize.width < 768 ? (
+          <>
+            <ResponsiveFilterWrapper
+              onApply={() => {
+                handleSearch()
+              }}
             >
-              {branch_list.map((branch) => (
-                <SelectItem key={branch.id}>{branch.name}</SelectItem>
-              ))}
-            </Select>
-            <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
-              Buscar
-            </ButtonUi>
-          </div>
-        </div>
+              <div className="gap-x-5 gap-y-2 mt-2 md:grid-cols-3">
+                <Input
+                  classNames={{ label: 'font-semibold' }}
+                  label="Fecha inicial"
+                  labelPlacement="outside"
+                  type="date"
+                  value={startDate}
+                  variant="bordered"
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+                <Input
+                  classNames={{ label: 'font-semibold' }}
+                  label="Fecha final"
+                  labelPlacement="outside"
+                  type="date"
+                  value={endDate}
+                  variant="bordered"
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+                <div className="flex gap-5 items-end">
+                  <Select
+                    multiple
+                    className="col-span-2 md:col-span-1"
+                    classNames={{ label: 'font-semibold' }}
+                    isLoading={loadingSalesByItem}
+                    isRequired={loadingSalesByItem}
+                    label="Sucursal"
+                    labelPlacement="outside"
+                    placeholder="Seleccione una sucursal"
+                    selectedKeys={branches}
+                    selectionMode="multiple"
+                    variant="bordered"
+                    onSelectionChange={setBranches}
+                  >
+                    {branch_list.map((branch) => (
+                      <SelectItem key={branch.id}>{branch.name}</SelectItem>
+                    ))}
+                  </Select>
+                  {/* <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
+                Buscar
+              </ButtonUi> */}
+                </div>
+              </div>
+            </ResponsiveFilterWrapper>
+          </>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 gap-x-5 gap-y-2 mt-2 md:grid-cols-3">
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha inicial"
+                labelPlacement="outside"
+                type="date"
+                value={startDate}
+                variant="bordered"
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha final"
+                labelPlacement="outside"
+                type="date"
+                value={endDate}
+                variant="bordered"
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+              <div className="flex gap-5 items-end">
+                <Select
+                  multiple
+                  className="col-span-2 md:col-span-1"
+                  classNames={{ label: 'font-semibold' }}
+                  isLoading={loadingSalesByItem}
+                  isRequired={loadingSalesByItem}
+                  label="Sucursal"
+                  labelPlacement="outside"
+                  placeholder="Seleccione una sucursal"
+                  selectedKeys={branches}
+                  selectionMode="multiple"
+                  variant="bordered"
+                  onSelectionChange={setBranches}
+                >
+                  {branch_list.map((branch) => (
+                    <SelectItem key={branch.id}>{branch.name}</SelectItem>
+                  ))}
+                </Select>
+                <ButtonUi theme={Colors.Primary} onPress={handleSearch}>
+                  Buscar
+                </ButtonUi>
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="w-full grid grid-cols-2 gap-5 mt-8">
           <Input
             classNames={{
@@ -513,7 +575,7 @@ function AddItemsBySales() {
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                   <Input
                     readOnly
-                    classNames={{ base: 'font-semibold' }}
+                    classNames={{ base: 'font-semibold', input: inputWidtht }}
                     labelPlacement="outside"
                     placeholder="0.00"
                     value={$haber.toFixed(2)}
@@ -621,7 +683,7 @@ const ItemsList = memo(function List({ items, setItems, openModal, getBranchName
               items={items}
               openCatalogModal={openModal}
               setItems={setItems}
-              onClose={() => {}}
+              onClose={() => { }}
             />
           </td>
           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">

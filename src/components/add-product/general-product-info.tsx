@@ -31,6 +31,7 @@ import { useProductsStore } from '@/store/products.store';
 import { preventLetters } from '@/utils';
 import { typesProduct } from '@/utils/constants';
 import { useSubCategoryStore } from '@/store/sub-category';
+// import useWindowSize from '@/hooks/useWindowSize';
 
 type ProductOrder = Product & {
   quantity: number;
@@ -175,10 +176,11 @@ function GeneralProductInfo({
   const checkIsSelectedSupplier = (id: number) => {
     return selectedProducts.some((ssp) => ssp.id === id);
   };
+// const {windowSize} = useWindowSize()
 
   return (
     <div className="w-full border shadow rounded-[12px] p-5 mt-3">
-      <p className="text-sm font-semibold">Información general del producto</p>
+      <p className="text-sm font-semibold">Información general del producto </p>
       <div className="flex flex-col md:grid md:grid-cols-3 gap-5 mt-3">
         <Input
           isRequired

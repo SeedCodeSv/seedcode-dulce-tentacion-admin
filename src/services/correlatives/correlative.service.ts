@@ -16,10 +16,15 @@ export const get_by_branch_and_typeVoucher = (
   typeDte: string
 ) => {
   const user = get_user()
+  const token = get_token()
 
   return axios.get<IResponseDataCorrelatives>(
     API_URL +
-      `/point-of-sale/list-paginated/${user?.transmitterId}?page=${page}&limit=${limit}&branch=${branchName}&dteType=${typeDte}`
+    `/point-of-sale/list-paginated/${user?.transmitterId}?page=${page}&limit=${limit}&branch=${branchName}&dteType=${typeDte}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
   );
 };
 

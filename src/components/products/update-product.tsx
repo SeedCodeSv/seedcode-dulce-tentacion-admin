@@ -105,6 +105,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     }
   }, [product]);
 
+
   return (
     <>
       <Modal isDismissable={false} isOpen={isOpen} onClose={onCloseModal}>
@@ -305,7 +306,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               formik.handleSubmit(e);
             }}
           >
-            <ModalHeader className="dark:text-white">Editar Producto</ModalHeader>
+            <ModalHeader className="dark:text-white">Editar Producto 111</ModalHeader>
             <ModalBody>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <div>
@@ -479,12 +480,13 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 </div>
               </div>
             </ModalBody>
-          </form>
-          <ModalFooter>
+            <ModalFooter>
             <ButtonUi className="px-10" theme={Colors.Primary} type="submit">
               Guardar producto
             </ButtonUi>
           </ModalFooter>
+          </form>
+          
         </ModalContent>
       </Modal>
     </>
