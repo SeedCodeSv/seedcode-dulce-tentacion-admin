@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListUsers from '../components/users/ListUsers';
 
 import { useViewsStore } from '@/store/views.store';

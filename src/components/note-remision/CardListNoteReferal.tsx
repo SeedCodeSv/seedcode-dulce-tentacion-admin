@@ -1,20 +1,11 @@
-
-import { Button, Card, CardBody, CardHeader, Chip, UseDisclosureProps } from '@heroui/react';
-// eslint-disable-next-line import/order
-import { ClipboardCheck, Clipboard, FileX2 } from 'lucide-react';
-
 // import { IMobileViewOrderProducst } from './types/mobile-view.types';
-
-
-// eslint-disable-next-line import/order
-
 // import { RenderStatus, Status } from './render-order-status';
-
 // import { formatEmployee } from '@/utils/dates';
+// import { FloatingButton } from './FloatingButton';
+import { Button, Card, CardBody, CardHeader, Chip, UseDisclosureProps } from '@heroui/react';
+import { ClipboardCheck, Clipboard, FileX2 } from 'lucide-react';
 import { PiFilePdf } from 'react-icons/pi';
 import { Dispatch, SetStateAction } from 'react';
-
-// import { FloatingButton } from './FloatingButton';
 
 import TooltipGlobal from '../global/TooltipGlobal';
 import useGlobalStyles from '../global/global.styles';
@@ -24,8 +15,6 @@ import DoublePdfExport from './ExportDoublePdf';
 import { useReferalNote } from '@/store/referal-notes';
 import { ITransmitter } from '@/types/transmitter.types';
 import { ReferalNote } from '@/types/referal-note.types';
-
-
 
 function CardListNoteReferal({
     actions,
@@ -157,12 +146,10 @@ function CardListNoteReferal({
                                                     setSelectedNote(item);
                                                     // if (modalComplete) {
                                                     modalComplete.onOpen!()
-
                                                     // }
                                                 }}
                                             >
                                                 {!item?.isCompleted ? (
-                                                    // eslint-disable-next-line react/jsx-no-undef
                                                     <Clipboard size={25} />
                                                 ) : (
                                                     <ClipboardCheck size={25} />

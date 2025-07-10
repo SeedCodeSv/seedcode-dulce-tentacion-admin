@@ -4,7 +4,6 @@ import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import { Button } from '@heroui/react';
 import { DownloadIcon, X } from 'lucide-react';
-import { useNavigate } from 'react-router';
 
 import { convertImageToBase64 } from '@/utils/utils';
 import { useConfigurationStore } from '@/store/perzonalitation.store';

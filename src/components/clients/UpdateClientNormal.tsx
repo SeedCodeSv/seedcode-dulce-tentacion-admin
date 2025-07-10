@@ -9,8 +9,6 @@ import { CustomerDirection, PayloadCustomer } from '../../types/customers.types'
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 
-
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
