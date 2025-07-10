@@ -501,7 +501,7 @@ export default function InventoryManagement() {
                     {card_products.length === 0 && <NoDataInventory />}
                   </AnimatePresence>
                 </div>
-                <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[999] shadow-lg ">
+                <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[0] shadow-lg ">
                   <Textarea
                     className="dark:text-white mb-4"
                     classNames={{ label: 'font-semibold text-gray-500 text-sm' }}

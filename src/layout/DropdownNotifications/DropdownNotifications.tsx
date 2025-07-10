@@ -21,6 +21,7 @@ import { Notifications_Referal, ReferalNote } from '@/types/referal-note.types'
 import { IPagination } from '@/types/global.types'
 import { formatDate } from '@/utils/dates'
 import { DataNotification } from '@/store/types/referal-notes.types.store'
+import useWindowSize from '@/hooks/useWindowSize'
 
 const DropdownNotifications = () => {
     const { user } = useAuthStore()
@@ -141,7 +142,8 @@ export const UserTwitterCard = ({
     const [typeNoti, setTypeNoti] = useState<'entrada' | 'salida'>('entrada')
     const [view, setView] = useState<'card' | 'view'>('card')
 
-
+    const { windowSize } = useWindowSize()
+    const widthSize = windowSize.width < 768 ? 'w-80' : 'w-96'
 
     return (
         <>
@@ -179,7 +181,7 @@ export const UserTwitterCard = ({
             )}
             <>
                 {view === 'view' && (
-                    <Card className="w-96 border-none bg-transparent z-[10]" shadow="none">
+                    <Card className={`${widthSize} border-none bg-transparent z-[10]`} shadow="none">
                         <CardHeader className="justify-between z-[10] justify-end">
                             <div className='flex fex-row gap-4'>
                                 <button className={`flex flex-row p-2 justify-between items-center h-10 w-24 rounded-xl
@@ -270,8 +272,6 @@ export const UserTwitterCard = ({
                                     className="max-h-[160px] overflow-y-auto mt-4 pr-2 space-y-2 scroll-smooth"
                                 >
 
-                                    {/* {referalNote.referalNote.length > 0 ? ( */}
-                                    {/* <> */}
                                     {referalNote.referalNote.length > 0 ? (
                                         <>
                                             {referalNote.referalNote.slice(0, 20).map((item, index) => (
@@ -302,7 +302,7 @@ export const UserTwitterCard = ({
                                                     key={`other-${index}`}
                                                     className="flex items-start gap-3 p-3 bg-white dark:bg-black rounded-xl shadow-md border border-teal-400 hover:shadow-lg transition-all"
                                                 >
-                                                    <div className="text-emerald-500 mt-1">{/* Puedes agregar algo aquí */}</div>
+                                                    <div className="text-emerald-500 mt-1">{''}</div>
                                                     <div className="text-[12px]">
                                                         <div className="flex items-center gap-2 mb-1">
                                                             <span className="bg-teal-500 text-white text-[10px] px-2 py-[1px] rounded-full">

@@ -105,6 +105,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
     }
   }, [product]);
 
+
   return (
     <>
       <Modal isDismissable={false} isOpen={isOpen} onClose={onCloseModal}>
@@ -479,8 +480,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 </div>
               </div>
             </ModalBody>
-          
-          <ModalFooter>
+            <ModalFooter>
             <ButtonUi className="px-10" theme={Colors.Primary} type="submit">
               Guardar producto
             </ButtonUi>

@@ -62,7 +62,7 @@ function Reports() {
 
   return (
     <DivGlobal>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-2">
         {reports.map((r) => (
           <Card key={r.name} isPressable onPress={r.onPress}>
             <CardHeader className="flex justify-between text-lg font-semibold dark:text-white">

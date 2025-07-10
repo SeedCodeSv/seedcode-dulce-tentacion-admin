@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import Lottie from 'lottie-react';
 
@@ -34,6 +34,7 @@ function Main() {
   }, [role_actions_by_user]);
 
   const isPdfPreview = window.location.pathname === '/pdf-preview';
+// const routerInstance = useMemo(() => router({ roleActions }), [roleActions]);
 
 
  return (

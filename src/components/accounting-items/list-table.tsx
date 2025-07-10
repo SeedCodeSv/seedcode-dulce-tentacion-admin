@@ -32,6 +32,8 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function List() {
   const {
@@ -114,176 +116,278 @@ function List() {
     showFullLayout.onClose();
   };
 
+  const { windowSize } = useWindowSize()
+
   return (
     <>
-    <DivGlobal>
-        <div className="w-full grid grid-cols-3 gap-5">
-          <Input
-            classNames={{ label: 'font-semibold' }}
-            label="Fecha inicial"
-            labelPlacement="outside"
-            type="date"
-            value={startDate}
-            variant="bordered"
-            onChange={(e) => setStartDate(e.target.value)}
-           />
-          <Input
-            classNames={{ label: 'font-semibold' }}
-            label="Fecha final"
-            labelPlacement="outside"
-            type="date"
-            value={endDate}
-            variant="bordered"
-            onChange={(e) => setEndDate(e.target.value)}
-           />
-          <Select
-            className=""
-            classNames={{ base: 'font-semibold' }}
-            label="Tipo de partida"
-            labelPlacement="outside"
-            placeholder="Selecciona un tipo de partida"
-            selectedKeys={[typeItem]}
-            variant="bordered"
-            onSelectionChange={(key) => {
-              if (key) {
-                setTypeItem(String(key.currentKey));
-              }
-            }}
-          >
-            {list_type_of_account.map((item) => (
-              <SelectItem key={item.id}>{item.name}</SelectItem>
-            ))}
-          </Select>
-        </div>
-        <div className="w-full flex justify-between items-end mt-2">
-          <Select
-            className="w-64"
-            classNames={{ base: 'font-semibold' }}
-            label="Cantidad a mostrar"
-            labelPlacement="outside"
-            placeholder="Selecciona un limite"
-            selectedKeys={[limit.toString()]}
-            variant="bordered"
-            onSelectionChange={(key) => {
-              if (key) {
-                setLimit(Number(key.currentKey));
-              }
-            }}
-          >
-            {limit_options.map((option) => (
-              <SelectItem key={option}>{option}</SelectItem>
-            ))}
-          </Select>
-          <Select
-            className="w-64"
-            classNames={{ base: 'font-semibold' }}
-            label="Ordenar registros"
-            labelPlacement="outside"
-            placeholder="Selecciona un tipo"
-            selectedKeys={[typeOrder]}
-            variant="bordered"
-            onSelectionChange={(key) => {
-              if (key) {
-                setTypeOrder(String(key.currentKey));
-              }
-            }}
-          >
-            {typeOrden.map((option) => (
-              <SelectItem key={option.value}>{option.label}</SelectItem>
-            ))}
-          </Select>
-          <div className="flex gap-2 items-end justify-end">
-            <ButtonUi theme={Colors.Info} onPress={() => navigate('/add-item-by-sales')}>
-              Generar partida de ventas
-            </ButtonUi>
-            <ButtonUi
-              isIconOnly
-              theme={Colors.Success}
-              onPress={() => navigate('/add-accounting-items')}
-            >
-              <Plus />
-            </ButtonUi>
+      <DivGlobal>
+        {windowSize.width < 768 ? (
+          <div className='flex justify-between'>
+            <ResponsiveFilterWrapper>
+              {/* <div className="w-full grid grid-cols-3 gap-5"> */}
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha inicial"
+                labelPlacement="outside"
+                type="date"
+                value={startDate}
+                variant="bordered"
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha final"
+                labelPlacement="outside"
+                type="date"
+                value={endDate}
+                variant="bordered"
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+              <Select
+                className=""
+                classNames={{ base: 'font-semibold' }}
+                label="Tipo de partida"
+                labelPlacement="outside"
+                placeholder="Selecciona un tipo de partida"
+                selectedKeys={[typeItem]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setTypeItem(String(key.currentKey));
+                  }
+                }}
+              >
+                {list_type_of_account.map((item) => (
+                  <SelectItem key={item.id}>{item.name}</SelectItem>
+                ))}
+              </Select>
+              {/* </div> */}
+              {/* <div className="w-full flex justify-between items-end mt-2"> */}
+              <Select
+                className="w-64"
+                classNames={{ base: 'font-semibold' }}
+                label="Cantidad a mostrar"
+                labelPlacement="outside"
+                placeholder="Selecciona un limite"
+                selectedKeys={[limit.toString()]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setLimit(Number(key.currentKey));
+                  }
+                }}
+              >
+                {limit_options.map((option) => (
+                  <SelectItem key={option}>{option}</SelectItem>
+                ))}
+              </Select>
+              <Select
+                className="w-64"
+                classNames={{ base: 'font-semibold' }}
+                label="Ordenar registros"
+                labelPlacement="outside"
+                placeholder="Selecciona un tipo"
+                selectedKeys={[typeOrder]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setTypeOrder(String(key.currentKey));
+                  }
+                }}
+              >
+                {typeOrden.map((option) => (
+                  <SelectItem key={option.value}>{option.label}</SelectItem>
+                ))}
+              </Select>
+
+              {/* </div> */}
+            </ResponsiveFilterWrapper>
+            <div className="flex gap-2 items-end justify-end">
+              <ButtonUi theme={Colors.Info} onPress={() => navigate('/add-item-by-sales')}>
+                Generar partida de ventas
+              </ButtonUi>
+              <ButtonUi
+                isIconOnly
+                theme={Colors.Success}
+                onPress={() => navigate('/add-accounting-items')}
+              >
+                <Plus />
+              </ButtonUi>
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="w-full grid grid-cols-3 gap-5">
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha inicial"
+                labelPlacement="outside"
+                type="date"
+                value={startDate}
+                variant="bordered"
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <Input
+                classNames={{ label: 'font-semibold' }}
+                label="Fecha final"
+                labelPlacement="outside"
+                type="date"
+                value={endDate}
+                variant="bordered"
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+              <Select
+                className=""
+                classNames={{ base: 'font-semibold' }}
+                label="Tipo de partida"
+                labelPlacement="outside"
+                placeholder="Selecciona un tipo de partida"
+                selectedKeys={[typeItem]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setTypeItem(String(key.currentKey));
+                  }
+                }}
+              >
+                {list_type_of_account.map((item) => (
+                  <SelectItem key={item.id}>{item.name}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            <div className="w-full flex justify-between items-end mt-2">
+              <Select
+                className="w-64"
+                classNames={{ base: 'font-semibold' }}
+                label="Cantidad a mostrar"
+                labelPlacement="outside"
+                placeholder="Selecciona un limite"
+                selectedKeys={[limit.toString()]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setLimit(Number(key.currentKey));
+                  }
+                }}
+              >
+                {limit_options.map((option) => (
+                  <SelectItem key={option}>{option}</SelectItem>
+                ))}
+              </Select>
+              <Select
+                className="w-64"
+                classNames={{ base: 'font-semibold' }}
+                label="Ordenar registros"
+                labelPlacement="outside"
+                placeholder="Selecciona un tipo"
+                selectedKeys={[typeOrder]}
+                variant="bordered"
+                onSelectionChange={(key) => {
+                  if (key) {
+                    setTypeOrder(String(key.currentKey));
+                  }
+                }}
+              >
+                {typeOrden.map((option) => (
+                  <SelectItem key={option.value}>{option.label}</SelectItem>
+                ))}
+              </Select>
+              <div className="flex gap-2 items-end justify-end">
+                <ButtonUi theme={Colors.Info} onPress={() => navigate('/add-item-by-sales')}>
+                  Generar partida de ventas
+                </ButtonUi>
+                <ButtonUi
+                  isIconOnly
+                  theme={Colors.Success}
+                  onPress={() => navigate('/add-accounting-items')}
+                >
+                  <Plus />
+                </ButtonUi>
+              </div>
+            </div>
+          </>
+        )}
+
         <TableComponent
-              headers={["Nº", 'Fecha'
-,'Tipo'
-,'Concepto'
-,'Correlativo'
-,'Acciones']}
-            >
-              {loading ? (
-                <>
-                  <tr>
-                    <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                      <LoadingTable/>
+          className='overflow-auto'
+          headers={["Nº", 'Fecha'
+            , 'Tipo'
+            , 'Concepto'
+            , 'Correlativo'
+            , 'Acciones']}
+        >
+          {loading ? (
+            <>
+              <tr>
+                <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
+                  <LoadingTable />
+                </td>
+              </tr>
+            </>
+          ) : (
+            <>
+              {accounting_items.length > 0 ? (
+                accounting_items.map((type, index) => (
+                  <tr key={index} className="border-b border-slate-200">
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {type.noPartida}
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {type.date}
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {type?.typeOfAccount?.name}
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      <p className="truncate">{type.concepOfTheItem}</p>
+                    </td>
+                    <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {type?.correlative}
+                    </td>
+                    <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
+                      <ButtonUi
+                        isIconOnly
+                        theme={Colors.Success}
+                        onPress={() =>
+                          (window.location.href = '/edit-accounting-items/' + type.id)
+                        }
+                      >
+                        <Pencil />
+                      </ButtonUi>
+                      <ButtonUi
+                        isIconOnly
+                        theme={Colors.Error}
+                        onPress={() => {
+                          setSelectedId(type.id);
+                          deleteModal.onOpen();
+                        }}
+                      >
+                        <Trash />
+                      </ButtonUi>
+                      <ButtonUi
+                        isIconOnly
+                        theme={Colors.Warning}
+                        onPress={() => {
+                          handleShowPdf(type.id, type.date, type.correlative);
+                        }}
+                      >
+                        <PiFilePdfDuotone size={30} />
+                      </ButtonUi>
                     </td>
                   </tr>
-                </>
+                ))
               ) : (
-                <>
-                  {accounting_items.length > 0 ? (
-                    accounting_items.map((type, index) => (
-                      <tr key={index} className="border-b border-slate-200">
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type.noPartida}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type.date}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type?.typeOfAccount?.name}
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <p className="truncate">{type.concepOfTheItem}</p>
-                        </td>
-                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {type?.correlative}
-                        </td>
-                        <td className="p-3 text-sm flex gap-5 text-slate-500 dark:text-slate-100">
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Success}
-                            onPress={() =>
-                              (window.location.href = '/edit-accounting-items/' + type.id)
-                            }
-                          >
-                            <Pencil />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Error}
-                            onPress={() => {
-                              setSelectedId(type.id);
-                              deleteModal.onOpen();
-                            }}
-                          >
-                            <Trash />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Warning}
-                            onPress={() => {
-                              handleShowPdf(type.id, type.date, type.correlative);
-                            }}
-                          >
-                            <PiFilePdfDuotone size={30} />
-                          </ButtonUi>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
-                        <EmptyTable classText='mt-3 text-xl font-semibold'
-                        text='No se encontraron partidas contables'
-                        />
-                      </td>
-                    </tr>
-                  )}
-                </>
+                <tr>
+                  <td className="p-3 text-sm text-center text-slate-500" colSpan={7}>
+                    <EmptyTable classText='mt-3 text-xl font-semibold'
+                      text='No se encontraron partidas contables'
+                    />
+                  </td>
+                </tr>
               )}
-            </TableComponent>
+            </>
+          )}
+        </TableComponent>
         {accounting_items_pagination.totalPag > 1 && (
           <>
             <div className="hidden w-full mt-5 md:flex">
