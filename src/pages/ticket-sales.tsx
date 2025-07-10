@@ -320,9 +320,9 @@ function generateTicket(details: DetailSale[]) {
   doc.setFontSize(12);
   doc.text('', 105, 10, { align: 'center' });
 
-  const { transmitter } = details[0].sale.box.correlative.branch;
-  const { branch } = details[0].sale.box.correlative;
-  const { correlative } = details[0].sale.box;
+  const { transmitter } = details[0].sale.box?.pointOfSale?.branch!;
+  const { branch } = details[0].sale.box?.pointOfSale!;
+  const { pointOfSale } = details[0].sale.box! ;
 
   doc.setFontSize(10);
   doc.text(`${transmitter.nombre}`, 105, 16, { align: 'center' });
@@ -334,7 +334,7 @@ function generateTicket(details: DetailSale[]) {
   doc.text(`FECHA: ${details[0].sale.fecEmi} - ${details[0].sale.horEmi}`, 105, 58, {
     align: 'center',
   });
-  doc.text(`TICKET: ${details[0].sale.numeroControl}   CAJA: ${details[0].sale.box.id}`, 105, 64, {
+  doc.text(`TICKET: ${details[0].sale.numeroControl}   CAJA: ${details[0].sale.box?.id}`, 105, 64, {
     align: 'center',
   });
 
@@ -382,11 +382,11 @@ function generateTicket(details: DetailSale[]) {
   doc.setFontSize(10);
   doc.text('No. AUTORIZACION:', 105, y, { align: 'center' });
   y += 6;
-  doc.text(`${correlative.resolution}`, 105, y, { align: 'center' });
+  doc.text(`${pointOfSale?.resolution}`, 105, y, { align: 'center' });
   y += 6;
   doc.text(`FECHA: ${details[0].sale.fecEmi}`, 105, y, { align: 'center' });
   y += 6;
-  doc.text(`RANGO: ${correlative.serie}${correlative.from}-${correlative.to}`, 105, y, {
+  doc.text(`RANGO: ${pointOfSale?.serie}${pointOfSale?.from}-${pointOfSale?.to}`, 105, y, {
     align: 'center',
   });
   y += 6;
