@@ -14,6 +14,7 @@ import { initialValues } from '@/components/add-product/validation-add-product';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { API_URL } from '@/utils/constants';
+import DivGlobal from '@/themes/ui/div-global';
 
 type ProductOrder = Product & { quantity: number; uniMedidaExtra: string };
 
@@ -71,7 +72,7 @@ function AddBranchProduct() {
 
   return (
     <>
-      <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+      <DivGlobal>
         <button
           className="flex items-center gap-2 bg-transparent"
           onClick={() => navigate('/products')}
@@ -101,7 +102,7 @@ function AddBranchProduct() {
             </div>
           </FormikProvider>
         </form>
-      </div>
+      </DivGlobal>
     </>
   );
 }

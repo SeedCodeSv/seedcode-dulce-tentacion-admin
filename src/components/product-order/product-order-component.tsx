@@ -288,13 +288,7 @@ const {transmitter, gettransmitter} = useTransmitterStore()
         >
           Exportar a pdf
         </ButtonUi>
-        {/* <div
-        className='xl:align-end'
-        > */}
         <RenderViewButton setView={setView} view={view} />
-
-        {/* </div> */}
-
       </div>
       {view === 'table' && (
         <TableComponent

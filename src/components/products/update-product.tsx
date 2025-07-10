@@ -486,7 +486,6 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
             </ButtonUi>
           </ModalFooter>
           </form>
-          
         </ModalContent>
       </Modal>
     </>
