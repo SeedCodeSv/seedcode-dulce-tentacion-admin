@@ -25,8 +25,8 @@ function SearchEmployee(props: IPropsSearchEmployee) {
     phoneEmployee: '',
     nameBranchEmployee: '',
     codeEmployee: '',
-    startDate: fechaActualString,
-    endDate: fechaActualString,
+    startDate: '',
+    endDate: '',
   });
 
   return (

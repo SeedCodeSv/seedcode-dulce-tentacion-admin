@@ -60,6 +60,18 @@ interface Props {
   actions: string[];
 }
 
+type ChangePageParams = {
+  name?: string;
+  firstLastName?: string;
+  branch?: string;
+  phone?: string;
+  codeEmployee?: string;
+  active?: boolean;
+  isDate?: boolean;
+  startDate?: string;
+  endDate?: string;
+};
+
 function ListEmployee({ actions }: Props) {
   const { user } = useAuthStore();
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
@@ -85,21 +97,29 @@ function ListEmployee({ actions }: Props) {
   const [codes, setCodes] = useState<IResponseCodes>()
 
   const [isDate, setDate] = useState(false);
-  const changePage = () => {
+  const changePage = ({
+    name,
+    firstLastName: fln,
+    branch: br,
+    phone: ph,
+    codeEmployee: ce,
+    active: isActive,
+    isDate: useDate,
+    startDate: sd,
+    endDate: ed,
+  }: ChangePageParams = {}) => {
     getEmployeesPaginated(
-      Number(
-        user?.pointOfSale?.branch.transmitterId ?? 0
-      ),
+      Number(user?.pointOfSale?.branch.transmitterId ?? 0),
       1,
       limit,
-      firstName,
-      firstLastName,
-      branch,
-      phone,
-      codeEmployee,
-      active ? 1 : 0,
-      isDate ? startDate : '',
-      isDate ? endDate : ''
+      name ?? firstName,
+      fln ?? firstLastName,
+      br ?? branch,
+      ph ?? phone,
+      ce ?? codeEmployee,
+      (isActive ?? active) ? 1 : 0,
+      (useDate ?? isDate) ? (sd ?? startDate) : '',
+      (useDate ?? isDate) ? (ed ?? endDate) : ''
     );
   };
 
@@ -223,7 +243,15 @@ function ListEmployee({ actions }: Props) {
                   value={firstName}
                   variant="bordered"
                   onChange={(e) => setFirstName(e.target.value)}
-                  onClear={() => setFirstName('')}
+                  onClear={() => {
+                    setFirstName('');
+                    changePage({ name: '' })
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      changePage();
+                    }
+                  }}
                 />
 
                 <Input
@@ -243,7 +271,14 @@ function ListEmployee({ actions }: Props) {
                   value={codeEmployee}
                   variant="bordered"
                   onChange={(e) => setCodeEmployee(e.target.value)}
-                  onClear={() => setCodeEmployee('')}
+                  onClear={() => {setCodeEmployee('');
+                    changePage({codeEmployee: ''});
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      changePage();
+                    }
+                  }}
                 />
                 <Input
                   isClearable
@@ -538,7 +573,7 @@ function ListEmployee({ actions }: Props) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={7}>
+                          <td colSpan={8}>
                             <EmptyTable />
                           </td>
                         </tr>
