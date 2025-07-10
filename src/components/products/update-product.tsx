@@ -306,7 +306,7 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
               formik.handleSubmit(e);
             }}
           >
-            <ModalHeader className="dark:text-white">Editar Producto 111</ModalHeader>
+            <ModalHeader className="dark:text-white">Editar Producto</ModalHeader>
             <ModalBody>
               <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
                 <div>
