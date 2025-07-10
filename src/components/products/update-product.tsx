@@ -479,12 +479,13 @@ function UpdateProduct({ product, onCloseModal, isOpen }: Props) {
                 </div>
               </div>
             </ModalBody>
-          </form>
+          
           <ModalFooter>
             <ButtonUi className="px-10" theme={Colors.Primary} type="submit">
               Guardar producto
             </ButtonUi>
           </ModalFooter>
+          </form>
         </ModalContent>
       </Modal>
     </>
