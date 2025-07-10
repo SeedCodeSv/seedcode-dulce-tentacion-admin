@@ -39,7 +39,7 @@ export const KardexByProductList = () => {
   const { actionView } = useOutletContext<ContextType>();
 
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, KardexProduct, totales } = useReportKardex();
+  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, totales } = useReportKardex();
   const { windowSize } = useWindowSize();
   const { productsFilteredList, getProductsFilteredList } = useProductsStore()
   const [branchName, setBranchName] = useState('');

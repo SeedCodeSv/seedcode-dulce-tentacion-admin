@@ -31,7 +31,6 @@ export default function PdfPreview() {
   const { personalization } = useConfigurationStore();
   const [comprobante, setComprobante] = useState<string | null>(null);
   const [activePdf, setActivePdf] = useState<'nota' | 'comprobante'>('nota');
-  const navigate = useNavigate()
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const handleShowPdf = () => {

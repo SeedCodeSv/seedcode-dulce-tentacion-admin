@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 
-import { IReportKardexByProduct, KardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
+import { IReportKardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
 import { formatSimpleDate, getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
 import { useAuthStore } from '@/store/auth.store';
 import { useTransmitterStore } from '@/store/transmitter.store';

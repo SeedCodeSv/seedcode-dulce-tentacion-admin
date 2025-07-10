@@ -1,5 +1,4 @@
 import {
-  Input,
   Button,
   useDisclosure,
   Select,
@@ -10,7 +9,7 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { EditIcon, User, RefreshCcw, SearchIcon, Trash } from 'lucide-react';
+import { EditIcon, RefreshCcw, Trash } from 'lucide-react';
 import classNames from 'classnames';
 
 import { useCategoriesStore } from '../../store/categories.store';
@@ -20,19 +19,18 @@ import { CategoryProduct } from '../../types/categories.types';
 import { limit_options } from '../../utils/constants';
 import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
+import RenderViewButton from '../global/render-view-button';
 
 import AddCategory from './add-category';
 import CardCategory from './card-category';
+import RenderCategoryFilters from './render-category-filters';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-import DisplayView from '@/themes/ui/display-view';
 import TdGlobal from '@/themes/ui/td-global';
-import RenderCategoryFilters from './render-category-filters';
-import RenderViewButton from '../global/render-view-button';
 interface PProps {
   actions: string[];
 }

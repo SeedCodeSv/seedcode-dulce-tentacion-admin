@@ -1,5 +1,4 @@
 import { Button, Card, CardBody, CardHeader, Input, Select, SelectItem } from '@heroui/react';
-// eslint-disable-next-line import/order
 import { Copy, Trash } from 'lucide-react';
 
 // import { IMobileViewOrderProducst } from './types/mobile-view.types';

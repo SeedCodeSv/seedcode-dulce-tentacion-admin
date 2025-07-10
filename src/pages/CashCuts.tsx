@@ -1,7 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 

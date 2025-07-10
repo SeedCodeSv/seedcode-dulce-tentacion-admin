@@ -6,7 +6,6 @@ import DailyBook from '@/components/accounting-items/daily-book';
 import DailyMajorBook from '@/components/accounting-items/daily-major-book';
 import MajorBook from '@/components/accounting-items/major-book';
 import TrialBalance from '@/components/accounting-items/trial-balance';
-import Layout from '@/layout/Layout';
 import DivGlobal from '@/themes/ui/div-global';
 
 function Reports() {

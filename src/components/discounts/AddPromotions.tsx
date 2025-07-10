@@ -19,7 +19,6 @@ import React from 'react';
 
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
-import Layout from '../../layout/Layout';
 import { operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';

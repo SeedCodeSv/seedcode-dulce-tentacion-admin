@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import Layout from '../layout/Layout';
 import ListCharges from '../components/charges/ListCharges';
 
 import { useViewsStore } from '@/store/views.store';

@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
+
 import { Product } from '../../../types/products.types';
+
 import { OrderProductDetail } from '@/types/order-products.types';
 
 export interface IMobileView {

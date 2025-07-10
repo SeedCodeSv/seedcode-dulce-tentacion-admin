@@ -14,10 +14,9 @@ import { ClipboardCheck, Clipboard, FileX2 } from 'lucide-react';
 import { PiFilePdf } from 'react-icons/pi';
 import { Dispatch, SetStateAction } from 'react';
 
-import TooltipGlobal from '../global/TooltipGlobal';
-
 // import { FloatingButton } from './FloatingButton';
 
+import TooltipGlobal from '../global/TooltipGlobal';
 import useGlobalStyles from '../global/global.styles';
 
 import DoublePdfExport from './ExportDoublePdf';

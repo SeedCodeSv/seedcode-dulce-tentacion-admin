@@ -1,4 +1,3 @@
-import Layout from '@/layout/Layout';
 
 function NoAuthorization() {
   return (

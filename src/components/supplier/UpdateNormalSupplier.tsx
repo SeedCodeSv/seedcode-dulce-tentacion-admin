@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
@@ -8,7 +8,6 @@ import { toast } from 'sonner';
 
 import { SelectedItem } from './select-account';
 
-import { global_styles } from '@/styles/global.styles';
 import { useSupplierStore } from '@/store/supplier.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
