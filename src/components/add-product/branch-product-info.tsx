@@ -22,13 +22,12 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { Supplier } from '@/types/supplier.types';
 import { preventLetters } from '@/utils';
-// import useWindowSize from '@/hooks/useWindowSize';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function BranchProductInfo() {
   const formik = useFormikContext<ProductPayloadForm>();
   const [selectedBranches, setSelectedBranches] = useState<string[]>([]);
   const [selectedSuppliers, setSelectedSuppliers] = useState<Supplier[]>([]);
-
   const typeSearch = ['NOMBRE', 'CORREO', 'NIT', 'NRC'];
   const [selectedTypeSearch, setSelectedTypeSearch] = useState<'NOMBRE' | 'CORREO' | 'NRC' | 'NIT'>(
     'NOMBRE'
@@ -58,6 +57,7 @@ function BranchProductInfo() {
   };
 
   const modalBranches = useDisclosure()
+  // const [modalBranches, setModalBranches] = useState(false)
 
   const handleAddSupplier = (supplier: Supplier) => {
     const list_suppliers = [...selectedSuppliers];
@@ -80,11 +80,12 @@ function BranchProductInfo() {
   const checkIsSelectedSupplier = (id: number) => {
     return selectedSuppliers.some((ssp) => ssp.id === id);
   };
-  // const { windowSize } = useWindowSize()
+  const { windowSize } = useWindowSize()
+
 
   return (
     <>
-      <Modal onClose={() => modalBranches.onClose()} isOpen={modalBranches.isOpen}>
+      <Modal isOpen={modalBranches.isOpen} onClose={() => modalBranches.onClose()}>
 
         <ModalContent className=''>
           <ModalHeader>
@@ -104,31 +105,18 @@ function BranchProductInfo() {
               label="Sucursales"
               labelPlacement="outside"
               name="branch"
+              selectionMode='multiple'
               placeholder="Selecciona la sucursal"
-              selectedKeys={selectedBranches}
+              // selectedKeys={selectedBranches}
+              selectedKeys={new Set(selectedBranches.map(String))}
               variant="bordered"
               onBlur={formik.handleBlur('branch')}
               onSelectionChange={(keys) => {
-                const setkeys = new Set(keys as unknown as string[]);
-                const keysArray = Array.from(setkeys);
-
-                if (keysArray.length > 0) {
-                  const includes_key = selectedBranches.includes(keysArray[0]);
-
-                  if (!includes_key) {
-                    const news = [...selectedBranches, ...keysArray];
-
-                    setSelectedBranches(news);
-                    formik.setFieldValue('branch', news);
-                  } else {
-                    setSelectedBranches(keysArray);
-                    formik.setFieldValue('branch', keysArray);
-                  }
-                } else {
-                  setSelectedBranches([]);
-                  formik.setFieldValue('branch', []);
-                }
+                const keysArray = Array.from(keys as Set<string>).map(String);
+                setSelectedBranches(keysArray);
+                formik.setFieldValue('branch', keysArray);
               }}
+
             >
               {branch_list.map((val) => (
                 <SelectItem key={val.id} className="dark:text-white">
@@ -136,11 +124,27 @@ function BranchProductInfo() {
                 </SelectItem>
               ))}
             </Select>
-            <div>
+            {/* <div>
               <p>Sucursales seleccionadas</p>
               <span>{
               
                 }</span>
+            </div> */}
+            <div className="mt-4">
+              <p className="font-semibold text-sm text-gray-700 dark:text-white mb-1">
+                Sucursales seleccionadas:
+              </p>
+              <ul className="list-disc list-inside text-sm text-gray-800 dark:text-gray-300">
+                {selectedBranches.length > 0 ? (
+                  selectedBranches.map((id) => {
+                    const found = branch_list.find((branch) => branch.id.toString() === id);
+
+                    return found ? <li key={id}>{found.name}</li> : null;
+                  })
+                ) : (
+                  <p className="italic text-gray-400">Ninguna sucursal seleccionada</p>
+                )}
+              </ul>
             </div>
           </ModalBody>
         </ModalContent>
@@ -239,17 +243,18 @@ function BranchProductInfo() {
             isInvalid={!!formik.errors.priceC && !!formik.touched.priceC}
             onKeyDown={preventLetters}
           />
-          {/* {windowSize.width < 768 ? (<>
+          {windowSize.width < 768 ? (<>
             <button
               className='w-full bg-sky-300 text-white rounded-xl h-10 flex justify-center items-center mt-6'
               onClick={() => {
+                // modalBranches.onOpen()
                 modalBranches.onOpen()
               }}
             >
               Sucursales
             </button>
 
-          </>) : (<> */}
+          </>) : (<>
             <Select
               multiple
               className="dark:text-white font-semibold "
@@ -260,33 +265,40 @@ function BranchProductInfo() {
               errorMessage={formik.touched.branch && formik.errors.branch}
               isInvalid={formik.touched.branch && !!formik.errors.branch}
               label="Sucursales"
+              selectionMode='multiple'
               labelPlacement="outside"
               name="branch"
               placeholder="Selecciona la sucursal"
-              selectedKeys={selectedBranches}
+              selectedKeys={new Set(selectedBranches)}
               variant="bordered"
               onBlur={formik.handleBlur('branch')}
               onSelectionChange={(keys) => {
-                const setkeys = new Set(keys as unknown as string[]);
-                const keysArray = Array.from(setkeys);
-
-                if (keysArray.length > 0) {
-                  const includes_key = selectedBranches.includes(keysArray[0]);
-
-                  if (!includes_key) {
-                    const news = [...selectedBranches, ...keysArray];
-
-                    setSelectedBranches(news);
-                    formik.setFieldValue('branch', news);
-                  } else {
-                    setSelectedBranches(keysArray);
-                    formik.setFieldValue('branch', keysArray);
-                  }
-                } else {
-                  setSelectedBranches([]);
-                  formik.setFieldValue('branch', []);
-                }
+                const keysArray = Array.from(keys as Set<string>);
+                console.log('onSelectionChange keysArray:', keysArray);
+                setSelectedBranches(keysArray);
+                formik.setFieldValue('branch', keysArray);
               }}
+            // onSelectionChange={(keys) => {
+            //   const setkeys = new Set(keys as unknown as string[]);
+            //   const keysArray = Array.from(setkeys);
+
+            //   if (keysArray.length > 0) {
+            //     const includes_key = selectedBranches.includes(keysArray[0]);
+
+            //     if (!includes_key) {
+            //       const news = [...selectedBranches, ...keysArray];
+
+            //       setSelectedBranches(news);
+            //       formik.setFieldValue('branch', news);
+            //     } else {
+            //       setSelectedBranches(keysArray);
+            //       formik.setFieldValue('branch', keysArray);
+            //     }
+            //   } else {
+            //     setSelectedBranches([]);
+            //     formik.setFieldValue('branch', []);
+            //   }
+            // }}
             >
               {branch_list.map((val) => (
                 <SelectItem key={val.id} className="dark:text-white">
@@ -294,7 +306,7 @@ function BranchProductInfo() {
                 </SelectItem>
               ))}
             </Select>
-          {/* </>)} */}
+          </>)}
 
           <div className="flex gap-5 items-end col-span-2 md:col-span-1">
             <Input
