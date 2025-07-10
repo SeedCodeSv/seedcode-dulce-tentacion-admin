@@ -11,7 +11,6 @@ export const handleExportExcel = async (dataReport: Daum[], branch: Branches | u
   if (!dataReport || dataReport.length === 0 || !branch) return;
 
   try {
-    // Crear un nuevo libro de Excel
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Reporte Producción');
 

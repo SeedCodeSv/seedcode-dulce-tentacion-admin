@@ -85,6 +85,7 @@ const ProductionReport = () => {
             <Button
               className="text-white font-semibold"
               color="success"
+              isDisabled={dataReport.length === 0}
               style={styles.warningStyles}
               onPress={() => handleExportExcel(dataReport, branch, date)}
             >
@@ -96,6 +97,7 @@ const ProductionReport = () => {
             <Button
               className="text-white font-semibold"
               color="success"
+              isDisabled={dataReport.length === 0}
               style={styles.dangerStyles}
               onPress={() => exportPdf(dataReport, branch, date)}
             >

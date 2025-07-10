@@ -3,56 +3,56 @@ import { toast } from 'sonner';
 
 import { IOrderProduct } from './exportPdf';
 
-export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate: string, endDate: string) => {
+import { getElSalvadorDateTimeText } from '@/utils/dates';
+import { ITransmitter } from '@/types/transmitter.types';
+
+export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate: string, endDate: string, transmitter: ITransmitter) => {
   try {
     const workbook = new ExcelJS.Workbook();
 
-    workbook.creator = 'Mi Aplicación';
     workbook.created = new Date();
 
     const worksheet = workbook.addWorksheet('Ordenes de producto');
 
-    // 1. Título principal (fila 1)
-    const titleRow = worksheet.addRow([`Ordenes de producto del ${startDate} al ${endDate}`]);
-
-    titleRow.font = { bold: true, size: 16 };
-    titleRow.alignment = { horizontal: 'center' };
-    worksheet.mergeCells(`A1:H1`); 
-
-    // 2. Fila vacía de separación (fila 2)
     worksheet.addRow([]);
 
-    // 3. Configurar columnas (sin Sucursal Terminal)
-    worksheet.columns = [
-      { key: 'nombre', width: 30 },
-      { key: 'sucursalCentro', width: 15 },
-      { key: 'sucursalISSS', width: 15 },
-      { key: 'sucursalNahulzalco', width: 18 },
-      { key: 'sucursalSonzacate', width: 18 },
-      { key: 'sucursalAdministracio', width: 18 },
-      { key: 'sucursalProductoTerminado', width: 20 },
-      { key: 'sucursalBodegaDeMateriaPrima', width: 24 },
+    const keys = data.length > 0 ? Object.keys(data[0]) : [];
+    const headers = keys.map(key => {
+      if (key.toLowerCase() === 'producto') return 'Nombre del Producto';
+
+      return key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    });
+
+    const extraInfo = [
+      [`${transmitter.nombreComercial}`],
+      [`Fecha: ${getElSalvadorDateTimeText().fecEmi}`],
+      [`Reporte desde ${startDate} hasta ${endDate}`],
     ];
 
-    // 4. Añadir ENCABEZADOS MANUALMENTE (fila 3)
-    const headerRow = worksheet.addRow([
-      'Nombre del Producto',
-      'Sucursal Centro',
-      'Sucursal ISSS',
-      'Sucursal Nahulzalco',
-      'Sucursal Sonzacate',
-      'Administracion',
-      'Producto Terminado',
-      'Bodega de Materia Prima',
-    ]);
+    extraInfo.forEach((row, index) => {
+      const newRow = worksheet.addRow(row);
+      const lastColLetter = worksheet.getColumn(headers.length).letter;
 
-    // Estilo para encabezados
+      worksheet.mergeCells(`A${newRow.number}:${lastColLetter}${newRow.number}`);
+      newRow.font = { bold: index === 0, size: 13 };
+      newRow.alignment = { horizontal: 'center' };
+    });
+
+    worksheet.addRow([]);
+
+    worksheet.columns = headers.map(h => ({
+      width: h === 'Nombre del Producto' ? 40 : 25,
+    }));
+
+    const headerRow = worksheet.addRow(headers);
+
+
     headerRow.eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'ff71a3' },
+        fgColor: { argb: 'FF71A3' },
       };
       cell.alignment = { vertical: 'middle', horizontal: 'center' };
       cell.border = {
@@ -63,22 +63,10 @@ export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate
       };
     });
 
-    // 5. Añadir datos (fila 4 en adelante)
     data.forEach((item) => {
-      const rowData = [
-        item.producto,
-        item['SUCURSAL-CENTRO'],
-        item['SUCURSAL-ISSS'],
-        item['SUCURSAL-NAHUIZALCO'],
-        item['SUCURSAL-SONZACATE'],
-        item.ADMINISTRACION ?? 0,
-        item['PRODUCTO TERMINADO'] ?? 0,
-        item['BODEGA DE MATERIA PRIMA'] ?? 0
-      ];
-
+      const rowData = keys.map((key) => item[key] ?? 0);
       const row = worksheet.addRow(rowData);
 
-      // Aplicar estilos
       row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
         cell.border = {
           top: { style: 'thin' },
@@ -92,7 +80,6 @@ export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate
       });
     });
 
-    // 6. Generar y descargar archivo
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -103,7 +90,7 @@ export const exportToExcelOrderProduct = async (data: IOrderProduct[], startDate
     link.href = url;
     link.download = `Ordenes_de_Producto_${startDate}_a_${endDate}.xlsx`;
     link.click();
-    toast.success('Archivo generado exitosamente.');
+
     setTimeout(() => {
       URL.revokeObjectURL(url);
       link.remove();
