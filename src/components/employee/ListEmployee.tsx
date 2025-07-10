@@ -37,7 +37,6 @@ import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
-import AddEmployee from './AddEmployee';
 import MobileView from './MobileView';
 import UpdateEmployee from './update-employee';
 import ProofSalary from './employees-pdfs/ProofSalary';

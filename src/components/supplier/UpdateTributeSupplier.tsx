@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Button } from "@heroui/react";
 import { ArrowLeft } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'sonner';
 import { FormikProvider, useFormik } from 'formik';
 import * as yup from 'yup';
 
-import { global_styles } from '../../styles/global.styles';
 
 import EditFormTributte from './edit-form-tributte';
 
 import { useSupplierStore } from '@/store/supplier.store';
-import Layout from '@/layout/Layout';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 
 function UpdateTributeSupplier() {
   const { id } = useParams();
@@ -143,7 +142,7 @@ function UpdateTributeSupplier() {
 
   return (
     <>
-      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+      <div className=" w-full h-full p-5 lg:pt-10">
         <div className="w-full h-full  border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button className="w-32  flex gap-2 mb-4 cursor-pointer" onClick={() => navigate("/suppliers")}>
             <ArrowLeft className="dark:text-white" size={20} />
@@ -159,22 +158,22 @@ function UpdateTributeSupplier() {
                 setSelectedDepartment={setSelectedDepartment}
               />
             </FormikProvider>
-            <div className="w-full mt-5 flex justify-end gap-5">
-              <Button
-                className="px-20 font-semibold"
-                style={global_styles().dangerStyles}
-                onClick={() => navigate('/suppliers')}
-              >
-                Cancelar
-              </Button>
-              <Button
-                className="px-20 font-semibold"
-                style={global_styles().darkStyle}
-                type="submit"
-              >
-                Guardar
-              </Button>
-            </div>
+            <div className="flex gap-4 justify-between lg:justify-end w-full">
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Error}
+                  onPress={() => navigate('/suppliers')}
+                >
+                  Cancelar
+                </ButtonUi>
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Primary}
+                  type="submit"
+                >
+                  Guardar
+                </ButtonUi>
+              </div>
           </form>
         </div>
       </div>
