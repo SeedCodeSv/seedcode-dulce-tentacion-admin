@@ -5,6 +5,8 @@ import Annulation05 from './anulaciones/Annulation05';
 import Annulation06 from './anulaciones/Annulation06';
 import Invalidation01 from './anulaciones/Invalidation01';
 
+import DivGlobal from '@/themes/ui/div-global';
+
 
 function Annulation() {
   const params = useParams<{ id: string; tipoDte: string }>();
@@ -27,7 +29,7 @@ function Annulation() {
           })()}
         </title>
       </Helmet>
-      <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800 dark:text-white">
+      <DivGlobal>
         <div className="w-full h-full p-3 mt-2 custom-scrollbar overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <>
             {(() => {
@@ -46,7 +48,7 @@ function Annulation() {
             })()}
           </>
         </div>
-      </div>
+      </DivGlobal>
     </>
   );
 }
