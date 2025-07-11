@@ -183,29 +183,29 @@ export const generateUniqueId = () => {
 
 export const formatUnidadDeMedida = (cod: string) => {
   switch (cod) {
-     case '22':
-       return 'Galón';
-        case '23':
+    case '22':
+      return 'Galón';
+    case '23':
       return 'Litro';
-       case '34':
+    case '34':
       return 'Kilogramo';
     case '36':
       return 'Libra';
     case '38':
       return 'Onza';
-       case '39':
+    case '39':
       return 'Gramo';
     case '40':
       return 'Miligramo';
-       case '58':
+    case '58':
       return 'Docena';
     case '59':
       return 'Unidad';
-       case '99':
+    case '99':
       return 'Otra';
     default:
       return '';
-    }
+  }
 }
 
 export const formatTipoDte = (typeDte: string) => {
@@ -231,3 +231,15 @@ export enum ProductLossSource {
   RETURN = 'Devolución',
   DEFAULT = 'Origen Desconocido'
 }
+
+export const ProductLossSourceList = [
+  { id: 1, type: ProductLossSource.CANCELED_SALE, name: 'Anulación de venta' },
+  { id: 2, type: ProductLossSource.PRODUCTION_ORDER, name: 'Orden de producción' },
+  { id: 3, type: ProductLossSource.INVENTORY_ADJUSTMENT, name: 'Ajuste de inventario' },
+  { id: 4, type: ProductLossSource.INTERNAL_USE, name: 'Uso interno' },
+  { id: 5, type: ProductLossSource.TRANSFER, name: 'Transferencia' },
+  { id: 6, type: ProductLossSource.EXPIRED, name: 'Producto vencido' },
+  { id: 7, type: ProductLossSource.RETURN, name: 'Devolución' },
+  { id: 8, type: ProductLossSource.DEFAULT, name: 'Origen desconocido' },
+];
+
