@@ -220,3 +220,14 @@ export const formatTipoDte = (typeDte: string) => {
       return '';
   }
 };
+
+export enum ProductLossSource {
+  CANCELED_SALE = 'Anulación de venta',
+  PRODUCTION_ORDER = 'Orden de producción',
+  INVENTORY_ADJUSTMENT = 'Ajuste de inventario',
+  INTERNAL_USE = 'Uso interno',
+  TRANSFER = 'Transferencia',
+  EXPIRED = 'Producto vencido',
+  RETURN = 'Devolución',
+  DEFAULT = 'Origen Desconocido'
+}

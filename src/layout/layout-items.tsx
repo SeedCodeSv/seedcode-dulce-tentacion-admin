@@ -36,6 +36,7 @@ import {
   ScrollText,
   Scroll,
   StickyNote,
+  BoxesIcon,
 } from 'lucide-react';
 import { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
@@ -273,6 +274,12 @@ export const LayoutItems = (props: Props) => {
       to: '/production-report',
       icon: ShoppingBasket,
       label: 'Reporte de produccion',
+    },
+    {
+      viewName: 'Producto Perdido',
+      to: '/product-loss',
+      icon: BoxesIcon,
+      label: 'Producto Perdido',
     }
   ];
 

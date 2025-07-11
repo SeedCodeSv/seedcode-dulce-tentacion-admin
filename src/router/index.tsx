@@ -39,6 +39,7 @@ import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusmen
 import DetailedBranchesProducts from '@/pages/reports/DetailedByBranchesProducts';
 import ProductSalesReportPage from '@/pages/reports/ProductReport';
 import PdfPreview from '@/components/product-order/note-refeal/Pdfs';
+import ProductLossPage from '@/pages/reports/ProductLossPage';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -749,6 +750,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/verificar-faltantes"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            <ProductLossPage />
+          </AnimatedRoute>
+        }
+        path="/product-loss"
       />
       <Route element={handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home/>} path="/inventary-adjustment">
         <Route index element={
