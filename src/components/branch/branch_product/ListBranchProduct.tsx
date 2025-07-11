@@ -37,11 +37,13 @@ import LoadingTable from '@/components/global/LoadingTable';
 import EmptyTable from '@/components/global/EmptyTable';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import useWindowSize from '@/hooks/useWindowSize';
+
 interface Props {
   id: number;
   onclick: () => void;
   actions: string[]
 }
+
 export default function ListBranchProduct({ id, onclick, actions }: Props) {
   const { transmitter, gettransmitter } = useTransmitterStore();
   const { getBranchById, branch } = useBranchesStore()
@@ -74,7 +76,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
 
   useEffect(() => {
     getBranchProducts(id, page, limit, name, category, code);
-  }, [id, limit]);
+  }, [id, limit, name, category]);
 
   useEffect(() => {
     gettransmitter()
@@ -348,6 +350,8 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                             </AutocompleteItem>
                           ))}
                         </Autocomplete>
+
+
                       </>
                       <Button
                         className="mb-10 font-semibold"
@@ -360,6 +364,7 @@ export default function ListBranchProduct({ id, onclick, actions }: Props) {
                       </Button>
                     </div>
                   </BottomDrawer>
+
                 </div>
               </div>
             </div>
