@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import ExportPdfProductLoss from "./ExportPdfProductLoss";
 import ProductLossExportExcell from "./ExportExcellProductLoss";
+import { RenderProductLossSource } from "./ReturnSource";
 
 import Pagination from "@/components/global/Pagination";
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
@@ -17,7 +18,6 @@ import EmptyTable from "@/components/global/EmptyTable";
 import TdGlobal from "@/themes/ui/td-global";
 import { ProductLossSourceList } from "@/utils/utils";
 import { limit_options } from "@/utils/constants";
-import { RenderProductLossSource } from "./ReturnSource";
 
 export default function ProductLossComponent({ actions }: { actions: string[] }) {
   const { gettransmitter } = useTransmitterStore();

@@ -74,7 +74,7 @@ export default function ExportPdfProductLoss({ filters, branch }: { filters: Sea
 
       const createHeader = (doc: jsPDF) => {
 
-       // logoUrl && doc.addImage(logoUrl, 'PNG', 10, 5, 25, 25, 'logo', 'FAST');
+       logoUrl && doc.addImage(logoUrl, 'PNG', 10, 5, 25, 25, 'logo', 'FAST');
         autoTable(doc, {
           showHead: false,
           body: [

@@ -1,8 +1,6 @@
-import { ProductLossSource } from "@/utils/utils";
 import {
   Undo2,
   Trash2,
-  AlertCircle,
   PackageX,
   MoveRight,
   Activity,
@@ -10,6 +8,8 @@ import {
   ShieldAlert,
   Settings
 } from "lucide-react";
+
+import { ProductLossSource } from "@/utils/utils";
 
 const iconMap: Record<ProductLossSource, JSX.Element> = {
   [ProductLossSource.CANCELED_SALE]: <Trash2 className="text-red-500" size={18} />,
