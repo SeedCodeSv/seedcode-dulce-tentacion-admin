@@ -56,4 +56,17 @@ export const useBranchProductReportStore = create<IBranchProductReportStore>((se
         }
       })
   },
+  async getProductsLossExport(search) {
+    return await get_report_product_loss(search)
+      .then(({ data }) => {
+        return { ok: true, productsLoss: data }
+      }).catch(() => {
+        return {
+          ok: true, productsLoss: {
+            ...initialPagination,
+            productLoss: []
+          }
+        }
+      })
+  },
 }));

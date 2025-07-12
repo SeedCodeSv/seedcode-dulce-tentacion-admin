@@ -16,4 +16,6 @@ export interface IBranchProductReportStore {
   ) => void;
   productsLoss: IGetProductLoss
   getProductsLoss: (search: SearchReport) => Promise<{ok: boolean; productsLoss: IGetProductLoss }>
+  getProductsLossExport: (search: SearchReport) => Promise<{ok: boolean; productsLoss: IGetProductLoss }>
+
 }

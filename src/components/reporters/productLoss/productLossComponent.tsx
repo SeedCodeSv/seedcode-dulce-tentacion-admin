@@ -1,5 +1,8 @@
-import { Autocomplete, AutocompleteItem, Input } from "@heroui/react";
+import { Autocomplete, AutocompleteItem, Input, Select, SelectItem } from "@heroui/react";
 import { useEffect, useState } from "react";
+
+import ExportPdfProductLoss from "./ExportPdfProductLoss";
+import ProductLossExportExcell from "./ExportExcellProductLoss";
 
 import Pagination from "@/components/global/Pagination";
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
@@ -13,12 +16,14 @@ import LoadingTable from "@/components/global/LoadingTable";
 import EmptyTable from "@/components/global/EmptyTable";
 import TdGlobal from "@/themes/ui/td-global";
 import { ProductLossSourceList } from "@/utils/utils";
-import classNames from "classnames";
+import { limit_options } from "@/utils/constants";
+import { RenderProductLossSource } from "./ReturnSource";
 
-export default function ProductLossComponent({ }: { actions: string[] }) {
+export default function ProductLossComponent({ actions }: { actions: string[] }) {
   const { gettransmitter } = useTransmitterStore();
   const { getProductsLoss, productsLoss, loadingProductLoss } = useBranchProductReportStore()
   const { branch_list, getBranchesList } = useBranchesStore();
+  const [branchName, setBranchName] = useState('')
   const [filter, setFilter] = useState({
     page: 1,
     limit: 30,
@@ -88,6 +93,7 @@ export default function ProductLossComponent({ }: { actions: string[] }) {
                   className="dark:text-white"
                   onPress={() => {
                     handleAutocompleteChange('branchId', String(branch.id));
+                    setBranchName(branch.name)
                   }}
 
                 >
@@ -118,26 +124,38 @@ export default function ProductLossComponent({ }: { actions: string[] }) {
             </Autocomplete>
           </div>
         </ResponsiveFilterWrapper>
-
-        {/* <div className="flex items-center gap-3 mt-3">
+        <div className="flex flex-col lg:flex-row justify-between w-full items-end lg:pt-2">
+        <Select
+          disallowEmptySelection
+          className="max-w-[20vw] lg:max-w-[10vw] dark:text-white "
+          classNames={{
+            label: 'font-semibold',
+          }}
+          defaultSelectedKeys={[filter.limit.toString()]}
+          label="Mostrar"
+          labelPlacement="outside"
+          size="md"
+          value={filter.limit}
+          variant="bordered"
+          onChange={(e) => {
+            setFilter({ ...filter, limit: Number(e.target.value) });
+          }}
+        >
+          {limit_options.map((limit) => (
+            <SelectItem key={limit} className="dark:text-white">
+              {limit}
+            </SelectItem>
+          ))}
+        </Select>
+        <div className="flex items-center gap-3 mt-3">
           {actions.includes('Descargar PDF') && (
-            <ButtonUi
-              showTooltip
-              isDisabled={loading_data}
-              startContent={loading_data ? <Spinner /> : <AiOutlineFilePdf className="" size={25} />}
-              theme={Colors.Info}
-              tooltipText='Descargar PDF'
-              onPress={() => {
-                if (!loading_data) {
-                  handle()
-                }
-                else return
-              }}
-            />
-
+            <ExportPdfProductLoss branch={branchName} filters={filter} />
           )}
-          <MovementsExportExcell branch={branch} filters={filter} tableData={inventoryMoments} transmitter={transmitter} />
-        </div> */}
+          {actions.includes('Exportar Excel') && (
+          <ProductLossExportExcell branch={branchName} params={filter} />
+          )}
+        </div>
+        </div>
       </div>
       <TableComponent
         className='hidden xl:flex'
@@ -160,8 +178,9 @@ export default function ProductLossComponent({ }: { actions: string[] }) {
                   {item?.date}
                 </TdGlobal>
                 <TdGlobal className="p-3">
-                  {item?.source}
+                  <RenderProductLossSource source={item?.source} />
                 </TdGlobal>
+
                 <TdGlobal className="p-3">
                   {item?.branchProduct?.product?.name}
                 </TdGlobal>
