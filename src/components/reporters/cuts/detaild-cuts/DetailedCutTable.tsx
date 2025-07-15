@@ -11,7 +11,7 @@ export default function DetailedCutTable() {
     return (
         <TableComponent
             className="overflow-auto"
-            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero', 'Sucursal']}
+            headers={['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado Efectivo', 'Diferencia', 'Cajero', 'Sucursal']}
         >
             {loadingDetailed ? (
                 <tr>
@@ -52,7 +52,13 @@ export default function DetailedCutTable() {
                         <TdGlobal >
                             <div className="flex justify-center">{formatCurrency(Number(item.pettyCash ?? 0))}</div>
                         </TdGlobal>
-                        <TdGlobal >
+                        <TdGlobal
+                            title={
+                                Number(item.cashDelivered) > Number(item.totalCash)
+                                    ? `El total Entregado Efectivo es ${formatCurrency(Number(item.cashDelivered ?? 0))}, basado en que el Total Venta es ${formatCurrency(Number(item.totalSales))}. A este se le sumó el monto inicial de caja (${formatCurrency(Number(item.initialBox))}), resultando en un total de ${formatCurrency(Number(item.totalSales) + Number(item.initialBox))}.`
+                                    : ''
+                            }
+                        >
                             <div className="flex justify-center">{formatCurrency(Number(item.cashDelivered ?? 0))}</div>
                         </TdGlobal>
                         <TdGlobal >

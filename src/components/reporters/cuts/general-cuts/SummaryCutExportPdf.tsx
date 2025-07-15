@@ -95,7 +95,7 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
         });
       };
 
-      const headers = ['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado', 'Sum.Gastos'];
+      const headers = ['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado Efectivo', 'Sum.Gastos'];
 
       const rows = cashCutsSummary.cash_cuts_summary.map((item) => [
         formatDateSimple(item.date),

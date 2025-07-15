@@ -12,7 +12,7 @@ export default function SummaryCutReportTable() {
     return (
         <TableComponent
             className="overflow-auto"
-            headers={['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado', 'Sum.Gastos']}
+            headers={['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado Efectivo', 'Sum.Gastos']}
         >
             {loadindSummary ? (
                 <tr>
@@ -34,13 +34,26 @@ export default function SummaryCutReportTable() {
                         <TdGlobal className="p-3">{formatCurrency(Number(item.sumTotalCash ?? 0))}</TdGlobal>
                         <TdGlobal className="p-3">{formatCurrency(Number(item.sumTotalCard ?? 0))}</TdGlobal>
                         <TdGlobal className="p-3">{formatCurrency(Number(item.sumTotalOthers ?? 0))}</TdGlobal>
-                        <TdGlobal className="p-3">{formatCurrency(Number(item.sumCashDelivered ?? 0))}</TdGlobal>
+                        <TdGlobal
+                            className="p-3"
+                            title={
+                                Number(item.sumCashDelivered) > Number(item.sumTotalSales)
+                                    ? `La Sum.Entregado Efectivo ${formatCurrency(Number(item.sumCashDelivered))} es mayor porque los Totales Entregados individuales son: ${item.writtenTotals
+                                        ?.map((i) => formatCurrency(i))
+                                        .join(', ')
+                                    }, sumando un total de ${formatCurrency(
+                                        item.writtenTotals?.reduce((acc, val) => acc + val, 0) ?? 0
+                                    )}.`
+                                    : ''
+                            }
+                        >{formatCurrency(Number(item.sumCashDelivered ?? 0))}</TdGlobal>
                         <TdGlobal className="p-3">{formatCurrency(Number(item.sumExpenses ?? 0))}</TdGlobal>
                     </tr>
                 ))
 
-            )}
+            )
+            }
 
-        </TableComponent>
+        </TableComponent >
     )
 }

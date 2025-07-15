@@ -62,7 +62,7 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
 
         worksheet.addRow([]);
 
-       const headers = ['Días (CIERRE)', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago','Sum.Entregado', 'Sum.Gastos']; 
+       const headers = ['Días (CIERRE)', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago','Sum.Entregado Efectivo', 'Sum.Gastos']; 
        const headerRow = worksheet.addRow(headers);
 
         headerRow.eachCell((cell) => {
