@@ -90,3 +90,22 @@ export const verify_products_stock = async ( branchId: number, products: Product
 
   return data
 }
+
+export const get_branch_product_search = async ({
+  branchId,
+  productName,
+}: {
+  branchId: number;
+  productName?: string;
+}) => {
+  const token = get_token() ?? '';
+  const query = `${branchId}?name=${productName ?? ''}`;
+
+  return (
+    await axios.get<IGetBranchProductPaginated>(`${API_URL}/branch-products/list/search/${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+  ).data;
+};

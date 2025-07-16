@@ -110,7 +110,7 @@ const ProductionOrderDetails: React.FC<ProductionOrderDetailsProps> = ({ product
             <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-800 dark:border border-gray-300">
               <div className="flex items-center mb-4 ">
                 <div className="flex-1">
-                  <p className="text-sm text-gray-500 dark:text-gray-300">Sucursal de Recepción</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-300">Sucursal de Recepció </p>
                   <p className="font-medium">{receptionBranch.name}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{receptionBranch.address}</p>
                 </div>

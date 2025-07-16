@@ -1,10 +1,10 @@
 import * as ExcelJS from 'exceljs';
 import { toast } from 'sonner';
 import moment from 'moment';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PiMicrosoftExcelLogo } from 'react-icons/pi';
 
-import { KardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
+import { IReportKardexByProduct, TypeOfMovements } from '@/types/reports/reportKardex.types';
 import { formatSimpleDate, getElSalvadorDateTime, getElSalvadorDateTimeText } from '@/utils/dates';
 import { useAuthStore } from '@/store/auth.store';
 import { useTransmitterStore } from '@/store/transmitter.store';
@@ -12,25 +12,34 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors, Styles } from '@/types/themes.types';
 import { hexToARGB } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
+import { useReportKardex } from '@/store/reports/reportKardex.store';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
 
 
-export const DownloadKardexProductExcelButton = ({ tableData, search }: {
-  tableData: KardexByProduct[], search: {
-    branchName: string,
-    branchId: number,
-    startDate: string,
-    endDate: string,
-  }
+export const DownloadKardexProductExcelButton = ({ search, branchName }: {
+  search: SearchReport, branchName: string
 }) => {
   const { user } = useAuthStore();
   const styles = useGlobalStyles();
   const { transmitter, getTransmitter } = useTransmitterStore();
   const date = moment().tz('America/El_Salvador').format('YYYY-MM-DD');
+  const [loading_data, setLoadingData] = useState(false)
+  const { getReportKardexByProductExport, paginationKardexProduct, KardexProduct } = useReportKardex();
 
-  const handleDownloadSelectedProductExcel = async () => {
+  const handle = async () => {
+    setLoadingData(true)
+    const res = await getReportKardexByProductExport({ ...search, limit: paginationKardexProduct.total })
+
+    if (res) {
+      await handleDownloadSelectedProductExcel(res.KardexProduct)
+      setLoadingData(false)
+    }
+  }
+
+  const handleDownloadSelectedProductExcel = async (KardexByProduct: IReportKardexByProduct) => {
 
     try {
-      if (!tableData || tableData.length === 0) {
+      if (!KardexByProduct.movements || KardexByProduct.movements.length === 0) {
         toast.error('No hay datos disponibles para generar el Excel.');
 
         return;
@@ -41,21 +50,13 @@ export const DownloadKardexProductExcelButton = ({ tableData, search }: {
 
       const headers = ['No.', 'Fecha', 'Descripción', 'Entrada', 'Salida', 'Costo Unitario', 'Costo promedio'];
 
-      addHeader(worksheet, transmitter?.nombreComercial ?? '', search);
+      addHeader(worksheet, transmitter?.nombreComercial ?? '', search, branchName);
 
-      const totalEntries = tableData.reduce((acc, current) => {
-        if (current.typeOfMovement === TypeOfMovements.Entries) acc += Number(current.quantity);
+      const totalEntries = KardexByProduct.totalEntradas
 
-        return acc;
-      }, 0);
+      const totalExits = KardexByProduct.totalSalidas
 
-      const totalExits = tableData.reduce((acc, current) => {
-        if (current.typeOfMovement === TypeOfMovements.Exits) acc += Number(current.quantity);
-
-        return acc;
-      }, 0);
-
-      const rows = tableData.map((item, index) => [
+      const rows = KardexByProduct.movements.map((item, index) => [
         index + 1,
         formatSimpleDate(`${item.date}|${item.time}`),
         item.typeOfInventory || '',
@@ -65,7 +66,7 @@ export const DownloadKardexProductExcelButton = ({ tableData, search }: {
         `$ ${Number(item.totalMovement ?? 0).toFixed(2)}`,
       ]);
 
-      const productName = tableData[0].branchProduct.product.name
+      const productName = KardexByProduct.productName
 
       addBody(styles, worksheet, headers, rows, { totalEntries, totalExits, productName });
 
@@ -83,21 +84,23 @@ export const DownloadKardexProductExcelButton = ({ tableData, search }: {
       URL.revokeObjectURL(url);
     } catch (error) {
       toast.error('Ocurrió un error al descargar el Excel.');
-    } 
+    }
   };
 
   useEffect(() => {
     getTransmitter(user?.transmitterId ?? 0);
   }, [user?.transmitterId]);
 
-
   return (
     <>
       <ButtonUi
-        isIconOnly
+        isDisabled={loading_data || KardexProduct.length === 0}
+        startContent={<PiMicrosoftExcelLogo className="" size={25} />}
         theme={Colors.Success}
-        onPress={handleDownloadSelectedProductExcel}
-      > <PiMicrosoftExcelLogo size={20} /></ButtonUi>
+        onPress={handle}
+      >
+        <p className="font-medium hidden lg:flex"> Exportar a excel</p>
+      </ButtonUi>
     </>
   );
 };
@@ -114,12 +117,13 @@ function addBody(styles: Styles, worksheet: ExcelJS.Worksheet, headers: string[]
   worksheet.addRow([]);
 
   const tableStartRow = worksheet.rowCount + 1;
+  const startCell = `A${tableStartRow}`;
 
   worksheet.addTable({
     columns: headers.map(header => ({ name: header })),
     rows: data,
     name: 'Table1',
-    ref: 'A11',
+    ref: startCell,
     headerRow: true,
     totalsRow: false,
   });
@@ -149,12 +153,9 @@ function addBody(styles: Styles, worksheet: ExcelJS.Worksheet, headers: string[]
 
 function addHeader(worksheet: ExcelJS.Worksheet,
   commercialName: string,
-  search: {
-    branchId: number;
-    branchName: string;
-    startDate: string;
-    endDate: string;
-  }) {
+  search: SearchReport,
+  branchName: string
+) {
 
   worksheet.mergeCells('A1:H1');
   worksheet.getCell('A1').value = 'Kardex por Producto';
@@ -167,11 +168,11 @@ function addHeader(worksheet: ExcelJS.Worksheet,
   worksheet.getCell('A2').alignment = { horizontal: 'center' };
 
   worksheet.mergeCells('A3:H3');
-  worksheet.getCell('A3').value = `Sucursal: ${search.branchName}`;
+  worksheet.getCell('A3').value = `Sucursal: ${branchName}`;
   worksheet.getCell('A3').font = { bold: true, size: 14 };
   worksheet.getCell('A3').alignment = { horizontal: 'center' };
 
-    worksheet.mergeCells('A4:H4');
+  worksheet.mergeCells('A4:H4');
   worksheet.getCell('A4').value = `Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`;
   worksheet.getCell('A4').font = { bold: true, size: 13 };
   worksheet.getCell('A4').alignment = { horizontal: 'center' };

@@ -498,7 +498,7 @@ function ContingenceNC() {
         <p className="font-semibold text-xl dark:text-white">Resumen</p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-3 mt-5">
           <Input
-            className="dark:text-white"
+            className="dark:text-white mb-2"
             classNames={{ label: 'font-semibold text-sm' }}
             label="Fecha inicial"
             labelPlacement="outside"

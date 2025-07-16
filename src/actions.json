@@ -106,6 +106,14 @@
       ]
     },
     {
+      "view": "Producto Perdido",
+      "actions": [
+        "Mostrar",
+        "Descargar PDF",
+        "Exportar Excel"
+      ]
+    },
+    {
       "view": "Empleados",
       "actions": [
         "Mostrar",
@@ -329,7 +337,7 @@
         "Exportar CSV"
       ]
     },
-     {
+    {
       "view": "Anexos compras a sujetos excluidos",
       "actions": [
         "Mostrar",
@@ -443,6 +451,22 @@
       "actions": [
         "Mostrar",
         "Exportar Excel"
+      ]
+    },
+    {
+      "view": "Reporte de produccion",
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Exportar PDF"
+      ]
+    },
+    {
+      "view": "Reporte de envios",
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Exportar PDF"
       ]
     }
   ]

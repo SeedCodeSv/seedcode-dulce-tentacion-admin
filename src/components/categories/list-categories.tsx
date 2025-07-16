@@ -1,5 +1,4 @@
 import {
-  Input,
   Button,
   useDisclosure,
   Select,
@@ -10,7 +9,7 @@ import {
   Switch,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import { EditIcon, User, RefreshCcw, SearchIcon, Trash } from 'lucide-react';
+import { EditIcon, RefreshCcw, Trash } from 'lucide-react';
 import classNames from 'classnames';
 
 import { useCategoriesStore } from '../../store/categories.store';
@@ -20,16 +19,17 @@ import { CategoryProduct } from '../../types/categories.types';
 import { limit_options } from '../../utils/constants';
 import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
+import RenderViewButton from '../global/render-view-button';
 
 import AddCategory from './add-category';
 import CardCategory from './card-category';
+import RenderCategoryFilters from './render-category-filters';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-import DisplayView from '@/themes/ui/display-view';
 import TdGlobal from '@/themes/ui/td-global';
 interface PProps {
   actions: string[];
@@ -51,7 +51,7 @@ function ListCategories({ actions }: PProps) {
     getPaginatedCategories(1, limit, name ?? search);
   };
   const modalAdd = useDisclosure();
-  const [view, setView] = useState<'table' | 'grid'>('table');
+  const [view, setView] = useState<'table' | 'grid'|'list'>('table');
   const handleEdit = (item: CategoryProduct) => {
     setSelectedCategory({
       id: item.id,
@@ -68,53 +68,28 @@ function ListCategories({ actions }: PProps) {
 
   return (
     <DivGlobal>
-      <div className="flex justify-between gap-5">
-        <div className="flex gap-5">
-          <Input
-            isClearable
-            className="w-full xl:w-96 dark:text-white"
-            classNames={{
-              label: 'font-semibold text-gray-700',
-              inputWrapper: 'pr-0',
-            }}
-            label="Nombre"
-            labelPlacement="outside"
-            placeholder="Escribe para buscar..."
-            startContent={<User />}
-            value={search}
-            variant="bordered"
-            onChange={(e) => setSearch(e.target.value)}
-            onClear={() => {
-              setSearch('');
-              handleSearch('');
-            }}
-          />
-          <div className="flex items-end">
-            <ButtonUi
-              startContent={<SearchIcon className="w-10" />}
-              theme={Colors.Primary}
-              onPress={() => handleSearch(undefined)}
-            >
-              Buscar
-            </ButtonUi>
-          </div>
-        </div>
+      {/* <div className="hidden lg:flex w-full">
+       
+      </div> */}
 
-        <div className="flex gap-5 mt-6">
-          {actions.includes('Agregar') && (
-            <AddButton
-              onClick={() => {
-                setSelectedCategory(undefined);
-                modalAdd.onOpen();
-              }}
-            />
-          )}
-        </div>
-      </div>
 
-      <div className="flex mt-3 flex-row justify-between items-end gap-10">
-        <div className="flex justify-start">
-          <div className="xl:mt-10">
+      {/* <div className="flex mt-3 flex-row justify-between items-end gap-10"> */}
+      {/* <div className="hidden lg:flex w-full"> */}
+        <RenderCategoryFilters
+          // category={category}
+          // code={code}
+          handleSearch={handleSearch}
+          search={search}
+          // setCategory={setCategory}
+          // setCode={setCode}
+          setSearch={setSearch}
+        // setSubcategory={setSubCategory}
+        // subcategory={subCategory}
+        />
+      {/* </div> */}
+      <div className="flex flex-col gap-3 lg:flex-row lg:justify-between lg:gap-10">
+        <div className="flex justify-start items-end order-2 lg:order-1">
+          <div>
             <Switch
               classNames={{
                 thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
@@ -129,10 +104,10 @@ function ListCategories({ actions }: PProps) {
             </Switch>
           </div>
         </div>
-        <div className="flex gap-10 w-full justify-between items-end lg:justify-end">
-          <div className="w-[150px]">
+        <div className="flex gap-5 w-full justify-between items-end lg:justify-end order-1 lg:order-2">
+          <div className="w-[150px] mt-2">
             <Select
-              className="max-w-44 dark:text-white"
+              className="max-w-44 dark:text-white border border-white rounded-xl "
               classNames={{
                 label: 'font-semibold',
               }}
@@ -152,11 +127,32 @@ function ListCategories({ actions }: PProps) {
               ))}
             </Select>
           </div>
+          <RenderViewButton setView={setView} view={view} />
+          <div className="flex lg:hidden">
+            {/* <RenderCategoryFilters
+              // category={category}
+              // code={code}
+              handleSearch={handleSearch}
+              search={search}
+              // setCategory={setCategory}
+              // setCode={setCode}
+              setSearch={setSearch}
+              // setSubcategory={setSubCategory}
+              // subcategory={subCategory}
+            /> */}
+          </div>
 
-          <DisplayView setView={setView} view={view} />
+          {actions.includes('Agregar') && (
+            <AddButton
+              onClick={() => {
+                setSelectedCategory(undefined);
+                modalAdd.onOpen();
+                // navigate('/add-product');
+              }}
+            />
+          )}
         </div>
       </div>
-
       {view === 'grid' && (
         <CardCategory
           actions={actions}
@@ -167,7 +163,9 @@ function ListCategories({ actions }: PProps) {
       )}
       {view === 'table' && (
         <>
-          <TableComponent headers={['Nº', 'Nombre', 'Acciones']}>
+          <TableComponent 
+          className='overflow-auto'
+          headers={['Nº', 'Nombre', 'Acciones']}>
             {loading_categories ? (
               <tr>
                 <td className="p-3 text-sm text-center text-slate-500" colSpan={5}>
@@ -284,9 +282,9 @@ export const DeletePopUp = ({ category }: Props) => {
           <div className="w-full p-5">
             <p className="font-semibold text-gray-600 dark:text-white">Eliminar {category.name}</p>
             <p className="mt-3 text-center text-gray-600 dark:text-white w-72">
-              ¿Estas seguro de eliminar este registro?
+              ¿Estas seguro de eliminar este registro ?
             </p>
-            <div className="flex justify-center gap-5 mt-4">
+            <div className="flex justify-between gap-5 mt-4">
               <ButtonUi theme={Colors.Default} onPress={() => deleteDisclosure.onClose()}>
                 No, cancelar
               </ButtonUi>

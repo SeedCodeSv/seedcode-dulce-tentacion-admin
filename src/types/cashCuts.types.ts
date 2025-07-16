@@ -38,7 +38,7 @@ export interface ZCashCutsRequest {
 
 export interface IZCashCutsStore {
     data: ZCashCutsResponse
-    OnGetCashCutsZ: ( startDate?: string, endDate?: string) => void
+    OnGetCashCutsZ: (startDate?: string, endDate?: string) => void
 
 }
 
@@ -47,7 +47,7 @@ export interface CloseZ {
     numberCut: number;
     inicioTkt: number;
     finTkt: number;
-    typeCut : string
+    typeCut: string
     totalTkt: number;
     inicioF: number;
     finF: number;
@@ -61,101 +61,103 @@ export interface CloseZ {
     ivaDevTkt: number;
     totalDevTkt: number;
     totalGeneral: number;
-  }
+}
 
-  export interface IGetCutsReport {
-    ok:               boolean;
+export interface IGetCutsReport {
+    ok: boolean;
     cash_cuts_report: CashCutsReport[];
-    total:            number;
-    totalPag:         number;
-    currentPag:       number;
-    nextPag:          number;
-    prevPag:          number;
-    status:           number;
+    total: number;
+    totalPag: number;
+    currentPag: number;
+    nextPag: number;
+    prevPag: number;
+    status: number;
 }
 
 export interface CashCutsReport {
-    startDate:     string;
-    statTime:      string;
-    endDate:       string;
-    endTime:       string;
-    totalSales:    string;
-    totalCash:     string;
-    totalCard:     string;
-    totalOthers:   string;
-    expenses:      string;
-    pettyCash:     string;
+    startDate: string;
+    statTime: string;
+    endDate: string;
+    initialBox?: number;
+    endTime: string;
+    totalSales: string;
+    totalCash: string;
+    totalCard: string;
+    totalOthers: string;
+    expenses: string;
+    pettyCash: string;
     cashDelivered: string;
-    difference:    string;
-    branchName:    string;
-    employee:      Employee;
+    difference: string;
+    branchName: string;
+    employee: Employee;
 }
 
 export interface IGetCutsReportSummary {
-    ok:               boolean;
+    ok: boolean;
     cash_cuts_summary: CashCutsReportSummary[];
-    total:            number;
-    totalPag:         number;
-    currentPag:       number;
-    nextPag:          number;
-    prevPag:          number;
-    status:           number;
+    total: number;
+    totalPag: number;
+    currentPag: number;
+    nextPag: number;
+    prevPag: number;
+    status: number;
 }
 
 export interface CashCutsReportSummary {
-    date:             string;
-    sumTotalSales:    number;
-    sumTotalCash:     number;
-    sumTotalCard:     number;
-    sumTotalOthers:   number;
+    date: string;
+    sumTotalSales: number;
+    sumTotalCash: number;
+    sumTotalCard: number;
+    sumTotalOthers: number;
     sumCashDelivered: number;
-    sumExpenses:      number;
+    sumExpenses: number;
+    writtenTotals?: number[]
 }
 
 export interface SearchCutReport {
-    branchId: number;
+    branchId?: number;
     page: number;
     limit: number;
     dateFrom?: string;
     dateTo?: string;
     employee?: string;
+    branchIds?: number[]
 }
 
 export interface IGetDataBox {
-  dataBoxes: DataBox[];
-  ok: boolean;
-  status: number;
-  message: string;
+    dataBoxes: DataBox[];
+    ok: boolean;
+    status: number;
+    message: string;
 }
 
 export interface DataBox {
-  box: Box;
-  totalSales01Cash?: number;
-  totalSales01Card?: number;
-  firtsSale: string;
-  lastSale: string;
-  totalSales03Cash: number | null;
-  totalSales03Card: number | null;
-  firtsSale03: string | null;
-  lastSale03: string | null;
-  invalidation01: number | null;
-  invalidation03: number | null;
-  firstInvalidation01: string | null;
-  firstInvalidation03: string | null;
-  lastInvalidation01: string | null;
-  lastInvalidation03: string | null;
-  categories: Categories;
+    box: Box;
+    totalSales01Cash?: number;
+    totalSales01Card?: number;
+    firtsSale: string;
+    lastSale: string;
+    totalSales03Cash: number | null;
+    totalSales03Card: number | null;
+    firtsSale03: string | null;
+    lastSale03: string | null;
+    invalidation01: number | null;
+    invalidation03: number | null;
+    firstInvalidation01: string | null;
+    firstInvalidation03: string | null;
+    lastInvalidation01: string | null;
+    lastInvalidation03: string | null;
+    categories: Categories;
 }
 
 export interface Categories {
-  list: List[];
-  totalGeneral?: number;
-  totalQuantityGeneral?: number;
+    list: List[];
+    totalGeneral?: number;
+    totalQuantityGeneral?: number;
 }
 
 export interface List {
-  category: string;
-  quantity: number;
-  total: number;
+    category: string;
+    quantity: number;
+    total: number;
 }
-  

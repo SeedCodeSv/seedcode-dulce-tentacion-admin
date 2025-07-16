@@ -7,11 +7,11 @@ import KardexExportExcell from './kardexExcell';
 
 import { global_styles } from '@/styles/global.styles';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
-import { Branches } from '@/types/branches.types';
 import { ITransmitter } from '@/types/transmitter.types';
+import { SearchReport } from '@/types/reports/productsSelled.report.types';
 
 
-export default function ViewKardexList({ view, branch, transmitter, actions }: { view: string; transmitter: ITransmitter, branch: Branches, actions: string[] }) {
+export default function ViewKardexList({ view, branch, transmitter, actions, search }: { view: string; transmitter: ITransmitter, branch: string[], actions: string[], search: SearchReport }) {
   const { kardexGeneral } = useReportKardex();
 
   const [sortBy, setSortBy] = useState<keyof typeof kardexGeneral[0] | null>(null);
@@ -36,13 +36,13 @@ export default function ViewKardexList({ view, branch, transmitter, actions }: {
 
   return (
     <div>
-      <div className="flex gap-2 md:justify-between mt-2">
+      <div className="flex gap-2 md:justify-between mt-2 overflow-auto">
         <div className='flex gap-4'>
           {actions.includes('Descargar PDF') && (
-            <DownloadPDFButton branch={branch} tableData={sortedProducts} transmitter={transmitter} />
+            <DownloadPDFButton branch={branch} params={search}  sorted='' transmitter={transmitter} />
           )}
           {actions.includes('Exportar Excel') && (
-            <KardexExportExcell branch={branch!} tableData={sortedProducts} transmitter={transmitter} />
+            <KardexExportExcell branch={branch} params={search} sorted='' transmitter={transmitter} />
           )}
         </div>
         <div className="flex justify-start md:justify-end gap-2">

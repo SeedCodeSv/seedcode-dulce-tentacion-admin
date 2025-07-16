@@ -33,6 +33,18 @@ export const useCutReportStore = create<ICutReportStore>((set) => ({
             })
         })
     },
+    onGetCashCutReportDetailedExport(params) {
+        return get_cuts_report(params).then((data) => {
+            return { ok: true, cashCutsDetailed: data }
+        }).catch(() => {
+            return {
+                ok: false, cashCutsDetailed: {
+                    ...initialPagination,
+                    cash_cuts_report: []
+                },
+            }
+        })
+    },
     onGetCashCutReportSummary(params) {
         set({ loadindSummary: true })
 
@@ -48,14 +60,29 @@ export const useCutReportStore = create<ICutReportStore>((set) => ({
             })
         })
     },
-  onGetDataBox(branchId, date) {
-    set({ loadingDataBox: true });
-    get_data_box(branchId, date)
-      .then(({ data }) => {
-        set({ dataBox: data.dataBoxes, loadingDataBox: false });
-      })
-      .catch(() => {
-        set({ dataBox: [], loadingDataBox: false });
-      });
-  },
+    onGetCashCutReportSummaryExport(params) {
+        return get_cuts_report_summary(params)
+            .then((data) => {
+                return { ok: true, cashCutsSummary: data };
+            })
+            .catch(() => {
+                return {
+                    ok: false,
+                    cashCutsSummary: {
+                        cash_cuts_summary: [],
+                        ...initialPagination
+                    }
+                };
+            });
+    },
+    onGetDataBox(branchId, date) {
+        set({ loadingDataBox: true });
+        get_data_box(branchId, date)
+            .then(({ data }) => {
+                set({ dataBox: data.dataBoxes, loadingDataBox: false });
+            })
+            .catch(() => {
+                set({ dataBox: [], loadingDataBox: false });
+            });
+    },
 }));

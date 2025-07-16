@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { toast } from 'sonner';
 
-import { IGetProductsPaginated } from '../types/products.types';
+import { GetConvertProduct, IGetProductsPaginated } from '../types/products.types';
 import {
   create_products,
   get_products,
@@ -13,6 +13,9 @@ import {
   get_product_by_id,
   get_products_and_recipe,
   get_product_list_search,
+  convert_product,
+  get_converted_product,
+  update_product_coversion,
 } from '../services/products.service';
 import { messages } from '../utils/constants';
 import { cat_011_tipo_de_item } from '../services/facturation/cat-011-tipo-de-item.service';
@@ -21,6 +24,8 @@ import { IProductsStore } from './types/products.store';
 
 export const useProductsStore = create<IProductsStore>((set, get) => ({
   cat_011_tipo_de_item: [],
+  convertedProduct: {} as GetConvertProduct,
+  loading_convert: false,
   products_list: [],
   productsFilteredList: [],
   paginated_products: {
@@ -118,7 +123,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
             status: 404,
             ok: false,
           },
-          productsAndRecipe: [],	
+          productsAndRecipe: [],
         });
       });
   },
@@ -190,7 +195,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   getRecipeBook(id) {
     set({ loadingRecipeBook: true });
 
-   return get_product_recipe_book(id)
+    return get_product_recipe_book(id)
       .then((result) => {
         set({ recipeBook: result.data.recipeBook, loadingRecipeBook: false });
 
@@ -202,15 +207,51 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
         return false
       });
   },
-    async getProductsFilteredList(params) {
-      try {
-        const res = await get_product_list_search(params);
-  
-        if (!res.ok) return set({ productsFilteredList: [] });
-  
-        set({ productsFilteredList: res.products });
-      } catch {
-        set({ productsFilteredList: [] });
-      }
-    },
+  getConvertProduct(id) {
+    set({ loading_convert: true });
+
+    return get_converted_product(id)
+      .then(({ data }) => {
+        set({ convertedProduct: data.product, loading_convert: false });
+
+        return true
+      })
+      .catch(() => {
+        set({ convertedProduct: null, loading_convert: false });
+
+        return false
+      });
+  },
+  async getProductsFilteredList(params) {
+    try {
+      const res = await get_product_list_search(params);
+
+      if (!res.ok) return set({ productsFilteredList: [] });
+
+      set({ productsFilteredList: res.products });
+    } catch {
+      set({ productsFilteredList: [] });
+    }
+  },
+  async onConvertProduct(payload) {
+    return convert_product(payload).then(() => {
+      return true
+    }).catch(() => {
+      return false
+    })
+  },
+   async patchConvertProduct(payload, id) {
+    return update_product_coversion(payload, id)
+      .then(() => {
+        toast.success(messages.success);
+        get().getPaginatedProducts(1, 5, 0, 0, '', '');
+
+        return true;
+      })
+      .catch(() => {
+        toast.error(messages.error);
+
+        return false;
+      });
+  },
 }));

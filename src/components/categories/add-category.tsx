@@ -49,7 +49,7 @@ const AddCategory = (props: Props) => {
   return (
     <Modal isOpen={props.isOpen} size="lg" onClose={props.closeModal}>
       <ModalContent>
-        <ModalHeader>{props.category ? 'Editar' : 'Agregar'} categoría</ModalHeader>
+        <ModalHeader>{props.category ? 'Editar ' : 'Agregar '} categoría</ModalHeader>
         <Formik
           initialValues={{ name: props.category?.name ?? '', showSale: props.category?.showSale ?? true }}
           validationSchema={validationSchema}
@@ -83,7 +83,6 @@ const AddCategory = (props: Props) => {
                   >
                     Incluir la categoría en la pantalla de ventas
                   </Checkbox>
-
                 </div>
               </ModalBody>
               <ModalFooter>

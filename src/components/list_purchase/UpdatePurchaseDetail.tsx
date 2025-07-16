@@ -12,7 +12,6 @@ import AddProduct from './AddProduct';
 import { DetailPurchaseOrder } from '@/types/purchase_orders.types';
 import { global_styles } from '@/styles/global.styles';
 import { usePurchaseOrdersStore } from '@/store/purchase_orders.store';
-import Layout from '@/layout/Layout';
 import HeadlessModal from '@/components/global/HeadlessModal';
 import DivGlobal from '@/themes/ui/div-global';
 function UpdatePurchaseDetail() {
@@ -109,7 +108,7 @@ function UpdatePurchaseDetail() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Layout title="Confirmar orden">
+    <>
       <DivGlobal >
         <div className="flex justify-between">
           <h2 className="text-3xl font-bold dark:text-white mb-6">Detalle de Orden</h2>
@@ -283,7 +282,7 @@ function UpdatePurchaseDetail() {
                               isIconOnly
                               style={global_styles().dangerStyles}
                               onPress={() =>
-                                removeProductFromPrchaseProductAdd(Number(item.branchProduct?.id))
+                                removeProductFromPrchaseProductAdd(String(item.numItem))
                               }
                             >
                               <Trash />
@@ -346,7 +345,7 @@ function UpdatePurchaseDetail() {
           </label>
         </HeadlessModal>
       </DivGlobal>
-    </Layout>
+    </>
   );
 }
 

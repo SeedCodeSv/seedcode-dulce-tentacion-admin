@@ -16,7 +16,6 @@ import useGlobalStyles from '../global/global.styles';
 import { formatCurrency } from '@/utils/dte';
 import { useReportNoteSalesStore } from '@/store/reports/report_notes_sale.store';
 import { get_sale_pdf_credit_note } from '@/services/sales.service';
-import Layout from '@/layout/Layout';
 import { TableComponent } from '@/themes/ui/table-ui';
 
 function NotesCreditBySale() {
@@ -40,7 +39,7 @@ function NotesCreditBySale() {
   };
 
   return (
-    <Layout title="NOTAS DE CRÉDITO DE LA VENTA">
+    <>
       <>
         <div className="flex flex-col p-10 overflow-x-hidden">
           <div className="grid w-full grid-cols-3 gap-5">
@@ -176,7 +175,7 @@ function NotesCreditBySale() {
           )}
         </div>
       </>
-    </Layout>
+    </>
   );
 }
 export default NotesCreditBySale;

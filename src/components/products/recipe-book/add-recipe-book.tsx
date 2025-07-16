@@ -179,7 +179,7 @@ const [performance, setPerformance] = useState('')
               </div>
             </div>
           )}
-          <div className="w-full mt-3  overflow-y-auto grid grid-cols-3 gap-4">
+          <div className="w-full mt-3  overflow-y-auto grid md:grid-cols-3 grid-cols-2 xl:grid-cols-4 gap-4">
             {productsRecipe.map((sp: ProductOrder) => (
               <div
                 key={sp.id}
@@ -240,7 +240,7 @@ const [performance, setPerformance] = useState('')
             ))}
           </div>
         </div>
-        <div className="w-full flex justify-end">
+        <div className="w-full flex justify-end mt-2">
           <ButtonUi isLoading={loadingSave} theme={Colors.Primary} onPress={handle_save_recipe}>Guardar receta</ButtonUi>
         </div>
       </div>

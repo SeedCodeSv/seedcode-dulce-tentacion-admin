@@ -25,7 +25,6 @@ import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import { limit_options } from '@/utils/constants';
 import { Branches } from '@/types/branches.types';
-import Layout from '@/layout/Layout';
 import { IBranchProductOrder, Supplier } from '@/types/branch_product_order.types';
 import { useDebounce } from '@/hooks/useDebounce';
 import DivGlobal from '@/themes/ui/div-global';
@@ -83,7 +82,7 @@ const PurchaseOrderForm = () => {
   };
 
   return (
-    <Layout title="Ordenes de Compra">
+    <>
       <>
         <DivGlobal>
           <div className='w-full flex md:flex-col justify-between'>
@@ -364,7 +363,7 @@ const PurchaseOrderForm = () => {
           </ModalGlobal>
         </DivGlobal>
       </>
-    </Layout>
+    </>
   );
 };
 

@@ -26,6 +26,7 @@ import ThemesList from './themes-list';
 import { global_styles } from '@/styles/global.styles';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
 
 interface Props {
   actions: string[];
@@ -59,7 +60,7 @@ const ConfigurationList = ({ actions }: Props) => {
 
   return (
     <>
-      <div className=" w-full h-full p-5 bg-gray-50 dark:bg-gray-900">
+      <DivGlobal>
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <div className="flex justify-evenly gap-10 mt-5 ml-5 ">
             <div className="flex gap-4 justify-between w-full">
@@ -210,7 +211,7 @@ const ConfigurationList = ({ actions }: Props) => {
                           {actions.includes('Editar') && (
                             <Button
                               style={global_styles().secondaryStyle}
-                              onClick={() => {
+                              onPress={() => {
                                 setSelectedConfiguration(rowData);
                                 updateName.onOpen();
                               }}
@@ -231,7 +232,7 @@ const ConfigurationList = ({ actions }: Props) => {
 
           <ThemesList personalization={personalization} />
         </div>
-      </div>
+      </DivGlobal>
 
       <HeadlessModal
         isOpen={addLogo.isOpen}

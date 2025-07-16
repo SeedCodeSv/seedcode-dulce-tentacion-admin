@@ -18,7 +18,6 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
 
-import Layout from '@/layout/Layout';
 import { useProductionOrderTypeStore } from '@/store/production-order-type.store';
 import { formatDate } from '@/utils/dates';
 import { useProductionOrderStore } from '@/store/production-order.store';
@@ -36,7 +35,9 @@ import Pagination from '@/components/global/Pagination';
 import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 import EmptyTable from '@/components/global/EmptyTable';
 import { TableComponent } from '@/themes/ui/table-ui';
-import { PiMicrosoftExcelLogoBold } from 'react-icons/pi';
+import useWindowSize from '@/hooks/useWindowSize';
+import RenderViewButton from '@/components/global/render-view-button';
+import ProductionsOrderCard from '@/components/products/ProductionsOrderCard';
 
 type Key = string;
 
@@ -49,7 +50,10 @@ function ProductionOrders() {
   const { onGetProductionOrderTypes } = useProductionOrderTypeStore();
 
   const navigation = useNavigate();
-
+  const { windowSize } = useWindowSize()
+  const [view, setView] = useState<'table' | 'grid' | 'list'>(
+    windowSize.width < 768 ? 'grid' : "table"
+  )
   const modalCancelOrder = useDisclosure();
   const modalMoreInformation = useDisclosure();
   const modalVerifyOrder = useDisclosure();
@@ -145,12 +149,12 @@ function ProductionOrders() {
   };
 
 
-  const handleGenerateReports = () => {
+  // const handleGenerateReports = () => {
 
-  }
+  // }
 
   return (
-    <Layout title="Ordenes de producción">
+    <>
       <DivGlobal>
 
         <ResponsiveFilterWrapper withButton={false}>
@@ -189,7 +193,9 @@ function ProductionOrders() {
             ))}
           </Select>
         </ResponsiveFilterWrapper>
-        <div className="flex justify-end mt-2">
+        <div className="flex justify-end mt-2 gap-4">
+          <RenderViewButton setView={setView} view={view} />
+
           <ButtonUi
             isIconOnly
             theme={Colors.Success}
@@ -201,7 +207,7 @@ function ProductionOrders() {
           </ButtonUi>
         </div>
         <div>
-          <ButtonUi
+          {/* <ButtonUi
             className="mt-4 font-semibold w-48 "
             color="success"
             theme={Colors.Success}
@@ -210,101 +216,116 @@ function ProductionOrders() {
             }}
           >
             <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
-          </ButtonUi>
+          </ButtonUi> */}
         </div>
-        <TableComponent
-          headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin", 'Hora de fin', 'Estado', 'Acciones']}
-        >
-          {productionOrders.length === 0 && (
-            <tr>
-              <td className="p-3" colSpan={7}>
-                <EmptyTable />
-              </td>
-            </tr>
-          )}
-          {productionOrders.map((porD, index) => (
-            <tr key={index}>
-              <TdGlobal className="p-3">{index + 1}</TdGlobal>
-              <TdGlobal className="p-3">{porD.date}</TdGlobal>
-              <TdGlobal className="p-3">{porD.time}</TdGlobal>
-              <TdGlobal className="p-3">{porD.endDate || 'No definido'}</TdGlobal>
-              <TdGlobal className="p-3">{porD.endTime || 'No definido'}</TdGlobal>
-              <TdGlobal className="p-3">
-                {RenderStatus({ status: porD.statusOrder as Status }) || porD.statusOrder}
-              </TdGlobal>
-              <TdGlobal className="p-3 flex gap-2">
-                {porD.statusOrder === 'Abierta' && (
-                  <div className="flex gap-2">
-                    <ButtonUi
-                      isIconOnly
-                      showTooltip
-                      theme={Colors.Success}
-                      tooltipText="Iniciar orden de producción"
-                      onPress={() => {
-                        setSelectedOrderId(porD.id);
-                        modalVerifyOrder.onOpen();
-                      }}
-                    >
-                      <Play />
-                    </ButtonUi>
-                    <ButtonUi
-                      isIconOnly
-                      showTooltip
-                      theme={Colors.Error}
-                      tooltipText="Cancelar orden de producción"
-                      onPress={() => {
-                        setSelectedOrderId(porD.id);
-                        modalCancelOrder.onOpen();
-                      }}
-                    >
-                      <TbCancel size={20} />
-                    </ButtonUi>
-                  </div>
-                )}
-                {porD.statusOrder === 'En Proceso' && (
-                  <>
-                    <ButtonUi
-                      isIconOnly
-                      showTooltip
-                      theme={Colors.Success}
-                      tooltipText="Completar orden de producción"
-                      onPress={() => {
-                        setSelectedOrderId(porD.id);
-                        modalCompleteOrder.onOpen();
-                      }}
-                    >
-                      <TbCheck size={20} />
-                    </ButtonUi>
-                    <ButtonUi
-                      isIconOnly
-                      showTooltip
-                      theme={Colors.Error}
-                      tooltipText="Cancelar orden de producción"
-                      onPress={() => {
-                        setSelectedOrderId(porD.id);
-                        modalCancelOrder.onOpen();
-                      }}
-                    >
-                      <TbCancel size={20} />
-                    </ButtonUi>
-                  </>
-                )}
-                <ButtonUi
-                  isIconOnly
-                  showTooltip
-                  theme={Colors.Warning}
-                  tooltipText="Ver orden de producción"
-                  onPress={() => {
-                    setSelectedOrderId(porD.id);
-                    modalMoreInformation.onOpen();
-                  }}
-                >
-                  <Eye size={20} />
-                </ButtonUi>
-              </TdGlobal>
-            </tr>
-          ))}
-        </TableComponent>
+        {(view === 'grid') && (
+          <ProductionsOrderCard
+            modalCancelOrder={() => modalCancelOrder.onOpen()}
+            modalCompleteOrder={() => modalCompleteOrder.onOpen()}
+            modalMoreInformation={() => modalMoreInformation.onOpen()}
+            modalVerifyOrder={() => modalVerifyOrder.onOpen()}
+            setSelectedOrderId={setSelectedOrderId}
+
+          />
+        )}
+        {view === 'table' && (
+
+          <TableComponent
+            className='overflow-auto'
+            headers={["Nº", "Fecha de inicio", "Hora de inicio", "Fecha de fin", 'Hora de fin', 'Estado', 'Acciones']}
+          >
+            {productionOrders.length === 0 && (
+              <tr>
+                <td className="p-3" colSpan={7}>
+                  <EmptyTable />
+                </td>
+              </tr>
+            )}
+            {productionOrders.map((porD, index) => (
+              <tr key={index}>
+                <TdGlobal className="p-3">{index + 1}</TdGlobal>
+                <TdGlobal className="p-3">{porD.date}</TdGlobal>
+                <TdGlobal className="p-3">{porD.time}</TdGlobal>
+                <TdGlobal className="p-3">{porD.endDate || 'No definido'}</TdGlobal>
+                <TdGlobal className="p-3">{porD.endTime || 'No definido'}</TdGlobal>
+                <TdGlobal className="p-3">
+                  {RenderStatus({ status: porD.statusOrder as Status }) || porD.statusOrder}
+                </TdGlobal>
+                <TdGlobal className="p-3 flex gap-2">
+                  {porD.statusOrder === 'Abierta' && (
+                    <div className="flex gap-2">
+                      <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        theme={Colors.Success}
+                        tooltipText="Iniciar orden de producción"
+                        onPress={() => {
+                          setSelectedOrderId(porD.id);
+                          modalVerifyOrder.onOpen();
+                        }}
+                      >
+                        <Play />
+                      </ButtonUi>
+                      <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        theme={Colors.Error}
+                        tooltipText="Cancelar orden de producción"
+                        onPress={() => {
+                          setSelectedOrderId(porD.id);
+                          modalCancelOrder.onOpen();
+                        }}
+                      >
+                        <TbCancel size={20} />
+                      </ButtonUi>
+                    </div>
+                  )}
+                  {porD.statusOrder === 'En Proceso' && (
+                    <>
+                      <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        theme={Colors.Success}
+                        tooltipText="Completar orden de producción"
+                        onPress={() => {
+                          setSelectedOrderId(porD.id);
+                          modalCompleteOrder.onOpen();
+                        }}
+                      >
+                        <TbCheck size={20} />
+                      </ButtonUi>
+                      <ButtonUi
+                        isIconOnly
+                        showTooltip
+                        theme={Colors.Error}
+                        tooltipText="Cancelar orden de producción"
+                        onPress={() => {
+                          setSelectedOrderId(porD.id);
+                          modalCancelOrder.onOpen();
+                        }}
+                      >
+                        <TbCancel size={20} />
+                      </ButtonUi>
+                    </>
+                  )}
+                  <ButtonUi
+                    isIconOnly
+                    showTooltip
+                    theme={Colors.Warning}
+                    tooltipText="Ver orden de producción"
+                    onPress={() => {
+                      setSelectedOrderId(porD.id);
+                      modalMoreInformation.onOpen();
+                    }}
+                  >
+                    <Eye size={20} />
+                  </ButtonUi>
+                </TdGlobal>
+              </tr>
+            ))}
+          </TableComponent>
+        )}
+
         <div className="mt-3">
           <Pagination
             currentPage={paginationProductionOrders.currentPag}
@@ -369,7 +390,7 @@ function ProductionOrders() {
             setSelectedOrderId(0)
           }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }
 

@@ -44,6 +44,7 @@ import useThemeColors from '@/themes/use-theme-colors';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
 import DisplayView from '@/themes/ui/display-view';
+import useWindowSize from '@/hooks/useWindowSize';
 
 interface Props {
   actions: string[];
@@ -67,7 +68,7 @@ function ListUsers({ actions }: Props) {
     );
     getRolesList();
   }, [limit, active]);
-
+  const { windowSize } = useWindowSize()
   const modalAdd = useDisclosure();
   const modalUpdate = useDisclosure();
   const modalChangePassword = useDisclosure();
@@ -75,7 +76,9 @@ function ListUsers({ actions }: Props) {
 
   const [selectId, setSelectedId] = useState(0);
 
-  const [view, setView] = useState<'table' | 'grid'>('table');
+  const [view, setView] = useState<'table' | 'grid'>(
+    windowSize.height < 768 ? 'grid' : 'table'
+  )
 
   const [userName, setUserName] = useState('');
   const [rol, setRol] = useState('');
@@ -94,7 +97,7 @@ function ListUsers({ actions }: Props) {
   const handleActivate = (id: number) => {
     activateUser(id).then(() => {
       getUsersPaginated(
-        user?.pointOfSale?.branch.transmitterId ?? 0,
+        user?.pointOfSale?.branch?.transmitterId ?? 0,
         1,
         limit,
         '',
@@ -108,6 +111,7 @@ function ListUsers({ actions }: Props) {
     <>
       <DivGlobal>
         <div className="w-full h-full overflow-y-auto">
+
           <div className="hidden w-full gap-5 md:flex">
             <div className="flex items-end gap-5 w-full">
               <Input
@@ -151,14 +155,14 @@ function ListUsers({ actions }: Props) {
                     handleSearch('');
                   }}
                   onSelectionChange={(value) => {
-                    const selectRol = roles_list.find((rol) => rol.name === value);
+                    const selectRol = roles_list.find((rol) => rol?.name === value);
 
                     setRol(selectRol?.name ?? '');
                   }}
                 >
                   {roles_list.map((dep) => (
-                    <AutocompleteItem key={dep.name} className="dark:text-white">
-                      {dep.name}
+                    <AutocompleteItem key={dep?.name} className="dark:text-white">
+                      {dep?.name}
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
@@ -191,7 +195,7 @@ function ListUsers({ actions }: Props) {
             <div className="flex gap-10 w-full justify-between items-end">
               <div className="w-44">
                 <Select
-                  className="w-44 dark:text-white"
+                  className="w-36 dark:text-white"
                   classNames={{
                     label: 'font-semibold',
                   }}
@@ -213,7 +217,19 @@ function ListUsers({ actions }: Props) {
                   ))}
                 </Select>
               </div>
+
               <div className="flex gap-5 items-end">
+                <div className='absolute left-44'>
+                  {windowSize.width < 780 && (
+                    <>
+                      {actions.includes('Agregar') &&
+                        <AddButton onClick={() => modalAdd.onOpen()} />
+                      }
+                    </>
+                  )}
+                </div>
+
+
                 <DisplayView setView={setView} view={view} />
                 <SearchUser
                   active={active}
@@ -221,7 +237,15 @@ function ListUsers({ actions }: Props) {
                   nameUser={(userName) => setUserName(userName)}
                   setActive={setActive}
                 />
-                {actions.includes('Agregar') && <AddButton onClick={() => modalAdd.onOpen()} />}
+                {windowSize.width > 780 && (
+                  <>
+                    {actions.includes('Agregar') &&
+                      <AddButton onClick={() => modalAdd.onOpen()} />
+                    }
+                  </>
+                )}
+
+
               </div>
             </div>
           </div>
@@ -230,6 +254,7 @@ function ListUsers({ actions }: Props) {
             <CardProduct
               DeletePopover={DeletePopUp}
               actions={actions}
+              generateCodeModal={generateCodeModal}
               handleActivate={handleActivate}
               openEditModal={(user) => {
                 setUser(user);
@@ -239,11 +264,12 @@ function ListUsers({ actions }: Props) {
                 setSelectedId(user.id);
                 modalChangePassword.onOpen();
               }}
+              setSelectedId={setSelectedId}
             />
           )}
           {view === 'table' && (
             <div className="overflow-x-auto custom-scrollbar mt-4">
-              <table className="w-full">
+              <table className="w-full overflow-auto">
                 <thead className="sticky top-0 z-20 bg-white">
                   <tr>
                     <ThGlobal className="text-left p-3">No.</ThGlobal>
@@ -258,8 +284,8 @@ function ListUsers({ actions }: Props) {
                       {users_paginated.users.map((item, index) => (
                         <tr key={index}>
                           <TdGlobal className="p-3">{item.id}</TdGlobal>
-                          <TdGlobal className="p-3">{item.userName}</TdGlobal>
-                          <TdGlobal className="p-3">{item.role.name}</TdGlobal>
+                          <TdGlobal className="p-3">{item?.userName}</TdGlobal>
+                          <TdGlobal className="p-3">{item?.role?.name}</TdGlobal>
                           <TdGlobal className="p-3">
                             <div className="flex w-full gap-5">
                               {item.active && actions.includes('Editar') && (

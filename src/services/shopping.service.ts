@@ -5,6 +5,7 @@ import {
   ErrorSupplier,
   ICreateShoppingManual,
   IGetCorrelativeShopping,
+  IGetProductShoppingReport,
   IGetShoppingDetails,
   IGetShoppingPaginated,
   IGetShoppingReport,
@@ -12,6 +13,7 @@ import {
   SuccessSupplier,
 } from '@/types/shopping.types';
 import { API_URL } from '@/utils/constants';
+import { SearchGlobal } from '@/types/global.types';
 
 export const create_shopping = (payload: FormData) => {
   return axios.post<ErrorSupplier | SuccessSupplier>(`${API_URL}/shoppings`, payload);
@@ -80,5 +82,9 @@ export const get_shopping_excluded_subject = (transmitterId: number, month: stri
 export const get_branch_shopping_annexes = (transmitterId: number, month: string, year: number) => {
   return axios.get<IGetShoppingReport>(API_URL + `/reports/anexos-compras/${transmitterId}?month=${month}&year=${year}`);
 };
+
+export const get_report_shoppings = (params: SearchGlobal) =>{
+  return axios.get<IGetProductShoppingReport>(API_URL + `/reports/products-bought?startDate=${params.startDate}&endDate=${params.endDate}`);
+}
 
 

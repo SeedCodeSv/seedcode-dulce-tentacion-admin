@@ -1,25 +1,49 @@
 import { PiMicrosoftExcelLogo } from "react-icons/pi";
 import ExcelJS from 'exceljs';
+import { useState } from "react";
+import { toast } from "sonner";
 
 import ButtonUi from "@/themes/ui/button-ui";
-import { Branches } from "@/types/branches.types";
-import { DataKardex } from "@/types/reports/reportKardex.types";
+import { IReportKardexGeneral } from "@/types/reports/reportKardex.types";
 import { Colors } from "@/types/themes.types";
 import { ITransmitter } from "@/types/transmitter.types";
 import { getElSalvadorDateTime } from "@/utils/dates";
 import useGlobalStyles from "@/components/global/global.styles";
 import { hexToARGB } from "@/utils/utils";
+import { useReportKardex } from "@/store/reports/reportKardex.store";
+import { SearchReport } from "@/types/reports/productsSelled.report.types";
 
 
 
-export default function KardexExportExcell({ tableData, transmitter, branch }: { tableData: DataKardex[]; transmitter: ITransmitter, branch: Branches }) {
+
+export default function KardexExportExcell({params, transmitter, branch }: {params: SearchReport, sorted: string; transmitter: ITransmitter, branch: string[] }) {
     const styles = useGlobalStyles();
+  const { pagination_kardex,kardexGeneral, getReportKardexGeneralExport} = useReportKardex();
 
     const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
     const fontColor = hexToARGB(styles.darkStyle.color);
 
+     const [loading_data, setLoadingData] = useState(false)
+    
+        const handle = async () => {
+            setLoadingData(true)
+            const res = await getReportKardexGeneralExport({ ...params, limit: pagination_kardex.total })
+    
+            if (res) {
+                await exportToExcel(res.kardexGeneral)
+                setLoadingData(false)
+            }
+        }
+    
 
-    const exportToExcel = async () => {
+    const exportToExcel = async (kardexGeneral: IReportKardexGeneral) => {
+
+         if (!kardexGeneral.data || kardexGeneral.data.length === 0) {
+        toast.error('No hay datos disponibles para generar el Excell.');
+
+        return;
+      }
+      
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Kardex');
 
@@ -28,7 +52,7 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
 
         const extraInfo = [
             [`${transmitter.nombreComercial}`],
-            [`Sucursal: ${branch.name}`],
+            [`${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
             [`Fecha: ${DATE}`],
             [`Hora: ${time}`],
         ];
@@ -77,7 +101,7 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
             { width: 20 }
         ];
 
-        tableData.forEach((item, index) => {
+        kardexGeneral.data.forEach((item, index) => {
             worksheet.addRow([
                 index + 1,
                 `${item.date} - ${item.time}`,
@@ -106,10 +130,10 @@ export default function KardexExportExcell({ tableData, transmitter, branch }: {
 
     return (
         <ButtonUi
-            isDisabled={tableData.length === 0}
+            isDisabled={loading_data || kardexGeneral.length === 0}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
-            onPress={exportToExcel}
+            onPress={handle}
         >
             <p className="font-medium hidden lg:flex"> Exportar a excel</p>
         </ButtonUi>

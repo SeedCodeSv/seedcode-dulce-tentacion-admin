@@ -163,7 +163,7 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
             status: 0,
             ok: false
           },
-          loading_branch_product:false
+          loading_branch_product: false
         });
       });
   },
@@ -178,11 +178,12 @@ export const useBranchesStore = create<IBranchStore>((set, get) => ({
     });
   },
   getBranchById(id) {
-    get_branch_by_id(id).then(({data}) => {
-      set({branch: data.branch})
+    get_branch_by_id(id).then(({ data }) => {
+      set({ branch: data.branch })
     }).
-    catch(() => {
-       set({branch: {} as Branches})
-    })
+      catch(() => {
+        set({ branch: {} as Branches })
+      })
   }
 }));
+

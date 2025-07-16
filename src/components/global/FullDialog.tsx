@@ -1,5 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { X } from 'lucide-react';
+import { Fragment } from "react";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -13,7 +14,7 @@ export default function FullDialog(props: Props) {
 
   return (
     <>
-      <Transition appear show={isOpen}>
+      <Transition.Root unmount as={Fragment} show={isOpen}>
         <Dialog as="div" className="relative z-[1140] focus:outline-none " onClose={onClose}>
           <div
             className={`fixed inset-0 z-[1150] w-screen h-screen overflow-hidden `}
@@ -42,7 +43,7 @@ export default function FullDialog(props: Props) {
             </div>
           </div>
         </Dialog>
-      </Transition>
+      </Transition.Root>
     </>
   );
 }

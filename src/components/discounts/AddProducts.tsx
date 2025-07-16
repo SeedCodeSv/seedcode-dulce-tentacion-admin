@@ -261,7 +261,7 @@ function AddPurchaseOrders(props: Props) {
                 <p className="font-semibold dark:text-white">{branch_product.product.name}</p>
                 <p className="dark:text-white">Stock: {branch_product.stock}</p>
                 <p className="flex gap-3 mt-2 dark:text-white">
-                  <Truck /> {branch_product.supplier.nombre}
+                  <Truck /> {branch_product.supplier?.nombre}
                 </p>
                 <p className="flex gap-3 mt-2 dark:text-white">
                   <ScrollText /> {branch_product.product.subCategory.name}

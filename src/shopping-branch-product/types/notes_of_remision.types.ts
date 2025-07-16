@@ -5,6 +5,7 @@ import { Branches } from './shipping_branch_product.types';
 
 import { Customer } from '@/types/customers.types';
 import { Employee } from '@/types/employees.types';
+import { DetailNote, ReferalNote } from '@/types/referal-note.types';
 
 export interface Identificacion {
   version: number;
@@ -136,6 +137,18 @@ export interface IPropCustomer {
   branchLlegada?: Branches;
   employeeReceptor?: Employee;
   titleError: string;
-    socket:Socket;
+  socket:Socket;
   branchIssuingId:number
 }
+
+export interface NoteResponse {
+  ok:      boolean;
+  status:  number;
+  note:    Note;
+  message: string;
+}
+
+export interface Note extends ReferalNote {
+  details: DetailNote[];
+}
+

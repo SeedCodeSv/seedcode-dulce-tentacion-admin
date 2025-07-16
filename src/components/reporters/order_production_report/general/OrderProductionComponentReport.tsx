@@ -77,6 +77,7 @@ export default function OrdenProductionComponent() {
         debounce((value: string) => {
             getProductsFilteredList({
                 productName: value,
+                code: ''
             });
         }, 300),
         []
@@ -283,6 +284,7 @@ export default function OrdenProductionComponent() {
                 </CardBody>
             </Card>
             <TableComponent
+                className="overflow-auto"
                 headers={["Nº", 'Producto', "Fecha/Hora de inicio", 'Fecha/Hora de fin', 'Cantidad', 'Producido', 'Dañado', 'Estado',]}
                 renderHeader={(header) => (
                     <div className="flex items-center">

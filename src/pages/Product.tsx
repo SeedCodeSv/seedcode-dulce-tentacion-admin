@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import Layout from '../layout/Layout';
+// import Layout from '../layout/Layout';
 import ListProducts from '../components/products/list-product';
 
 import { usePermission } from '@/hooks/usePermission';
@@ -19,9 +19,7 @@ function Employees() {
   }, [roleActions]);
 
   return (
-    <Layout title="PRODUCTOS">
       <ListProducts actions={actions} />
-    </Layout>
   );
 }
 

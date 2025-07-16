@@ -1,5 +1,4 @@
 import Correlatives from '@/components/correlatives/Correlatives';
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 
 function CorrelativePage() {
@@ -9,9 +8,9 @@ function CorrelativePage() {
   const actionView = viewName?.actions.name || [];
 
   return (
-    <Layout title="Correlativos">
+    <>
       <Correlatives actions={actionView} />
-    </Layout>
+    </>
   );
 }
 

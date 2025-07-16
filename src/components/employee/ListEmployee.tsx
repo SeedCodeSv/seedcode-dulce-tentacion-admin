@@ -26,7 +26,7 @@ import classNames from 'classnames';
 import { useNavigate } from 'react-router';
 
 import { useEmployeeStore } from '../../store/employee.store';
-import { Employee, EmployeePayload } from '../../types/employees.types';
+import { Employee, EmployeePayload, IResponseCodes } from '../../types/employees.types';
 import AddButton from '../global/AddButton';
 import Pagination from '../global/Pagination';
 import { useBranchesStore } from '../../store/branches.store';
@@ -35,14 +35,15 @@ import HeadlessModal from '../global/HeadlessModal';
 import RenderViewButton from '../global/render-view-button';
 import EmptyTable from '../global/EmptyTable';
 import LoadingTable from '../global/LoadingTable';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
-import AddEmployee from './AddEmployee';
 import MobileView from './MobileView';
 import UpdateEmployee from './update-employee';
-import SearchEmployee from './search_employee/SearchEmployee';
 import ProofSalary from './employees-pdfs/ProofSalary';
 import ProofeOfEmployment from './employees-pdfs/ProofeOfEmployment';
 import ContractPdf from './../employee/employees-pdfs/pdfContract';
+import GenerateCodeEmployee from './GenerateCode';
+import { ChangePageParams } from './types/mobile-view.types';
 
 import useWindowSize from '@/hooks/useWindowSize';
 import { useAuthStore } from '@/store/auth.store';
@@ -52,7 +53,7 @@ import { Colors } from '@/types/themes.types';
 import useThemeColors from '@/themes/use-theme-colors';
 import { TableComponent } from '@/themes/ui/table-ui';
 import DivGlobal from '@/themes/ui/div-global';
-import GenerateCodeEmployee from './GenerateCode';
+import { get_codes_employees } from '@/services/employess.service';
 
 
 interface Props {
@@ -63,14 +64,15 @@ function ListEmployee({ actions }: Props) {
   const { user } = useAuthStore();
   const { getEmployeesPaginated, employee_paginated, activateEmployee, loading_employees } =
     useEmployeeStore();
-  const [startDate, setStartDate] = useState(fechaActualString);
-  const [endDate, setEndDate] = useState(fechaActualString);
-  const [firstName, setFirstName] = useState('');
-  const [firstLastName] = useState('');
-  const [branch, setBranch] = useState('');
-  const [phone, setPhone] = useState('');
-  const [limit, setLimit] = useState(5);
-  const [codeEmployee, setCodeEmployee] = useState('');
+  const [params, setParams] = useState({
+    startDate: fechaActualString,
+    endDate: fechaActualString,
+    firstName: '',
+    branch: '',
+    phone: '',
+    limit: 5,
+    codeEmployee: '',
+  });
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
@@ -78,65 +80,46 @@ function ListEmployee({ actions }: Props) {
   const [active, setActive] = useState(true);
 
   const { getBranchesList, branch_list } = useBranchesStore();
-  const modalAdd = useDisclosure();
   const [selectedEmployee, setSelectedEmployee] = useState<Employee>();
   const [selectId, setSelectedId] = useState(0);
+  const [codes, setCodes] = useState<IResponseCodes>()
 
   const [isDate, setDate] = useState(false);
-  const changePage = () => {
+  const changePage = ({
+    page,
+    name,
+    firstLastName: fln,
+    branch: br,
+    phone: ph,
+    codeEmployee: ce,
+    active: isActive,
+    isDate: useDate,
+    startDate: sd,
+    endDate: ed,
+  }: ChangePageParams = {}) => {
     getEmployeesPaginated(
-      Number(
-        user?.pointOfSale?.branch.transmitterId ?? 0
-      ),
-      1,
-      limit,
-      firstName,
-      firstLastName,
-      branch,
-      phone,
-      codeEmployee,
-      active ? 1 : 0,
-      isDate ? startDate : '',
-      isDate ? endDate : ''
+      Number(user?.pointOfSale?.branch.transmitterId ?? 0),
+      page ?? 1,
+      params.limit,
+      name ?? params.firstName,
+      fln ?? '',
+      br ?? params.branch,
+      ph ?? params.phone,
+      ce ?? params.codeEmployee,
+      (isActive ?? active) ? 1 : 0,
+      (useDate ?? isDate) ? (sd ?? params.startDate) : '',
+      (useDate ?? isDate) ? (ed ?? params.endDate) : ''
     );
   };
 
   useEffect(() => {
     getBranchesList();
-    getEmployeesPaginated(
-      Number(
-        user?.pointOfSale?.branch.transmitterId ?? 0
-      ),
-      1,
-      limit,
-      firstName,
-      firstLastName,
-      branch,
-      phone,
-      codeEmployee,
-      active ? 1 : 0,
-      '',
-      ''
-    );
-  }, [limit, active]);
+    changePage()
+  }, [params.limit, active]);
 
   const handleActivate = (id: number) => {
     activateEmployee(id).then(() => {
-      getEmployeesPaginated(
-        Number(
-          user?.pointOfSale?.branch.transmitterId ?? 0
-        ),
-        1,
-        limit,
-        '',
-        '',
-        '',
-        '',
-        '',
-        active ? 1 : 0,
-        startDate,
-        endDate
-      );
+      changePage()
     });
   };
   const navigate = useNavigate();
@@ -183,27 +166,8 @@ function ListEmployee({ actions }: Props) {
       ) : (
         <>
           <DivGlobal>
-            <div className="flex justify-between items-end ">
-              <SearchEmployee
-                branchName={(e) => setBranch(e)}
-                codeEmpleyee={(e) => setCodeEmployee(e)}
-                endDate={(e) => setEndDate(e)}
-                nameEmployee={(e) => setFirstName(e)}
-                phoneEmployee={(e) => setPhone(e)}
-                startDate={(e) => setStartDate(e)}
-              />
-              {actions.includes('Agregar') && (
-                <AddButton
-                  onClick={() => {
-                    modalAdd.onOpen();
-                    navigate('/add-employee');
-                    setSelectedEmployee(undefined);
-                  }}
-                />
-              )}
-            </div>
-            <div className="hidden w-full gap-5 md:flex">
-              <div className="grid w-full grid-cols-4 gap-3">
+            <div className="flex lg:flex-col-reverse justify-between items-end ">
+              <ResponsiveFilterWrapper classButtonLg='col-start-4 justify-self-end w-1/2' classLg='grid grid-cols-4 gap-4 w-full items-end' onApply={() => changePage()}>
                 <Input
                   isClearable
                   autoComplete="search"
@@ -218,10 +182,18 @@ function ListEmployee({ actions }: Props) {
                   name="searchName"
                   placeholder="Buscar por nombre..."
                   startContent={<User />}
-                  value={firstName}
+                  value={params.firstName}
                   variant="bordered"
-                  onChange={(e) => setFirstName(e.target.value)}
-                  onClear={() => setFirstName('')}
+                  onChange={(e) => setParams({ ...params, firstName: e.target.value })}
+                  onClear={() => {
+                    setParams({ ...params, firstName: '' });
+                    changePage({ name: '' })
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      changePage();
+                    }
+                  }}
                 />
 
                 <Input
@@ -238,10 +210,18 @@ function ListEmployee({ actions }: Props) {
                   name="searchCodeEmployee"
                   placeholder="Buscar por código..."
                   startContent={<ScanBarcode />}
-                  value={codeEmployee}
+                  value={params.codeEmployee}
                   variant="bordered"
-                  onChange={(e) => setCodeEmployee(e.target.value)}
-                  onClear={() => setCodeEmployee('')}
+                  onChange={(e) => setParams({ ...params, codeEmployee: e.target.value })}
+                  onClear={() => {
+                    setParams({ ...params, codeEmployee: '' })
+                    changePage({ codeEmployee: '' });
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      changePage();
+                    }
+                  }}
                 />
                 <Input
                   isClearable
@@ -256,10 +236,18 @@ function ListEmployee({ actions }: Props) {
                   name="searchPhone"
                   placeholder="Buscar por teléfono..."
                   startContent={<Phone size={20} />}
-                  value={phone}
+                  value={params.phone}
                   variant="bordered"
-                  onChange={(e) => setPhone(e.target.value)}
-                  onClear={() => setPhone('')}
+                  onChange={(e) => setParams({ ...params, phone: e.target.value })}
+                  onClear={() => {
+                    setParams({ ...params, phone: '' })
+                    changePage({ phone: '' })
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      changePage();
+                    }
+                  }}
                 />
 
                 <div className="w-full">
@@ -270,16 +258,24 @@ function ListEmployee({ actions }: Props) {
                       base: 'font-semibold text-gray-500 text-sm',
                     }}
                     clearButtonProps={{
-                      onClick: () => setBranch(''),
+                      onClick: () => {
+                        setParams({ ...params, branch: '' })
+                        changePage({ branch: '' })
+                      },
                     }}
-                    defaultSelectedKey={branch}
+                    defaultSelectedKey={params.branch}
                     labelPlacement="outside"
                     placeholder="Selecciona una sucursal"
                     startContent={<Store />}
                     variant="bordered"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        changePage();
+                      }
+                    }}
                     onSelectionChange={(key) => {
                       if (key) {
-                        setBranch(key as string);
+                        setParams({ ...params, branch: key as string })
                       }
                     }}
                   >
@@ -303,11 +299,11 @@ function ListEmployee({ actions }: Props) {
                           base: 'font-semibold dark:text-white text-sm',
                           label: 'font-semibold dark:text-white text-sm',
                         }}
-                        defaultValue={startDate}
+                        defaultValue={params.startDate}
                         labelPlacement="outside"
                         type="date"
                         variant="bordered"
-                        onChange={(e) => setStartDate(e.target.value)}
+                        onChange={(e) => setParams({ ...params, startDate: e.target.value })}
                       />
                     </div>
                     <div>
@@ -318,34 +314,33 @@ function ListEmployee({ actions }: Props) {
                           base: 'font-semibold dark:text-white text-sm',
                           label: 'font-semibold dark:text-white text-sm',
                         }}
-                        defaultValue={endDate}
+                        defaultValue={params.endDate}
                         labelPlacement="outside"
                         type="date"
                         variant="bordered"
-                        onChange={(e) => setEndDate(e.target.value)}
+                        onChange={(e) => setParams({ ...params, endDate: e.target.value })}
                       />
                     </div>
                   </>
                 )}
                 <ButtonUi
-                  className="hidden mt-6 font-semibold md:flex border border-white"
-                  color="primary"
-                  theme={Colors.Primary}
-                  onPress={() => changePage()}
-                >
-                  Buscar
-                </ButtonUi>
-
-                <ButtonUi
-                  className="hidden mt-6 font-semibold md:flex border border-white"
+                  className="hidden font-semibold md:flex border border-white"
                   theme={Colors.Primary}
                   onPress={() => setDate(!isDate)}
                 >
                   Filtrar Fechas
                 </ButtonUi>
-              </div>
-            </div>
+              </ResponsiveFilterWrapper>
+              {actions.includes('Agregar') && (
+                <AddButton
+                  onClick={() => {
+                    navigate('/add-employee');
+                    setSelectedEmployee(undefined);
+                  }}
+                />
+              )}
 
+            </div>
             <div className="flex flex-col gap-3 mt-3 lg:flex-row lg:justify-between lg:gap-10">
               <div className="flex justify-between order-2 lg:order-1">
                 <div className="xl:mt-10">
@@ -392,10 +387,10 @@ function ListEmployee({ actions }: Props) {
                     }}
                     defaultSelectedKeys={['5']}
                     labelPlacement="outside"
-                    value={limit}
+                    value={params.limit}
                     variant="bordered"
                     onChange={(e) => {
-                      setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                      setParams({ ...params, limit: Number(e.target.value !== '' ? e.target.value : '5') });
                     }}
                   >
                     {limit_options.map((option) => (
@@ -413,15 +408,20 @@ function ListEmployee({ actions }: Props) {
               <MobileView
                 DeletePopover={DeletePopover}
                 actions={actions}
+                generateCodeModal={generateCodeModal}
                 handleActivate={handleActivate}
                 openEditModal={(employee) => {
                   setDataUpdate(employee);
                 }}
+                setCodes={setCodes}
+                setSelectedEmployee={setSelectedEmployee}
+                setSelectedId={setSelectedId}
               />
             )}
             {view === 'table' && (
               <>
                 <TableComponent
+                  className='overflow-auto'
                   headers={['Nº', 'Nombre', 'Apellido', 'Teléfono', 'Sucursal', 'Codigo', 'Acciones']}
                 >
                   {loading_employees ? (
@@ -485,14 +485,20 @@ function ListEmployee({ actions }: Props) {
                                     showTooltip
                                     theme={Colors.Default}
                                     tooltipText="Generar códigos"
-                                    onPress={() => {
+                                    onPress={async () => {
                                       setSelectedId(employee?.id)
+                                      setSelectedEmployee(employee)
                                       generateCodeModal.onOpen();
+                                      await get_codes_employees(employee?.id)
+                                      const data = (await get_codes_employees(employee?.id)).data
+
+                                      setCodes(data)
+
                                     }}
                                   >
                                     <RectangleEllipsis />
                                   </ButtonUi>
-                                 
+
                                   {!employee.isActive && (
                                     <>
                                       {actions.includes('Activar') && (
@@ -525,7 +531,7 @@ function ListEmployee({ actions }: Props) {
                         </>
                       ) : (
                         <tr>
-                          <td colSpan={7}>
+                          <td colSpan={8}>
                             <EmptyTable />
                           </td>
                         </tr>
@@ -544,22 +550,7 @@ function ListEmployee({ actions }: Props) {
                     previousPage={employee_paginated.prevPag}
                     totalPages={employee_paginated.totalPag}
                     onPageChange={(page) => {
-                      getEmployeesPaginated(
-                        Number(
-                          user?.pointOfSale?.branch.transmitterId ??
-                          0
-                        ),
-                        page,
-                        limit,
-                        firstName,
-                        firstLastName,
-                        branch,
-                        phone,
-                        codeEmployee,
-                        active ? 1 : 0,
-                        isDate ? startDate : '',
-                        isDate ? endDate : ''
-                      );
+                     changePage({page})
                     }}
                   />
                 </div>
@@ -567,20 +558,12 @@ function ListEmployee({ actions }: Props) {
             )}
           </DivGlobal>
           <HeadlessModal
-            isOpen={modalAdd.isOpen}
-            size="w-[350px] md:w-full"
-            title={selectedEmployee ? 'Editar Empleado' : 'Agregar Empleado'}
-            onClose={modalAdd.onClose}
-          >
-            <AddEmployee />
-          </HeadlessModal>
-          <HeadlessModal
             isOpen={generateCodeModal.isOpen}
             size="w-[350px] md:w-[560px]"
             title="Generar códigos"
-            onClose={generateCodeModal.onClose}
+            onClose={() => { generateCodeModal.onClose(), setSelectedEmployee(undefined) }}
           >
-            <GenerateCodeEmployee id={selectId} />
+            <GenerateCodeEmployee code={codes as IResponseCodes} id={selectId} isResponsableCutz={selectedEmployee?.isResponsibleCutZ} />
           </HeadlessModal>
         </>
       )

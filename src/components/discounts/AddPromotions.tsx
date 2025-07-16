@@ -19,7 +19,6 @@ import React from 'react';
 
 import { useBranchesStore } from '../../store/branches.store';
 import { formatDate } from '../../utils/dates';
-import Layout from '../../layout/Layout';
 import { operadores } from '../../utils/constants';
 import { Promotion } from '../../types/promotions.types';
 import { useBranchProductStore } from '../../store/branch_product.store';
@@ -131,7 +130,7 @@ function AddDiscount() {
 
   // const [showTooltip, setShowTooltip] = useState(false);
   return (
-    <Layout title="Nueva Promoción">
+    <>
       <div className="w-full h-full p-5 bg-gray-50 dark:bg-gray-800">
         <div className="w-full flex flex-col h-full dark:bg-transparent relative p-2">
           <div className="justify-between w-full lg:flex-row lg:gap-0 absolute top-8 left-4 ">
@@ -490,7 +489,7 @@ function AddDiscount() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
 export default AddDiscount;

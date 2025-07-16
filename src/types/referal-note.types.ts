@@ -64,7 +64,7 @@ export interface ReferalNote {
   isCompleted?: boolean
   receivingEmployeeId?: number
   receivingBranchId?: number,
-
+  receivingBranch: Branches
 }
 
 export interface Notifications_Referal {
@@ -241,3 +241,4 @@ export interface Product {
   productType: string
   subCategoryId: number
 }
+

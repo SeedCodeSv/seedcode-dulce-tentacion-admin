@@ -17,6 +17,7 @@ import { get_sale_pdf_credit_note } from "@/services/sales.service";
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
 import { estadosV } from "@/utils/utils";
+import useWindowSize from "@/hooks/useWindowSize";
 
 export default function ListCreditNoteComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
@@ -24,7 +25,7 @@ export default function ListCreditNoteComponent() {
     const [pdfPath, setPdfPath] = useState('');
     const [loadingPdf, setLoadingPdf] = useState(false);
     const navigation = useNavigate();
-
+    const { windowSize } = useWindowSize()
     const [params, setParams] = useState(
         {
             page: 1,
@@ -104,7 +105,7 @@ export default function ListCreditNoteComponent() {
                 </Autocomplete>
             </ResponsiveFilterWrapper>
             <Select
-                className="dark:text-white py-4 w-1/4"
+                className={`${windowSize.width < 768 ? 'dark:text-white py-4 w-36' : 'dark:text-white py-4 w-1/4'}`}
                 classNames={{
                     label: 'text-sm font-semibold dark:text-white',
                 }}
@@ -114,7 +115,7 @@ export default function ListCreditNoteComponent() {
                 selectedKeys={[params.status.toString()]}
                 value={params.status}
                 variant="bordered"
-                onChange={(e) => setParams({...params, status: e.target.value})}
+                onChange={(e) => setParams({ ...params, status: e.target.value })}
             >
                 {estadosV.map((e) => (
                     <SelectItem key={e.value} className="dark:text-white">
@@ -123,6 +124,7 @@ export default function ListCreditNoteComponent() {
                 ))}
             </Select>
             <TableComponent
+                className="overflow-auto"
                 headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
             >
                 {loading ?

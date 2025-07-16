@@ -62,11 +62,11 @@ function SocketContext() {
         user?.pointOfSale?.branch.transmitterId ?? 0
       );
       // new Audio(MP3).play();
-      toast.success('Nueva venta registrada', {
-        duration: 3000,
-        icon: '👏',
-        position: 'top-right',
-      });
+      // toast.success('Nueva venta registrada', {
+      //   duration: 3000,
+      //   icon: '👏',
+      //   position: 'top-right',
+      // });
     });
 
     return () => {

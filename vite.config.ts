@@ -12,9 +12,9 @@ export default defineConfig({
     registerType: 'autoUpdate',
     includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
     manifest: {
-      name: 'Madness',
-      short_name: 'Madness',
-      description: 'Madness',
+      name: 'DULCE TENTACIÓN',
+      short_name: 'DULCE TENTACIÓN',
+      description: 'Sistema de administración de DULCE TENTACIÓN',
       theme_color: '#ffffff',
       icons: [
         {
@@ -37,7 +37,7 @@ export default defineConfig({
     }
   })],
   server: {
-    port: 5174
+    port: 5173
   },
   resolve: {
     alias: {

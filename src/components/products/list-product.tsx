@@ -24,6 +24,7 @@ import CardProduct from './card-product';
 import RecipeBook from './recipe-book';
 import RenderProductsFilters from './render-products-filters';
 import { DeletePopover } from './delete-popover';
+import ConvertProduct from './ConvertProduct';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -41,19 +42,29 @@ function ListProducts({ actions }: Props) {
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const { getPaginatedProducts, paginated_products, activateProduct, loading_products } =
     useProductsStore();
+  const modalConvert = useDisclosure()
+  const [product, setSelectProduct] = useState<Product>()
 
   const [search, setSearch] = useState('');
   const [code, setCode] = useState('');
 
   const [category, setCategory] = useState<Key | null>();
   const [subCategory, setSubCategory] = useState<Key | null>();
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(30);
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
-  const [page, serPage] = useState(1);
   const [active, setActive] = useState(true);
+
+
+  // const [view, setView] = useState<'table' | 'grid'>('table');
+
+  // useEffect(() => {
+  //   if (typeof windowSize?.width === 'number') {
+  //     setView(windowSize.width < 768 ? 'grid' : 'table');
+  //   }
+  // }, [windowSize?.width]);
 
   useEffect(() => {
     getPaginatedProducts(
@@ -69,7 +80,7 @@ function ListProducts({ actions }: Props) {
 
   const handleSearch = (searchParam: string | undefined) => {
     getPaginatedProducts(
-      page,
+      1,
       limit,
       Number(category ?? 0),
       Number(subCategory ?? 0),
@@ -135,13 +146,13 @@ function ListProducts({ actions }: Props) {
                 classNames={{
                   label: 'font-semibold',
                 }}
-                defaultSelectedKeys={['5']}
+                defaultSelectedKeys={[limit.toString()]}
                 label="Cantidad a mostrar"
                 labelPlacement="outside"
                 value={limit}
                 variant="bordered"
                 onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+                  setLimit(Number(e.target.value !== '' ? e.target.value : limit));
                 }}
               >
                 {limit_options.map((limit) => (
@@ -182,6 +193,9 @@ function ListProducts({ actions }: Props) {
             actions={actions}
             handleActivate={(id) => handleActivate(id)}
             handleShowRecipe={(id) => handleOpenModalRecipe(id)}
+            modalConvertOpen={() => {
+              modalConvert.onOpen()
+            }}
             openEditModal={(prd) => {
               setSelectedProduct(prd);
               setIsOpenModalUpdate(true);
@@ -191,6 +205,7 @@ function ListProducts({ actions }: Props) {
         {view === 'table' && (
           <>
             <TableComponent
+            className='overflow-auto'
               headers={["Nº", "Nombre", "Código", "Sub categoría", 'Acciones']}
             >
               {loading_products ? (
@@ -219,6 +234,19 @@ function ListProducts({ actions }: Props) {
                           </td>
                           <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                             <div className="flex w-full gap-5">
+
+                              <ButtonUi
+                                isIconOnly
+                                showTooltip
+                                theme={Colors.Info}
+                                tooltipText='Convertir Producto'
+                                onPress={() => {
+                                  setSelectProduct(product)
+                                  modalConvert.onOpen()
+                                }}
+                              >
+                                <RefreshCcw />
+                              </ButtonUi>
                               {actions.includes('Editar') && product.isActive && (
                                 <ButtonUi
                                   isIconOnly
@@ -249,7 +277,7 @@ function ListProducts({ actions }: Props) {
                                   isIconOnly
                                   showTooltip
                                   className="border border-white"
-                                  theme={Colors.Info}
+                                  theme={Colors.Secondary}
                                   tooltipText="Asignar a productos"
                                   onPress={() => navigate(`/create-branch-product/${product.id}`)}
                                 >
@@ -301,7 +329,6 @@ function ListProducts({ actions }: Props) {
                 previousPage={paginated_products.prevPag}
                 totalPages={paginated_products.totalPag}
                 onPageChange={(page) => {
-                  serPage(page);
                   getPaginatedProducts(
                     page,
                     limit,
@@ -325,6 +352,14 @@ function ListProducts({ actions }: Props) {
           isOpen={modalRecipe.isOpen}
           productId={selectedId}
           onOpenChange={modalRecipe.onOpenChange}
+        />
+        <ConvertProduct
+          isOpen={modalConvert.isOpen}
+          product={product!}
+          onClose={() => {
+            modalConvert.onClose();
+            setSelectProduct(undefined)
+          }}
         />
       </DivGlobal>
     </>

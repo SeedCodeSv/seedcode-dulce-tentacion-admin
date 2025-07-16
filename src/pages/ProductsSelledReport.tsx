@@ -1,7 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 
@@ -22,7 +21,7 @@ export default function ProductSelledReportPage() {
   };
 
   return (
-    <Layout title="Total Productos Vendidos">
+    <>
       <DivGlobal>
         <Tabs
           className="mb-4"
@@ -37,11 +36,11 @@ export default function ProductSelledReportPage() {
           variant="bordered"
           onSelectionChange={(key) => handleChange(key as string)}
         >
-          <Tab key="general" title="Resumen" />
           <Tab key="detailed" title="Detallado" />
+          <Tab key="general" title="Resumen" />
         </Tabs>
         <Outlet context={{ actionView }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }

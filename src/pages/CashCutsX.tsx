@@ -10,7 +10,6 @@ import { getElSalvadorDateTime } from '../utils/dates';
 import { useBranchesStore } from '../store/branches.store';
 import { formatCurrency } from '../utils/dte';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import { useTransmitterStore } from '@/store/transmitter.store';
@@ -22,6 +21,7 @@ import { exportToExcel } from '@/components/cash-cuts/CashCutsExcellExport';
 import { useCutReportStore } from '@/store/reports/cashCuts.store';
 import { hexToARGB } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 const CashCutsX = () => {
   const { actions } = useViewsStore();
@@ -31,10 +31,10 @@ const CashCutsX = () => {
   const actionsView = x?.actions?.name || [];
   const { onGetDataBox, dataBox } = useCutReportStore();
   const [selectedBox, setSelectedBox] = useState<DataBox | null>();
-      const styles = useGlobalStyles();
+  const styles = useGlobalStyles();
 
-    const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
-    const fontColor = hexToARGB(styles.darkStyle.color);
+  const fillColor = hexToARGB(styles.dangerStyles.backgroundColor || '#4CAF50');
+  const fontColor = hexToARGB(styles.darkStyle.color);
 
   const [params, setParams] = useState(
     {
@@ -284,7 +284,7 @@ const CashCutsX = () => {
 
     const blob = await exportToExcel({
       branch: selectedBranch,
-      params: { date: params.date},
+      params: { date: params.date },
       data: selectedBox!,
       totalGeneral,
       transmitter,
@@ -304,50 +304,56 @@ const CashCutsX = () => {
   const handleSearch = async () => {
     if (!params.branch.id) {
       toast.warning('Selecciona una sucursal');
-      
+
       return
     }
-      setSelectedBranch(params.branch);
-      onGetDataBox(params.branch.id ?? 0, params.date);
+    setSelectedBranch(params.branch);
+    onGetDataBox(params.branch.id ?? 0, params.date);
   };
 
   return (
-    <Layout title="Corte de X">
+    <>
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
         <div className="flex w-full items-end max-w-lg gap-4">
-          <Input
-            className="dark:text-white"
-            classNames={{ base: 'font-semibold' }}
-            label="Fecha"
-            labelPlacement="outside"
-            type="date"
-            value={params.date}
-            variant="bordered"
-            onChange={(e) => {
-              setParams({ ...params, date: e.target.value });
+          <ResponsiveFilterWrapper
+            onApply={() => {
+              handleSearch()
             }}
-          />
-          <Autocomplete
-            className="font-semibold"
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
           >
-            {branch_list.map((item) => (
-              <AutocompleteItem
-                key={item.id}
-                onPress={() => {
-                  setParams({...params, branch: item})
-                }}
-              >
-                {item.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <ButtonUi theme={Colors.Info} onPress={handleSearch}>
+            <Input
+              className="dark:text-white"
+              classNames={{ base: 'font-semibold' }}
+              label="Fecha"
+              labelPlacement="outside"
+              type="date"
+              value={params.date}
+              variant="bordered"
+              onChange={(e) => {
+                setParams({ ...params, date: e.target.value });
+              }}
+            />
+            <Autocomplete
+              className="font-semibold"
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+            >
+              {branch_list.map((item) => (
+                <AutocompleteItem
+                  key={item.id}
+                  onPress={() => {
+                    setParams({ ...params, branch: item })
+                  }}
+                >
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+          </ResponsiveFilterWrapper>
+          {/* <ButtonUi theme={Colors.Info} onPress={handleSearch}>
             Buscar
-          </ButtonUi>
+          </ButtonUi> */}
         </div>
         <div className="grid grid-cols-1 gap-4 w-full max-w-lg mt-4 items-end">
           {dataBox.length > 0 && selectedBranch && (
@@ -408,7 +414,7 @@ const CashCutsX = () => {
           totalGeneral={totalGeneral}
         />
       </DivGlobal>
-    </Layout>
+    </>
   );
 };
 

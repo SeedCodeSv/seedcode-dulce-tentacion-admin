@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { IExportExcel, IGetNoteReferalContingence, IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
+import {  IExportExcel, IGetNoteReferalContingence, IGetRecenReferal, IGetReferalNotes, IResponseDetailNote, IResponseNote, IResponseNoteInvali, PayloadReferel } from '@/types/referal-note.types';
 import { API_URL } from '@/utils/constants';
 
 export const get_referal_notes = (
@@ -62,6 +62,24 @@ export const detail_referal_note = (id: number) => {
 }
 
 
-export const get_referal_in_contingence=(id:number)=>{
-  return axios.get<IGetNoteReferalContingence>(API_URL+ `/referal-note/referal-contingence/${id}`)
+export const get_referal_in_contingence = (id: number) => {
+  return axios.get<IGetNoteReferalContingence>(API_URL + `/referal-note/referal-contingence/${id}`)
 }
+
+export const getConsolidatedReferalNotes = (
+  startDate: string,
+  endDate: string,
+  branchId?: number,
+  type?: string
+) => {
+  const params = new URLSearchParams({
+    startDate,
+    endDate,
+    ...(branchId ? { branchId: String(branchId) } : {}),
+    ...(type ? { type: String(type) } : {})
+  });
+
+  return axios
+    .get<IExportExcel>(`${API_URL}/referal-note/consolidated?${params.toString()}`)
+    .then((res) => res.data);
+};

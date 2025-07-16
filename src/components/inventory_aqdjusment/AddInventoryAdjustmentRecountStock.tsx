@@ -3,6 +3,7 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router';
 
 import FullDialog from '../global/FullDialog';
 
@@ -12,14 +13,20 @@ import NoDataInventory from './NoDataInventory';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchesStore } from '@/store/branches.store';
 import { global_styles } from '@/styles/global.styles';
-import { DetailInventoryAdjustment, IPropsInventoryAdjustment } from '@/types/inventory_adjustment.types';
+import { DetailInventoryAdjustment } from '@/types/inventory_adjustment.types';
 import { useIInventoryAdjustmentStore } from '@/store/inventory_adjustment.store';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
-export default function AddInventoryAdjustmentRecountStock({
-  isOpen,
-  closeModal,
-  branchName,
-}: IPropsInventoryAdjustment) {
+
+type ContextType = {
+  isOpenModalProduct: boolean;
+  setIsOpenModalProduct: React.Dispatch<React.SetStateAction<boolean>>;
+  branchName: string;
+  setBranchName: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function AddInventoryAdjustmentRecountStock() {
+  const { isOpenModalProduct, setIsOpenModalProduct, setBranchName } = useOutletContext<ContextType>();
+
   const {
     card_products,
     OnClearProductInventoryAdjustament,
@@ -44,7 +51,7 @@ export default function AddInventoryAdjustmentRecountStock({
         acc[product.id] = {
           branchProductId: product.id,
           remainingStock: 0,
-          remainingPrice: product.price,
+          remainingPrice: Number(product.price),
         };
 
         return acc;
@@ -62,7 +69,7 @@ export default function AddInventoryAdjustmentRecountStock({
     product: '',
     code: '',
     page: 1,
-    limit: 5,
+    limit: 30,
     itemType: '1',
   });
   const handleCreate = async () => {
@@ -92,7 +99,7 @@ export default function AddInventoryAdjustmentRecountStock({
         filter.itemType
       );
       OnClearProductInventoryAdjustament();
-       setDataCreate({
+      setDataCreate({
         description: 'N/A',
         typeMovement: '',
         typeInventory: '',
@@ -141,9 +148,9 @@ export default function AddInventoryAdjustmentRecountStock({
   }, []);
 
   return (
-    <div className="w-full  bg-transparent h-full relative">
+    <div className="w-full bg-transparent h-full relative">
       <div className="w-full h-full flex flex-col overflow-hidden">
-        <div className="flex flex-col lg:flex-row gap-6 flex-grow overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-6 flex-grow overflow-hidden pt-6">
           <div className="w-full h-[calc(100vh-200px)] p-4 border rounded-xl space-y-6 overflow-auto scrollbar-hide relative">
             <div className="grid w-full">
               <div className="flex sm:w-full w-1/2">
@@ -152,7 +159,7 @@ export default function AddInventoryAdjustmentRecountStock({
                   clearButtonProps={{
                     onClick: () => {
                       setBranch({ name: '', id: 0 });
-                      branchName('');
+                      setBranchName('');
                     },
                   }}
                   label="Sucursal"
@@ -166,7 +173,7 @@ export default function AddInventoryAdjustmentRecountStock({
 
                     if (selectedBranch) {
                       setBranch({ name: selectedBranch.name, id: selectedBranch.id });
-                      branchName(selectedBranch.name);
+                      setBranchName(selectedBranch.name);
                     }
                   }}
                   onSelectionChange={(key) => {
@@ -174,7 +181,17 @@ export default function AddInventoryAdjustmentRecountStock({
 
                     if (selectedBranch) {
                       setBranch({ name: selectedBranch.name, id: selectedBranch.id });
-                      branchName(selectedBranch.name);
+                      setBranchName(selectedBranch.name);
+
+                      OnGetProductInventoryAdjustament(
+                        selectedBranch.name,
+                        filter.supplier,
+                        filter.product,
+                        filter.code,
+                        filter.page,
+                        filter.limit,
+                        filter.itemType
+                      );
                     }
                   }}
                 >
@@ -442,10 +459,10 @@ export default function AddInventoryAdjustmentRecountStock({
                   {card_products.length === 0 && <NoDataInventory />}
                 </AnimatePresence>
               </div>
-              <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[999] shadow-lg ">
+              <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[0] shadow-lg ">
                 <Textarea
-                  className="dark:text-white mb-4"
-                  classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
+                  className="dark:text-white mb-4 "
+                  classNames={{ label: 'font-semibold text-gray-500 text-sm ' }}
                   defaultValue={dataCreate.description}
                   label="Descripción"
                   labelPlacement="outside"
@@ -458,8 +475,13 @@ export default function AddInventoryAdjustmentRecountStock({
               </div>
             </div>
           </div>
-          <FullDialog className={isMovil ? 'w-screen' : 'w-[79vw]'} isOpen={isOpen!} title="Productos" onClose={() => closeModal!()}>
-            <div className='w-full'>
+          <FullDialog
+            className={isMovil ? 'w-screen' : 'w-[79vw]'}
+            isOpen={isOpenModalProduct}
+            title="Productos"
+            onClose={() => setIsOpenModalProduct(false)}
+          >
+            <div className="w-full">
               <ListProductInventaryAdjustment
                 branchName={branch.name}
                 reloadInventory={(branchName, supplier, product, code, page, limit, itemType) => {

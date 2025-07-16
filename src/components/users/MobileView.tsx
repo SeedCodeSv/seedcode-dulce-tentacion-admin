@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
-import { EditIcon, RefreshCcw } from 'lucide-react';
+import { EditIcon, Key, RectangleEllipsis, RefreshCcw } from 'lucide-react';
 
 import { useUsersStore } from '../../store/users.store';
 
@@ -15,6 +15,8 @@ function CardProduct({
   handleActivate,
   openKeyModal,
   DeletePopover,
+  setSelectedId,
+generateCodeModal
 }: IMobileViewProps) {
   const { users_paginated } = useUsersStore();
 
@@ -41,7 +43,7 @@ function CardProduct({
             )}
             {actions.includes('Editar') && item.active && (
               <ButtonUi isIconOnly theme={Colors.Warning} onPress={() => openKeyModal(item)}>
-                <EditIcon className="dark:text-white" size={20} />
+                <Key className="dark:text-white" size={20} />
               </ButtonUi>
             )}
             {actions.includes('Editar') && item.active && <DeletePopover user={item} />}
@@ -50,6 +52,18 @@ function CardProduct({
                 <RefreshCcw />
               </ButtonUi>
             )}
+            <ButtonUi
+              isIconOnly
+              showTooltip
+              theme={Colors.Info}
+              tooltipText="Generar código"
+              onPress={() => {
+                setSelectedId(item.id);
+                generateCodeModal.onOpen!();
+              }}
+            >
+              <RectangleEllipsis />
+            </ButtonUi>
           </CardHeader>
         </Card>
       ))}

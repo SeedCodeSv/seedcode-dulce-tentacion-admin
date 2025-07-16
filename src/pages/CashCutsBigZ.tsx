@@ -10,7 +10,6 @@ import { useBranchesStore } from '../store/branches.store';
 import { getElSalvadorDateTime } from '../utils/dates';
 import { formatCurrency } from '../utils/dte';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 import CashCutComponent from '@/components/cash-cuts/CashCutComponent';
@@ -22,6 +21,7 @@ import { useTransmitterStore } from '@/store/transmitter.store';
 import { useCutReportStore } from '@/store/reports/cashCuts.store';
 import { hexToARGB } from '@/utils/utils';
 import useGlobalStyles from '@/components/global/global.styles';
+import { ResponsiveFilterWrapper } from '@/components/global/ResposiveFilters';
 
 const CushCatsBigZ = () => {
   const { actions } = useViewsStore();
@@ -82,7 +82,6 @@ const CushCatsBigZ = () => {
       const body = iframe.contentDocument?.body;
 
       if (!body) return;
-      // Añadir estilos para ocultar encabezados y pies de página
       const style = document.createElement('style');
 
       style.innerHTML = `
@@ -279,7 +278,7 @@ const CushCatsBigZ = () => {
       totalGeneral,
       transmitter,
       bgHeader: fillColor,
-      fontColor: fontColor
+      fontColor: fontColor,
     });
 
     saveAs(blob, `Corte_bigZ_${selectedBranch?.name ?? ''}_${Date.now()}.xlsx`);
@@ -295,14 +294,14 @@ const CushCatsBigZ = () => {
     if (!params.branch.id) {
       toast.warning('Selecciona una sucursal');
 
-      return
+      return;
     }
-      setSelectedBranch(params.branch);
-      onGetDataBox(params.branch.id ?? 0, params.date);
+    setSelectedBranch(params.branch);
+    onGetDataBox(params.branch.id ?? 0, params.date);
   };
 
   return (
-    <Layout title="Corte Gran Z">
+    <>
       <DivGlobal className="flex flex-col items-center w-full p-4 mt-4">
         <div className="flex w-full items-end max-w-4xl gap-4">
           {/* <Input
@@ -323,38 +322,45 @@ const CushCatsBigZ = () => {
               variant="bordered"
               onChange={(e) => setParams({ ...params, dateEnd: e.target.value })}
             /> */}
-          <Input
-            className="dark:text-white"
-            classNames={{ base: 'font-semibold' }}
-            label="Fecha"
-            labelPlacement="outside"
-            type="date"
-            value={params.date}
-            variant="bordered"
-            onChange={(e) => {
-              setParams({ ...params, date: e.target.value });
+          <ResponsiveFilterWrapper
+            onApply={() => {
+              handleSearch()
             }}
-          />
-          <Autocomplete
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
           >
-            {branch_list.map((item) => (
-              <AutocompleteItem
-                key={item.id}
-                onPress={() => {
-                  setParams({...params, branch: item})
-                }}
-              >
-                {item.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
-          <ButtonUi theme={Colors.Info} onPress={handleSearch}>
-            Buscar
-          </ButtonUi>
+            <Input
+              className="dark:text-white"
+              classNames={{ base: 'font-semibold' }}
+              label="Fecha"
+              labelPlacement="outside"
+              type="date"
+              value={params.date}
+              variant="bordered"
+              onChange={(e) => {
+                setParams({ ...params, date: e.target.value });
+              }}
+            />
+            <Autocomplete
+              label="Sucursal"
+              labelPlacement="outside"
+              placeholder="Selecciona la sucursal"
+              variant="bordered"
+            >
+              {branch_list.map((item) => (
+                <AutocompleteItem
+                  key={item.id}
+                  onPress={() => {
+                    setParams({ ...params, branch: item });
+                  }}
+                >
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
+            {/* <ButtonUi theme={Colors.Info} onPress={handleSearch}>
+              Buscar
+            </ButtonUi> */}
+          </ResponsiveFilterWrapper>
+
         </div>
 
         <CashCutComponent
@@ -383,13 +389,13 @@ const CushCatsBigZ = () => {
               )}
             </div>
           }
-          cutType='Corte Big Z'
+          cutType="Corte Big Z"
           data={selectedBox!}
           params={{ date: params.date }}
           totalGeneral={totalGeneral}
         />
       </DivGlobal>
-    </Layout>
+    </>
   );
 };
 

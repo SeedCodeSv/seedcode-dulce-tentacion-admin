@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListStatusEmployee from '../components/employee/statusEmployee/ListStatusEmployee';
 
 import { useViewsStore } from '@/store/views.store';
@@ -10,9 +9,9 @@ function StatusEmployee() {
   const actionsView = statusEmployeeView?.actions?.name || [];
   
   return (
-    <Layout title="Estados del Empleado">
+    <>
         <ListStatusEmployee actions={actionsView} />
-    </Layout>
+    </>
   );
 }
 

@@ -33,6 +33,13 @@ import CreditNotePage from '@/pages/notes/CreditNotePage';
 import DebitNotePage from '@/pages/notes/DebitNotePage';
 import AnexoAnulados from '@/pages/anexos_iva/anexo_anulados';
 import AnexoComprasSujetoExcluido from '@/pages/anexos_iva/anexo_compras_sujeto_excluido';
+import Layout from '@/layout/Layout';
+import AddInventaryAdjustment from '@/components/inventory_aqdjusment/AddInventaryAdjustment';
+import AddInventoryAdjustmentRecountStock from '@/components/inventory_aqdjusment/AddInventoryAdjustmentRecountStock';
+import DetailedBranchesProducts from '@/pages/reports/DetailedByBranchesProducts';
+import ProductSalesReportPage from '@/pages/reports/ProductReport';
+import PdfPreview from '@/components/product-order/note-refeal/Pdfs';
+import ProductLossPage from '@/pages/reports/ProductLossPage';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -103,6 +110,8 @@ const Charges = lazy(() => import('../pages/Charges'));
 const SubCategories = lazy(() => import('../pages/SubCategories'));
 const Configuration = lazy(() => import('../pages/Configuration'));
 const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
+const ProductionReport = lazy(() => import('../pages/reports/production_report/ProductionReport'))
+const ShippingReport = lazy(() => import('../pages/reports/shipping_report/ShippingReport'))
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
@@ -114,7 +123,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   };
 
   const mainRoutes = createRoutesFromElements(
-    <>
+    <Route element={<Layout />}>
       <Route
         element={
           <AnimatedRoute>
@@ -195,6 +204,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           <ProductsSelledSummaryComponent />} />
         <Route element={<ProductsSelledDetailComponent />} path="detailed" />
       </Route>
+       <Route
+        element={
+          <AnimatedRoute>
+             <PdfPreview /> 
+          </AnimatedRoute>
+        }
+        path="/pdf-preview"
+      />
       <Route
         element={
           <AnimatedRoute>
@@ -361,14 +378,11 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/sales-by-period"
       />
-      <Route
-        element={
-          <AnimatedRoute>
-            {handleCheckPermission('Ventas por Productos') ? <VentasPorProducto /> : <Home />}
-          </AnimatedRoute>
-        }
-        path="/reports/sales-by-product"
-      />
+       <Route element={handleCheckPermission('Ventas por Productos') ? <ProductSalesReportPage /> : <Home />} path="/reports/sales-by-product">
+        <Route index element={
+          <VentasPorProducto />} />
+        <Route element={<DetailedBranchesProducts />} path="detailed-branches" />
+      </Route>
       <Route
         element={
           <AnimatedRoute>
@@ -740,11 +754,16 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route
         element={
           <AnimatedRoute>
-            {handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />}
+            <ProductLossPage />
           </AnimatedRoute>
         }
-        path="/inventary-adjustment"
+        path="/product-loss"
       />
+      <Route element={handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home/>} path="/inventary-adjustment">
+        <Route index element={
+          <AddInventaryAdjustment />} />
+        <Route element={<AddInventoryAdjustmentRecountStock />} path="recuento" />
+      </Route>
       <Route
         element={
           <AnimatedRoute>
@@ -809,7 +828,23 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/create-branch-product/:id"
       />
-    </>
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte de produccion') ? <ProductionReport /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/production-report"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte de envios') ? <ShippingReport /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/shipping-report"
+      />
+    </Route>
   );
 
   return createBrowserRouter([...mainRoutes]);

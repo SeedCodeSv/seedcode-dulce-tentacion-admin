@@ -48,7 +48,7 @@ function ListSuppliers({ actions }: ArrayAction) {
     useSupplierStore();
 
   const [searchParams, setSearchParams] = useState({
-    limit: 5,
+    limit: 10,
     page: 1,
     name: '',
     email: '',
@@ -77,6 +77,10 @@ function ListSuppliers({ actions }: ArrayAction) {
     setSearchParams(newParams);
     handleSearchMultipleParams(newParams);
   };
+
+  useEffect(() => {
+    handleSearchMultipleParams(searchParams)
+  }, [searchParams.active])
 
   const handleSearchMultipleParams = (params: typeof searchParams) => {
     getSupplierPagination(
@@ -120,6 +124,11 @@ function ListSuppliers({ actions }: ArrayAction) {
               variant="bordered"
               onChange={(e) => setSearchParams({ ...searchParams, name: e.target.value })}
               onClear={() => clearAndSearch('name')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchMultipleParams(searchParams);
+                }
+              }}
             />
             <Input
               isClearable
@@ -136,6 +145,11 @@ function ListSuppliers({ actions }: ArrayAction) {
               variant="bordered"
               onChange={(e) => setSearchParams({ ...searchParams, email: e.target.value })}
               onClear={() => clearAndSearch('email')}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearchMultipleParams(searchParams);
+                }
+              }}
             />
             <Select
               className="w-full dark:text-white"
@@ -167,11 +181,11 @@ function ListSuppliers({ actions }: ArrayAction) {
             <div className="flex gap-3 w-full justify-end items-end">
               <Select
                 disallowEmptySelection
-                className="w-72 sm:w-44 dark:text-white"
+                className="w-32 sm:w-44 dark:text-white"
                 classNames={{
                   label: 'font-semibold',
                 }}
-                defaultSelectedKeys={['5']}
+                defaultSelectedKeys={[searchParams.limit.toString()]}
                 labelPlacement="outside"
                 value={searchParams.limit}
                 variant="bordered"
@@ -200,7 +214,9 @@ function ListSuppliers({ actions }: ArrayAction) {
               wrapper: classNames(searchParams.active ? '!bg-blue-300' : 'bg-gray-200'),
             }}
             isSelected={searchParams.active}
-            onValueChange={(active) => setSearchParams({ ...searchParams, active })}
+            onValueChange={(active) => {
+              setSearchParams({ ...searchParams, active })
+            }}
           >
             <span className="text-sm sm:text-base whitespace-nowrap">
               Mostrar {searchParams.active ? 'inactivos' : 'activos'}
@@ -219,6 +235,7 @@ function ListSuppliers({ actions }: ArrayAction) {
 
         {view === 'table' && (
           <TableComponent
+            className='overflow-auto'
             headers={['Nº', 'Nombre', 'Telefono', 'Correo', 'Tipo de Proveedor', 'Acciones']}>
             {loading ? (
               <tr>
@@ -227,104 +244,104 @@ function ListSuppliers({ actions }: ArrayAction) {
                 </td>
               </tr>
             ) : supplier_pagination.suppliers.length > 0 ? (
-                  <>
-                    {supplier_pagination.suppliers.map((item, index) => (
-                      <tr key={index} className="border-b border-slate-200">
-                        <TdGlobal className='p-3'>
-                          {item.id}
-                        </TdGlobal>
-                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
-                          {item.nombre}
-                        </TdGlobal>
-                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {item.telefono}
-                        </TdGlobal>
-                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          {item.correo}
-                        </TdGlobal>
-                        <TdGlobal className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
-                          <span
-                            className={`px-2 py-1 text-white rounded-lg ${item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
-                              }`}
-                          >
-                            {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
-                          </span>
-                        </TdGlobal>
+              <>
+                {supplier_pagination.suppliers.map((item, index) => (
+                  <tr key={index} className="border-b border-slate-200">
+                    <TdGlobal className='p-3'>
+                      {item.id}
+                    </TdGlobal>
+                    <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100 max-w-[350px]">
+                      {item.nombre}
+                    </TdGlobal>
+                    <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {item.telefono}
+                    </TdGlobal>
+                    <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      {item.correo}
+                    </TdGlobal>
+                    <TdGlobal className="p-3 text-sm text-slate-500 whitespace-nowrap dark:text-slate-100">
+                      <span
+                        className={`px-2 py-1 text-white rounded-lg ${item.esContribuyente ? 'bg-green-500' : 'bg-red-500'
+                          }`}
+                      >
+                        {item.esContribuyente ? 'CONTRIBUYENTE' : 'CONSUMIDOR FINAL'}
+                      </span>
+                    </TdGlobal>
 
-                        <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                          <div className="flex w-full gap-5">
-                            {item.isActive && actions.includes('Editar') && (
-                              <ButtonUi
-                                isIconOnly
-                                showTooltip
-                                className="border border-white"
-                                theme={Colors.Success}
-                                tooltipText='Editar'
-                                onPress={() => {
-                                  if (item.esContribuyente === true) {
+                    <TdGlobal className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                      <div className="flex w-full gap-5">
+                        {item.isActive && actions.includes('Editar') && (
+                          <ButtonUi
+                            isIconOnly
+                            showTooltip
+                            className="border border-white"
+                            theme={Colors.Success}
+                            tooltipText='Editar'
+                            onPress={() => {
+                              if (item.esContribuyente === true) {
+                                navigate(`/update-supplier-tribute/${item.id}`);
+                                OnGetBySupplier(item.id ?? 0);
+                              } else {
+                                navigate(`/update-supplier-normal/${item.id}`);
+                                OnGetBySupplier(item.id ?? 0);
+                              }
+                            }}
+                          >
+                            <EditIcon className="text-white" size={20} />
+                          </ButtonUi>
+                        )}
+                        {item.isActive && actions.includes('Eliminar') && (
+                          <DeletePopover supplier={item} />
+                        )}
+                        <>
+                          {item.isActive &&
+                            item.esContribuyente === false &&
+                            actions.includes('Cambiar Tipo de Proveedor') && (
+                              <TooltipGlobal text="Cambiar el tipo de proveedor">
+                                <ButtonUi
+                                  isIconOnly
+                                  className="border border-white"
+                                  theme={Colors.Warning}
+                                  onPress={() => {
                                     navigate(`/update-supplier-tribute/${item.id}`);
                                     OnGetBySupplier(item.id ?? 0);
-                                  } else {
-                                    navigate(`/update-supplier-normal/${item.id}`);
-                                    OnGetBySupplier(item.id ?? 0);
-                                  }
-                                }}
-                              >
-                                <EditIcon className="text-white" size={20} />
-                              </ButtonUi>
+                                  }}
+                                >
+                                  <Repeat size={20} />
+                                </ButtonUi>
+                              </TooltipGlobal>
                             )}
-                            {item.isActive && actions.includes('Eliminar') && (
-                              <DeletePopover supplier={item} />
-                            )}
-                            <>
-                              {item.isActive &&
-                                item.esContribuyente === false &&
-                                actions.includes('Cambiar Tipo de Proveedor') && (
-                                  <TooltipGlobal text="Cambiar el tipo de proveedor">
-                                    <ButtonUi
-                                      isIconOnly
-                                      className="border border-white"
-                                      theme={Colors.Warning}
-                                      onPress={() => {
-                                        navigate(`/update-supplier-tribute/${item.id}`);
-                                        OnGetBySupplier(item.id ?? 0);
-                                      }}
-                                    >
-                                      <Repeat size={20} />
-                                    </ButtonUi>
-                                  </TooltipGlobal>
-                                )}
-                            </>
+                        </>
 
+                        <>
+                          {!item.isActive && (
                             <>
-                              {!item.isActive && (
-                                <>
-                                  {actions.includes('Activar') && (
-                                    <ButtonUi
-                                      isIconOnly
-                                      theme={Colors.Info}
-                                      onPress={() => {
-                                        handleActivate(item.id ?? 0);
-                                      }}
-                                    >
-                                      <RefreshCcw />
-                                    </ButtonUi>
-                                  )}
-                                </>
+                              {actions.includes('Activar') && (
+                                <ButtonUi
+                                  isIconOnly
+                                  theme={Colors.Info}
+                                  onPress={() => {
+                                    handleActivate(item.id ?? 0);
+                                  }}
+                                >
+                                  <RefreshCcw />
+                                </ButtonUi>
                               )}
                             </>
-                          </div>
-                        </TdGlobal>
-                      </tr>
-                    ))}
-                  </>
-                ) : (
-                  <tr>
-                    <td colSpan={5}>
-                      <EmptyTable />
-                    </td>
+                          )}
+                        </>
+                      </div>
+                    </TdGlobal>
                   </tr>
-                )}
+                ))}
+              </>
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  <EmptyTable />
+                </td>
+              </tr>
+            )}
           </TableComponent>
         )}
         {supplier_pagination.totalPag > 1 && (
@@ -336,7 +353,7 @@ function ListSuppliers({ actions }: ArrayAction) {
                 previousPage={supplier_pagination.prevPag}
                 totalPages={supplier_pagination.totalPag}
                 onPageChange={(page) => {
-                  getSupplierPagination(page, searchParams.limit, searchParams.name, searchParams.email, searchParams.nit, searchParams.nrc, searchParams.tipeSupplier, searchParams.active ? 1 : 0);
+                  handleSearchMultipleParams({...searchParams, page})
                 }}
               />
             </div>

@@ -3,11 +3,6 @@ import {
   AutocompleteItem,
   Button,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Select,
   SelectItem,
   Spinner,
@@ -38,7 +33,7 @@ import { ErrorMHInvalidation } from '@/types/svf_dte/InvalidationDebito';
 import { ambiente, API_URL, sending_steps } from '@/utils/constants';
 import { getElSalvadorDateTime } from '@/utils/dates';
 import { generate_uuid } from '@/utils/random/random';
-import { get_employee_by_code } from "@/services/employess.service";
+// import { get_employee_by_code } from "@/services/employess.service";
 import { annulations } from "@/services/innvalidations.services";
 import { formatAnnulations05 } from "@/utils/DTE/innvalidations";
 
@@ -50,21 +45,19 @@ function Invalidation05({ id }: Props) {
   const services = new SeedcodeCatalogosMhService();
   const styles = global_styles();
   const { user } = useAuthStore();
-  const [modalInitializate, setModalInitialize] = useState(true)
   const { json_credit, onGetSaleAndCredit, loading_credit, recent_credit_notes } = useCreditNotes();
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const [employeeCode, setEmployeeCode] = useState<Employee>()
-  const [code, setCode] = useState<string | null>(null)
-  const [firstPase, setFirstPase] = useState(false)
+  // const [firstPase, setFirstPase] = useState(false)
   const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1);
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('');
   const [docResponsible, setDocResponsible] = useState('00000000-0');
   const [typeDocResponsible, setTypeDocResponsible] = useState('13');
-  const modalInvalidation = useDisclosure()
+  // const modalInvalidation = useDisclosure()
 
   useEffect(() => {
     onGetSaleAndCredit(+id);
@@ -264,36 +257,37 @@ function Invalidation05({ id }: Props) {
       }
     });
   };
-  const handleProccesEmployee = async () => {
-    try {
-      if (code === null) {
-        toast.error('Debes ingresar un codigo')
+  // const handleProccesEmployee = async () => {
+  //   try {
+  //     if (code === null) {
+  //       toast.error('Debes ingresar un codigo')
 
-        return
-      }
-      await get_employee_by_code(code).then((i) => {
-        if (i.data.employee.id) {
-          setEmployeeCode(i.data.employee as Employee)
-          setFirstPase(true)
-          modalInvalidation.onOpen()
-          setModalInitialize(false)
-          toast.success('Empleado confirmado')
+  //       return
+  //     }
+  //     await get_employee_by_code(code).then((i) => {
+  //       if (i.data.employee.id) {
+  //         setEmployeeCode(i.data.employee as Employee)
+  //         setFirstPase(true)
+  //         modalInvalidation.onOpen()
+  //         setModalInitialize(false)
+  //         toast.success('Empleado confirmado')
 
-        }
-      }).catch(() => {
-        toast.error('No se encontraron coincidencias')
-      })
+  //       }
+  //     }).catch(() => {
+  //       toast.error('No se encontraron coincidencias')
+  //     })
 
-    } catch (error) {
-      toast.error('No se proceso la solicitud')
+  //   } catch (error) {
+  //     toast.error('No se proceso la solicitud')
 
-    }
+  //   }
 
-  }
+  // }
 
   return (
     <>
-      {firstPase ? (<>
+      {/* {firstPase ? ( */}
+        <>
         <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
           <ArrowLeft />
           <p className=" whitespace-nowrap">Volver a listado</p>
@@ -477,6 +471,7 @@ function Invalidation05({ id }: Props) {
                               handleChange('typeDocResponsible')('13');
                               setDocResponsible(employee.dui);
                               setTypeDocResponsible('13');
+                              setEmployeeCode(employee)
                             } else {
                               setDocResponsible('');
                               setTypeDocResponsible('');
@@ -618,38 +613,8 @@ function Invalidation05({ id }: Props) {
             <p className="mt-3 text-xl font-normal">No se encontró la nota de crédito solicitada</p>
           </div>
         )}
-      </>) : (<>
-        <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigation(-1) }}>
-          <ModalContent>
-            <ModalHeader className='dark:text-white'>Anular nota de crédito</ModalHeader>
-            <ModalBody>
-              <Input
-                classNames={{
-                  label: 'font-semibold text-gray-500 text-sm',
-                  input: 'dark:text-white',
-                  base: 'font-semibold'
-                }}
-                label="Código de empleado"
-                labelPlacement="outside"
-                placeholder="Ingrese el código de empleado"
-                type="text"
-                value={code!}
-                variant="bordered"
-                onChange={(e) => setCode(e.target.value)}
-              />
-            </ModalBody>
-            <ModalFooter>
-
-              <Button
-                style={styles.thirdStyle}
-                onClick={() => handleProccesEmployee()}
-              >
-                Procesar
-              </Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      </>)}
+      </>
+      
     </>
   );
 }

@@ -1,9 +1,9 @@
-function LoadingTable() {
+function LoadingTable({title}:{title?: string}) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-[325px]">
+      <div className="flex flex-col items-center  w-full h-[325px]">
         <div className="loader" />
         <p className="mt-3 text-xl font-semibold">
-          Cargando...
+         {title ? title : 'Cargando...'}
         </p>
       </div>
     )

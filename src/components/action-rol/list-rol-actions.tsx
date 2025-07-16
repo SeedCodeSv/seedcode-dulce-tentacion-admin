@@ -28,10 +28,11 @@ import { create_action_by_view, create_view } from '@/services/actions.service';
 import { useRolesStore } from '@/store/roles.store';
 import { useActionsRolStore } from '@/store/role-actions.store';
 import { save_role_actions } from '@/storage/localStorage';
+import useWindowSize from '@/hooks/useWindowSize';
 
 function ListActionRol() {
   const { roles_list, getRolesList } = useRolesStore();
-
+  const { windowSize } = useWindowSize()
   const { user } = useAuthStore();
   const [roleSelected, setRoleSelected] = useState(Number(user?.roleId ?? 0));
   const styles = useGlobalStyles();
@@ -307,70 +308,70 @@ function ListActionRol() {
         </div>
       </HeadlessModal>
       <div >
-          <div>
-            <Select
-              className="w-96 dark:text-white"
-              classNames={{ label: 'font-semibold' }}
-              label="Rol"
-              labelPlacement="outside"
-              placeholder="Selecciona el rol"
-              selectedKeys={[roleSelected.toString()]}
-              variant="bordered"
-              onSelectionChange={(e) => {
-                setRoleSelected(Number(new Set(e).values().next().value));
-              }}
-            >
-              {roles_list.map((role) => (
-                <SelectItem key={role.id} className="dark:text-white">
-                  {role.name}
-                </SelectItem>
+        <div>
+          <Select
+            className={`${windowSize.width < 768 ? 'w-full' : 'w-96'}  dark:text-white`}
+            classNames={{ label: 'font-semibold' }}
+            label="Rol"
+            labelPlacement="outside"
+            placeholder="Selecciona el rol"
+            selectedKeys={[roleSelected.toString()]}
+            variant="bordered"
+            onSelectionChange={(e) => {
+              setRoleSelected(Number(new Set(e).values().next().value));
+            }}
+          >
+            {roles_list.map((role) => (
+              <SelectItem key={role.id} className="dark:text-white">
+                {role.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
+        <div className="w-full mt-5">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {role_actions &&
+              role_actions.roleActions.views.map(({ view }, index) => (
+                <React.Fragment key={index}>
+                  <Card className="w-full border dark:border-gray-700 rounded-3xl p-8">
+                    <div className="w-full flex justify-between">
+                      <p className="font-semibold text-lg" style={colors.textColor}>
+                        {view.name}
+                      </p>
+                      <Checkbox
+                        isSelected={view.actions.every((action) => action.hasInRol)}
+                        size="lg"
+                        onValueChange={(isSelected) =>
+                          handleSelectionAll(view.id, view.actions, !isSelected)
+                        }
+                      />
+                    </div>
+                    <hr className="py-1 mt-2" />
+                    <div className="flex flex-col gap-4">
+                      {view.actions.map((action, index) => (
+                        <div key={index} className="flex justify-between gap-2 items-center">
+                          <p
+                            className="flex justify-center items-center gap-4 font-semibold text-sm"
+                            style={colors.textColor}
+                          >
+                            {renderItem(action.name)} {action.name}
+                          </p>
+                          <Checkbox
+                            isSelected={action.hasInRol}
+                            size="lg"
+                            onValueChange={(isSelected) =>
+                              handleSelectAction(view.id, action, view.actions, !isSelected)
+                            }
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </React.Fragment>
               ))}
-            </Select>
-          </div>
-          <div className="w-full mt-5">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {role_actions &&
-                role_actions.roleActions.views.map(({ view }, index) => (
-                  <React.Fragment key={index}>
-                    <Card className="w-full border dark:border-gray-700 rounded-3xl p-8">
-                      <div className="w-full flex justify-between">
-                        <p className="font-semibold text-lg" style={colors.textColor}>
-                          {view.name}
-                        </p>
-                        <Checkbox
-                          isSelected={view.actions.every((action) => action.hasInRol)}
-                          size="lg"
-                          onValueChange={(isSelected) =>
-                            handleSelectionAll(view.id, view.actions, !isSelected)
-                          }
-                         />
-                      </div>
-                      <hr className="py-1 mt-2" />
-                      <div className="flex flex-col gap-4">
-                        {view.actions.map((action, index) => (
-                          <div key={index} className="flex justify-between gap-2 items-center">
-                            <p
-                              className="flex justify-center items-center gap-4 font-semibold text-sm"
-                              style={colors.textColor}
-                            >
-                              {renderItem(action.name)} {action.name}
-                            </p>
-                            <Checkbox
-                              isSelected={action.hasInRol}
-                              size="lg"
-                              onValueChange={(isSelected) =>
-                                handleSelectAction(view.id, action, view.actions, !isSelected)
-                              }
-                             />
-                          </div>
-                        ))}
-                      </div>
-                    </Card>
-                  </React.Fragment>
-                ))}
-            </div>
           </div>
         </div>
+      </div>
     </>
   );
 }

@@ -82,18 +82,6 @@ export interface PointOfSale {
   branchId: number;
 }
 
-export interface Branch {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  isActive: boolean;
-  codEstableMH: string;
-  codEstable: string;
-  tipoEstablecimiento: string;
-  transmitterId: number;
-}
-
 export interface Role {
   id: number;
   name: string;

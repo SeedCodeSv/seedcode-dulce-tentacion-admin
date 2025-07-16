@@ -1,7 +1,6 @@
 import { Tab, Tabs } from '@heroui/react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-import Layout from '@/layout/Layout';
 import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 
@@ -22,7 +21,7 @@ export default function CashCutsPage() {
   };
 
   return (
-    <Layout title="Cortes">
+    <>
       <DivGlobal>
         <Tabs
           className="mb-4"
@@ -42,6 +41,6 @@ export default function CashCutsPage() {
         </Tabs>
         <Outlet context={{ actionView }} />
       </DivGlobal>
-    </Layout>
+    </>
   );
 }

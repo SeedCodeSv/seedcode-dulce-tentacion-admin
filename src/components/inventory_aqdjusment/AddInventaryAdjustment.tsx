@@ -3,6 +3,7 @@ import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { useOutletContext } from 'react-router';
 
 import FullDialog from '../global/FullDialog';
 
@@ -13,15 +14,19 @@ import { global_styles } from '@/styles/global.styles';
 import { useAuthStore } from '@/store/auth.store';
 import { useBranchesStore } from '@/store/branches.store';
 import { TypeInventoryMoment } from '@/utils/utils';
-import { DetailInventoryAdjustment, IPropsAddInventoryAdjustment } from '@/types/inventory_adjustment.types';
+import { DetailInventoryAdjustment } from '@/types/inventory_adjustment.types';
 import { useIInventoryAdjustmentStore } from '@/store/inventory_adjustment.store';
 import useIsMobileOrTablet from '@/hooks/useIsMobileOrTablet';
 
-export default function InventoryManagement({
-  isOpen,
-  closeModal,
-  branchName,
-}: IPropsAddInventoryAdjustment) {
+type ContextType = {
+  isOpenModalProduct: boolean;
+  setIsOpenModalProduct: React.Dispatch<React.SetStateAction<boolean>>;
+  branchName: string;
+  setBranchName: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function InventoryManagement() {
+  const { isOpenModalProduct, setIsOpenModalProduct, setBranchName } = useOutletContext<ContextType>();
   const {
     card_products,
     OnClearProductInventoryAdjustament,
@@ -66,7 +71,7 @@ export default function InventoryManagement({
     product: '',
     code: '',
     page: 1,
-    limit: 5,
+    limit: 30,
     itemType: '1',
   });
 
@@ -162,10 +167,9 @@ export default function InventoryManagement({
 
   return (
     <>
-      <></>
       <div className="w-full bg-transparent h-full relative">
         <div className="w-full h-full flex flex-col overflow-hidden">
-          <div className="flex flex-col lg:flex-row gap-6 flex-grow overflow-hidden">
+          <div className="flex flex-col lg:flex-row gap-6 flex-grow overflow-hidden pt-6">
             <div className="w-full h-[calc(100vh-200px)] p-4 border rounded-xl space-y-6 overflow-auto scrollbar-hide relative">
               <div className="grid xl:grid-cols-2 sm:grid-cols-2 gap-6">
                 <div>
@@ -212,7 +216,7 @@ export default function InventoryManagement({
                     clearButtonProps={{
                       onClick: () => {
                         setBranch({ name: '', id: 0 });
-                        branchName!('');
+                        setBranchName!('');
                       },
                     }}
                     label="Sucursal"
@@ -226,7 +230,7 @@ export default function InventoryManagement({
 
                       if (selectedBranch) {
                         setBranch({ name: selectedBranch.name, id: selectedBranch.id });
-                        branchName!(selectedBranch.name);
+                        setBranchName!(selectedBranch.name);
                       }
                     }}
                     onSelectionChange={(key) => {
@@ -236,7 +240,16 @@ export default function InventoryManagement({
 
                       if (selectedBranch) {
                         setBranch({ name: selectedBranch.name, id: selectedBranch.id });
-                        branchName!(selectedBranch.name);
+                        setBranchName!(selectedBranch.name);
+                        OnGetProductInventoryAdjustament(
+                          selectedBranch.name,
+                          filter.supplier,
+                          filter.product,
+                          filter.code,
+                          filter.page,
+                          filter.limit,
+                          filter.itemType
+                        );
                       }
                     }}
                   >
@@ -481,14 +494,14 @@ export default function InventoryManagement({
                         />
                         <div className="flex justify-end space-x-4 mt-3">
                           <Button variant="bordered">Cancelar</Button>
-                          <Button onClick={handleCreate}>Guardar</Button>
+                          <Button onPress={handleCreate}>Guardar</Button>
                         </div>
                       </>
                     )}
                     {card_products.length === 0 && <NoDataInventory />}
                   </AnimatePresence>
                 </div>
-                <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[999] shadow-lg ">
+                <div className="absolute xl:block md:block hidden  bottom-0 left-0 w-full px-4 mt-0 z-[0] shadow-lg ">
                   <Textarea
                     className="dark:text-white mb-4"
                     classNames={{ label: 'font-semibold text-gray-500 text-sm' }}
@@ -504,7 +517,7 @@ export default function InventoryManagement({
                 </div>
               </div>
             </div>
-            <FullDialog className={isMovil ? 'w-screen' : 'w-[79vw]'} isOpen={isOpen!} title="Productos" onClose={() => closeModal!()}>
+            <FullDialog className={isMovil ? 'w-screen' : 'w-[79vw]'} isOpen={isOpenModalProduct!} title="Productos" onClose={() => setIsOpenModalProduct(false)}>
               <div className='w-full'>
                 <ListProductInventaryAdjustment
                   branchName={branch.name}

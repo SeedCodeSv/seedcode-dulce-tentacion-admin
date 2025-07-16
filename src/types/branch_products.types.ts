@@ -27,6 +27,7 @@ export interface BranchProduct {
   minimum: number;
   days: string;
   isActive: boolean
+  reserved?: string
 }
 
 export interface BProductPlusQuantity extends BranchProduct {

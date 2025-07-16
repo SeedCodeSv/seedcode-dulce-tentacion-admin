@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader } from '@heroui/react';
-import { RefreshCcw, EditIcon } from 'lucide-react';
+import { RefreshCcw, EditIcon, RectangleEllipsis } from 'lucide-react';
 
 import { useEmployeeStore } from '../../store/employee.store';
 
@@ -10,6 +10,7 @@ import ContractPDF from './../employee/employees-pdfs/pdfContract';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { get_codes_employees } from '@/services/employess.service';
 
 function MobileView(props: IMobileView) {
   const { openEditModal, DeletePopover, actions, handleActivate } = props;
@@ -18,7 +19,7 @@ function MobileView(props: IMobileView) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-3 overflow-y-auto p-2">
       {employee_paginated.employees.map((item, index) => (
-        <Card key={index}>
+        <Card key={index} >
           <CardHeader>{`${item.firstName} ${item.firstLastName} ${item.firstLastName} ${item.secondLastName}`}</CardHeader>
           <CardBody>
             <p>
@@ -30,7 +31,7 @@ function MobileView(props: IMobileView) {
               {item.branch.name}
             </p>
           </CardBody>
-          <CardHeader className="flex gap-5">
+          <CardHeader className="flex gap-5 overflow-auto">
             {actions.includes('Editar') && item.isActive && (
               <ButtonUi isIconOnly showTooltip theme={Colors.Success}
                 tooltipText='Editar'
@@ -52,6 +53,24 @@ function MobileView(props: IMobileView) {
             <ContractPDF employee={item} />
             <ProofSalary actions={actions} employee={item} />
             <ProofeOfEmployment actions={actions} employee={item} />
+            <ButtonUi
+              isIconOnly
+              showTooltip
+              theme={Colors.Default}
+              tooltipText="Generar códigos"
+              onPress={async () => {
+                props.setSelectedId(item?.id)
+                props.setSelectedEmployee(item) ?? undefined
+                props.generateCodeModal.onOpen!();
+                await get_codes_employees(item?.id)
+                const data = (await get_codes_employees(item?.id)).data
+
+                props.setCodes(data)
+
+              }}
+            >
+              <RectangleEllipsis />
+            </ButtonUi>
           </CardHeader>
         </Card>
       ))}

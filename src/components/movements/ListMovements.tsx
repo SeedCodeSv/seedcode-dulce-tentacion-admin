@@ -26,6 +26,7 @@ import { Branches } from '@/types/branches.types';
 import { Colors } from '@/types/themes.types';
 import { TableComponent } from '@/themes/ui/table-ui';
 import DivGlobal from '@/themes/ui/div-global';
+import { InventoryMoment } from '@/types/reports/inventory_movement';
 
 
 
@@ -36,12 +37,26 @@ interface Props {
 function ListMovements({ actions }: Props) {
   const { user } = useAuthStore();
   const { transmitter, gettransmitter } = useTransmitterStore();
-  const { OnGetInventoryMovement, inventoryMoments, pagination_inventory_movement } = useInventoryMovement();
+  const { OnGetInventoryMovement, inventoryMoments, pagination_inventory_movement, OnGetAllInventoryMovement } = useInventoryMovement();
   const totalItemPerPageGraphic = 20;
   const styles = useGlobalStyles();
-  const [loading, setLoading] = useState(false);
   const [branch, setBranch] = useState<Branches>();
+  const [loading_data, setLoadingData] = useState(false)
+  const limit = 30
 
+  const handle = async () => {
+    setLoadingData(true)
+    const res = await OnGetAllInventoryMovement(user?.transmitterId ?? 0,
+      filter.startDate,
+      filter.endDate,
+      filter.branch,
+      filter.typeOfMoviment)
+
+    if (res) {
+      await downloadPDF(res.movements)
+      setLoadingData(false)
+    }
+  }
 
   const { branch_list, getBranchesList } = useBranchesStore();
   const [filter, setFilter] = useState({
@@ -56,7 +71,7 @@ function ListMovements({ actions }: Props) {
     OnGetInventoryMovement(
       user?.transmitterId ?? 0,
       1,
-      40,
+      limit,
       filter.startDate,
       filter.endDate,
       filter.branch,
@@ -77,8 +92,14 @@ function ListMovements({ actions }: Props) {
   const backgroundColorRGB = hexToRgb(styles.darkStyle.backgroundColor || '#0d83ac');
   const textColorRGB = hexToRgb(styles.secondaryStyle.color || '#FFFFFF');
 
-  const downloadPDF = () => {
-    setLoading(true);
+  const downloadPDF = async (movements: InventoryMoment[]) => {
+
+    if (!movements || movements.length === 0) {
+      toast.warning('No hay datos disponibles para generar el PDF.');
+
+      return;
+    }
+
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
@@ -114,7 +135,7 @@ function ListMovements({ actions }: Props) {
       28
     );
 
-    const tableData = inventoryMoments.map((movements) => [
+    const tableData = movements.map((movements) => [
       movements?.branchProduct?.product?.name,
       movements?.typeOfMovement,
       movements?.typeOfInventory,
@@ -150,7 +171,6 @@ function ListMovements({ actions }: Props) {
     });
 
     doc.save(`movimientos_inventario_${filter.startDate}_${filter.endDate}.pdf`);
-    setLoading(false);
   };
 
   return (
@@ -243,15 +263,15 @@ function ListMovements({ actions }: Props) {
           {actions.includes('Descargar PDF') && (
             <ButtonUi
               showTooltip
-              disabled={loading}
-              isDisabled={inventoryMoments.length === 0}
-              startContent={loading ? <Spinner /> : <AiOutlineFilePdf className="" size={25} />}
+              isDisabled={loading_data}
+              startContent={loading_data ? <Spinner /> : <AiOutlineFilePdf className="" size={25} />}
               theme={Colors.Info}
               tooltipText='Descargar PDF'
               onPress={() => {
-                inventoryMoments.length > 0
-                  ? downloadPDF()
-                  : toast.error('No hay movimientos para descargar');
+                if (!loading_data) {
+                  handle()
+                }
+                else return
               }}
             />
 
@@ -260,7 +280,7 @@ function ListMovements({ actions }: Props) {
         </div>
       </div>
       <TableComponent
-      className='hidden xl:flex'
+        className='hidden xl:flex'
         headers={['Nombre', 'Tipo de Movimiento', 'Motivo', 'Cantidad', 'Fecha', 'Hora', 'Total de Movimiento']}
       >
         {inventoryMoments.length > 0 ? (
@@ -299,28 +319,7 @@ function ListMovements({ actions }: Props) {
           </tr>
         )}
       </TableComponent>
-      {pagination_inventory_movement.totalPag > 1 && (
-        <>
-          <Pagination
-            currentPage={pagination_inventory_movement.currentPag}
-            nextPage={pagination_inventory_movement.nextPag}
-            previousPage={pagination_inventory_movement.prevPag}
-            totalPages={pagination_inventory_movement.totalPag}
-            onPageChange={(page) => {
-              OnGetInventoryMovement(
-                user?.transmitterId ?? 0,
-                page,
-                40,
-                filter.startDate,
-                filter.endDate,
-                filter.branch,
-                filter.typeOfInventory,
-                filter.typeOfMoviment
-              );
-            }}
-          />
-        </>
-      )}
+
 
       {inventoryMoments.length > 0 ? (
         <div className="w-full xl:hidden  mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5">
@@ -357,6 +356,30 @@ function ListMovements({ actions }: Props) {
       ) : (
         <div className="md:flex flex xl:hidden justify-center items-end">
           <NoDataInventory title="No se encontraron  movimientos" />
+        </div>
+      )}
+      {pagination_inventory_movement.totalPag > 1 && (
+        <div
+        className='mt-4'
+        >
+          <Pagination
+            currentPage={pagination_inventory_movement.currentPag}
+            nextPage={pagination_inventory_movement.nextPag}
+            previousPage={pagination_inventory_movement.prevPag}
+            totalPages={pagination_inventory_movement.totalPag}
+            onPageChange={(page) => {
+              OnGetInventoryMovement(
+                user?.transmitterId ?? 0,
+                page,
+                limit,
+                filter.startDate,
+                filter.endDate,
+                filter.branch,
+                filter.typeOfInventory,
+                filter.typeOfMoviment
+              );
+            }}
+          />
         </div>
       )}
     </DivGlobal>

@@ -22,7 +22,6 @@ import { supplierSchemaContribuyente } from './types/validation_supplier_yup.typ
 import { SelectedItem } from './select-account';
 
 import { useSupplierStore } from '@/store/supplier.store';
-import Layout from '@/layout/Layout';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useAuthStore } from '@/store/auth.store';
 function AddTributeSupplier() {
@@ -47,7 +46,7 @@ function AddTributeSupplier() {
     getCat012Departamento();
     getCat019CodigoActividadEconomica();
     const transId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+      user?.pointOfSale.branch.transmitter.id ?? 0;
 
     getAccountCatalogs(transId, '', '');
   }, []);
@@ -59,7 +58,7 @@ function AddTributeSupplier() {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Nuevo Contribuyente">
+    <>
       <Formik
         initialValues={{
           nombre: '',
@@ -79,7 +78,7 @@ function AddTributeSupplier() {
           complemento: '',
           codCuenta: '',
           transmitterId:
-            user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+            user?.pointOfSale.branch.transmitter.id ?? 0,
         }}
         validationSchema={supplierSchemaContribuyente}
         onSubmit={(values, { setSubmitting }) => {
@@ -415,7 +414,7 @@ function AddTributeSupplier() {
           </Form>
         )}
       </Formik>
-    </Layout>
+    </>
   );
 }
 

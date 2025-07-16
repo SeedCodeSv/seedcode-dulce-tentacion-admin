@@ -5,7 +5,7 @@ import {
   Select,
   SelectItem,
 } from '@heroui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SearchIcon } from 'lucide-react';
 import debounce from 'debounce';
 import { useOutletContext } from 'react-router';
@@ -20,7 +20,6 @@ import LoadingTable from '@/components/global/LoadingTable';
 import Pagination from '@/components/global/Pagination';
 import useWindowSize from '@/hooks/useWindowSize';
 import { get_user } from '@/storage/localStorage';
-import { TypeOfMovements } from '@/types/reports/reportKardex.types';
 import { limit_options } from '@/utils/constants';
 import TooltipGlobal from '@/components/global/TooltipGlobal';
 import { useBranchesStore } from '@/store/branches.store';
@@ -40,7 +39,7 @@ export const KardexByProductList = () => {
   const { actionView } = useOutletContext<ContextType>();
 
   const { getBranchesList, branch_list } = useBranchesStore();
-  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, KardexProduct } = useReportKardex();
+  const { getReportKardexByProduct, paginationKardexProduct, isLoadinKarProd, totales } = useReportKardex();
   const { windowSize } = useWindowSize();
   const { productsFilteredList, getProductsFilteredList } = useProductsStore()
   const [branchName, setBranchName] = useState('');
@@ -52,35 +51,21 @@ export const KardexByProductList = () => {
   const currentDate = new Date();
   const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const [search, setSearch] = useState({
+    page: 1,
     limit: 20,
     productId: 0,
-    branch: user?.branchId,
+    branchId: user?.branchId,
     startDate: defaultStartDate.toISOString().split('T')[0],
     endDate: getElSalvadorDateTime().fecEmi,
     productName: ''
   });
-
-  const totalEntries = useMemo(() => {
-    return KardexProduct?.reduce((acc, current) => {
-      if (current.typeOfMovement === TypeOfMovements.Entries) acc += Number(current.quantity);
-
-      return acc;
-    }, 0);
-  }, [KardexProduct]);
-
-  const totalExits = useMemo(() => {
-    return KardexProduct?.reduce((acc, current) => {
-      if (current.typeOfMovement === TypeOfMovements.Exits) acc += Number(current.quantity);
-
-      return acc;
-    }, 0);
-  }, [KardexProduct]);
-
+  
   const changePage = (page: number) => {
     getReportKardexByProduct(
-      Number(search.branch),
+      Number(search.branchId),
       page,
       search.limit,
+      search.productName,
       search.startDate,
       search.endDate
     );
@@ -95,28 +80,33 @@ export const KardexByProductList = () => {
     debounce((value: string) => {
       getProductsFilteredList({
         productName: value,
+        code: ''
       });
     }, 300),
-    [search.branch]
+    [search.branchId]
   );
 
   useEffect(() => {
     getBranchesList();
+    getProductsFilteredList({
+      productName: '',
+      code: ''
+    });
   }, []);
 
   useEffect(() => {
     getReportKardexByProduct(
-      Number(search.branch),
+      Number(search.branchId),
       1,
       search.limit,
       search.productName,
       search.startDate,
       search.endDate
     );
-  }, [search.branch, search.startDate, search.endDate, search.productName]);
+  }, [search.branchId, search.startDate, search.endDate, search.productName, search.limit]);
 
   useEffect(() => {
-    const branchName = branch_list.find((branch) => branch.id === search.branch)?.name ?? '';
+    const branchName = branch_list.find((branch) => branch.id === search.branchId)?.name ?? '';
 
     setBranchName(branchName);
   }, [branch_list])
@@ -128,7 +118,7 @@ export const KardexByProductList = () => {
           <ResponsiveFilterWrapper classLg='grid grid-cols-4 gap-4 w-full' withButton={false}>
             <Autocomplete
               className="font-semibold dark:text-white w-full"
-              defaultSelectedKey={String(search.branch)}
+              defaultSelectedKey={String(search.branchId)}
               label="Sucursal"
               labelPlacement="outside"
               placeholder="Selecciona la sucursal"
@@ -139,7 +129,7 @@ export const KardexByProductList = () => {
 
                 setSearch({
                   ...search,
-                  branch: newBranchId,
+                  branchId: newBranchId,
                 });
 
                 setBranchName(branchName);
@@ -151,34 +141,37 @@ export const KardexByProductList = () => {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
-              <Autocomplete
-                isClearable
-                className="font-semibold dark:text-white w-full"
-                label="Producto"
-                labelPlacement="outside"
-                placeholder="Selecciona un producto"
-                selectedKey={String(search.productId)}
-                startContent={<SearchIcon />}
-                variant="bordered"
-                onClear={() => setSearch({ ...search, productId: 0 })}
-                onInputChange={(value) => {
-                  handleSearchProduct(value);
-                }}
-                onSelectionChange={(key) => {
-                  const product = productsFilteredList.find((item) => item.id === Number(key))
+            <Autocomplete
+              isClearable
+              className="font-semibold dark:text-white w-full"
+              label="Producto"
+              labelPlacement="outside"
+              listboxProps={{
+                emptyContent: "Escribe para buscar",
+              }}
+              placeholder="Selecciona un producto"
+              selectedKey={String(search.productId)}
+              startContent={<SearchIcon />}
+              variant="bordered"
+              onClear={() => setSearch({ ...search, productId: 0, productName: '' })}
+              onInputChange={(value) => {
+                handleSearchProduct(value);
+              }}
+              onSelectionChange={(key) => {
+                const product = productsFilteredList.find((item) => item.id === Number(key))
 
-                  setSearch({
-                    ...search, productName: String(product?.name),
-                    productId: Number(key)
-                  })
-                }}
-              >
-                {productsFilteredList.map((bp) => (
-                  <AutocompleteItem key={bp.id} className="dark:text-white">
-                    {bp.name}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
+                setSearch({
+                  ...search, productName: String(product?.name),
+                  productId: Number(key)
+                })
+              }}
+            >
+              {productsFilteredList.map((bp) => (
+                <AutocompleteItem key={bp.id} className="dark:text-white">
+                  {bp.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
             <Input
               className="dark:text-white"
               classNames={{ label: 'font-semibold' }}
@@ -229,23 +222,13 @@ export const KardexByProductList = () => {
             <RenderViewButton isList setView={setView} view={view} />
             <div className="flex gap-3 items-center">
               {JSON.stringify(actionView).includes('Descargar PDF') && (
-                <DownloadKardexProductPDFButton search={{
-                  branchId: search.branch ?? 0,
-                  branchName: branchName,
-                  startDate: search.startDate,
-                  endDate: search.endDate
-                }}
-                  tableData={KardexProduct}
+                <DownloadKardexProductPDFButton branchName= {branchName}
+                   search={search}
                 />
               )}
               {JSON.stringify(actionView).includes('Exportar Excel') && (
-                <DownloadKardexProductExcelButton search={{
-                  branchId: search.branch ?? 0,
-                  branchName: branchName,
-                  startDate: search.startDate,
-                  endDate: search.endDate
-                }}
-                  tableData={KardexProduct}
+                <DownloadKardexProductExcelButton branchName= {branchName}
+                   search={search}
                 />
               )}
             </div>
@@ -255,12 +238,20 @@ export const KardexByProductList = () => {
         <section className="flex flex-col w-full max-w-[380px] gap-1 flex-1 dark:text-white px-3 py-2 rounded-xl bg-slate-100 shadow-sm dark:bg-slate-700">
           <span className="flex gap-1 font-semibold">
             Nombre:
-            <TooltipGlobal text={search.productName ?? ''}>
-              <p className="whitespace-nowrap overflow-hidden text-ellipsis">{search.productName ?? ''}</p>
-            </TooltipGlobal>
+            {search.productName ? (
+              <TooltipGlobal text={search.productName}>
+                <p className="whitespace-nowrap overflow-hidden text-ellipsis">
+                  {search.productName}
+                </p>
+              </TooltipGlobal>
+            ) : (
+              <p className="text-gray-400">Sin producto</p>
+            )}
+
           </span>
-          <span className="font-semibold">Total de entradas: {totalEntries}</span>
-          <span className="font-semibold">Total de salidas: {totalExits}</span>
+          <span className="font-semibold">Stock Inicial: {totales.initialStock}</span>
+          <span className="font-semibold">Total de entradas: {totales.totalEntradas}</span>
+          <span className="font-semibold">Total de salidas: {totales.totalSalidas}</span>
         </section>
       </div>
 

@@ -3,16 +3,17 @@ import autoTable, { ThemeType } from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import { AiOutlineFilePdf } from "react-icons/ai";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import { useConfigurationStore } from "@/store/perzonalitation.store";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { formatDateSimple, getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToRgb } from "@/utils/utils";
 import { formatCurrency } from "@/utils/dte";
 import { useProductsOrdersReportStore } from "@/store/reports/productsSelled_report.store";
+import { IGetProductsSelled, SearchReport } from "@/types/reports/productsSelled.report.types";
 
 interface jsPDFWithAutoTable extends jsPDF {
     lastAutoTable: {
@@ -21,13 +22,23 @@ interface jsPDFWithAutoTable extends jsPDF {
 }
 
 interface Props {
-    params: SearchCutReport
+    params: SearchReport
     comercialName: string
 }
 
 export default function ProductsDetailedExportPdf({ params, comercialName }: Props) {
-    const { products_selled } = useProductsOrdersReportStore()
+    const { products_selled,getProductsSelledExport} = useProductsOrdersReportStore()
+    const [loading_data, setLoadingData] = useState(false)
 
+    const handle = async () => {
+        setLoadingData(true)
+        const res = await getProductsSelledExport({...params, limit: products_selled.total})
+
+        if (res) {
+            await handleDownloadPDF(res.products_selled)
+            setLoadingData(false)
+        }
+    }
 
     const [logoUrl, setLogoUrl] = useState<string | undefined>();
     const styles = useGlobalStyles();
@@ -46,7 +57,7 @@ export default function ProductsDetailedExportPdf({ params, comercialName }: Pro
         setLogoUrl(logoUrl);
     }, []);
 
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = (products_selled: IGetProductsSelled) => {
 
         try {
             if (!products_selled.products_sellled || products_selled.products_sellled.length === 0) {
@@ -69,7 +80,7 @@ export default function ProductsDetailedExportPdf({ params, comercialName }: Pro
                     body: [
                         [{ content: comercialName, styles: { halign: 'center', fontStyle: 'bold' } }],
                         [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
-                        [{ content: `Reporte desde ${params.dateFrom} hasta ${params.dateTo}`, styles: { halign: 'center' } }],
+                        [{ content: `Reporte desde ${params.startDate} hasta ${params.startDate}`, styles: { halign: 'center' } }],
                         [{ content: '(Resumen)', styles: { halign: 'center' } }],
                     ],
                     theme: 'plain',
@@ -183,12 +194,21 @@ export default function ProductsDetailedExportPdf({ params, comercialName }: Pro
     return (
         <>
             <ButtonUi
-                isDisabled={products_selled.products_sellled.length === 0}
-                startContent={<AiOutlineFilePdf className="" size={25} />}
+                isDisabled={loading_data || products_selled.products_sellled.length === 0}
                 theme={Colors.Primary}
-                onPress={handleDownloadPDF}
+                onPress={() => {
+                    if (!loading_data) {
+                        handle()
+                    }
+                    else return
+                }}
             >
-                <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+                {loading_data ?
+                    <Loader className='animate-spin' /> :
+                    <>
+                        <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+                    </>
+                }
             </ButtonUi>
         </>
     );

@@ -2,7 +2,6 @@ import { useContext, useMemo } from "react";
 
 import ListMovements from "@/components/movements/ListMovements"
 import { PermissionContext } from "@/hooks/usePermission";
-import Layout from "@/layout/Layout"
 
 const Movements = () => {
   const { roleActions } = useContext(PermissionContext);
@@ -18,9 +17,9 @@ const Movements = () => {
   }, [roleActions]);
 
   return (
-    <Layout title="Movimientos">
+    <>
         <ListMovements actions={actions}/>
-    </Layout>
+    </>
   )
 }
 

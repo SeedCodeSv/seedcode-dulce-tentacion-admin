@@ -1,4 +1,4 @@
-import { Autocomplete, AutocompleteItem, Button, Input, Textarea } from '@heroui/react';
+import { Autocomplete, AutocompleteItem, Input, Textarea } from '@heroui/react';
 import { useFormik } from 'formik';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
@@ -8,11 +8,12 @@ import { toast } from 'sonner';
 
 import { SelectedItem } from './select-account';
 
-import { global_styles } from '@/styles/global.styles';
 import { useSupplierStore } from '@/store/supplier.store';
 import { useAuthStore } from '@/store/auth.store';
 import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
-import Layout from '@/layout/Layout';
+import DivGlobal from '@/themes/ui/div-global';
+import ButtonUi from '@/themes/ui/button-ui';
+import { Colors } from '@/types/themes.types';
 function UpdateNormalSupplier() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function UpdateNormalSupplier() {
 
   useEffect(() => {
     const transId =
-      user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0;
+      user?.pointOfSale?.branch.transmitter.id ?? 0;
 
     getAccountCatalogs(transId, '', '');
   }, []);
@@ -65,7 +66,7 @@ function UpdateNormalSupplier() {
       complemento: '',
       codCuenta: '',
       transmitterId:
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+        user?.pointOfSale.branch.transmitter.id ?? 0,
     },
     onSubmit(values, formikHelpers) {
       patchSupplier({ ...values, id: supplier?.id, nrc: supplier?.nrc }, supplier?.id ?? 0);
@@ -92,14 +93,13 @@ function UpdateNormalSupplier() {
       departamento: supplier.direccion?.departamento ?? '',
       complemento: supplier.direccion?.complemento ?? '',
       codCuenta: supplier.codCuenta,
-      transmitterId:
-        user?.correlative?.branch.transmitterId ?? user?.pointOfSale?.branch.transmitterId ?? 0,
+      transmitterId: user?.pointOfSale.branch.transmitter.id ?? 0,
     });
   }, [supplier]);
 
   return (
-    <Layout title="Actualizar Consumidor Final">
-      <div className=" w-full h-full xl:p-10 p-5 bg-gray-50 dark:bg-gray-900">
+    <>
+      <DivGlobal>
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
             className="w-32 flex gap-2 mb-4 cursor-pointer"
@@ -306,27 +306,27 @@ function UpdateNormalSupplier() {
                   isInvalid={formik.touched.complemento && !!formik.errors.complemento}
                 />
               </div>
-              <div className="w-full mt-5 flex justify-end gap-5">
-                <Button
-                  className="px-20 font-semibold"
-                  style={global_styles().dangerStyles}
-                  onClick={() => navigate('/suppliers')}
+              <div className="flex gap-4 justify-between lg:justify-end w-full">
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Error}
+                  onPress={() => navigate('/suppliers')}
                 >
                   Cancelar
-                </Button>
-                <Button
-                  className="px-20 font-semibold"
-                  style={global_styles().darkStyle}
+                </ButtonUi>
+                <ButtonUi
+                  className="mt-4 px-20 text-sm font-semibold"
+                  theme={Colors.Primary}
                   type="submit"
                 >
                   Guardar
-                </Button>
+                </ButtonUi>
               </div>
             </div>
           </form>
         </div>
-      </div>
-    </Layout>
+      </DivGlobal>
+    </>
   );
 }
 

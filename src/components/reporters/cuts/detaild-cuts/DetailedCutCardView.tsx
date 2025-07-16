@@ -52,6 +52,9 @@ export default function DetailedCutMovilView() {
                                 <h2 className="text-[15px] font-semibold text-slate-900 dark:text-slate-100 uppercase">
                                     {item.employee.firstName} {item.employee.secondName} {item.employee.firstLastName} {item.employee.secondLastName}
                                 </h2>
+                                 <h1 className="text-[15px] font-semibold text-slate-700 dark:text-slate-100 uppercase">
+                                    {item.branchName}
+                                </h1>
                                 <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-4 ">
                                     <span>Inicio: {item.startDate} - {item.statTime}</span>
                                     <span className="border-l border-slate-300 dark:border-slate-600 pl-4">Cierre: {item.endDate} - {item.endTime}</span>

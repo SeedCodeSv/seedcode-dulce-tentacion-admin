@@ -1,22 +1,34 @@
 import { PiMicrosoftExcelLogo } from "react-icons/pi";
 import ExcelJS from 'exceljs';
+import { useState } from "react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { formatDateSimple, getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToARGB } from "@/utils/utils";
 import { useProductsOrdersReportStore } from "@/store/reports/productsSelled_report.store";
+import { IGetProductsSelled, SearchReport } from "@/types/reports/productsSelled.report.types";
 
 interface Props {
-    params: SearchCutReport
+    params: SearchReport
     comercialName: string
 }
 
 
 export default function ProductsDetailedExportExcell({ params, comercialName }: Props) {
-    const { products_selled } = useProductsOrdersReportStore()
+    const { products_selled, getProductsSelledExport } = useProductsOrdersReportStore()
+     const [loading_data, setLoadingData] = useState(false)
+    
+        const handle = async () => {
+            setLoadingData(true)
+            const res = await getProductsSelledExport({...params, limit: products_selled.total})
+    
+            if (res) {
+                await exportToExcel(res.products_selled)
+                setLoadingData(false)
+            }
+        }
 
     const styles = useGlobalStyles();
 
@@ -24,7 +36,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
     const fontColor = hexToARGB(styles.darkStyle.color);
 
 
-    const exportToExcel = async () => {
+    const exportToExcel = async (products_selled: IGetProductsSelled) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Cortes');
 
@@ -33,7 +45,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
         const extraInfo = [
             [`${comercialName}`],
             [`Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`],
-            [`Reporte desde ${params.dateFrom} hasta ${params.dateTo}`]
+            [`Reporte desde ${params.startDate} hasta ${params.endDate}`]
         ];
 
         const headers = ['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría'];
@@ -109,10 +121,10 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
 
     return (
         <ButtonUi
-            isDisabled={products_selled.products_sellled.length === 0}
+            isDisabled={loading_data || products_selled.products_sellled.length === 0}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
-            onPress={exportToExcel}
+            onPress={handle}
         >
             <p className="font-medium hidden lg:flex"> Exportar a excel</p>
         </ButtonUi>

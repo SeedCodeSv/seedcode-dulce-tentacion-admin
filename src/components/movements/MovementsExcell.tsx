@@ -1,5 +1,6 @@
 import { PiMicrosoftExcelLogo } from "react-icons/pi";
 import ExcelJS from 'exceljs';
+import { useState } from "react";
 
 import ButtonUi from "@/themes/ui/button-ui";
 import { Branches } from "@/types/branches.types";
@@ -9,6 +10,8 @@ import { getElSalvadorDateTime } from "@/utils/dates";
 import useGlobalStyles from "@/components/global/global.styles";
 import { hexToARGB } from "@/utils/utils";
 import { InventoryMoment } from "@/types/reports/inventory_movement";
+import { useInventoryMovement } from "@/store/reports/inventory_movement.store";
+import { useAuthStore } from "@/store/auth.store";
 
 interface Filter {
     startDate: string,
@@ -18,14 +21,32 @@ interface Filter {
     typeOfMoviment: string,
 }
 
-export default function MovementsExportExcell({ filters, tableData, transmitter, branch }: { filters: Filter, tableData: InventoryMoment[]; transmitter: ITransmitter, branch: Branches | undefined }) {
+export default function MovementsExportExcell({ filters, transmitter, branch }: { filters: Filter, tableData: InventoryMoment[]; transmitter: ITransmitter, branch: Branches | undefined }) {
     const styles = useGlobalStyles();
+    const { OnGetAllInventoryMovement, } = useInventoryMovement()
+    const [loading_data, setLoadingData] = useState(false)
+    const { user } = useAuthStore();
+
+
+    const handle = async () => {
+        setLoadingData(true)
+        const res = await OnGetAllInventoryMovement(user?.transmitterId ?? 0,
+            filters.startDate,
+            filters.endDate,
+            filters.branch,
+            filters.typeOfMoviment)
+
+        if (res) {
+            await exportToExcel(res.movements)
+            setLoadingData(false)
+        }
+    }
 
     const fillColor = hexToARGB(styles.thirdStyle.backgroundColor || '#4CAF50');
     const fontColor = hexToARGB(styles.thirdStyle.color);
 
 
-    const exportToExcel = async () => {
+    const exportToExcel = async (movements: InventoryMoment[]) => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Movimientos');
 
@@ -84,7 +105,7 @@ export default function MovementsExportExcell({ filters, tableData, transmitter,
             { width: 12 },
         ];
 
-        tableData.forEach((item) => {
+        movements.forEach((item) => {
             worksheet.addRow([
                 item?.branchProduct?.product?.name || '',
                 item.typeOfMovement || '',
@@ -103,7 +124,7 @@ export default function MovementsExportExcell({ filters, tableData, transmitter,
         const link = document.createElement('a');
 
         link.href = URL.createObjectURL(blob);
-        link.download = `REPORTE_KARDEX_${DATE}.xlsx`;
+        link.download = `Movimientos_de_inventario_${DATE}.xlsx`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -113,11 +134,16 @@ export default function MovementsExportExcell({ filters, tableData, transmitter,
     return (
         <ButtonUi
             showTooltip
-            isDisabled={tableData.length === 0}
+            isDisabled={loading_data}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
             tooltipText="Exportar a excel"
-            onPress={exportToExcel}
-         />
+            onPress={() => {
+                if (!loading_data) {
+                    handle()
+                }
+                else return
+            }}
+        />
     );
 }

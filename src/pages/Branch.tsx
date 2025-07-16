@@ -1,4 +1,3 @@
-import Layout from '../layout/Layout';
 import ListBranch from '../components/branch/ListBranch';
 
 import { useViewsStore } from '@/store/views.store';
@@ -9,9 +8,7 @@ function Branch() {
   const actionsView = branchView?.actions?.name || [];
 
   return (
-    <Layout title="Sucursales">
       <ListBranch actions={actionsView} />
-    </Layout>
   );
 }
 

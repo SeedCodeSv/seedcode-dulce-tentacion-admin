@@ -1,10 +1,13 @@
 import { TipoDeItem } from '../../types/billing/cat-011-tipo-de-item.types';
 import {
+  ConvertProduct,
+  GetConvertProduct,
   IGetProductsPaginated,
   Product,
   ProductAndRecipe,
   ProductPayload,
   Recipe,
+  UpdateProductPayload,
 } from '../../types/products.types';
 
 import { IPagination } from '@/types/global.types';
@@ -12,6 +15,7 @@ import { IPagination } from '@/types/global.types';
 export interface IProductsStore {
   products_list: Product[];
   productsFilteredList: Product[];
+  loading_convert: boolean
   cat_011_tipo_de_item: TipoDeItem[];
   loading_products: boolean;
   paginated_products: IGetProductsPaginated;
@@ -45,10 +49,16 @@ export interface IProductsStore {
   ) => void;
   getCat011TipoDeItem: () => void;
   postProducts: (payload: ProductPayload) => Promise<void>;
-  patchProducts: (payload: ProductPayload, id: number) => Promise<{ ok: boolean }>;
+  patchProducts: (payload: UpdateProductPayload, id: number) => Promise<{ ok: boolean }>;
   deleteProducts: (id: number) => void;
   activateProduct: (id: number) => Promise<void>;
   getListProductsList: () => void;
   getProductsDetails: (id: number) => void;
-  getProductsFilteredList: (params: {productName?: string }) => void;
+  getProductsFilteredList: (params: { productName?: string, code: string }) => void;
+  onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
+  getConvertProduct: (id: number) => Promise<boolean>;
+  patchConvertProduct: (payload: ConvertProduct, id: number) => Promise<boolean>;
+
+  convertedProduct: GetConvertProduct | null
+
 }

@@ -3,12 +3,13 @@ import autoTable, { ThemeType } from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import { AiOutlineFilePdf } from "react-icons/ai";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 import useGlobalStyles from "@/components/global/global.styles";
 import { useConfigurationStore } from "@/store/perzonalitation.store";
 import { useCutReportStore } from "@/store/reports/cashCuts.store";
 import ButtonUi from "@/themes/ui/button-ui";
-import { SearchCutReport } from "@/types/cashCuts.types";
+import { IGetCutsReportSummary, SearchCutReport } from "@/types/cashCuts.types";
 import { Colors } from "@/types/themes.types";
 import { formatDateSimple, getElSalvadorDateTime, getElSalvadorDateTimeText } from "@/utils/dates";
 import { hexToRgb } from "@/utils/utils";
@@ -21,13 +22,25 @@ interface jsPDFWithAutoTable extends jsPDF {
 }
 
 interface Props {
-  branch: string;
+  branch: string[];
   params: SearchCutReport
   comercialName: string
 }
 
 export default function SummaryCutExportPdf({ branch, params, comercialName }: Props) {
-  const { cashCutsSummary } = useCutReportStore()
+  const { cashCutsSummary, onGetCashCutReportSummaryExport } = useCutReportStore()
+  const [loading_data, setLoadingData] = useState(false)
+
+  const handle = async () => {
+    setLoadingData(true)
+    const res = await onGetCashCutReportSummaryExport({ ...params, limit: cashCutsSummary.total })
+
+    if (res) {
+      await handleDownloadPDF(res.cashCutsSummary)
+      setLoadingData(false)
+    }
+  }
+
 
   const [logoUrl, setLogoUrl] = useState<string | undefined>();
   const styles = useGlobalStyles();
@@ -46,7 +59,7 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
     setLogoUrl(logoUrl);
   }, []);
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = (cashCutsSummary: IGetCutsReportSummary) => {
 
     try {
       if (!cashCutsSummary.cash_cuts_summary || cashCutsSummary.cash_cuts_summary.length === 0) {
@@ -67,8 +80,8 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
         autoTable(doc, {
           showHead: false,
           body: [
-            [{ content: comercialName, styles: { halign: 'center', fontStyle:'bold' } }],
-            [{ content: `${branch !== '' ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
+            [{ content: comercialName, styles: { halign: 'center', fontStyle: 'bold' } }],
+            [{ content: `${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`, styles: { halign: 'center' } }],
             [{ content: 'Fecha: ' + `${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
             [{ content: `Reporte desde ${params.dateFrom} hasta ${params.dateTo}`, styles: { halign: 'center' } }],
             [{ content: '(Resumen)', styles: { halign: 'center' } }],
@@ -82,16 +95,16 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
         });
       };
 
-      const headers = ['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago','Sum.Entregado', 'Sum.Gastos'];
+      const headers = ['Dias', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado Efectivo', 'Sum.Gastos'];
 
       const rows = cashCutsSummary.cash_cuts_summary.map((item) => [
-       formatDateSimple(item.date),
-       formatCurrency(Number(item.sumTotalSales ?? 0)),
-       formatCurrency(Number(item.sumTotalCash ?? 0)),
-       formatCurrency(Number(item.sumTotalCard ?? 0)),
-       formatCurrency(Number(item.sumTotalOthers ?? 0)),
-       formatCurrency(Number(item.sumCashDelivered ?? 0)),
-       formatCurrency(Number(item.sumExpenses ?? 0)),
+        formatDateSimple(item.date),
+        formatCurrency(Number(item.sumTotalSales ?? 0)),
+        formatCurrency(Number(item.sumTotalCash ?? 0)),
+        formatCurrency(Number(item.sumTotalCard ?? 0)),
+        formatCurrency(Number(item.sumTotalOthers ?? 0)),
+        formatCurrency(Number(item.sumCashDelivered ?? 0)),
+        formatCurrency(Number(item.sumExpenses ?? 0)),
       ]);
 
       createHeader(doc)
@@ -182,12 +195,21 @@ export default function SummaryCutExportPdf({ branch, params, comercialName }: P
   return (
     <>
       <ButtonUi
-        isDisabled={cashCutsSummary.cash_cuts_summary.length === 0}
-        startContent={<AiOutlineFilePdf className="" size={25} />}
+        isDisabled={loading_data || cashCutsSummary.cash_cuts_summary.length === 0}
         theme={Colors.Primary}
-        onPress={handleDownloadPDF}
+        onPress={() => {
+          if (!loading_data) {
+            handle()
+          }
+          else return
+        }}
       >
-        <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+        {loading_data ?
+          <Loader className='animate-spin' /> :
+          <>
+            <AiOutlineFilePdf className="" size={25} /> <p className="font-medium hidden lg:flex"> Descargar PDF</p>
+          </>
+        }
       </ButtonUi>
     </>
   );

@@ -15,6 +15,7 @@ import { messages } from '../utils/constants';
 import { ISupplierStore } from './types/supplier_store.types';
 
 import { Supplier } from '@/types/supplier.types';
+import { initialPagination } from '@/utils/utils';
 
 export const useSupplierStore = create<ISupplierStore>((set, get) => ({
   supplier_pagination: {
@@ -41,13 +42,7 @@ export const useSupplierStore = create<ISupplierStore>((set, get) => ({
           loading: false,
           supplier_pagination: {
             suppliers: [],
-            total: 0,
-            totalPag: 0,
-            currentPag: 0,
-            nextPag: 0,
-            prevPag: 0,
-            status: 404,
-            ok: false,
+            ...initialPagination
           },
         });
       });

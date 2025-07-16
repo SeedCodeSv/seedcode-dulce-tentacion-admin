@@ -1,6 +1,6 @@
 import { BranchProduct } from './branch_products.types';
-import { IPagination } from './global.types';
-import { SubCategory } from './sub-category.types';
+import { BasicResponse, IPagination } from './global.types';
+import { ISubCategory } from './sub_categories.types';
 import { Supplier } from './supplier.types';
 
 export interface Product {
@@ -15,8 +15,10 @@ export interface Product {
   code: string;
   isActive: boolean;
   subCategoryId: number;
-  subCategory: SubCategory;
+  subCategory: ISubCategory;
   recipeBook?:  RecipeBook ;
+  isToDivided?: boolean,
+  price?: string,
 }
 
 export interface Verify_Code {
@@ -295,7 +297,7 @@ export interface ProductAndRecipe {
   code: string;
   isActive: boolean;
   productType: string;
-  subCategory: SubCategory;
+  subCategory: ISubCategory;
   recipeBook?: RecipeBookProduct;
   subCategoryId: number;
 }
@@ -446,5 +448,41 @@ export interface UpdateSuppliersBranchP {
   name: string
   isActive: boolean
 }
+
+
+export interface ConvertProduct {
+  productId: number;
+  convertedProductId: number;
+  quantity: number;
+}
+
+export interface IGetCOnvertedProduct extends BasicResponse{
+product: GetConvertProduct
+}
+
+export interface GetConvertProduct {
+  id: number
+  productId: number;
+  convertedProductId: number;
+  quantity: number;
+  product: Product
+  convertedProduct: Product
+}
+
+export interface UpdateProductPayload {
+  name: string;
+  description: string;
+  price: string;
+  costoUnitario?: string;
+  code: string;
+  subCategoryId: number;
+  tipoDeItem: string;
+  tipoItem: string;
+  uniMedida: string;
+  unidaDeMedida: string;
+  branch?: { id: number }[];
+  supplierId?: number;
+}
+
 
 

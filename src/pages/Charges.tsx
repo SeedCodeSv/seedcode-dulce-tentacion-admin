@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 
-import Layout from '../layout/Layout';
 import ListCharges from '../components/charges/ListCharges';
 
 import { useViewsStore } from '@/store/views.store';
@@ -16,7 +15,7 @@ function ProductsCategories() {
   }, []);
 
   return (
-    <Layout title="Cargos de Empleados">
+    <>
       {chargesView ? (
         <ListCharges actions={actions} />
       ) : (
@@ -28,7 +27,7 @@ function ProductsCategories() {
           </div>
         </div>
       )}
-    </Layout>
+    </>
   );
 }
 

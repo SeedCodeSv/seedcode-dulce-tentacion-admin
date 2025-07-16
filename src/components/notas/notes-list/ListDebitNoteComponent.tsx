@@ -17,6 +17,7 @@ import { getElSalvadorDateTime } from "@/utils/dates";
 import { formatCurrency } from "@/utils/dte";
 import { useDebitNotes } from "@/store/notes_debit.store";
 import { estadosV } from "@/utils/utils";
+import useWindowSize from "@/hooks/useWindowSize";
 
 export default function ListDebitNoteComponent() {
    const { getBranchesList, branch_list } = useBranchesStore();
@@ -24,7 +25,7 @@ export default function ListDebitNoteComponent() {
    const [pdfPath, setPdfPath] = useState('');
    const [loadingPdf, setLoadingPdf] = useState(false);
    const navigation = useNavigate();
-
+   const { windowSize } = useWindowSize()
    const [params, setParams] = useState(
       {
          page: 1,
@@ -54,8 +55,8 @@ export default function ListDebitNoteComponent() {
    };
 
    useEffect(() => {
-           onGetDebitNotesPaginated(params)
-       }, [params.status])
+      onGetDebitNotesPaginated(params)
+   }, [params.status])
 
    return (
       <DivGlobal>
@@ -104,25 +105,26 @@ export default function ListDebitNoteComponent() {
             </Autocomplete>
          </ResponsiveFilterWrapper>
          <Select
-                className="dark:text-white py-4 w-1/4"
-                classNames={{
-                    label: 'text-sm font-semibold dark:text-white',
-                }}
-                label="Mostrar por estado"
-                labelPlacement="outside"
-                placeholder="Selecciona un estado"
-                selectedKeys={[params.status.toString()]}
-                value={params.status}
-                variant="bordered"
-                onChange={(e) => setParams({...params, status: e.target.value})}
-            >
-                {estadosV.map((e) => (
-                    <SelectItem key={e.value} className="dark:text-white">
-                        {e.label}
-                    </SelectItem>
-                ))}
-            </Select>
+            className={`${windowSize.width < 768 ? 'dark:text-white py-4 w-36' : 'dark:text-white py-4 w-1/4'}`}
+            classNames={{
+               label: 'text-sm font-semibold dark:text-white',
+            }}
+            label="Mostrar por estado"
+            labelPlacement="outside"
+            placeholder="Selecciona un estado"
+            selectedKeys={[params.status.toString()]}
+            value={params.status}
+            variant="bordered"
+            onChange={(e) => setParams({ ...params, status: e.target.value })}
+         >
+            {estadosV.map((e) => (
+               <SelectItem key={e.value} className="dark:text-white">
+                  {e.label}
+               </SelectItem>
+            ))}
+         </Select>
          <TableComponent
+            className="overflow-auto"
             headers={['No.', 'Fecha - Hora', 'Número de control', 'Sello recibido', 'Estado', 'SubTotal', 'Acciones']}
          >
             {loading ?

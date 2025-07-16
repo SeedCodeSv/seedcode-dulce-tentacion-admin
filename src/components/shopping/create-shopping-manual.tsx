@@ -10,6 +10,7 @@ import GeneralInfo from './manual/general-info';
 import ResumeShopping from './manual/resume-shopping';
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
 import AccountItem from './manual/account-item';
+import AddProductsShopping from './manual/AddProductsShopping';
 
 import { get_correlative_shopping } from '@/services/shopping.service';
 import { API_URL } from '@/utils/constants';
@@ -37,6 +38,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import { CuerpoDocumento } from '@/shopping-branch-product/types/notes_of_remision.types';
 
 function CreateShoppingManual() {
   const { user } = useAuthStore();
@@ -51,6 +53,8 @@ function CreateShoppingManual() {
   const [description, setDescription] = useState('');
   const [dateItem, setDateItem] = useState(formatDate());
   const [selectedType, setSelectedType] = useState(0);
+  const [productsDetails, setProductsDetails] = useState<CuerpoDocumento[]>([])
+  const [errorP, setErrorP] = useState(false)
 
   const { getBranchesList } = useBranchesStore();
   const [tipoDte, setTipoDte] = useState('03');
@@ -90,13 +94,9 @@ function CreateShoppingManual() {
   }, [fiscalDataAndParameter, account_catalog_pagination]);
 
   useEffect(() => {
-    getSupplierPagination(1, 15, searchNRC, '', '','', 1);
-    get_correlative_shopping(Number(user?.pointOfSale?.branchId ?? 0))
-      .then(({ data }) => {
-        setCorrelative(data.correlative + 1);
-      })
-      .catch(() => setCorrelative(0));
+    getSupplierPagination(1, 15, searchNRC, '', '', '', 1);
   }, [searchNRC]);
+
 
   useEffect(() => {
     if (nrc !== '') {
@@ -307,6 +307,34 @@ function CreateShoppingManual() {
         return;
       }
 
+      if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
+        toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
+        formikHelpers.setSubmitting(false);
+        setErrorP(true)
+
+        return;
+      }
+
+
+      if (!selectedType) {
+        toast.warning('Debes seeccionar el tipo de partida');
+        setErrorP(true)
+
+        return;
+      }
+
+      if (
+        productsDetails.length > 0 &&
+        productsDetails.some(
+          (item) =>
+            !item.codigo || !item.uniMedida || item.cantidad === 0 || item.precioUni === 0
+        )
+      ) {
+        toast.warning('Completa todos los campos de los productos o desactiva la opción de ingresar productos.');
+
+        return;
+      }
+
       try {
         const transId = user?.pointOfSale?.branch.transmitterId ?? 0;
 
@@ -343,14 +371,8 @@ function CreateShoppingManual() {
               conceptOfTheTransaction: item.descTran.length > 0 ? item.descTran : 'N/A',
             })),
           },
+          ...(productsDetails.length > 0 && { productsDetails })
         };
-
-        if (items.some((item) => !item.codCuenta || item.codCuenta === '')) {
-          toast.error('Revisa los datos de la partida hay lineas sin código de cuenta');
-          formikHelpers.setSubmitting(false);
-
-          return;
-        }
 
         axios
           .post(API_URL + '/shoppings/create', payload)
@@ -373,6 +395,14 @@ function CreateShoppingManual() {
       }
     },
   });
+
+  useEffect(() => {
+    get_correlative_shopping(Number(formik.values.branchId ?? 0))
+      .then(({ data }) => {
+        setCorrelative(data.correlative + 1);
+      })
+      .catch(() => setCorrelative(0));
+  }, [formik.values.branchId]);
 
   return (
     <>
@@ -410,6 +440,7 @@ function CreateShoppingManual() {
               canAddItem={true}
               date={dateItem}
               description={description}
+              errorP={errorP}
               handleDeleteItem={handleDeleteItem}
               index={0}
               isReadOnly={false}
@@ -420,6 +451,7 @@ function CreateShoppingManual() {
               selectedType={selectedType}
               setDate={setDateItem}
               setDescription={setDescription}
+              setErrorP={setErrorP}
               setExenta={setExenta}
               setItems={setItems}
               setSelectedIndex={setSelectedIndex}
@@ -436,7 +468,7 @@ function CreateShoppingManual() {
               total={$totalItems}
               totalIva={$totalIva}
             />
-
+            <AddProductsShopping setDetails={(products) => setProductsDetails(products)} />
             <div className="w-full flex justify-end mt-4">
               <ButtonUi
                 className="px-16"

@@ -1,4 +1,4 @@
-import { BadgeCheck, Edit, MapPin, Phone, Scroll, ShoppingBag } from 'lucide-react';
+import { BadgeCheck, Edit, MapPin, Phone, RefreshCcw, Scroll, ShoppingBag, Store } from 'lucide-react';
 import { classNames } from 'primereact/utils';
 
 import { useBranchesStore } from '../../store/branches.store';
@@ -17,6 +17,8 @@ function MobileView(props: MobileViewProps) {
     handleBox,
     handleActive,
     actions,
+    handlePointOfSales,
+    handleInactive
   } = props;
   const { branches_paginated } = useBranchesStore();
 
@@ -32,6 +34,8 @@ function MobileView(props: MobileViewProps) {
           handleBox={handleBox}
           handleBranchProduct={handleBranchProduct}
           handleEdit={handleEdit}
+          handleInactive={handleInactive}
+          handlePointOfSales={handlePointOfSales}
           layout={layout}
         />
       ))}
@@ -51,6 +55,7 @@ const GridItem = (props: GridProps) => {
     handleActive,
     branch,
     actions,
+    handlePointOfSales
   } = props;
 
   return (
@@ -107,6 +112,28 @@ const GridItem = (props: GridProps) => {
               </ButtonUi>
             )}
             {deletePopover({ branch })}
+            <ButtonUi
+              isIconOnly
+              showTooltip
+              theme={Colors.Primary}
+              tooltipText='Agregar punto de venta'
+              onPress={() => {
+              handlePointOfSales!(branch.id);
+              }}
+            >
+              <Store />
+            </ButtonUi>
+            {actions.includes('Activar Sucursal') && !branch.isActive && (
+              <ButtonUi
+                isIconOnly
+                theme={Colors.Info}
+                onPress={() => {
+                  props.handleInactive!(branch);
+                }}
+              >
+                <RefreshCcw />
+              </ButtonUi>
+            )}
           </div>
         </div>
       ) : (

@@ -365,7 +365,7 @@ function UpdateBranchProduct({ branch_products, onClose, reloadData }: Props) {
                                     </div>
 
 
-                                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-5">
+                                    <div className="grid grid-cols-1 lg:grid-cols-4 grid-cols-2 gap-4 mt-5">
                                         <Input
                                             className='dark:text-white'
                                             classNames={{ label: 'font-semibold text-sm', base: 'font-semibold' }}

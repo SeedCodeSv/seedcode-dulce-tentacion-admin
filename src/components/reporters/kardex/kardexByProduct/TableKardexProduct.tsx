@@ -10,12 +10,14 @@ export default function TableKardexProduct() {
 
   return (
     <TableComponent
+      className='overflow-auto'
       headers={[
         'No.',
         'Fecha',
         'Descripción',
         'Entrada',
         'Salida',
+        'Stock Actual',
         'Costo Unitario',
         'Total Movimiento',
       ]}
@@ -51,9 +53,11 @@ export default function TableKardexProduct() {
                     ? product.quantity
                     : 0}
                 </td>
-
+                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                  {product.saldoActual}
+                </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                  ${product.branchProduct.costoUnitario}
+                  ${Number(product.branchProduct.costoUnitario).toFixed(3)}
                 </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                   ${product.totalMovement}
@@ -62,7 +66,7 @@ export default function TableKardexProduct() {
             ))
           ) : (
             <tr>
-              <td colSpan={7}>
+              <td colSpan={8}>
                 <EmptyTable />
               </td>
             </tr>

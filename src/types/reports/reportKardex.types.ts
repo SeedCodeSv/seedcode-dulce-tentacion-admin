@@ -47,6 +47,10 @@ export interface IDetaiLAdjustment {
 
 export interface IReportKardexByProduct extends IPagination {
   ok: boolean;
+  initialStock: number,
+  totalEntradas: number,
+  totalSalidas: number,
+  productName: string
   movements: KardexByProduct[];
   status: number;
 }
@@ -73,6 +77,7 @@ export interface KardexByProduct {
   totalMovement: string;
   isActive: boolean;
   branchProduct: BranchProduct;
+  saldoActual: number
   branchProductId: number;
 }
 
@@ -99,4 +104,5 @@ export interface DataKardex {
   quantity:      number;
   unitCost:      number;
   totalMovement: number;
+  initialStock: number
 }

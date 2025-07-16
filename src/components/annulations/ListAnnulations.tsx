@@ -1,13 +1,15 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Input, Select, SelectItem } from '@heroui/react'
 import { toast } from 'sonner'
 import { PiMicrosoftExcelLogoBold } from 'react-icons/pi'
-import { SearchIcon } from 'lucide-react'
 
 import { formatDate } from '../../utils/dates'
 import LoadingTable from '../global/LoadingTable'
 import Pagination from '../global/Pagination'
 import { exportInvalidationsToExcel } from '../export-reports/ExportInvalidations'
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters'
+import RenderViewButton from '../global/render-view-button'
+import EmptyTable from '../global/EmptyTable'
 
 import { limit_options } from '@/utils/constants'
 import { TypesVentas } from '@/utils/utils'
@@ -17,11 +19,15 @@ import { get_list_invalidations } from '@/services/innvalidations.services'
 import ButtonUi from '@/themes/ui/button-ui'
 import { Colors } from '@/types/themes.types'
 import { useViewsStore } from '@/store/views.store'
-
+import useWindowSize from '@/hooks/useWindowSize'
+import DivGlobal from '@/themes/ui/div-global'
 
 function ListAnnulations(): JSX.Element {
     const { actions } = useViewsStore()
-
+    const { windowSize } = useWindowSize()
+    const [view, setView] = useState<'grid' | 'table' | 'list'>(
+        windowSize.width < 768 ? 'grid' : 'table'
+    )
     const invalidations = actions.find((view) => view.view.name === 'Ver invalidaciones')
     const actionsView = invalidations?.actions?.name || []
 
@@ -66,83 +72,127 @@ function ListAnnulations(): JSX.Element {
 
     return (
         <>
-            <div className="w-full h-full p-0 md:p-5 bg-gray-100 dark:bg-gray-800">
-                <div className="w-full flex flex-col h-full p-3 mt-3 overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
-                    <Filters
+            <DivGlobal>
+                {/* <Filters
                         dateInitial={startDate}
                         endDate={endDate}
                         setDateInitial={setStartDate}
                         setEndDate={setEndDate}
-                    />
-                    <div className="flex flex-row justify-between mt-3">
-                        <div className="flex justify-between gap-5" />
-                        <div className="flex gap-5">
-                            {actionsView?.includes("Exportar Excel") && (
-                                <>
-                                    {innvalidations?.length > 0 ?
-                                        <ButtonUi
-                                            className="mt-4 font-semibold w-48 "
-                                            color="success"
-                                            theme={Colors.Success}
-                                            onPress={() => {
-                                                handleData(undefined)
-                                            }}
-                                        >
-                                            <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
-                                        </ButtonUi>
-                                        :
-                                        <ButtonUi
-                                            className="mt-4 opacity-70 font-semibold flex-row gap-10"
-                                            color="success"
-                                            theme={Colors.Success}
-                                        >
-                                            <p>Exportar Excel</p>
-                                            <PiMicrosoftExcelLogoBold className="text-white" size={24} />
-                                        </ButtonUi>
-                                    }
-                                </>
-                            )}
-                            <Select
-                                className="w-44"
-                                classNames={{
-                                    label: 'text-sm font-semibold dark:text-white'
-                                }}
-                                defaultSelectedKeys={[limit.toString()]}
-                                label="Cantidad a mostrar"
-                                labelPlacement="outside"
-                                placeholder="Selecciona una cantidad"
-                                value={state}
-                                variant="bordered"
-                                onChange={(e) => setLimit(+e.target.value)}
-                            >
-                                {limit_options.map((e) => (
-                                    <SelectItem key={e}
-                                        className='dark:text-white'
+                    /> */}
+                <div className={`${windowSize.width < 768 && 'flex justify-between'}`}>
 
-                                    >{e}</SelectItem>
-                                ))}
-                            </Select>
+                    <ResponsiveFilterWrapper
+                        onApply={() => handleSearch(undefined)}
 
-                            <Select
-                                className="w-44"
-                                classNames={{
-                                    label: 'text-sm font-semibold dark:text-white'
-                                }}
-                                label="Mostrar por tipo"
-                                labelPlacement="outside"
-                                placeholder="Selecciona un item"
-                                value={state}
-                                variant="bordered"
-                                onChange={(e) => setState(e.target.value)}
-                            >
-                                {TypesVentas.map((e) => (
-                                    <SelectItem key={e.value}
-                                        className='dark:text-white'
-                                    >{e.label}</SelectItem>
-                                ))}
-                            </Select>
+                    >
+                        <Input
+                            classNames={{
+                                input: 'dark:text-white dark:border-gray-600',
+                                label: 'text-sm font-semibold dark:text-white'
+                            }}
+                            defaultValue={formatDate()}
+                            label="Fecha inicial"
+                            labelPlacement="outside"
+                            placeholder="Buscar por nombre..."
+                            type="date"
+                            value={startDate}
+                            variant="bordered"
+                            onChange={(e) => setStartDate(e.target.value)}
+                        />
+                        <Input
+                            classNames={{
+                                input: 'dark:text-white dark:border-gray-600',
+                                label: 'text-sm font-semibold dark:text-white'
+                            }}
+                            label="Fecha final"
+                            labelPlacement="outside"
+                            placeholder="Buscar por nombre..."
+                            type="date"
+                            value={endDate}
+                            variant="bordered"
+                            onChange={(e) => setEndDate(e.target.value)}
+                        />
 
-                            <ButtonUi
+                    </ResponsiveFilterWrapper>
+                    {windowSize.width < 768 && (
+                        <RenderViewButton setView={setView} view={view} />
+
+                    )}                    </div>
+
+                <div className="flex flex-row justify-between mt-3">
+                    {windowSize.width > 768 && (
+                        <RenderViewButton setView={setView} view={view} />
+
+                    )}
+
+                    <div className="flex justify-between gap-5" />
+                    <div className="flex gap-5">
+                        {actionsView?.includes("Exportar Excel") && (
+                            <>
+                                {innvalidations?.length > 0 ?
+                                    <ButtonUi
+                                        className="mt-4 font-semibold w-48 "
+                                        color="success"
+                                        theme={Colors.Success}
+                                        onPress={() => {
+                                            handleData(undefined)
+                                        }}
+                                    >
+                                        <p>Exportar Excel</p> <PiMicrosoftExcelLogoBold color={'text-color'} size={24} />
+                                    </ButtonUi>
+                                    :
+                                    <ButtonUi
+                                        className="mt-4 opacity-70 font-semibold flex-row gap-10"
+                                        color="success"
+                                        theme={Colors.Success}
+                                    >
+                                        <p>Exportar Excel</p>
+                                        <PiMicrosoftExcelLogoBold className="text-white" size={24} />
+                                    </ButtonUi>
+                                }
+                            </>
+                        )}
+                        <Select
+                            className="w-44"
+                            classNames={{
+                                label: 'text-sm font-semibold dark:text-white'
+                            }}
+                            defaultSelectedKeys={[limit.toString()]}
+                            label="Cantidad a mostrar"
+                            labelPlacement="outside"
+                            placeholder="Selecciona una cantidad"
+                            value={state}
+                            variant="bordered"
+                            onChange={(e) => setLimit(+e.target.value)}
+                        >
+                            {limit_options.map((e) => (
+                                <SelectItem key={e}
+                                    className='dark:text-white'
+
+                                >{e}</SelectItem>
+                            ))}
+                        </Select>
+
+                        <Select
+                            className="w-44"
+                            classNames={{
+                                label: 'text-sm font-semibold dark:text-white'
+                            }}
+                            label="Mostrar por tipo"
+                            labelPlacement="outside"
+                            placeholder="Selecciona un item"
+                            value={state}
+                            variant="bordered"
+                            onChange={(e) => setState(e.target.value)}
+                        >
+                            {TypesVentas.map((e) => (
+                                <SelectItem key={e.value}
+                                    className='dark:text-white'
+                                >{e.label}</SelectItem>
+                            ))}
+                        </Select>
+
+                        {/* <ButtonUi
                                 className="mt-6 hidden font-semibold lg:flex"
                                 color="primary"
                                 endContent={<SearchIcon size={15} />}
@@ -152,10 +202,11 @@ function ListAnnulations(): JSX.Element {
                                 }}
                             >
                                 Buscar
-                            </ButtonUi>
+                            </ButtonUi> */}
 
-                        </div>
                     </div>
+                </div>
+                {view === 'table' && (
                     <div className="overflow-x-auto h-full custom-scrollbar mt-4">
                         <table className="w-full">
                             <thead className="sticky top-0 z-20 bg-white">
@@ -188,64 +239,90 @@ function ListAnnulations(): JSX.Element {
                                             <LoadingTable />
                                         </td>
                                     </tr>
-                                ) : (
+                                ) : innvalidations.length > 0 ? (
                                     <>
-                                        {innvalidations.length > 0 ? (
-                                            <>
-                                                {innvalidations.map((item, index) => (
-                                                    <tr key={index} className="border-b border-slate-200">
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                            {item.id}
-                                                        </td>
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                            {item?.fecAnula} - {item?.horAnula}
-                                                        </td>
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                                                            {item.numeroControl}
-                                                        </td>
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                            {item.codigoGeneracion}
-                                                        </td>
-
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-                                                            {item?.tipoDte === "04" && 'NOTA DE REMISIÓN' || item?.tipoDte === "05" && 'NOTA DE CRÉDITO' || item?.tipoDte === '06' && 'NOTA DE DÉBITO' || item?.tipoDte === "14" && "SUJETO EXCLUIDO" || item?.tipoDte === "01" && 'FACTURA' || item?.tipoDte === "03" && "CRÉDITO FISCAL"}
-                                                        </td>
-                                                        <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-
-                                                            {'INVALIDADO'}
-                                                        </td>
-
-                                                    </tr>
-                                                ))}
-                                            </>
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={6}>
-                                                    <div className="flex flex-col justify-center items-center">
-                                                        <p className="text-2xl dark:text-white">No se encontraron resultados</p>
-                                                    </div>
+                                        {innvalidations.map((item, index) => (
+                                            <tr key={index} className="border-b border-slate-200">
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                    {item.id}
                                                 </td>
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                    {item?.fecAnula} - {item?.horAnula}
+                                                </td>
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
+                                                    {item.numeroControl}
+                                                </td>
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                    {item.codigoGeneracion}
+                                                </td>
+
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                                                    {item?.tipoDte === "04" && 'NOTA DE REMISIÓN' || item?.tipoDte === "05" && 'NOTA DE CRÉDITO' || item?.tipoDte === '06' && 'NOTA DE DÉBITO' || item?.tipoDte === "14" && "SUJETO EXCLUIDO" || item?.tipoDte === "01" && 'FACTURA' || item?.tipoDte === "03" && "CRÉDITO FISCAL"}
+                                                </td>
+                                                <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+
+                                                    {'INVALIDADO'}
+                                                </td>
+
                                             </tr>
-                                        )}
+                                        ))}
                                     </>
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6}>
+                                            <EmptyTable />
+                                        </td>
+                                    </tr>
                                 )}
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div className="mt-5 w-full">
-                    <Pagination
-                        currentPage={innvalidations_page.currentPag}
-                        nextPage={innvalidations_page.prevPag}
-                        previousPage={innvalidations_page.nextPag}
-                        totalPages={innvalidations_page.totalPag}
-                        onPageChange={(page) => {
+                )}
+                {view === 'grid' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+                        {is_loading ? (
+                            <div className="col-span-full flex justify-center items-center">
+                                <LoadingTable />
+                            </div>
+                        ) : innvalidations.length === 0 ? (
+                            <EmptyTable />
+                        ) : (
+                            innvalidations.map((item, index) => (
+                                <div key={index} className="rounded-xl border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 p-4 shadow-sm">
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">NO.:</span> {item.id}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">FECHA - HORA:</span> {item?.fecAnula} - {item?.horAnula}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">N° CONTROL:</span> {item.numeroControl}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">CÓD. GENERACIÓN:</span> {item.codigoGeneracion}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">TIPO:</span> {{
+                                        "04": "NOTA DE REMISIÓN",
+                                        "05": "NOTA DE CRÉDITO",
+                                        "06": "NOTA DE DÉBITO",
+                                        "14": "SUJETO EXCLUIDO",
+                                        "01": "FACTURA",
+                                        "03": "CRÉDITO FISCAL"
+                                    }[item.tipoDte] ?? item.tipoDte}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-300"><span className="font-semibold">ESTADO:</span> INVALIDADO</p>
+                                </div>
+                            ))
+                        )}
+                    </div>
 
-                            getInnvalidations(page, limit, startDate, endDate, state)
-                        }}
-                    />
-                </div>
-            </div >
+                )}
+                {innvalidations_page.totalPag > 1 &&
+                    <div className="mt-5 w-full">
+                        <Pagination
+                            currentPage={innvalidations_page.currentPag}
+                            nextPage={innvalidations_page.prevPag}
+                            previousPage={innvalidations_page.nextPag}
+                            totalPages={innvalidations_page.totalPag}
+                            onPageChange={(page) => {
+
+                                getInnvalidations(page, limit, startDate, endDate, state)
+                            }}
+                        />
+                    </div>
+                }
+            </DivGlobal >
 
         </>
     )
@@ -253,43 +330,17 @@ function ListAnnulations(): JSX.Element {
 
 export default ListAnnulations
 
-interface FiltersProps {
-    dateInitial: string
-    setDateInitial: Dispatch<SetStateAction<string>>
-    endDate: string
-    setEndDate: Dispatch<SetStateAction<string>>
-}
+// interface FiltersProps {
+//     dateInitial: string
+//     setDateInitial: Dispatch<SetStateAction<string>>
+//     endDate: string
+//     setEndDate: Dispatch<SetStateAction<string>>
+// }
 
-const Filters = (props: FiltersProps): JSX.Element => {
-    return (
-        <div className="flex w-full gap-5 py-5 md:p-0">
-            <Input
-                classNames={{
-                    input: 'dark:text-white dark:border-gray-600',
-                    label: 'text-sm font-semibold dark:text-white'
-                }}
-                defaultValue={formatDate()}
-                label="Fecha inicial"
-                labelPlacement="outside"
-                placeholder="Buscar por nombre..."
-                type="date"
-                value={props.dateInitial}
-                variant="bordered"
-                onChange={(e) => props.setDateInitial(e.target.value)}
-            />
-            <Input
-                classNames={{
-                    input: 'dark:text-white dark:border-gray-600',
-                    label: 'text-sm font-semibold dark:text-white'
-                }}
-                label="Fecha final"
-                labelPlacement="outside"
-                placeholder="Buscar por nombre..."
-                type="date"
-                value={props.endDate}
-                variant="bordered"
-                onChange={(e) => props.setEndDate(e.target.value)}
-            />
-        </div>
-    )
-}
+// const Filters = (props: FiltersProps): JSX.Element => {
+//     return (
+//         <div className="flex w-full gap-5 py-5 md:p-0">
+
+//         </div>
+//     )
+// }

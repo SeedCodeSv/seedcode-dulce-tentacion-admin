@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Minus, MoveLeft, Plus, Trash } from 'lucide-react';
-import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import {
   Autocomplete,
@@ -33,8 +33,9 @@ import { Employee } from '@/types/employees.types';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useSocket } from '@/hooks/useSocket';
-import { ThemeContext } from '@/hooks/useTheme';
+// import { ThemeContext } from '@/hooks/useTheme';
 import TdGlobal from '@/themes/ui/td-global';
+import { TableComponent } from '@/themes/ui/table-ui';
 
 interface Props {
   branchData: Branches;
@@ -54,14 +55,13 @@ function ShippingProductBranchSelected(props: Props) {
     OnPlusProductSelected,
     OnMinusProductSelected,
     OnChangeQuantityManual,
-    OnUpdateCosteManual,
     OnClearDataShippingProductBranch,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const { branch_list, getBranchesList } = useBranchesStore();
   const { point_of_sales, getPointOfSales } = usePointOfSales();
   const { socket } = useSocket()
-  const { theme, context } = useContext(ThemeContext);
+  // const { theme, context } = useContext(ThemeContext);
 
   useEffect(() => {
     getEmployeesList();
@@ -76,7 +76,9 @@ function ShippingProductBranchSelected(props: Props) {
   const { customer_list, getCustomerByBranchId } = useCustomerStore();
   const [customerData, setCustomerData] = useState<Customer>();
   const [responsibleEmployee, setResponsibleEmployee] = useState<Employee>();
-  const [pointOfSaleId, setPointOfSaleId] = useState(0);
+  const [pointOfSaleId, setPointOfSaleId] = useState(
+    point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0
+  );
   const [movementType, setMovementType] = useState(2);
   const [observations, setObservations] = useState('');
 
@@ -101,7 +103,6 @@ function ShippingProductBranchSelected(props: Props) {
     if (props.branchDestiny) {
       setBranchData(props.branchDestiny)
     }
-
   }, [props.branchDestiny])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
@@ -127,12 +128,15 @@ function ShippingProductBranchSelected(props: Props) {
     }
   })
 
-
-
   const rowRefs = useRef<(HTMLTableRowElement | null)[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectProduct, setSelectedProduct] = useState(0)
 
+  useEffect(() => {
+    if (point_of_sales) {
+      setPointOfSaleId(point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
+    }
+  }, [point_of_sales])
 
   useHotkeys('arrowdown', () => {
     setSelectedIndex((prev) => {
@@ -260,7 +264,7 @@ function ShippingProductBranchSelected(props: Props) {
             </div>
           ) : (
             <>
-              <div className="flex justify-between">
+              <div className='flex gap-5 items-start mt-4'>
                 <div>
                   <Autocomplete
                     ref={autocomplete}
@@ -287,8 +291,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                          textValue={
+                            employee.firstName + ' ' + employee.firstLastName
+                          }
                         >
-                          {employee.firstName}
+                          {employee.firstName ?? '-'} {employee.firstLastName ?? '-'}
                         </AutocompleteItem>
                       ))}
                   </Autocomplete>
@@ -305,18 +312,18 @@ function ShippingProductBranchSelected(props: Props) {
                   </Button>
                 </div>
               </div>
-              <table className="  w-full mt-2 text-sm text-left text-gray-500 dark:text-gray-400">
-                <motion.thead
+              {/* <table className=" w-full mt-2 text-sm text-left text-gray-500 dark:text-gray-400 overflow-auto"> */}
+              {/* <motion.thead
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs h-[100%]  text-gray-700 uppercase "
+                  className="text-xs h-[100%]  text-gray-700 uppercase"
                   initial={{ opacity: 0, y: -20 }}
-                >
-                  <tr>
+                > */}
+              {/* <tr>
                     {[
                       'N°',
                       'Nombre',
                       'Categoria',
-                      'Costo Unitario',
+                      'Stock disponible',
                       'Cantidad',
                       'Acciones',
                     ].map((column) => (
@@ -339,81 +346,99 @@ function ShippingProductBranchSelected(props: Props) {
                         </div>
                       </motion.th>
                     ))}
-                  </tr>
-                </motion.thead>
-                <tbody>
-                  {product_selected.map((item, index) => (
-                    <motion.tr
-                      key={item.id}
-                      ref={(el) => (rowRefs.current[index] = el)}
-                      animate={{ opacity: 1, x: 0 }}
-                      className={`transition-colors
+                  </tr> */}
+              {/* </motion.thead> */}
+
+              <TableComponent className='uppercase overflow-auto' headers={[
+                'N°',
+                'Nombre',
+                'Categoria',
+                'Stock disponible',
+                'Cantidad',
+                'Acciones',
+              ]}>
+
+                {product_selected.map((item, index) => (
+                  <motion.tr
+                    key={item.id}
+                    ref={(el) => (rowRefs.current[index] = el)}
+                    animate={{ opacity: 1, x: 0 }}
+                    className={`transition-colors
                         focus:outline-none ${index === selectedIndex ? 'ring-2 ring-emerald-500 rounded-lg' : ''
-                        }`}
+                      }`}
 
-                      initial={{ opacity: 0, x: -20 }}
-                      tabIndex={-1}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
-                    >
-                      <TdGlobal className="px-6 py-4 dark:text-white">{index + 1}</TdGlobal>
-                      <TdGlobal className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                        {item?.product.name}
-                      </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        {item.product?.subCategory?.categoryProduct?.name}
-                      </TdGlobal>
+                    initial={{ opacity: 0, x: -20 }}
+                    tabIndex={-1}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                  >
+                    <TdGlobal className="px-6 py-4 dark:text-white">{index + 1}</TdGlobal>
+                    <TdGlobal className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                      {item?.product.name}
+                    </TdGlobal>
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      {item.product?.subCategory?.categoryProduct?.name}
+                    </TdGlobal>
 
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        <Input
-                          value={Number(item.costoUnitario)!.toString()}
-                          variant="bordered"
-                          onChange={(e) => {
-                            OnUpdateCosteManual(item.id, String(e.currentTarget.value));
-                          }}
-                        />
-                      </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white">
-                        <Input
-                          value={item.quantity!.toString()}
-                          variant="bordered"
-                          onChange={(e) => {
-                            OnChangeQuantityManual(
-                              item.id,
-                              item.product.id,
-                              Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
-                            );
-                          }}
-                        />
-                      </TdGlobal>
-                      <TdGlobal className="px-6 py-4 dark:text-white ">
-                        <div className="flex gap-4">
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Success}
-                            onPress={() => OnPlusProductSelected(item.id)}
-                          >
-                            <Plus />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Primary}
-                            onPress={() => OnMinusProductSelected(item.id)}
-                          >
-                            <Minus />
-                          </ButtonUi>
-                          <ButtonUi
-                            isIconOnly
-                            theme={Colors.Error}
-                            onPress={() => OnClearProductSelected(item.id)}
-                          >
-                            <Trash />
-                          </ButtonUi>
-                        </div>
-                      </TdGlobal>
-                    </motion.tr>
-                  ))}
-                </tbody>
-              </table>
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      {item?.stock ?? 0}
+                    </TdGlobal>
+                    <TdGlobal className="px-6 py-4 dark:text-white">
+                      <Input
+                        value={item.quantity!.toString()}
+                        variant="bordered"
+                        onChange={(e) => {
+                          const value = Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                          const product = product_selected.find((val) => val.id === item.id)
+
+                          if (value > Number(product?.stock ?? 0)) {
+
+                            toast.warning('No cuentas con suficiente stock')
+
+                            return
+                          }
+
+                          OnChangeQuantityManual(
+                            item.id,
+                            item.product.id,
+                            Number(item.stock),
+                            Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
+                          );
+                        }}
+                      />
+                    </TdGlobal>
+
+                    <TdGlobal className="px-6 py-4 dark:text-white ">
+                      <div className="flex gap-4">
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Success}
+                          onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
+                        >
+                          <Plus />
+                        </ButtonUi>
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Primary}
+                          onPress={() => OnMinusProductSelected(item.id)}
+                        >
+                          <Minus />
+                        </ButtonUi>
+                        <ButtonUi
+                          isIconOnly
+                          theme={Colors.Error}
+                          onPress={() => OnClearProductSelected(item.id)}
+                        >
+                          <Trash />
+                        </ButtonUi>
+                      </div>
+                    </TdGlobal>
+                  </motion.tr>
+                ))}
+              </TableComponent>
+              {/* <tbody>
+               
+              </tbody> */}
+              {/* </table> */}
             </>
           )}
         </motion.div>
@@ -503,6 +528,7 @@ function ShippingProductBranchSelected(props: Props) {
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
+
                       onSelectionChange={(key) => {
                         if (key) {
                           const pointSale = JSON.parse(key as string) as {
@@ -559,6 +585,7 @@ function ShippingProductBranchSelected(props: Props) {
 
                             return;
                           }
+
                           setBranchData(branch as any);
                         }
                       }}
@@ -577,18 +604,14 @@ function ShippingProductBranchSelected(props: Props) {
                       classNames={{
                         base: 'font-semibold text-sm text-gray-900 dark:text-white',
                       }}
+                      defaultSelectedKey={pointOfSaleId.toString()}
                       label="Selecciona el punto de venta"
                       labelPlacement="outside"
                       placeholder="Selecciona el punto de venta"
                       variant="bordered"
                       onSelectionChange={(key) => {
                         if (key) {
-                          const pointSale = JSON.parse(key as string) as {
-                            id: number;
-                            code: string;
-                          };
-
-                          setPointOfSaleId(pointSale.id);
+                          setPointOfSaleId(Number(key));
                         }
                       }}
                     >
@@ -596,7 +619,7 @@ function ShippingProductBranchSelected(props: Props) {
                         .filter((p) => ['NRE'].includes(p.typeVoucher))
                         .map((p) => (
                           <AutocompleteItem
-                            key={JSON.stringify(p)}
+                            key={p.id}
                             className="dark:text-white"
                           >
                             {p.code}
@@ -629,8 +652,11 @@ function ShippingProductBranchSelected(props: Props) {
                         <AutocompleteItem
                           key={JSON.stringify(employee)}
                           className="dark:text-white"
+                          textValue={
+                            employee.firstName + ' ' + employee.firstLastName
+                          }
                         >
-                          {employee.firstName}
+                          {employee.firstName}{' '}{employee.firstLastName}
                         </AutocompleteItem>
                       ))}
                     </Autocomplete>

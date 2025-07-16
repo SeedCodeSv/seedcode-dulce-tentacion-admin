@@ -29,7 +29,7 @@ export interface ReferalNoteStore {
   getReferalNoteDetail: (id: number) => void
   getRecentReferal: (id: number) => void
   getReferalNoteByBranch: (id: number, page: number, limit: number, important: boolean) => void
-  getDetailNote: (id: number) => void
+  getDetailNote: (id: number) => Promise<{ ok: boolean, note: DetailNote[] }>
   setHasNewNotification: (value: boolean) => void
   getReferalNoteContingence: (id: number) => void
 

@@ -39,9 +39,9 @@ export interface InventaryCreateStore {
 }
 
 export interface IPropsInventoryAdjustment {
-  isOpen: boolean;
-  closeModal: () => void;
-  branchName: (name: string) => void;
+ isOpen?: boolean;
+  closeModal?: () => void;
+  branchName?: (name: string) => void;
 }
 export interface IPropsListInventoryAdjustment {
   branchName: string;

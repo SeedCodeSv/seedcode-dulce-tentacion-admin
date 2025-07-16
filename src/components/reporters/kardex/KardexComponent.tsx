@@ -1,6 +1,4 @@
 import {
-  Autocomplete,
-  AutocompleteItem,
   Input,
   Select,
   SelectItem,
@@ -18,12 +16,9 @@ import KardexExportExcell from './kardexExcell';
 import { useBranchesStore } from '@/store/branches.store';
 import { limit_options } from '@/utils/constants';
 import useWindowSize from '@/hooks/useWindowSize';
-import { get_user } from '@/storage/localStorage';
 import EMPTY from '@/assets/animations/Animation - 1724269736818.json';
 import { useTransmitterStore } from '@/store/transmitter.store';
-import { Branches } from '@/types/branches.types';
 import Pagination from '@/components/global/Pagination';
-import { DataKardex } from '@/types/reports/reportKardex.types';
 import { useReportKardex } from '@/store/reports/reportKardex.store';
 import LoadingTable from '@/components/global/LoadingTable';
 import DivGlobal from '@/themes/ui/div-global';
@@ -36,15 +31,14 @@ type ContextType = {
 
 export default function KardexComponent() {
   const { actionView } = useOutletContext<ContextType>();
+    const [branchName, setBranchName] = useState<string[]>([]);
 
-  const user = get_user();
   const { transmitter, gettransmitter } = useTransmitterStore();
 
   const { getBranchesList, branch_list } = useBranchesStore();
   const { pagination_kardex, loading, getReportKardexGeneral } = useReportKardex();
   const { windowSize } = useWindowSize();
-  const [data, setData] = useState<DataKardex[]>([]);
-  const [branch, setBranch] = useState<Branches>();
+  const [sorted, setSortedBy] = useState('');
 
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
@@ -53,9 +47,10 @@ export default function KardexComponent() {
   const currentDate = new Date();
   const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
   const [search, setSearch] = useState({
+    page: 1,
     limit: 20,
     name: '',
-    branch: user?.branchId ?? 0,
+     branchIds: [] as number[],
     startDate: defaultStartDate.toISOString().split('T')[0],
     endDate: currentDate.toISOString().split('T')[0],
   });
@@ -63,15 +58,15 @@ export default function KardexComponent() {
   useEffect(() => {
     gettransmitter();
     getBranchesList();
-    getReportKardexGeneral(Number(search.branch), 1, search.limit, search.name, search.startDate, search.endDate);
+    getReportKardexGeneral(search);
   }, []);
 
   const handleSearch = () => {
-    getReportKardexGeneral(Number(search.branch), 1, search.limit, search.name, search.startDate, search.endDate);
+    getReportKardexGeneral(search);
   }
 
   const changePage = (page: number) => {
-    getReportKardexGeneral(Number(search.branch), page, search.limit, search.name, search.startDate, search.endDate);
+    getReportKardexGeneral({...search, page});
   };
 
   const options_limit = [
@@ -79,43 +74,74 @@ export default function KardexComponent() {
     ...limit_options.map((option) => ({ label: option, value: option })),
   ];
 
-  useEffect(() => {
-    if (!branch && user && branch_list && branch_list.length > 0) {
-      const branch = branch_list.find((item) => item.id === user.branchId);
+  // useEffect(() => {
+  //   if (!branch && user && branch_list && branch_list.length > 0) {
+  //     const branch = branch_list.find((item) => item.id === user.branchId);
 
-      setBranch(branch);
-    }
-  }, [branch_list]);
+  //     setBranch(branch);
+  //   }
+  // }, [branch_list]);
+
+   const branchesOptions = [
+        { label: 'Todos', value: 'all' },
+        ...branch_list.map((option) => ({
+            label: option.name,
+            value: String(option.id),
+        })),
+    ];
 
   return (
     <DivGlobal className="flex flex-col h-full overflow-y-auto pt-1">
       <div className="my-3 flex gap-5 justify-between lg:flex-col items-end">
         <ResponsiveFilterWrapper classButtonLg='col-start-4 justify-self-end w-1/2' classLg='grid grid-cols-4 w-full gap-4 items-end justify-end' onApply={() => handleSearch()}>
-          <Autocomplete
-            className="font-semibold dark:text-white w-full"
-            defaultSelectedKey={String(search.branch)}
-            label="Sucursal"
-            labelPlacement="outside"
-            placeholder="Selecciona la sucursal"
-            variant="bordered"
-            onSelectionChange={(key) => {
+         <Select
+                    className="w-full"
+                    classNames={{
+                        label: 'font-semibold',
+                        innerWrapper: 'uppercase'
+                    }}
+                    label="Sucursales"
+                    labelPlacement="outside"
+                    placeholder="Selecciona una o más sucursales"
+                    selectedKeys={new Set(search.branchIds.map(id => id.toString()))}
+                    selectionMode="multiple"
+                    variant="bordered"
+                    onSelectionChange={(keys) => {
+                        const selected = Array.from(keys);
+                        const allIds = branch_list.map((b) => b.id);
+                        const allSelected = search.branchIds.length === allIds.length;
 
-              if (!key) return;
-              const branchselected = branch_list.find(
-                (item) => String(item.id) === key
-              );
+                        if (selected.includes("all")) {
+                            if (allSelected) {
+                                setSearch({ ...search, branchIds: [] });
+                                setBranchName([]);
+                            } else {
+                                setSearch({ ...search, branchIds: allIds });
+                                const allNames = branch_list.map((b) => b.name);
 
-              setBranch(branchselected);
+                                setBranchName(allNames);
+                            }
+                        } else {
+                            const ids = selected.map(Number).filter((id) => !isNaN(id));
 
-              setSearch({ ...search, branch: Number(key) });
-            }}
-          >
-            {branch_list.map((branch) => (
-              <AutocompleteItem key={branch.id} className="dark:text-white">
-                {branch.name}
-              </AutocompleteItem>
-            ))}
-          </Autocomplete>
+                            setSearch({ ...search, branchIds: ids });
+
+                            // Obtener los nombres de las sucursales seleccionadas
+                            const selectedNames = branch_list
+                                .filter((b) => ids.includes(b.id))
+                                .map((b) => b.name);
+
+                            setBranchName(selectedNames);
+                        }
+                    }}
+
+                >
+                    {branchesOptions.map(({ label, value }) => (
+                        <SelectItem key={value.toString()} className="uppercase">
+                            {label}
+                        </SelectItem>
+                    ))}
+                </Select>
           <Input
             isClearable
             className="w-full dark:text-white"
@@ -180,15 +206,15 @@ export default function KardexComponent() {
             ))}
           </Select>
         </ResponsiveFilterWrapper>
-        <div className="w-full flex gap-5 justify-between items-end">
+        <div className="w-full flex gap-5 justify-between items-end overflow-auto">
           <RenderViewButton isList setView={setView} view={view} />
           {view === 'table' && (
             <div className="flex gap-3">
               {JSON.stringify(actionView).includes('Descargar PDF') && (
-                <DownloadPDFButton branch={branch!} tableData={data} transmitter={transmitter} />
+                <DownloadPDFButton branch={branchName}  params={search} sorted={sorted} transmitter={transmitter} />
               )}
               {JSON.stringify(actionView).includes('Exportar Excel') && (
-                <KardexExportExcell branch={branch!} tableData={data} transmitter={transmitter} />
+                <KardexExportExcell branch={branchName} params={search} sorted={sorted} transmitter={transmitter} />
               )}
             </div>
           )}
@@ -201,7 +227,7 @@ export default function KardexComponent() {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actionView} branch={branchName!} search={search} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />
@@ -219,7 +245,7 @@ export default function KardexComponent() {
           ) : (
             <>
               {pagination_kardex.totalPag > 0 ? (
-                <MobileViewKardex actions={actionView} branch={branch!} transmitter={transmitter} view={view} />
+                <MobileViewKardex actions={actionView} branch={branchName!} search={search} transmitter={transmitter} view={view} />
               ) : (
                 <div className="flex flex-col justify-center items-center">
                   <Lottie animationData={EMPTY} className="w-96" />
@@ -231,7 +257,7 @@ export default function KardexComponent() {
         </>
       )}
 
-      {view === 'table' && <KardexTable data={(data) => setData(data)} />}
+      {view === 'table' && <KardexTable setSorted={(sorted) => setSortedBy(sorted)} />}
       {pagination_kardex.totalPag > 1 && (
         <Pagination
           currentPage={pagination_kardex.currentPag}

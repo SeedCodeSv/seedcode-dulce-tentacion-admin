@@ -21,6 +21,7 @@ import { useAccountCatalogsStore } from '@/store/accountCatalogs.store';
 import { AccountCatalog } from '@/types/accountCatalogs.types';
 import { useAuthStore } from '@/store/auth.store';
 import { useFiscalDataAndParameterStore } from '@/store/fiscal-data-and-paramters.store';
+import useWindowSize from '@/hooks/useWindowSize';
 
 
 function GeneralData() {
@@ -38,11 +39,9 @@ function GeneralData() {
 
   useEffect(() => {
     if (user) {
-      const transId = user.correlative
-        ? user.correlative.branch.transmitter.id
-        : user.pointOfSale
-          ? user.pointOfSale.branch.transmitter.id
-          : 0;
+      const transId = user.pointOfSale
+        ? user.pointOfSale.branch.transmitter.id
+        : 0;
 
       getFiscalDataAndParameter(transId);
     }
@@ -52,7 +51,7 @@ function GeneralData() {
 
   useEffect(() => {
     const transmitterId =
-      user?.pointOfSale?.branch.transmitter.id ?? user?.correlative?.branch.transmitter.id;
+      user?.pointOfSale?.branch.transmitter.id ?? user?.pointOfSale?.branch.transmitter.id;
 
     getAccountCatalogs(transmitterId ?? 0, '', '');
   }, []);
@@ -76,11 +75,9 @@ function GeneralData() {
     },
     onSubmit(values, formikHelpers) {
       if (user) {
-        const transId = user.correlative
-          ? user.correlative.branch.transmitter.id
-          : user.pointOfSale
-            ? user.pointOfSale.branch.transmitter.id
-            : 0;
+        const transId = user.pointOfSale
+          ? user.pointOfSale.branch.transmitter.id
+          : 0;
 
         if (fiscalDataAndParameter) {
           onUpdateFiscalDataAndParameter(fiscalDataAndParameter.id, {
@@ -118,6 +115,8 @@ function GeneralData() {
       });
     }
   }, [fiscalDataAndParameter]);
+  const { windowSize } = useWindowSize()
+  const inputWidthSize = windowSize.width < 768 && 'w-32'
 
   return (
     <>
@@ -136,6 +135,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta para el IVA Credito Fiscal(Compras Locales)"
                 variant="bordered"
                 {...formik.getFieldProps('ivaLocalShopping')}
@@ -155,6 +155,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta para el IVA Crédito Fiscal (Importaciones)"
                 variant="bordered"
                 {...formik.getFieldProps('ivaImports')}
@@ -174,6 +175,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta para el IVA Débito Fiscal (Contribuyentes)"
                 variant="bordered"
                 {...formik.getFieldProps('ivaTributte')}
@@ -193,6 +195,8 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
+
                 placeholder="Cuenta para el IVA Débito Fiscal (Consumidor final)"
                 variant="bordered"
                 {...formik.getFieldProps('ivaFinalConsumer')}
@@ -212,6 +216,8 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
+
                 placeholder="Cuenta contable para el IVA Retenido 1%"
                 variant="bordered"
                 {...formik.getFieldProps('ivaRete1')}
@@ -231,6 +237,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta contable para IVA Percibido 1%"
                 variant="bordered"
                 {...formik.getFieldProps('ivaPerci1')}
@@ -250,6 +257,8 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
+
                 placeholder="Código de Cuenta para IVA 2% (Tarjetas)"
                 variant="bordered"
                 {...formik.getFieldProps('ivaCard2')}
@@ -269,6 +278,8 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
+
                 placeholder="Código de Cuenta para la Caja GENERAL"
                 variant="bordered"
                 {...formik.getFieldProps('generalBox')}
@@ -288,6 +299,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Código de Cuenta para Tarjeta de Credito:"
                 variant="bordered"
                 {...formik.getFieldProps('cardCredit')}
@@ -307,6 +319,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Código de Cuenta para la Gastos Indirectos de F"
                 variant="bordered"
                 {...formik.getFieldProps('indiferenceExpenseF')}
@@ -326,6 +339,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Código de Cuenta para CESC o Turismo Compras"
                 variant="bordered"
                 {...formik.getFieldProps('cescOrTurismShoppping')}
@@ -345,6 +359,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Código de Cuenta para CESC o Turismo Ventas"
                 variant="bordered"
                 {...formik.getFieldProps('cescOrTurismSales')}
@@ -364,6 +379,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta Anticipos de CXC"
                 variant="bordered"
                 {...formik.getFieldProps('advancesCXC')}
@@ -383,6 +399,7 @@ function GeneralData() {
               <Input
                 readOnly
                 className="w-full"
+                classNames={{ input: inputWidthSize }}
                 placeholder="Cuenta Transitoria de Anticipos de CXC"
                 variant="bordered"
                 {...formik.getFieldProps('transientAdvancesCXD')}
@@ -400,10 +417,9 @@ function GeneralData() {
             className="px-20 font-semibold"
             isLoading={formik.isSubmitting}
             style={styles.dangerStyles}
-            type="submit"
-            onClick={() => navigation('/configuration')}
+            onPress={() => navigation('/configuration')}
           >
-            Cacelar
+            Cancelar
           </Button>
           <Button
             className="px-20 font-semibold"

@@ -64,9 +64,8 @@ export default function BranchProductSelectedOrder(props: Props) {
     OnPlusProductSelected,
     OnMinusProductSelected,
     OnChangeQuantityManual,
-    OnUpdateCosteManual,
     OnClearDataShippingProductBranch,
-    response
+    response,
   } = useShippingBranchProductBranch();
   const { employee_list, getEmployeesList } = useEmployeeStore();
   const { branch_list, getBranchesList } = useBranchesStore();
@@ -88,7 +87,9 @@ export default function BranchProductSelectedOrder(props: Props) {
   const { customer_list, getCustomerByBranchId } = useCustomerStore();
   const [customerData, setCustomerData] = useState<Customer>();
   const [responsibleEmployee, setResponsibleEmployee] = useState<Employee>();
-  const [pointOfSaleId, setPointOfSaleId] = useState(0);
+  const [pointOfSaleId, setPointOfSaleId] = useState(
+    point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0
+  );
   const [movementType, setMovementType] = useState(2);
   const [observations, setObservations] = useState('Nota de Remisión a partir de orden de producto');
 
@@ -115,10 +116,23 @@ export default function BranchProductSelectedOrder(props: Props) {
     }
 
   }, [props.branchDestiny])
+
+  useEffect(() => {
+    if (point_of_sales) {
+      setPointOfSaleId(point_of_sales.find((p) => p.typeVoucher === 'NRE')?.id ?? 0)
+    }
+  }, [point_of_sales])
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const branchIssuingId = branchData?.id ?? 0
 
   const handleSave = async () => {
+    if (product_selected.some((item) => item.quantity === 0)) {
+      toast.error('Las cantidades deben ser mayores a 0');
+
+      return;
+    }
+
     if (!responsibleEmployee) {
       toast.warning('Debes seleccionar el responsable');
 
@@ -127,7 +141,7 @@ export default function BranchProductSelectedOrder(props: Props) {
 
     if (!props.branchData) {
       toast.warning('Debes seleccionar la sucursal de origen');
-      
+
       return;
     }
 
@@ -178,7 +192,10 @@ export default function BranchProductSelectedOrder(props: Props) {
         <ButtonUi
           startContent={<ArrowBigLeft />}
           theme={Colors.Info}
-          onPress={() => navigate('/order-products')}
+          onPress={() => {
+            navigate('/order-products')
+            props.setResponse({ ok: false, results: [] })
+          }}
         >
           Regresar
         </ButtonUi>
@@ -238,11 +255,11 @@ export default function BranchProductSelectedOrder(props: Props) {
               Guardar
             </ButtonUi>
           </div>
-          <TableComponent className='uppercase' headers={[
+          <TableComponent className='uppercase overflow-auto' headers={[
             'N°',
             'Nombre',
             'Categoria',
-            'Costo Unitario',
+            'Stock disponible',
             'Cantidad',
             'Acciones',
           ]}>
@@ -263,22 +280,22 @@ export default function BranchProductSelectedOrder(props: Props) {
                 </TdGlobal>
 
                 <TdGlobal className="px-6 py-4 dark:text-white">
-                  <Input
-                    value={Number(item.costoUnitario)!.toString()}
-                    variant="bordered"
-                    onChange={(e) => {
-                      OnUpdateCosteManual(item.id, String(e.currentTarget.value));
-                    }}
-                  />
+                  {item.stock}
                 </TdGlobal>
                 <TdGlobal className="px-6 py-4 dark:text-white">
                   <Input
                     value={item.quantity!.toString()}
                     variant="bordered"
                     onChange={(e) => {
+                      if (item.stock === 'sin definir') {
+                        toast.error('Debes seleccionar una sucursal primero')
+
+                        return
+                      }
                       OnChangeQuantityManual(
                         item.id,
                         item.product.id,
+                        Number(item.stock),
                         Number(e.currentTarget.value.replace(/[^0-9]/g, ''))
                       );
                     }}
@@ -289,7 +306,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                     <ButtonUi
                       isIconOnly
                       theme={Colors.Success}
-                      onPress={() => OnPlusProductSelected(item.id)}
+                      onPress={() => OnPlusProductSelected(item.id, Number(item.stock))}
                     >
                       <Plus />
                     </ButtonUi>
@@ -394,6 +411,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                     classNames={{
                       base: 'font-semibold text-sm text-gray-900 dark:text-white',
                     }}
+                    defaultSelectedKey={pointOfSaleId.toString()}
                     label="Punto de venta de salida"
                     labelPlacement="outside"
                     placeholder="Selecciona el punto de venta"
@@ -461,7 +479,6 @@ export default function BranchProductSelectedOrder(props: Props) {
                     {branch_list.map((branch) => (
                       <AutocompleteItem
                         key={branch.id}
-                        // value={branch.name}
                         className="dark:text-white"
                       >
                         {branch.name}
@@ -472,18 +489,14 @@ export default function BranchProductSelectedOrder(props: Props) {
                     classNames={{
                       base: 'font-semibold text-sm text-gray-900 dark:text-white',
                     }}
+                    defaultSelectedKey={pointOfSaleId.toString()}
                     label="Selecciona el punto de venta"
                     labelPlacement="outside"
                     placeholder="Selecciona el punto de venta"
                     variant="bordered"
                     onSelectionChange={(key) => {
                       if (key) {
-                        const pointSale = JSON.parse(key as string) as {
-                          id: number;
-                          code: string;
-                        };
-
-                        setPointOfSaleId(pointSale.id);
+                        setPointOfSaleId(Number(key));
                       }
                     }}
                   >
@@ -491,7 +504,7 @@ export default function BranchProductSelectedOrder(props: Props) {
                       .filter((p) => ['NRE'].includes(p.typeVoucher))
                       .map((p) => (
                         <AutocompleteItem
-                          key={JSON.stringify(p)}
+                          key={p.id}
                           className="dark:text-white"
                         >
                           {p.code}
@@ -519,13 +532,17 @@ export default function BranchProductSelectedOrder(props: Props) {
                         setEmployeeReceptor(employee);
                       }
                     }}
+
                   >
                     {filteredEmployees.map((employee) => (
                       <AutocompleteItem
                         key={JSON.stringify(employee)}
                         className="dark:text-white"
+                        textValue={
+                          employee.firstName + ' ' + employee.firstLastName
+                        }
                       >
-                        {employee.firstName}
+                        {employee.firstName}{' '}{employee.firstLastName}
                       </AutocompleteItem>
                     ))}
                   </Autocomplete>

@@ -16,6 +16,8 @@ import { SeedcodeCatalogosMhService } from 'seedcode-catalogos-mh';
 import { toast } from 'sonner';
 import * as yup from 'yup';
 
+import LoadingTable from '../global/LoadingTable';
+
 import CatalogItemsPaginated from './manual/catalog-items-paginated';
 import EditResumeShopping from './edit-resumen-shopping';
 import AccountItemEdit from './account-item-edit';
@@ -29,7 +31,6 @@ import { formatDate } from '@/utils/dates';
 import { API_URL } from '@/utils/constants';
 import { useShoppingStore } from '@/store/shopping.store';
 import { useBranchesStore } from '@/store/branches.store';
-import Layout from '@/layout/Layout';
 import {
   ClassDocumentCode,
   ClassDocuments,
@@ -49,6 +50,7 @@ import {
 } from '@/enums/shopping.enum';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import DivGlobal from '@/themes/ui/div-global';
 
 function EditShopping() {
   const { id, controlNumber } = useParams<{ id: string; controlNumber: string }>();
@@ -504,14 +506,13 @@ function EditShopping() {
   }, [includePerception]);
 
   return (
-    <Layout title="Editar compra">
-      <div className="w-full h-full p-5 bg-gray-100 dark:bg-gray-800 dark:text-white">
+    <>
+      <DivGlobal >
         <div className="w-full h-full p-8 mt-2 custom-scrollbar overflow-y-auto bg-white shadow rounded-xl dark:bg-gray-900">
           <>
             {loading_shopping ? (
-              <div className="flex flex-col items-center justify-center w-full h-full">
-                <div className="loader" />
-                <p className="mt-3 text-xl font-semibold">Cargando...</p>
+              <div className='flex h-[100vh] items-center justify-center'>
+              <LoadingTable/>
               </div>
             ) : shopping_details ? (
               <form
@@ -947,8 +948,8 @@ function EditShopping() {
             </ModalContent>
           </Modal>
         )}
-      </div>
-    </Layout>
+      </DivGlobal>
+    </>
   );
 }
 

@@ -3,11 +3,6 @@ import {
   AutocompleteItem,
   Button,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Select,
   SelectItem,
   Spinner,
@@ -42,7 +37,6 @@ import { getElSalvadorDateTime } from '@/utils/dates';
 import { generate_uuid } from '@/utils/random/random';
 import { annulations } from "@/services/innvalidations.services";
 import { formatAnnulations06 } from "@/utils/DTE/innvalidations";
-import { get_employee_by_code } from "@/services/employess.service";
 
 interface Props {
   id: string;
@@ -56,13 +50,13 @@ function Annulation06({ id }: Props) {
   const { user } = useAuthStore();
   const [employeeCode, setEmployeeCode] = useState<Employee>()
   const modalInvalidation = useDisclosure()
-  const [modalInitializate, setModalInitialize] = useState(true)
+  // const [modalInitializate, setModalInitialize] = useState(true)
   const services = new SeedcodeCatalogosMhService();
 
   const [selectedMotivo, setSelectedMotivo] = useState<1 | 2 | 3>(1);
   const [codigoGeneracionR, setCodigoGeneracionR] = useState<string>('');
-  const [code, setCode] = useState<string | null>(null)
-  const [firstPase, setFirstPase] = useState(false)
+  // const [code, setCode] = useState<string | null>(null)
+  // const [firstPase, setFirstPase] = useState(false)
 
   const { gettransmitter, transmitter } = useTransmitterStore();
   const { getCorrelativesByDte } = useCorrelativesDteStore();
@@ -267,36 +261,37 @@ function Annulation06({ id }: Props) {
       }
     });
   };
-  const handleProccesEmployee = async () => {
-    try {
-      if (code === null) {
-        toast('Debes ingresar un codigo')
+  // const handleProccesEmployee = async () => {
+  //   try {
+  //     if (code === null) {
+  //       toast('Debes ingresar un codigo')
 
-        return
-      }
-      await get_employee_by_code(code).then((i) => {
-        if (i.data.employee.id) {
-          setEmployeeCode(i.data.employee as Employee)
-          setFirstPase(true)
-          modalInvalidation.onOpen()
-          setModalInitialize(false)
+  //       return
+  //     }
+  //     await get_employee_by_code(code).then((i) => {
+  //       if (i.data.employee.id) {
+  //         setEmployeeCode(i.data.employee as Employee)
+  //         setFirstPase(true)
+  //         modalInvalidation.onOpen()
+  //         setModalInitialize(false)
 
-        }
-      }).catch(() => {
-        toast('No se encontraron coincidencias')
-      })
+  //       }
+  //     }).catch(() => {
+  //       toast('No se encontraron coincidencias')
+  //     })
 
-    } catch (error) {
-      toast('No se proceso la solicitud')
+  //   } catch (error) {
+  //     toast('No se proceso la solicitud')
 
-    }
+  //   }
 
-  }
+  // }
 
 
   return (
     <>
-      {firstPase ? (<>
+      {/* {firstPase ? ( */}
+        <>
         <button className="flex items-center gap-3 cursor-pointer" onClick={() => navigation(-1)}>
           <ArrowLeft className="dark:text-white" />
           <p className=" whitespace-nowrap dark:text-white">Volver a listado</p>
@@ -489,6 +484,7 @@ function Annulation06({ id }: Props) {
                               handleChange('typeDocResponsible')('13');
                               setDocResponsible(employee.dui);
                               setTypeDocResponsible('13');
+                              setEmployeeCode(employee)
                             } else {
                               setDocResponsible('');
                               setTypeDocResponsible('');
@@ -629,38 +625,8 @@ function Annulation06({ id }: Props) {
             /> */}
             <p className="mt-3 text-xl font-normal">No se encontró la nota de débito solicitada</p>
           </div>
-        )}</>) : (
-        <>
-          <Modal isDismissable={false} isOpen={modalInitializate} onClose={() => { setModalInitialize(false), navigation(-1) }}>
-            <ModalContent>
-              <ModalHeader className='dark:text-white'>Anular nota de débito</ModalHeader>
-              <ModalBody>
-                <Input
-                  classNames={{
-                    label: 'font-semibold text-gray-500 text-sm',
-                    input: 'dark:text-white',
-                    base: 'font-semibold'
-                  }}
-                  label="Código de empleado"
-                  labelPlacement="outside"
-                  placeholder="Ingrese el código de empleado"
-                  type="text"
-                  value={code!}
-                  variant="bordered"
-                  onChange={(e) => setCode(e.target.value)}
-                />
-              </ModalBody>
-              <ModalFooter>
-
-                <Button
-                  style={styles.thirdStyle}
-                  onClick={() => handleProccesEmployee()}
-                >
-                  Procesar
-                </Button>
-              </ModalFooter>
-            </ModalContent>{' '}
-          </Modal></>)}
+        )}</>
+     
 
     </>
   );

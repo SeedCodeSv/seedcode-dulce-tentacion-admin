@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Autocomplete, AutocompleteItem, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure } from '@heroui/react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -19,6 +19,7 @@ import { useBranchesStore } from '@/store/branches.store';
 import SelectProductNote from '@/components/note-remision/SelectProduct';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
+import useWindowSize from '@/hooks/useWindowSize';
 
 
 
@@ -28,12 +29,13 @@ export default function ContentProductBranch() {
   const navigate = useNavigate()
   const [filter, setFilter] = useState({
     page: 1,
-    limit: 10,
+    limit: 30,
     name: '',
     category: '',
     supplier: '',
     code: '',
   });
+  const { windowSize } = useWindowSize()
   const [currentState, setCurrentState] = useState(steps[0].title);
   const [titleError, setTitleError] = useState('');
   const [messageError, setMessageError] = useState<string[]>([]);
@@ -148,7 +150,7 @@ export default function ContentProductBranch() {
         <div className="space-y-6">
           <Button
             className="bg-transparent dark:text-white flex"
-            onClick={() => navigate('/note-referal')}
+            onPress={() => navigate('/note-referal')}
           >
             <ArrowLeft /> Regresar
           </Button>
@@ -158,10 +160,10 @@ export default function ContentProductBranch() {
             initial={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="grid grid-cols-3 gap-4">
+            <div className="flex flex-row md:flex-row gap-4 justify-between items-start w-full">
               <Autocomplete
                 ref={autocomplete}
-                className="dark:text-white"
+                className="max-w-72 dark:text-white mt-2"
                 classNames={{
                   base: 'font-semibold text-sm text-gray-900 dark:text-white',
                 }}
@@ -197,21 +199,27 @@ export default function ContentProductBranch() {
                   </AutocompleteItem>
                 ))}
               </Autocomplete>
+              <div className={`${windowSize.width > 780 && 'right-2 absolute'}`}>
+                <ButtonUi
+                  className='flex mt-8 '
+                  isDisabled={!isEnabled}
+                  theme={!branchData ? Colors.Warning : Colors.Success}
+                  // style={{
+                  //   backgroundColor: isEnabled ? '#2E8B57' : 'gray',
+                  //   color: 'white',
+                  //   width: '50%',
+                  //   justifySelf: 'end',
+                  // }}
+                  onPress={() => {
+                    isEnabled && modalProducts.onOpen();
+                  }}
+                // className=''
+                >
+                  {windowSize.width > 780 ? <p>Seleccionar productos</p> : <Filter />}
+                </ButtonUi>
+              </div>
               <div />
-              <Button
-                isDisabled={!isEnabled}
-                style={{
-                  backgroundColor: isEnabled ? '#2E8B57' : 'gray',
-                  color: 'white',
-                  width: '50%',
-                  justifySelf: 'end',
-                }}
-                onPress={() => {
-                  isEnabled && modalProducts.onOpen();
-                }}
-              >
-                Seleccionar productos
-              </Button>
+
             </div>
 
             {branchData && (

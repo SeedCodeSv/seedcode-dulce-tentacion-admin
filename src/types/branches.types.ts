@@ -54,6 +54,7 @@ export interface IGetBranchProduct {
   productId: number;
   isActive: boolean;
   hasActiveMenu: boolean
+  isToDivided: boolean
 }
 export interface IGetBranchProductList {
   branchProducts: IGetBranchProduct[];

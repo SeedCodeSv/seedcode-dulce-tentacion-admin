@@ -8,7 +8,6 @@ import { ArrowLeft } from 'lucide-react';
 
 import { API_URL } from '@/utils/constants';
 import { AccountCatalogPayload } from '@/types/accountCatalogs.types';
-import Layout from '@/layout/Layout';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import { useAuthStore } from '@/store/auth.store';
@@ -89,7 +88,7 @@ function AddAccountCatalogs() {
   });
 
   return (
-    <Layout title="Catalogo de cuentas">
+    <>
       <>
         <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
           <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
@@ -277,7 +276,7 @@ function AddAccountCatalogs() {
           </div>
         </div>
       </>
-    </Layout>
+    </>
   );
 }
 

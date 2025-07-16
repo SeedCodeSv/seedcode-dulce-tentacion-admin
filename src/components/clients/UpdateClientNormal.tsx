@@ -9,8 +9,6 @@ import { CustomerDirection, PayloadCustomer } from '../../types/customers.types'
 import { useCustomerStore } from '../../store/customers.store';
 import { useBillingStore } from '../../store/facturation/billing.store';
 
-
-import Layout from '@/layout/Layout';
 import { useBranchesStore } from '@/store/branches.store';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -177,7 +175,7 @@ const UpdateClientNormal = (props: Props) => {
   const navigate = useNavigate();
 
   return (
-    <Layout title="Cliente">
+    <>
       <div className=" w-full h-full xl:p-10 p-5 bg-white dark:bg-gray-900">
         <div className="w-full h-full border border-white p-5 overflow-y-auto custom-scrollbar1 bg-white shadow rounded-xl dark:bg-gray-900">
           <button
@@ -479,7 +477,7 @@ const UpdateClientNormal = (props: Props) => {
           )}
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 

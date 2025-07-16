@@ -1,3 +1,4 @@
+import { PointOfSale } from './auth.types';
 import { Branches } from './branches.types';
 import { Employee } from './employees.types';
 import { Customer } from './report_contigence';
@@ -44,6 +45,7 @@ export interface Sale {
   pathJson: string;
   isActivated: boolean;
   boxId: number;
+  box?: Box
   customerId: number;
   customer: Customer;
   employee: Employee;
@@ -193,6 +195,7 @@ export interface Box {
   time: string;
   isActive: boolean;
   pointOfSaleId: number;
+  pointOfSale?: PointOfSale
 }
 
 export interface SaleDates {
