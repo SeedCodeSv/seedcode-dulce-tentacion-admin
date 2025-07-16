@@ -3,6 +3,9 @@ import {
   Chip,
   Listbox,
   ListboxItem,
+  Modal,
+  ModalBody,
+  ModalContent,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -10,25 +13,26 @@ import {
   SelectItem,
   useDisclosure,
 } from "@heroui/react";
-import { CircleX, EllipsisVertical, LoaderCircle, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { CircleX, EllipsisVertical, Eye, LoaderCircle, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { GetObjectCommand } from "@aws-sdk/client-s3";
 import axios from "axios";
 
-import Pagination from '../global/Pagination';
+import Pagination from "../global/Pagination";
 import ResendEmail from "../reporters/ResendEmail";
 
 import Filters from "./filterSales";
+import DetailSales from "./detail-sales";
 
-import { formatCurrency } from '@/utils/dte';
-import { formatDate } from '@/utils/dates';
-import { global_styles } from '@/styles/global.styles';
-import { useSalesStore } from '@/store/sales.store';
-import { get_sale_pdf } from '@/services/sales.service';
-import { limit_options, SPACES_BUCKET } from '@/utils/constants';
+import { formatCurrency } from "@/utils/dte";
+import { formatDate } from "@/utils/dates";
+import { global_styles } from "@/styles/global.styles";
+import { useSalesStore } from "@/store/sales.store";
+import { get_sale_pdf } from "@/services/sales.service";
+import { limit_options, SPACES_BUCKET } from "@/utils/constants";
 import DivGlobal from "@/themes/ui/div-global";
 import { TableComponent } from "@/themes/ui/table-ui";
 import { s3Client } from "@/plugins/s3";
@@ -37,6 +41,8 @@ import useIsMobileOrTablet from "@/hooks/useIsMobileOrTablet";
 import { get_pdf_fe_cfe } from "@/services/pdf.service";
 import { useAuthStore } from "@/store/auth.store";
 import { verifyApplyAnulation } from "@/utils/filters";
+import ButtonUi from "@/themes/ui/button-ui";
+import { Colors } from "@/types/themes.types";
 
 function ListSales() {
   const styles = global_styles();
@@ -44,20 +50,23 @@ function ListSales() {
   const [dateInitial, setDateInitial] = useState(formatDate());
   const [dateEnd, setDateEnd] = useState(formatDate());
   const [branch, setBranch] = useState(0);
-  const [state, setState] = useState('PROCESADO');
-  const [pointOfSale, setPointOfSale] = useState('');
-  const [typeVoucher, setTypeVoucher] = useState('');
+  const [state, setState] = useState("PROCESADO");
+  const [pointOfSale, setPointOfSale] = useState("");
+  const [typeVoucher, setTypeVoucher] = useState("");
   const [notes, setNotes] = useState<{ debits: number; credits: number }>({
     debits: 0,
     credits: 0,
   });
-  const [unseen, setUnseen] = useState(false)
-  const { user } = useAuthStore()
+  const [unseen, setUnseen] = useState(false);
+  const { user } = useAuthStore();
   const isMovil = useIsMobileOrTablet();
 
-
-  const { sales_dates, getSalesByDatesAndStatus, sales_dates_pagination, getNotesOfSale } =
-    useSalesStore();
+  const {
+    sales_dates,
+    getSalesByDatesAndStatus,
+    sales_dates_pagination,
+    getNotesOfSale,
+  } = useSalesStore();
   const navigation = useNavigate();
 
   useEffect(() => {
@@ -74,9 +83,11 @@ function ListSales() {
   }, [dateInitial, dateEnd, state, limit, branch, typeVoucher, pointOfSale]);
 
   const [loadingPdf, setLoadingPdf] = useState(false);
-  const [pdfPath, setPdfPath] = useState('');
+  const [pdfPath, setPdfPath] = useState("");
   const showFullLayout = useDisclosure();
 
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedSale, setSelectedSale] = useState(0);
   const handleShowPdf = (saleId: number, typeDte: string) => {
     setLoadingPdf(true);
     showFullLayout.onOpen();
@@ -106,42 +117,41 @@ function ListSales() {
           Key: sale.pathJson,
         })
       );
-      const response = await axios.get(url, { responseType: 'json' });
+      const response = await axios.get(url, { responseType: "json" });
 
       const jsonBlob = new Blob([JSON.stringify(response.data, null, 2)], {
-        type: 'application/json',
+        type: "application/json",
       });
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
 
       link.href = URL.createObjectURL(jsonBlob);
       link.download = `${sale.numeroControl}_document.json`;
       link.click();
     } catch (error) {
-      toast.error('No se pudo descargar el JSON');
+      toast.error("No se pudo descargar el JSON");
     }
   };
-
 
   const downloadPDF = async (sale: SaleDates): Promise<void> => {
     setLoadingPdf(true);
 
     try {
       const res = await get_pdf_fe_cfe(sale.codigoGeneracion);
-      const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+      const pdfBlob = new Blob([res.data], { type: "application/pdf" });
       const pdfUrl = URL.createObjectURL(pdfBlob);
 
-      const link = document.createElement('a');
+      const link = document.createElement("a");
 
       link.href = pdfUrl;
       link.download = `${sale.codigoGeneracion}.pdf`;
-      link.target = '_blank';
+      link.target = "_blank";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(pdfUrl);
     } catch (error) {
-      toast.error('No se pudo descargar el PDF');
+      toast.error("No se pudo descargar el PDF");
     } finally {
       setLoadingPdf(false);
     }
@@ -163,38 +173,61 @@ function ListSales() {
         state={state}
         typeVoucher={typeVoucher}
       />
+
+      <Modal
+        isOpen={showDetail}
+        scrollBehavior="inside"
+        size="full"
+        onClose={() => setShowDetail(false)}
+      >
+        <ModalContent>
+          <ModalBody>
+            <DetailSales id={selectedSale} />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
       <div className="flex items-end justify-end mt-3">
         <div>
           <Select
             className="w-44"
             classNames={{
-              label: 'font-semibold',
+              label: "font-semibold",
             }}
-            defaultSelectedKeys={['5']}
+            defaultSelectedKeys={["5"]}
             label="Cantidad a mostrar"
             labelPlacement="outside"
             placeholder="Selecciona la cantidad a mostrar"
             value={limit}
             variant="bordered"
             onChange={(e) => {
-              setLimit(Number(e.target.value !== '' ? e.target.value : '5'));
+              setLimit(Number(e.target.value !== "" ? e.target.value : "5"));
             }}
           >
             {limit_options.map((limit) => (
-              <SelectItem key={limit}>
-                {limit}
-              </SelectItem>
+              <SelectItem key={limit}>{limit}</SelectItem>
             ))}
           </Select>
         </div>
       </div>
       <TableComponent
-        headers={['Nº', 'Fecha - Hora', 'Número de control', 'SubTotal', 'IVA', 'Estado', 'Acciones']}>
+        headers={[
+          "Nº",
+          "Fecha - Hora",
+          "Número de control",
+          "SubTotal",
+          "IVA",
+          "Estado",
+          "Acciones",
+        ]}
+      >
         {sales_dates?.map((sale, index) => (
           <tr key={index} className="border-b border-slate-200">
-            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.id}</td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
-              {sale.fecEmi + ' - ' + sale.horEmi}
+              {sale.id}
+            </td>
+            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {sale.fecEmi + " - " + sale.horEmi}
             </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {sale.numeroControl}
@@ -208,30 +241,30 @@ function ListSales() {
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               <Chip
                 classNames={{
-                  content: 'text-white text-sm !font-bold px-3',
+                  content: "text-white text-sm !font-bold px-3",
                 }}
                 color={
-                  sale.salesStatus.name === 'CONTINGENCIA'
-                    ? 'warning'
-                    : sale.salesStatus.name === 'PROCESADO'
-                      ? 'success'
-                      : 'danger'
+                  sale.salesStatus.name === "CONTINGENCIA"
+                    ? "warning"
+                    : sale.salesStatus.name === "PROCESADO"
+                    ? "success"
+                    : "danger"
                 }
               >
                 {sale.salesStatus.name}
               </Chip>
             </td>
-            <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+            <td className="p-3 text-sm flex gap-4 text-slate-500 dark:text-slate-100">
               {!pdfPath && (
                 <Popover
-                  classNames={{
+                classNames={{
                     content: unseen
-                      ? 'opacity-0 invisible pointer-events-none'
-                      : 'bg-white dark:bg-gray-800',
+                      ? "opacity-0 invisible pointer-events-none"
+                      : "bg-white dark:bg-gray-800",
                   }}
                   showArrow={!unseen}
                   onOpenChange={(isOpen) => {
-                    if (isOpen && sale.tipoDte === '03') {
+                    if (isOpen && sale.tipoDte === "03") {
                       verifyNotes(sale.id);
                     }
                   }}
@@ -242,92 +275,93 @@ function ListSales() {
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="p-1 ">
-                    {sale.salesStatus.name === 'PROCESADO' && sale.tipoDte === '03' && (
-                      <Listbox
-                        aria-label="Actions"
-                        className="dark:text-white"
-                        onAction={(key) => {
-                          const routeMap: Record<string, string> = {
-                            'debit-note': `/debit-note/${sale.id}`,
-                            'show-debit-note': `/get-debit-note/${sale.id}`,
-                            'credit-note': `/credit-note/${sale.id}`,
-                            'show-credit-note': `/get-credit-note/${sale.id}`,
-                          };
+                    {sale.salesStatus.name === "PROCESADO" &&
+                      sale.tipoDte === "03" && (
+                        <Listbox
+                          aria-label="Actions"
+                          className="dark:text-white"
+                          onAction={(key) => {
+                            const routeMap: Record<string, string> = {
+                              "debit-note": `/debit-note/${sale.id}`,
+                              "show-debit-note": `/get-debit-note/${sale.id}`,
+                              "credit-note": `/credit-note/${sale.id}`,
+                              "show-credit-note": `/get-credit-note/${sale.id}`,
+                            };
 
-                          if (key in routeMap) {
-                            navigation(routeMap[key]);
-                          }
-                        }}
-                      >
-                        {notes.debits > 0 ? (
-                          <ListboxItem
-                            key="show-debit-note"
-                            classNames={{ base: 'font-semibold' }}
-                            color="primary"
-                            variant="flat"
-                          >
-                            Ver notas de débito
-                          </ListboxItem>
-                        ) : (
-                          <ListboxItem
-                            key="debit-note"
-                            classNames={{ base: 'font-semibold' }}
-                            color="danger"
-                            variant="flat"
-                          >
-                            Nota de débito
-                          </ListboxItem>
-                        )}
+                            if (key in routeMap) {
+                              navigation(routeMap[key]);
+                            }
+                          }}
+                        >
+                          {notes.debits > 0 ? (
+                            <ListboxItem
+                              key="show-debit-note"
+                              classNames={{ base: "font-semibold" }}
+                              color="primary"
+                              variant="flat"
+                            >
+                              Ver notas de débito
+                            </ListboxItem>
+                          ) : (
+                            <ListboxItem
+                              key="debit-note"
+                              classNames={{ base: "font-semibold" }}
+                              color="danger"
+                              variant="flat"
+                            >
+                              Nota de débito
+                            </ListboxItem>
+                          )}
 
-                        {notes.credits > 0 ? (
-                          <ListboxItem
-                            key="show-credit-note"
-                            classNames={{ base: 'font-semibold' }}
-                            color="primary"
-                            variant="flat"
-                          >
-                            Ver notas de crédito
-                          </ListboxItem>
-                        ) : (
-                          <ListboxItem
-                            key="credit-note"
-                            classNames={{ base: 'font-semibold' }}
-                            color="danger"
-                            variant="flat"
-                          >
-                            Nota de crédito
-                          </ListboxItem>
-                        )}
-                      </Listbox>
-                    )}
+                          {notes.credits > 0 ? (
+                            <ListboxItem
+                              key="show-credit-note"
+                              classNames={{ base: "font-semibold" }}
+                              color="primary"
+                              variant="flat"
+                            >
+                              Ver notas de crédito
+                            </ListboxItem>
+                          ) : (
+                            <ListboxItem
+                              key="credit-note"
+                              classNames={{ base: "font-semibold" }}
+                              color="danger"
+                              variant="flat"
+                            >
+                              Nota de crédito
+                            </ListboxItem>
+                          )}
+                        </Listbox>
+                      )}
 
-                    {['PROCESADO'].includes(sale.salesStatus.name) && (
+                    {["PROCESADO"].includes(sale.salesStatus.name) && (
                       <Listbox aria-label="Actions" className="dark:text-white">
                         <ListboxItem
                           key="show-pdf"
-                          classNames={{ base: 'font-semibold' }}
+                          classNames={{ base: "font-semibold" }}
                           color="danger"
                           variant="flat"
                           onPress={() => {
-                            isMovil ? downloadPDF(sale) :
-                              handleShowPdf(sale.id, sale.tipoDte)
+                            isMovil
+                              ? downloadPDF(sale)
+                              : handleShowPdf(sale.id, sale.tipoDte);
                           }}
                         >
                           Ver comprobante
                         </ListboxItem>
                         <ListboxItem
                           key="download-json"
-                          classNames={{ base: 'font-semibold' }}
+                          classNames={{ base: "font-semibold" }}
                           color="danger"
                           variant="flat"
                           onPress={() => downloadJSON(sale)}
                         >
                           Descargar JSON
                         </ListboxItem>
-                        <ListboxItem key="resend-email"
-                          onPress={() =>
-                            setUnseen(true)
-                          }
+                        <ListboxItem
+                          key="resend-email"
+                          onPress={() => setUnseen(true)}
                         >
                           <ResendEmail
                             customerId={sale.customerId}
@@ -335,37 +369,37 @@ function ListSales() {
                             path={sale.pathJson}
                             tipoDte={sale.tipoDte}
                             onClose={() => {
-                              setUnseen(false)
+                              setUnseen(false);
                             }}
                           />
                         </ListboxItem>
-                        <ListboxItem key="annulation"
+                        <ListboxItem
+                          key="annulation"
                           onPress={() => {
                             const value = verifyApplyAnulation(
                               sale.tipoDte,
                               sale.fecEmi
-                            )
+                            );
 
-                            if (value && sale.tipoDte === '03') {
-                              navigation('/annulation/03/' + sale.id)
+                            if (value && sale.tipoDte === "03") {
+                              navigation("/annulation/03/" + sale.id);
                             }
 
-                            if (value && sale.tipoDte === '01') {
-                              navigation('/annulation/01/' + sale.id)
+                            if (value && sale.tipoDte === "01") {
+                              navigation("/annulation/01/" + sale.id);
                             }
-                          }
-                          }
+                          }}
                         >
                           Invalidar
                         </ListboxItem>
                       </Listbox>
                     )}
 
-                    {sale.salesStatus.name === 'INVALIDADO' && (
+                    {sale.salesStatus.name === "INVALIDADO" && (
                       <Listbox aria-label="Actions" className="dark:text-white">
                         <ListboxItem
                           key="invalid"
-                          classNames={{ base: 'font-semibold' }}
+                          classNames={{ base: "font-semibold" }}
                           color="danger"
                           variant="flat"
                         >
@@ -374,83 +408,85 @@ function ListSales() {
                       </Listbox>
                     )}
                   </PopoverContent>
-
                 </Popover>
               )}
+              <ButtonUi isIconOnly theme={Colors.Warning} onPress={() => {
+                setSelectedSale(sale.id);
+                setShowDetail(true);
+              }}>
+                <Eye size={20} />
+              </ButtonUi>
             </td>
           </tr>
         ))}
       </TableComponent>
-      {
-        sales_dates_pagination.totalPag > 1 && (
-          <div className="mt-5 w-full">
-            <Pagination
-              currentPage={sales_dates_pagination.currentPag}
-              nextPage={sales_dates_pagination.prevPag}
-              previousPage={sales_dates_pagination.nextPag}
-              totalPages={sales_dates_pagination.totalPag}
-              onPageChange={(page) => {
-                getSalesByDatesAndStatus(
-                  page,
-                  limit,
-                  branch,
-                  dateInitial,
-                  dateEnd,
-                  state,
-                  typeVoucher,
-                  pointOfSale
-                );
-              }}
-            />
+      {sales_dates_pagination.totalPag > 1 && (
+        <div className="mt-5 w-full">
+          <Pagination
+            currentPage={sales_dates_pagination.currentPag}
+            nextPage={sales_dates_pagination.prevPag}
+            previousPage={sales_dates_pagination.nextPag}
+            totalPages={sales_dates_pagination.totalPag}
+            onPageChange={(page) => {
+              getSalesByDatesAndStatus(
+                page,
+                limit,
+                branch,
+                dateInitial,
+                dateEnd,
+                state,
+                typeVoucher,
+                pointOfSale
+              );
+            }}
+          />
+        </div>
+      )}
+      {loadingPdf && (
+        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+          <div className="flex flex-col items-center justify-center w-full h-full">
+            <LoaderCircle className="animate-spin" size={100} />
+            <p className="mt-4 text-lg font-semibold">Cargando...</p>
           </div>
-        )
-      }
-      {
-        loadingPdf && (
-          <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+        </div>
+      )}
+      {pdfPath && (
+        <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
+          <Button
+            isIconOnly
+            className="fixed bg-red-600 bottom-10 left-10"
+            style={styles.dangerStyles}
+            onPress={() => {
+              setPdfPath("");
+            }}
+          >
+            <X />
+          </Button>
+          {loadingPdf ? (
             <div className="flex flex-col items-center justify-center w-full h-full">
               <LoaderCircle className="animate-spin" size={100} />
               <p className="mt-4 text-lg font-semibold">Cargando...</p>
             </div>
-          </div>
-        )
-      }
-      {
-        pdfPath && (
-          <div className="absolute z-[100] w-screen h-screen inset-0 bg-gray-50 dark:bg-gray-700">
-            <Button
-              isIconOnly
-              className="fixed bg-red-600 bottom-10 left-10"
-              style={styles.dangerStyles}
-              onPress={() => {
-                setPdfPath('');
-              }}
-            >
-              <X />
-            </Button>
-            {loadingPdf ? (
-              <div className="flex flex-col items-center justify-center w-full h-full">
-                <LoaderCircle className="animate-spin" size={100} />
-                <p className="mt-4 text-lg font-semibold">Cargando...</p>
-              </div>
-            ) : (
-              <>
-                {pdfPath !== '' ? (
-                  <div className="w-full h-full">
-                    <iframe className="w-screen h-screen z-[2000]" src={pdfPath} title="pdf" />
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center w-full h-full">
-                    <p>No hay información acerca de este PDF</p>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        )
-      }
-    </DivGlobal >
+          ) : (
+            <>
+              {pdfPath !== "" ? (
+                <div className="w-full h-full">
+                  <iframe
+                    className="w-screen h-screen z-[2000]"
+                    src={pdfPath}
+                    title="pdf"
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center w-full h-full">
+                  <p>No hay información acerca de este PDF</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+    </DivGlobal>
   );
 }
 export default ListSales;
-
