@@ -139,6 +139,7 @@ export interface DataBox {
     lastSale: string;
     totalSales03Cash: number | null;
     totalSales03Card: number | null;
+    totalsEmployees: { totalSalesAmount: number, totalSaleCount: number }
     firtsSale03: string | null;
     lastSale03: string | null;
     invalidation01: number | null;
@@ -147,7 +148,20 @@ export interface DataBox {
     firstInvalidation03: string | null;
     lastInvalidation01: string | null;
     lastInvalidation03: string | null;
+    totalNoSuj03: number | null
+    totalNoSuj01: number | null
+    totalExentos01: number | null
+    totalExentos03: number | null
     categories: Categories;
+    employees: EmployeeCut[]
+}
+
+
+interface EmployeeCut {
+    employeeId: number
+    employeeName: string
+    saleCount: string
+    totalSales: string
 }
 
 export interface Categories {
@@ -161,3 +175,8 @@ export interface List {
     quantity: number;
     total: number;
 }
+
+
+
+
+

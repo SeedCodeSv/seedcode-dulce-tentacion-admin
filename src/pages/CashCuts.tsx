@@ -5,11 +5,11 @@ import { useViewsStore } from '@/store/views.store';
 import DivGlobal from '@/themes/ui/div-global';
 
 
+
 export default function CashCutsPage() {
   const { actions } = useViewsStore();
   const categoriasView = actions.find((view) => view.view.name === 'cashCuts');
   const actionView = categoriasView?.actions?.name || [];
-
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +19,7 @@ export default function CashCutsPage() {
     if (key === "general") navigate("/cash-cuts");
     else if (key === "detailed") navigate("/cash-cuts/detailed");
   };
+
 
   return (
     <>
