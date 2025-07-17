@@ -113,9 +113,7 @@ export default function GeneralCashCutReportComponent() {
               -webkit-print-color-adjust: exact;
               margin: 0;
           }
-              .cut-here {
-  page-break-after: always;
-}
+           
 
       `;
             iframe.contentDocument?.head.appendChild(style);
@@ -235,10 +233,7 @@ export default function GeneralCashCutReportComponent() {
                             Number(dataBoxes[indexCut]?.cut?.totalCard) +
                             Number(dataBoxes[indexCut]?.cut?.totalOthers))}</strong></span></p>
 </div>
-<div style="margin-top: 40px; border-top: 1px dashed #000; padding-top: 10px; text-align: center;">
-  --- FIN DEL REPORTE ---
-</div>
-<div class="cut-here"></div>
+
 
 `;
 
@@ -283,7 +278,7 @@ export default function GeneralCashCutReportComponent() {
             >
                 <ModalContent>
                     <ModalHeader>
-                        Re-imprimir cortes
+                        Reimprimir cortes
                     </ModalHeader>
                     <ModalBody>
                         <div className="h-screen w-full flex flex-col">
