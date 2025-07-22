@@ -45,7 +45,7 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
 
         const extraInfo = [
             [`${comercialName}`],
-            [`${branch.length > 0? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
+            [`${branch.length > 0 ? `Sucursal: ${branch}` : 'Todas las sucursales'}`],
             [`Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`],
             [`Reporte desde ${params.dateFrom} hasta ${params.dateTo}`]
         ];
@@ -60,7 +60,7 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
         });
 
 
-        const headers = ['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero'];
+        const headers = ['Inicio', 'Cierre', 'Total Venta', 'Efectivo', 'Tarjeta', 'Otro Tipo de Pago', 'Gastos', 'Caja Chica', 'Total Entregado', 'Diferencia', 'Cajero', 'Sucursal'];
         const headerRow = worksheet.addRow(headers);
 
         worksheet.autoFilter = {
@@ -93,6 +93,8 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
             { width: 15 },
             { width: 15 },
             { width: 45 },
+            { width: 35 },
+
         ];
 
         cashCutsDetailed.cash_cuts_report.forEach((item) => {
@@ -107,7 +109,8 @@ export default function DetailedCutExportExcell({ branch, params, comercialName 
                 Number(item.pettyCash ?? 0),
                 Number(item.cashDelivered ?? 0),
                 Number(item.difference ?? 0),
-                `${item.employee.firstName} ${item.employee.secondName} ${item.employee.firstLastName} ${item.employee.secondLastName}`
+                `${item.employee.firstName} ${item.employee.secondName} ${item.employee.firstLastName} ${item.employee.secondLastName}`,
+                item.branchName ?? 'N/A'
             ]);
         });
 

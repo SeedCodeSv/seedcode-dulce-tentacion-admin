@@ -19,18 +19,18 @@ interface Props {
 
 
 export default function SummaryCutExportExcell({ branch, params, comercialName }: Props) {
-    const { cashCutsSummary, onGetCashCutReportSummaryExport} = useCutReportStore()
+    const { cashCutsSummary, onGetCashCutReportSummaryExport } = useCutReportStore()
     const [loading_data, setLoadingData] = useState(false)
-        
-            const handle = async () => {
-                setLoadingData(true)
-                const res = await onGetCashCutReportSummaryExport({...params, limit: cashCutsSummary.total})
-        
-                if (res) {
-                    await exportToExcel(res.cashCutsSummary)
-                    setLoadingData(false)
-                }
-            }
+
+    const handle = async () => {
+        setLoadingData(true)
+        const res = await onGetCashCutReportSummaryExport({ ...params, limit: cashCutsSummary.total })
+
+        if (res) {
+            await exportToExcel(res.cashCutsSummary)
+            setLoadingData(false)
+        }
+    }
 
     const styles = useGlobalStyles();
 
@@ -62,8 +62,8 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
 
         worksheet.addRow([]);
 
-       const headers = ['Días (CIERRE)', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago','Sum.Entregado Efectivo', 'Sum.Gastos']; 
-       const headerRow = worksheet.addRow(headers);
+        const headers = ['Días (CIERRE)', 'Sum.Total Venta', 'Sum.Total Efectivo', 'Sum.Total Tarjeta', 'Sum.Otro Tipo de Pago', 'Sum.Entregado Efectivo', 'Sum.Gastos', 'Sucursal'];
+        const headerRow = worksheet.addRow(headers);
 
         headerRow.eachCell((cell) => {
             cell.fill = {
@@ -75,10 +75,10 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
                 bold: true,
                 color: { argb: fontColor },
             };
-            cell.alignment = { vertical: 'middle', horizontal: 'center'};
+            cell.alignment = { vertical: 'middle', horizontal: 'center' };
         });
 
-         worksheet.columns = [
+        worksheet.columns = [
             { width: 20 },
             { width: 20 },
             { width: 20 },
@@ -86,9 +86,10 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
             { width: 20 },
             { width: 20 },
             { width: 20 },
+            { width: 35 },
         ];
 
-       
+
         cashCutsSummary.cash_cuts_summary.forEach((item) => {
             worksheet.addRow([
                 formatDateSimple(item.date),
@@ -98,18 +99,19 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
                 formatCurrency(item.sumTotalOthers ?? 0),
                 formatCurrency(item.sumCashDelivered ?? 0),
                 formatCurrency(item.sumExpenses ?? 0),
+                item?.branchName ?? 'N/A'
             ]);
         });
-       const total = worksheet.addRow([
-          'Total General',
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalSales ?? 0), 0)),
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCash ?? 0), 0)),
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCard ?? 0), 0)),
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalOthers ?? 0), 0)),
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumCashDelivered ?? 0), 0)),
-          formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumExpenses ?? 0), 0)),
-        ])   
-        
+        const total = worksheet.addRow([
+            'Total General',
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalSales ?? 0), 0)),
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCash ?? 0), 0)),
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalCard ?? 0), 0)),
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumTotalOthers ?? 0), 0)),
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumCashDelivered ?? 0), 0)),
+            formatCurrency(cashCutsSummary.cash_cuts_summary.reduce((acc, item) => acc + Number(item.sumExpenses ?? 0), 0)),
+        ])
+
         total.eachCell((cell) => {
             cell.fill = {
                 type: 'pattern',
@@ -120,7 +122,7 @@ export default function SummaryCutExportExcell({ branch, params, comercialName }
                 bold: true,
                 color: { argb: '000000' },
             };
-            cell.alignment = { vertical: 'middle', horizontal: 'left'};
+            cell.alignment = { vertical: 'middle', horizontal: 'left' };
         })
 
         const buffer = await workbook.xlsx.writeBuffer();

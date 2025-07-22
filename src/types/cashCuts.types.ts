@@ -105,6 +105,7 @@ export interface IGetCutsReportSummary {
 
 export interface CashCutsReportSummary {
     date: string;
+    branchName: string
     sumTotalSales: number;
     sumTotalCash: number;
     sumTotalCard: number;

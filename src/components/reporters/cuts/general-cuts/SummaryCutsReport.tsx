@@ -1,6 +1,7 @@
 import { Card, CardBody, CardHeader, Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, useDisclosure } from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Printer } from "lucide-react";
 
 import SummaryCutExportExcell from "./SummaryCutExportExecll";
 import SummaryCutExportPdf from "./SummaryCutExportPdf";
@@ -23,8 +24,6 @@ import { formatDate, formatDateSimple } from "@/utils/dates";
 import { Branches } from "@/types/branches.types";
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";
-import { Printer } from "lucide-react";
-
 
 
 export default function GeneralCashCutReportComponent() {
