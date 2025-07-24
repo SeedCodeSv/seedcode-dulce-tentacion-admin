@@ -112,6 +112,7 @@ const Configuration = lazy(() => import('../pages/Configuration'));
 const AddProductRecipe = lazy(() => import('../pages/add-product-recipe'));
 const ProductionReport = lazy(() => import('../pages/reports/production_report/ProductionReport'))
 const ShippingReport = lazy(() => import('../pages/reports/shipping_report/ShippingReport'))
+const ReportBox = lazy(() => import('../pages/ReportBox'))
 
 export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
   const handleCheckPermission = (name: string) => {
@@ -188,26 +189,26 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/order-products-production"
       />
-      <Route element={handleCheckPermission('Kardex') ? <KardexPage /> : <Home/>} path="/kardex">
+      <Route element={handleCheckPermission('Kardex') ? <KardexPage /> : <Home />} path="/kardex">
         <Route index element={
           <KardexComponent />} />
         <Route element={<KardexByProductList />} path="by-product" />
       </Route>
-      
-      <Route element={handleCheckPermission('Cortes') ? <CashCutsPage /> : <Home/>} path="/cash-cuts">
+
+      <Route element={handleCheckPermission('Cortes') ? <CashCutsPage /> : <Home />} path="/cash-cuts">
         <Route index element={
           <GeneralCashCutReportComponent />} />
         <Route element={<DetailedCashCutReportComponent />} path="detailed" />
       </Route>
-       <Route element={handleCheckPermission('Productos Vendidos') ? <ProductSelledReportPage /> : <Home/>} path="/products-selled">
+      <Route element={handleCheckPermission('Productos Vendidos') ? <ProductSelledReportPage /> : <Home />} path="/products-selled">
         <Route index element={
           <ProductsSelledSummaryComponent />} />
         <Route element={<ProductsSelledDetailComponent />} path="detailed" />
       </Route>
-       <Route
+      <Route
         element={
           <AnimatedRoute>
-             <PdfPreview /> 
+            <PdfPreview />
           </AnimatedRoute>
         }
         path="/pdf-preview"
@@ -282,7 +283,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/credit-notes"
       />
-        <Route
+      <Route
         element={
           <AnimatedRoute>
             {handleCheckPermission('Notas de débito') ? <DebitNotePage /> : <Home />}
@@ -378,7 +379,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/sales-by-period"
       />
-       <Route element={handleCheckPermission('Ventas por Productos') ? <ProductSalesReportPage /> : <Home />} path="/reports/sales-by-product">
+      <Route element={handleCheckPermission('Ventas por Productos') ? <ProductSalesReportPage /> : <Home />} path="/reports/sales-by-product">
         <Route index element={
           <VentasPorProducto />} />
         <Route element={<DetailedBranchesProducts />} path="detailed-branches" />
@@ -434,7 +435,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
       <Route element={handleCheckPermission('Reporte ordenes de producción') ? <OrdenProductionReport /> : <Home />}
         path="/OP-report">
         <Route index element={
-          <OrdenProductionComponent/>} />
+          <OrdenProductionComponent />} />
         <Route element={<OPReportComponentDetailed />} path="by-product" />
       </Route>
       <Route
@@ -727,7 +728,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/anexos-doc-anulados"
       />
-       <Route
+      <Route
         element={
           <AnimatedRoute>
             <AnexoComprasSujetoExcluido />
@@ -759,7 +760,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         }
         path="/product-loss"
       />
-      <Route element={handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home/>} path="/inventary-adjustment">
+      <Route element={handleCheckPermission('Ajuste de Inventario') ? <InventaryAdjustment /> : <Home />} path="/inventary-adjustment">
         <Route index element={
           <AddInventaryAdjustment />} />
         <Route element={<AddInventoryAdjustmentRecountStock />} path="recuento" />
@@ -835,6 +836,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/production-report"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte caja') ? <ReportBox /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/box-report"
       />
       <Route
         element={

@@ -280,6 +280,12 @@ export const LayoutItems = (props: Props) => {
       to: '/product-loss',
       icon: BoxesIcon,
       label: 'Producto Perdido',
+    },
+     {
+      viewName: 'Reporte caja',
+      to: '/box-report',
+      icon: BoxesIcon,
+      label: 'Reporte de caja',
     }
   ];
 

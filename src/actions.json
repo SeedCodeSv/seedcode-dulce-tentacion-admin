@@ -468,6 +468,14 @@
         "Exportar Excel",
         "Exportar PDF"
       ]
+    },
+    {
+      "view": "Reporte caja",
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Exportar PDF"
+      ]
     }
   ]
 }

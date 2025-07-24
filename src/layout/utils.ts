@@ -114,6 +114,8 @@ export const returnTitleByPathname = (pathname: string) => {
       return 'PARTIDAS CONTABLES';
     case '/report-accounting':
       return 'REPORTES   CONTABLES';
+    case '/box-report':
+      return 'REPORTES DE CAJA';
 
     //added
     case '/':

@@ -72,3 +72,69 @@ export interface IGetBox {
   cost: number;
   boxEnd: number;
 }
+
+
+//report box
+export interface IResponseBox {
+  ok: boolean
+  boxes: Box_Report[]
+  total: number
+  totalPag: number
+  currentPag: number
+  nextPag: number
+  prevPag: number
+  status: number
+}
+
+export interface IResponseExportBox {
+  ok: boolean
+  boxes: Box_Report[]
+  status: number
+}
+
+
+export interface Box_Report {
+  id: number
+  start: string
+  end: string
+  totalSales: string
+  totalExpense: string
+  totalIva: string
+  date: string
+  time: string
+  isActive: boolean
+  pointOfSale: PointOfSale_R
+  pointOfSaleId: number
+  invalidatedTotal: number
+  totalSalesStatus: number
+}
+
+export interface PointOfSale_R {
+  id: number
+  code: string
+  typeVoucher: string
+  description: string
+  resolution: string
+  serie: string
+  from: string
+  to: string
+  prev: number
+  next: number
+  codPuntoVentaMH: any
+  codPuntoVenta: string
+  isActive: boolean
+  branch: Branch
+  branchId: number
+}
+
+export interface Branch {
+  id: number
+  name: string
+  address: string
+  phone: string
+  isActive: boolean
+  codEstableMH: string
+  codEstable: string
+  tipoEstablecimiento: string
+  transmitterId: number
+}

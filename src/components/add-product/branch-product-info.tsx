@@ -274,7 +274,6 @@ function BranchProductInfo() {
               onBlur={formik.handleBlur('branch')}
               onSelectionChange={(keys) => {
                 const keysArray = Array.from(keys as Set<string>);
-                console.log('onSelectionChange keysArray:', keysArray);
                 setSelectedBranches(keysArray);
                 formik.setFieldValue('branch', keysArray);
               }}
