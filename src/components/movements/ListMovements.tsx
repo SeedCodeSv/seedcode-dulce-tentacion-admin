@@ -41,6 +41,7 @@ function ListMovements({ actions }: Props) {
   const totalItemPerPageGraphic = 20;
   const styles = useGlobalStyles();
   const [branch, setBranch] = useState<Branches>();
+
   const [loading_data, setLoadingData] = useState(false)
   const limit = 30
 
@@ -86,6 +87,7 @@ function ListMovements({ actions }: Props) {
   }, []);
 
   const handleAutocompleteChange = (name: string, value: string) => {
+
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -212,9 +214,13 @@ function ListMovements({ actions }: Props) {
 
           <div className="w-full">
             <Autocomplete
+              
               className="dark:text-white"
               classNames={{ base: 'font-semibold' }}
-              clearButtonProps={{ onClick: () => handleAutocompleteChange('branch', '') }}
+              clearButtonProps={{
+                onClick: () => handleAutocompleteChange('branch', '')
+              }}
+
               label="Sucursal"
               labelPlacement="outside"
               placeholder="Selecciona la Sucursal"
@@ -235,6 +241,8 @@ function ListMovements({ actions }: Props) {
                 </AutocompleteItem>
               ))}
             </Autocomplete>
+
+
           </div>
           <div className="w-full">
             <Autocomplete
@@ -360,7 +368,7 @@ function ListMovements({ actions }: Props) {
       )}
       {pagination_inventory_movement.totalPag > 1 && (
         <div
-        className='mt-4'
+          className='mt-4'
         >
           <Pagination
             currentPage={pagination_inventory_movement.currentPag}

@@ -228,6 +228,12 @@ export const LayoutItems = (props: Props) => {
       label: 'Ventas por Productos',
     },
     {
+      viewName: 'Reporte de productos',
+      to: '/report-product-order',
+      icon: List,
+      label: 'Reporte por productos',
+    },
+    {
       viewName: 'Contingencias',
       to: '/contingence-section',
       icon: DatabaseBackup,
@@ -281,7 +287,7 @@ export const LayoutItems = (props: Props) => {
       icon: BoxesIcon,
       label: 'Producto Perdido',
     },
-     {
+    {
       viewName: 'Reporte caja',
       to: '/box-report',
       icon: BoxesIcon,

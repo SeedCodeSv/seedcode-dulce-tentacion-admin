@@ -121,3 +121,18 @@ export interface IGetSalesByDayTable {
   expenses: number;
   total: number;
 }
+
+
+export interface IResponseReportBranch {
+  ok: boolean
+  status: number
+  data: ReportBranchProduct[]
+}
+
+export interface ReportBranchProduct {
+  branchProductId: number
+  producto: string
+  code: string
+  branch: string
+  stock: string
+}

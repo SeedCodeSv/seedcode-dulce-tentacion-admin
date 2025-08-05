@@ -7,6 +7,7 @@ import {
   IGetSalesByCategory,
   IGetSalesByDayTable,
   IGetSalesByYear,
+  IResponseReportBranch,
 } from '../../types/reports_seller/sales_reports_seller.types';
 
 export const get_sales_by_category = (id: number) => {
@@ -38,3 +39,12 @@ export const compare_sales_current = (id: number) => {
 export const get_sales_by_day_table = (id: number) => {
   return axios.get<IGetSalesByDayTable>(API_URL + `/sales/get-by-branch/${id}`);
 };
+
+
+export const get_report_branch_product = (name: string, branch: string) => {
+  return axios.get<IResponseReportBranch>(API_URL + `/branch-products/list-report-product?name=${name}&branch=${branch}`)
+}
+
+
+
+
