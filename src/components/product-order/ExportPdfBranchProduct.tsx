@@ -20,57 +20,102 @@ export const exportToPDFBranchProductReport = async (
 ) => {
   try {
     const doc = new jsPDF({
-      orientation: 'portrait',
+      orientation: 'landscape', 
       unit: 'mm',
+      format: 'a4',
     });
 
     const startY = 5;
 
-    // Header
     autoTable(doc, {
       showHead: false,
       body: [
-        [{ content: transmitter.nombreComercial, styles: { halign: 'center', fontStyle: 'bold' } }],
-        [{ content: `Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`, styles: { halign: 'center' } }],
-        [{ content: `Reporte de existencias por sucursal`, styles: { halign: 'center' } }],
+        [
+          {
+            content: transmitter.nombreComercial,
+            styles: { halign: 'center', fontStyle: 'bold', fontSize: 10 },
+          },
+        ],
+        [
+          {
+            content: `Fecha: ${getElSalvadorDateTimeText().fecEmi} - ${getElSalvadorDateTime().horEmi}`,
+            styles: { halign: 'center', fontSize: 8 },
+          },
+        ],
+        [
+          {
+            content: `Reporte de existencias por sucursal`,
+            styles: { halign: 'center', fontSize: 9 },
+          },
+        ],
       ],
       theme: 'plain',
       startY,
-      bodyStyles: { cellPadding: 1 },
-      margin: { top: 10, left: 30, right: 30 },
+      bodyStyles: { cellPadding: 0.5 },
+      margin: { top: 8, left: 10, right: 10 },
     });
 
-    const headers = ['ID', 'Nombre del Producto', 'Código', 'Sucursal', 'Stock'];
+    const branches = [...new Set(data.map(d => d.branch))].sort();
 
-    const body = data.map(item => [
-      item.branchProductId,
-      item.producto,
-      item.code,
-      item.branch,
-      item.stock === '0' ? '' : item.stock, // puedes ajustar aquí si quieres mostrar ceros o no
+    const groupedMap = new Map<
+      string,
+      {
+        producto: string;
+        code: string;
+        stocks: Record<string, string>;
+      }
+    >();
+
+    data.forEach(({ producto, code, branch, stock }) => {
+      const key = `${producto}||${code}`;
+
+      if (!groupedMap.has(key)) {
+        groupedMap.set(key, {
+          producto,
+          code,
+          stocks: {},
+        });
+      }
+      const item = groupedMap.get(key)!;
+
+      item.stocks[branch] = stock;
+    });
+
+    const headers = ['Producto', 'Código', ...branches];
+
+    const body = Array.from(groupedMap.values()).map(({ producto, code, stocks }) => [
+      producto,
+      code,
+      ...branches.map(branch => stocks[branch] || '0'),
     ]);
 
     (doc as any).autoTable({
       head: [headers],
-      body: body,
+      body,
       startY: 30,
       theme: 'grid',
       headStyles: {
         fillColor: [255, 113, 163],
         textColor: [255, 255, 255],
         fontStyle: 'bold',
-        fontSize: 8,
+        fontSize: 7,
       },
       bodyStyles: {
         textColor: [0, 0, 0],
-        fontSize: 8,
+        fontSize: 6,
       },
       styles: {
         lineColor: [200, 200, 200],
-        lineWidth: 0.3,
-        cellPadding: 2,
+        lineWidth: 0.2,
+        cellPadding: 1,
+        halign: 'center',
+        valign: 'middle',
       },
-      margin: { left: 6, right: 6 },
+      columnStyles: {
+        0: { halign: 'left', cellWidth: 40 }, 
+        1: { cellWidth: 25 },                  
+      },
+      margin: { left: 5, right: 5 },
     });
 
     doc.save(`Reporte_Existencias_${getElSalvadorDateTimeText().fecEmi}.pdf`);

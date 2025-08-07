@@ -2,76 +2,43 @@
 import {
   Autocomplete,
   AutocompleteItem,
-  Checkbox,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerHeader,
-  Input,
-  Select,
-  SelectItem,
   useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
-import {
-  CalendarDays,
-  Clock,
-  Eye,
-  Hash,
-  Info,
-  ReceiptText,
-  ShoppingCart,
-  StickyNote,
-  Store,
-  User,
-} from 'lucide-react';
-import { useNavigate } from 'react-router';
 import { PiFilePdfDuotone, PiMicrosoftExcelLogo } from 'react-icons/pi';
-import axios from 'axios';
 import { toast } from 'sonner';
 
 import EmptyTable from '../global/EmptyTable';
 import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
-import Pagination from '../global/Pagination';
 import RenderViewButton from '../global/render-view-button';
 
-import { RenderStatus, Status, StautsProductOrder } from './render-order-status';
-import { exportToExcelOrderProduct } from './exportExcel';
-import { exportToPDFOrderProduct, IOrderProduct } from './exportPdf';
-import CardProductOrderComponent from './card-product-order-component';
+
+import { exportToExcelBranchProductReport } from './ExportExcelBranchProduct';
+import { exportToPDFBranchProductReport } from './ExportPdfBranchProduct';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import DivGlobal from '@/themes/ui/div-global';
 import TdGlobal from '@/themes/ui/td-global';
-import useColors from '@/themes/use-colors';
-import { Order } from '@/types/order-products.types';
-import { useOrderProductStore } from '@/store/order-product.store';
+// import { Order } from '@/types/order-products.types';
 import { Colors } from '@/types/themes.types';
-import Pui from '@/themes/ui/p-ui';
 import { TableComponent } from '@/themes/ui/table-ui';
-import { getElSalvadorDateTime } from '@/utils/dates';
-import { API_URL, limit_options } from '@/utils/constants';
 import { useBranchesStore } from '@/store/branches.store';
-import { useShippingBranchProductBranch } from '@/shopping-branch-product/store/shipping_branch_product.store';
-import { useProductionOrderStore } from '@/store/production-order.store';
 import useWindowSize from '@/hooks/useWindowSize';
 import { useTransmitterStore } from '@/store/transmitter.store';
 import { ReportBranchProductStore } from '@/store/report-branch-product.store';
-import { serialize } from 'v8';
-import { exportToExcelBranchProductReport } from './ExportExcelBranchProduct';
-import { exportToPDFBranchProductReport } from './ExportPdfBranchProduct';
+
 
 export default function ProductOrderConsolidate() {
   // const { backgroundColor, textColor } = useColors();
   const { getBranchesList, branch_list } = useBranchesStore();
   const { getReportBranchProduct, data_report } = ReportBranchProductStore();
   // const { addSelectedProducts } = useProductionOrderStore();
-  const [selectedOrder, setSelectedOrder] = useState<Order>();
+  // const [selectedOrder, setSelectedOrder] = useState<Order>();
   const { transmitter, gettransmitter } = useTransmitterStore()
   // const { getOrdersByDates, ordersProducts } = useOrderProductStore();
-  const currentDate = new Date();
-  const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const modalDetails = useDisclosure();
+  // const currentDate = new Date();
+  // const defaultStartDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+  // const modalDetails = useDisclosure();
   const { windowSize } = useWindowSize()
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : "table"

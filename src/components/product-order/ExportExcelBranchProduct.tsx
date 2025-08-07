@@ -18,13 +18,12 @@ export const exportToExcelBranchProductReport = async (
 ) => {
     try {
         const workbook = new ExcelJS.Workbook();
+
         workbook.created = new Date();
 
         const worksheet = workbook.addWorksheet('Reporte de Existencias');
 
-        worksheet.addRow([]); 
-
-        const headers = ['ID', 'Nombre del Producto', 'Código', 'Sucursal', 'Stock'];
+        worksheet.addRow([]);
 
         const extraInfo = [
             [`${transmitter.nombreComercial}`],
@@ -33,34 +32,67 @@ export const exportToExcelBranchProductReport = async (
 
         extraInfo.forEach((row, index) => {
             const newRow = worksheet.addRow(row);
-            worksheet.mergeCells(`A${newRow.number}:E${newRow.number}`);
+
+            worksheet.mergeCells(`A${newRow.number}:Z${newRow.number}`);
             newRow.font = { bold: index === 0, size: 13 };
             newRow.alignment = { horizontal: 'center' };
         });
 
-        worksheet.addRow([]); // Espacio después del título
+        worksheet.addRow([]);
 
-        // Definir anchos de columnas
+        // 🔹 Obtener lista única de sucursales ordenadas
+        const branches = [...new Set(data.map(d => d.branch))].sort();
+
+        // 🔹 Agrupar por producto y código
+        const groupedMap = new Map<
+            string,
+            {
+                producto: string;
+                code: string;
+                stocks: Record<string, string>;
+            }
+        >();
+
+        data.forEach(({ producto, code, branch, stock }) => {
+            const key = `${producto}||${code}`;
+
+            if (!groupedMap.has(key)) {
+                groupedMap.set(key, {
+                    producto,
+                    code,
+                    stocks: {},
+                });
+            }
+
+            const item = groupedMap.get(key)!;
+
+            item.stocks[branch] = stock;
+        });
+
+        // 🔹 Encabezados: Producto | Código | Sucursal A | Sucursal B | ...
+        const headers = ['Producto', 'Código', ...branches];
+
         worksheet.columns = [
-            { key: 'branchProductId', width: 10 },
             { key: 'producto', width: 35 },
             { key: 'code', width: 20 },
-            { key: 'branch', width: 25 },
-            { key: 'stock', width: 15 },
+            ...branches.map(branch => ({ key: branch, width: 30 })), // ✅ Más espacio para sucursales
         ];
 
-        // Agregar fila de encabezados
         const headerRow = worksheet.addRow(headers);
 
-        // Estilos para encabezados
+        // 🔹 Estilos para encabezados
         headerRow.eachCell((cell) => {
             cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
             cell.fill = {
                 type: 'pattern',
                 pattern: 'solid',
-                fgColor: { argb: 'FF71A3' }, // Rosado pastel
+                fgColor: { argb: 'FF71A3' },
             };
-            cell.alignment = { vertical: 'middle', horizontal: 'center' };
+            cell.alignment = {
+                vertical: 'middle',
+                horizontal: 'center',
+                wrapText: true, // ✅ Texto en varias líneas si es necesario
+            };
             cell.border = {
                 top: { style: 'thin' },
                 left: { style: 'thin' },
@@ -75,25 +107,16 @@ export const exportToExcelBranchProductReport = async (
             to: { row: headerRow.number, column: headers.length }
         };
 
-        // 🔹 Ordenar por sucursal y luego por nombre de producto
-        data.sort((a, b) => {
-            if (a.branch === b.branch) {
-                return a.producto.localeCompare(b.producto);
-            }
-            return a.branch.localeCompare(b.branch);
-        });
+        groupedMap.forEach(({ producto, code, stocks }) => {
+            const row = [
+                producto,
+                code,
+                ...branches.map(branch => stocks[branch] || '0')
+            ];
 
-        // Agregar filas de datos
-        data.forEach((item) => {
-            const row = worksheet.addRow([
-                item.branchProductId,
-                item.producto,
-                item.code,
-                item.branch,
-                item.stock,
-            ]);
+            const newRow = worksheet.addRow(row);
 
-            row.eachCell({ includeEmpty: true }, (cell, colNumber) => {
+            newRow.eachCell({ includeEmpty: true }, (cell, colNumber) => {
                 cell.border = {
                     top: { style: 'thin' },
                     left: { style: 'thin' },
@@ -101,11 +124,15 @@ export const exportToExcelBranchProductReport = async (
                     right: { style: 'thin' },
                 };
                 if (colNumber > 1) {
-                    cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                    cell.alignment = {
+                        vertical: 'middle',
+                        horizontal: 'center',
+                    };
                 }
             });
         });
 
+        // 🔹 Exportar Excel
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -113,6 +140,7 @@ export const exportToExcelBranchProductReport = async (
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
+
         link.href = url;
         link.download = `Reporte_Existencias_${getElSalvadorDateTimeText().fecEmi}.xlsx`;
         link.click();
