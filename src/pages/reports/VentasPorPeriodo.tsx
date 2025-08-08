@@ -300,7 +300,7 @@ function VentasPorPeriodo() {
           )}
         </div>
       </ResponsiveFilterWrapper>
-      <div className="flex flex-col w-full gap-10 pt-10 md:flex-row">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 py-10">
         <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
           <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
             No. de ventas
@@ -319,7 +319,39 @@ function VentasPorPeriodo() {
         </div>
         <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
           <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
-            Total en ventas
+            IVA Retenido 1%
+          </p>
+
+          {loading_sales_period ? (
+            <div className="flex flex-col items-center justify-center w-full mt-2">
+              <div className="loader2" />
+              {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
+            </div>
+          ) : (
+            <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
+              {formatCurrency(sales_by_period?.ivaRetenido || 0)}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
+          <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
+            Monto Total{' '}
+          </p>
+
+          {loading_sales_period ? (
+            <div className="flex flex-col items-center justify-center w-full mt-2">
+              <div className="loader2" />
+              {/* <p className="mt-3 text-xl font-semibold">Cargando...</p> */}
+            </div>
+          ) : (
+            <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
+              {formatCurrency(sales_by_period?.totalSales || 0)}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-center justify-center w-full h-32 border rounded-lg shadow dark:bg-gray-950 dark:border-gray-700">
+          <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
+            Total pagado
           </p>
           <div className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
             {loading_sales_period ? (
@@ -329,19 +361,27 @@ function VentasPorPeriodo() {
               </div>
             ) : (
               <p className="text-lg font-semibold text-gray-700 md:text-2xl dark:text-white animated-count">
-                {formatCurrency(sales_by_period?.totalSales || 0)}
+                {formatCurrency(sales_by_period?.totalPagar || 0)}
               </p>
             )}
           </div>
         </div>
       </div>
 
-      <TableComponent headers={['No.Fecha', 'Total en Ventas', 'No. de ventas']}>
+      <TableComponent
+        headers={['No.Fecha', 'IVA retenido', 'Monto total', 'Total pagado', 'No. de ventas']}
+      >
         {sales_by_period?.sales.map((sale, index) => (
           <tr key={index} className="border-b border-slate-200">
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.date}</td>
+             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {formatCurrency(+sale.ivaRetenido1)}
+            </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
               {formatCurrency(+sale.totalSales)}
+            </td>
+             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+              {formatCurrency(+sale.totalPagar)}
             </td>
             <td className="p-3 text-sm text-slate-500 dark:text-slate-100">{sale.salesCount}</td>
           </tr>

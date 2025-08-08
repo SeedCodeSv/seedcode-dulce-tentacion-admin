@@ -1,7 +1,9 @@
 export interface Sale {
   date: string;
   totalSales: string;
+  ivaRetenido1: string;
   salesCount: string;
+  totalPagar: string;
 }
 
 export interface IGetSalesByPeriod {
@@ -11,6 +13,8 @@ export interface IGetSalesByPeriod {
   totalPag: number;
   totalSales: number;
   countSales: number;
+  totalPagar: number;
+  ivaRetenido: number;
   currentPag: number;
   nextPag: number;
   prevPag: number;
