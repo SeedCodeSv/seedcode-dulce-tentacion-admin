@@ -55,7 +55,7 @@ export const get_products_and_recipe = (
 
   return axios.get<GetProductAndRecipe>(
     API_URL +
-      `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
+    `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -165,7 +165,7 @@ export const get_branch_product_recipe = (
   );
 };
 
-export const create_branch_product = (payload: IPayloadBranchProduct) =>{
+export const create_branch_product = (payload: IPayloadBranchProduct) => {
   return axios.post<BasicResponse>(API_URL + '/branch-products/add/branch-product', payload)
 }
 export const get_branch_product_recipe_supplier = (
@@ -205,21 +205,28 @@ export const get_product_list_search = async ({
   code
 }: {
   productName?: string;
-  code: string
+  code: string;
 }) => {
   const token = get_token() ?? '';
 
+  const encodedName = productName ? encodeURIComponent(productName) : '';
+  const encodedCode = encodeURIComponent(code);
+
   return (
-    await axios.get<IGetProductsPaginated>(`${API_URL}/products/search/list?name=${productName}&code=${code}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    await axios.get<IGetProductsPaginated>(
+      `${API_URL}/products/search/list?name=${encodedName}&code=${encodedCode}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
   ).data;
 };
 
 
-export const convert_product = async ( payload: ConvertProduct ) => {
+
+export const convert_product = async (payload: ConvertProduct) => {
   const data = axios.post<BasicResponse>(`${API_URL}/products/convert`, payload)
 
   return data
@@ -232,7 +239,7 @@ export const get_converted_product = async (id: number) => {
 }
 
 
-export const update_product_coversion = async (payload: ConvertProduct, id:number ) => {
+export const update_product_coversion = async (payload: ConvertProduct, id: number) => {
   const data = axios.patch<BasicResponse>(`${API_URL}/product-conversions/${id}`, payload)
 
   return data

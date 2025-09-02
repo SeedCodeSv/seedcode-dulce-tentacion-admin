@@ -155,6 +155,7 @@ export const KardexByProductList = () => {
               variant="bordered"
               onClear={() => setSearch({ ...search, productId: 0, productName: '' })}
               onInputChange={(value) => {
+                console.log("value",value)
                 handleSearchProduct(value);
               }}
               onSelectionChange={(key) => {
@@ -239,9 +240,9 @@ export const KardexByProductList = () => {
           <span className="flex gap-1 font-semibold">
             Nombre:
             {search.productName ? (
-              <TooltipGlobal text={search.productName}>
+              <TooltipGlobal text={totales.productName}>
                 <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                  {search.productName}
+                  {totales.productName}
                 </p>
               </TooltipGlobal>
             ) : (

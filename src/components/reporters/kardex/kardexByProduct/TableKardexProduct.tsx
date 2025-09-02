@@ -17,7 +17,6 @@ export default function TableKardexProduct() {
         'Descripción',
         'Entrada',
         'Salida',
-        'Stock Actual',
         'Costo Unitario',
         'Total Movimiento',
       ]}
@@ -52,9 +51,6 @@ export default function TableKardexProduct() {
                   {product.typeOfMovement === TypeOfMovements.Exits
                     ? product.quantity
                     : 0}
-                </td>
-                <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
-                  {product.saldoActual}
                 </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                   ${Number(product.branchProduct.costoUnitario).toFixed(3)}
