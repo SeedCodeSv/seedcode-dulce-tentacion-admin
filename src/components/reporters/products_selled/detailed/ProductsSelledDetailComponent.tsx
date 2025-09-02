@@ -1,6 +1,7 @@
 import { Autocomplete, AutocompleteItem, Card, CardBody, CardHeader, Input, Select, SelectItem } from "@heroui/react";
-import { useEffect, useMemo, useState } from "react";
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { ChevronDown, ChevronUp, SearchIcon } from "lucide-react";
+import debounce from "debounce";
 
 import ProductsDetailedExportPdf from "./ProductsDetailedExportPdf";
 import ProductsDetailedExportExcell from "./ProductsDetailedExportExcell";
@@ -20,7 +21,7 @@ import { useTransmitterStore } from "@/store/transmitter.store";
 import useWindowSize from "@/hooks/useWindowSize";
 import RenderViewButton from "@/components/global/render-view-button";
 import { ProductsSellled } from "@/types/reports/productsSelled.report.types";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { useProductsStore } from "@/store/products.store";
 
 export default function ProductsSelledDetailComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
@@ -30,6 +31,7 @@ export default function ProductsSelledDetailComponent() {
     const [view, setView] = useState<'grid' | 'list' | 'table'>(
         windowSize.width < 768 ? 'grid' : "table"
     )
+    const { productsFilteredList, getProductsFilteredList } = useProductsStore()
 
     const [search, setSearch] = useState({
         page: 1,
@@ -37,17 +39,24 @@ export default function ProductsSelledDetailComponent() {
         branchId: 0,
         startDate: getElSalvadorDateTime().fecEmi,
         endDate: getElSalvadorDateTime().fecEmi,
-        productName: ''
+        productName: '',
+        productId: 0
     });
 
     useEffect(() => {
+        getProductsFilteredList({
+            productName: '',
+            code: ''
+        });
         gettransmitter()
         getBranchesList()
         getProductsSelled(search)
     }, [])
 
     const handleSearch = (page: number) => {
-        getProductsSelled({ ...search, page })
+        const productName = search.productName === "undefined" ? "" : search.productName
+
+        getProductsSelled({ ...search, page, productName })
     }
 
     const [sortConfig, setSortConfig] = useState<{
@@ -92,6 +101,16 @@ export default function ProductsSelledDetailComponent() {
         setSortConfig({ key, direction });
     };
 
+    const handleSearchProduct = useCallback(
+        debounce((value: string) => {
+            getProductsFilteredList({
+                productName: value,
+                code: ''
+            });
+        }, 300),
+        [search]
+    );
+
 
     return (
         <>
@@ -119,7 +138,7 @@ export default function ProductsSelledDetailComponent() {
                         </AutocompleteItem>
                     ))}
                 </Autocomplete>
-                <Input
+                {/* <Input
                     isClearable
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
@@ -136,7 +155,50 @@ export default function ProductsSelledDetailComponent() {
                         setSearch({ ...search, productName: '' });
                         getProductsSelled({ ...search, productName: '' })
                     }}
-                />
+                /> */}
+                <Autocomplete
+                    isClearable
+                    className="font-semibold dark:text-white w-full"
+                    label="Producto"
+                    labelPlacement="outside"
+                    listboxProps={{
+                        emptyContent: "Escribe para buscar",
+                    }}
+                    placeholder="Selecciona un producto"
+                    selectedKey={search.productId ? String(search.productId) : null}
+                    startContent={<SearchIcon />}
+                    variant="bordered"
+                    onClear={() => {
+                        const newSearch = { ...search, productName: '', productId: 0 };
+ 
+                        setSearch(newSearch);
+                        getProductsSelled(newSearch);
+                    }}
+                    onInputChange={(value) => {
+                        handleSearchProduct(value);
+                    }}
+                    onSelectionChange={(key) => {
+                        const product = productsFilteredList.find((item) => item.id === Number(key))
+
+                        setSearch({
+                            ...search, productName: String(product?.name),
+                            productId: Number(key)
+                        })
+
+                        if (product === undefined) {
+                            const newSearch = { ...search, productName: '', productId: 0 };
+
+                            getProductsSelled(newSearch);
+
+                        }
+                    }}
+                >
+                    {productsFilteredList.map((bp) => (
+                        <AutocompleteItem key={bp.id} className="dark:text-white">
+                            {bp.name}
+                        </AutocompleteItem>
+                    ))}
+                </Autocomplete>
                 <Input
                     className="dark:text-white"
                     classNames={{ label: 'font-semibold' }}
