@@ -30,7 +30,6 @@ function VentasPorPeriodo() {
   const { actions } = useViewsStore();
   const reportSale = actions.find((view) => view.view.name === 'Ventas por Periodo');
 
-  // const reportSales = actions.find((view) => view.name === "Ventas por Periodo")
   const actionsView = reportSale?.actions?.name || [];
 
   const [filter, setFilter] = useState({

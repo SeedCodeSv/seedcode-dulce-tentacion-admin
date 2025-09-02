@@ -66,6 +66,8 @@ export const returnTitleByPathname = (pathname: string) => {
       return 'SECCIÓN DE CONTINGENCIA';
     case '/OP-report':
       return 'REPORTE DE ORDENES DE PRODUCCIÓN';
+    case '/products-selled/detailed':
+      return 'PRODUCTOS VENDIDOS';
     case '/products-selled':
       return 'PRODUCTOS VENDIDOS';
     case '/movement':

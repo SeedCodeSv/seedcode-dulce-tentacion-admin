@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteItem, Card, CardBody, CardHeader, Input, Select, SelectItem } from "@heroui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 
 import ProductsDetailedExportPdf from "./ProductsDetailedExportPdf";
@@ -19,6 +19,8 @@ import Pagination from "@/components/global/Pagination";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import useWindowSize from "@/hooks/useWindowSize";
 import RenderViewButton from "@/components/global/render-view-button";
+import { ProductsSellled } from "@/types/reports/productsSelled.report.types";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function ProductsSelledDetailComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
@@ -47,6 +49,49 @@ export default function ProductsSelledDetailComponent() {
     const handleSearch = (page: number) => {
         getProductsSelled({ ...search, page })
     }
+
+    const [sortConfig, setSortConfig] = useState<{
+        key: keyof ProductsSellled | null;
+        direction: 'asc' | 'desc';
+    }>({
+        key: null,
+        direction: 'asc',
+    });
+
+    const sortedProducts = useMemo(() => {
+        return [...products_selled.products_sellled].sort((a, b) => {
+            if (sortConfig.key) {
+                let aValue = a[sortConfig.key];
+                let bValue = b[sortConfig.key];
+
+                if (sortConfig.key === "productName") {
+                    return sortConfig.direction === "asc"
+                        ? String(aValue).localeCompare(String(bValue))
+                        : String(bValue).localeCompare(String(aValue));
+                }
+
+                if (aValue < bValue) {
+                    return sortConfig.direction === "asc" ? -1 : 1;
+                }
+                if (aValue > bValue) {
+                    return sortConfig.direction === "asc" ? 1 : -1;
+                }
+            }
+
+            return 0;
+        });
+    }, [products_selled.products_sellled, sortConfig]);
+
+
+    const handleSort = (key: keyof ProductsSellled) => {
+        let direction: 'asc' | 'desc' = 'asc';
+
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key, direction });
+    };
+
 
     return (
         <>
@@ -156,6 +201,29 @@ export default function ProductsSelledDetailComponent() {
                     <TableComponent
                         className="overflow-auto"
                         headers={['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría']}
+                        renderHeader={(header) => (
+                            <div className="flex items-center">
+                                <span>{header}</span>
+                                {(header === 'Descripción') && (
+                                    <span className="ml-1 flex items-center">
+                                        {sortConfig.key === (header === 'Descripción' ? 'productName' : 'unitCost') &&
+                                            (sortConfig.direction === 'asc' ? (
+                                                <ChevronUp size={20} />
+                                            ) : (
+                                                <ChevronDown size={20} />
+                                            ))}
+                                    </span>
+                                )}
+                            </div>
+                        )}
+
+                        onThClick={(header) => {
+                            if (header === 'Descripción') {
+                                handleSort('productName');
+                            } else {
+                                setSortConfig({ key: null, direction: 'asc' });
+                            }
+                        }}
                     >
                         {loading ? (
                             <tr>
@@ -170,7 +238,7 @@ export default function ProductsSelledDetailComponent() {
                                 </TdGlobal>
                             </tr>
                         ) : (
-                            products_selled.products_sellled.map((item, index) => (
+                            sortedProducts.map((item, index) => (
                                 <tr key={index} className="border-b dark:border-slate-600 border-slate-200 p-3">
                                     <TdGlobal className="p-3">{item.date} </TdGlobal>
                                     <TdGlobal className="p-3">{item.branchName}</TdGlobal>

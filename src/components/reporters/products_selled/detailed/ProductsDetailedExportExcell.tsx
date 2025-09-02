@@ -18,17 +18,17 @@ interface Props {
 
 export default function ProductsDetailedExportExcell({ params, comercialName }: Props) {
     const { products_selled, getProductsSelledExport } = useProductsOrdersReportStore()
-     const [loading_data, setLoadingData] = useState(false)
-    
-        const handle = async () => {
-            setLoadingData(true)
-            const res = await getProductsSelledExport({...params, limit: products_selled.total})
-    
-            if (res) {
-                await exportToExcel(res.products_selled)
-                setLoadingData(false)
-            }
+    const [loading_data, setLoadingData] = useState(false)
+
+    const handle = async () => {
+        setLoadingData(true)
+        const res = await getProductsSelledExport({ ...params, limit: products_selled.total })
+
+        if (res) {
+            await exportToExcel(res.products_selled)
+            setLoadingData(false)
         }
+    }
 
     const styles = useGlobalStyles();
 
@@ -48,7 +48,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
             [`Reporte desde ${params.startDate} hasta ${params.endDate}`]
         ];
 
-        const headers = ['Fecha', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad', 'Precio', 'Total', 'Categoría'];
+        const headers = ['Fecha De Venta', 'Sucursal', 'Código', 'Descripción', 'Unidad de Medida', 'Cantidad Vendida', 'Precio Unitario', 'Total', 'Categoría'];
 
         extraInfo.forEach((row, index) => {
             const newRow = worksheet.addRow(row);
@@ -59,7 +59,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
 
             worksheet.mergeCells(`A${rowIndex}:${lastColumnLetter}${rowIndex}`);
             newRow.font = { bold: index === 0, size: 13 };
-            newRow.alignment = { horizontal: 'center' }
+            newRow.alignment = { horizontal: 'center' };
         });
 
         worksheet.addRow([]);
@@ -79,6 +79,11 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
             cell.alignment = { vertical: 'middle', horizontal: 'center' };
         });
 
+        worksheet.autoFilter = {
+            from: { row: headerRow.number, column: 1 },
+            to: { row: headerRow.number + products_selled.products_sellled.length, column: headers.length }
+        };
+
         worksheet.columns = [
             { width: 15 },
             { width: 20 },
@@ -92,7 +97,31 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
         ];
 
 
-        products_selled.products_sellled.forEach((item) => {
+        // Copiamos el array para no mutar el original
+        const sortedProducts = [...products_selled.products_sellled].sort((a, b) => {
+            // 1️⃣ Ordenar por fecha ascendente
+            const dateA = new Date(a.date);
+            const dateB = new Date(b.date);
+
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
+
+            // 2️⃣ Ordenar por producto
+            const productA = a.productName ?? '';
+            const productB = b.productName ?? '';
+            const productCompare = productA.localeCompare(productB);
+
+            if (productCompare !== 0) return productCompare;
+
+            // 3️⃣ Ordenar por sucursal
+            const branchA = a.branchName ?? '';
+            const branchB = b.branchName ?? '';
+
+            return branchA.localeCompare(branchB);
+        });
+
+        // Luego agregamos al worksheet
+        sortedProducts.forEach((item) => {
             worksheet.addRow([
                 formatDateSimple(item.date),
                 item.branchName ?? '',
@@ -105,6 +134,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
                 item.category ?? ''
             ]);
         });
+
 
         const buffer = await workbook.xlsx.writeBuffer();
         const blob = new Blob([buffer], {
