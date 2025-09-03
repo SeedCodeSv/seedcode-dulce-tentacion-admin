@@ -93,7 +93,7 @@ export const get_branch_product_list = async ({
   const params = new URLSearchParams();
 
   params.append('name', productName ?? "");
-  const query = `${branchId}?name=${productName ?? ''}${params.toString()}`;
+  const query = `${branchId}?${params.toString()}`;
 
   return (
     await axios.get<IGetBranchProductPaginated>(`${API_URL}/branch-products/list/${query}`, {
