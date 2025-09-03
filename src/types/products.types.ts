@@ -1,4 +1,3 @@
-import { number } from 'yup';
 import { BranchProduct } from './branch_products.types';
 import { BasicResponse, IPagination } from './global.types';
 import { ISubCategory } from './sub_categories.types';

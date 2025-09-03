@@ -155,7 +155,6 @@ export const KardexByProductList = () => {
               variant="bordered"
               onClear={() => setSearch({ ...search, productId: 0, productName: '' })}
               onInputChange={(value) => {
-                console.log("value",value)
                 handleSearchProduct(value);
               }}
               onSelectionChange={(key) => {

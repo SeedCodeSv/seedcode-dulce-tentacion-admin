@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Autocomplete,
   AutocompleteItem,
-  useDisclosure,
 } from '@heroui/react';
 import { useEffect, useState } from 'react';
 import { PiFilePdfDuotone, PiMicrosoftExcelLogo } from 'react-icons/pi';
@@ -49,8 +47,6 @@ export default function ProductOrderConsolidate() {
   });
 
   // const [selectedIds, setSelectedIds] = useState<number[]>([]);
-
-
 
   useEffect(() => {
     getReportBranchProduct(search.name, search.branch)

@@ -51,7 +51,6 @@ export interface IProductsStore {
   onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
   getConvertProduct: (id: number) => Promise<boolean>;
   patchConvertProduct: (payload: ConvertProduct, id: number) => Promise<boolean>;
-
   convertedProduct: GetConvertProduct | null
-
+  params: SearchProduct
 }

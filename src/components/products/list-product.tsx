@@ -38,7 +38,7 @@ interface Props {
 
 function ListProducts({ actions }: Props) {
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
-  const { getPaginatedProducts, paginated_products, activateProduct, loading_products } =
+  const { getPaginatedProducts, paginated_products, activateProduct, loading_products} =
     useProductsStore();
   const modalConvert = useDisclosure()
   const [product, setSelectProduct] = useState<Product>()
@@ -58,27 +58,18 @@ function ListProducts({ actions }: Props) {
     active: true
   })
 
-
-  // const [view, setView] = useState<'table' | 'grid'>('table');
-
-  // useEffect(() => {
-  //   if (typeof windowSize?.width === 'number') {
-  //     setView(windowSize.width < 768 ? 'grid' : 'table');
-  //   }
-  // }, [windowSize?.width]);
-
   useEffect(() => {
     getPaginatedProducts(params);
   }, [params.limit, params.active]);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getPaginatedProducts({...params,page:1, name: searchParam ?? params.name, code: searchParam ?? params.code});
+    getPaginatedProducts({ ...params, page: 1, name: searchParam ?? params.name, code: searchParam ?? params.code });
   };
 
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const handleActivate = (id: number) => {
     activateProduct(id).then(() => {
-      getPaginatedProducts({...params, page: 1});
+      getPaginatedProducts({ ...params, page: 1 });
     });
   };
   const navigate = useNavigate();
@@ -302,8 +293,8 @@ function ListProducts({ actions }: Props) {
                 previousPage={paginated_products.prevPag}
                 totalPages={paginated_products.totalPag}
                 onPageChange={(page) => {
-                  setParams({...params, page})
-                  getPaginatedProducts({...params, page});
+                  setParams({ ...params, page })
+                  getPaginatedProducts({ ...params, page });
                 }}
               />
             </div>

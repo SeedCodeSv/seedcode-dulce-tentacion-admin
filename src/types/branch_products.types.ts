@@ -47,11 +47,6 @@ export interface IGetBranchProductPaginated {
   status: number;
 }
 
-export interface CategoryProduct {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
 export interface Supplier {
   id: number;
   nombre: string;

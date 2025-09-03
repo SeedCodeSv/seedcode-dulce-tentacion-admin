@@ -105,18 +105,18 @@ function BranchProductInfo() {
               label="Sucursales"
               labelPlacement="outside"
               name="branch"
-              selectionMode='multiple'
               placeholder="Selecciona la sucursal"
-              // selectedKeys={selectedBranches}
               selectedKeys={new Set(selectedBranches.map(String))}
+              selectionMode='multiple'
               variant="bordered"
               onBlur={formik.handleBlur('branch')}
               onSelectionChange={(keys) => {
                 const keysArray = Array.from(keys as Set<string>).map(String);
+
                 setSelectedBranches(keysArray);
                 formik.setFieldValue('branch', keysArray);
               }}
-
+            // selectedKeys={selectedBranches}
             >
               {branch_list.map((val) => (
                 <SelectItem key={val.id} className="dark:text-white">
@@ -124,12 +124,6 @@ function BranchProductInfo() {
                 </SelectItem>
               ))}
             </Select>
-            {/* <div>
-              <p>Sucursales seleccionadas</p>
-              <span>{
-              
-                }</span>
-            </div> */}
             <div className="mt-4">
               <p className="font-semibold text-sm text-gray-700 dark:text-white mb-1">
                 Sucursales seleccionadas:
@@ -265,15 +259,16 @@ function BranchProductInfo() {
               errorMessage={formik.touched.branch && formik.errors.branch}
               isInvalid={formik.touched.branch && !!formik.errors.branch}
               label="Sucursales"
-              selectionMode='multiple'
               labelPlacement="outside"
               name="branch"
               placeholder="Selecciona la sucursal"
               selectedKeys={new Set(selectedBranches)}
+              selectionMode='multiple'
               variant="bordered"
               onBlur={formik.handleBlur('branch')}
               onSelectionChange={(keys) => {
                 const keysArray = Array.from(keys as Set<string>);
+
                 setSelectedBranches(keysArray);
                 formik.setFieldValue('branch', keysArray);
               }}

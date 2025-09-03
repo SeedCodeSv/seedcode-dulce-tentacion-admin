@@ -5,7 +5,6 @@ import { IGetProductsSelled, IGetSummaryTotalProductsSelled, IGetTotalProductsSe
 
 export const get_products_selled_by_dates = async (params: SearchReport) => {
   const token = get_token() ?? '';
-  console.log("parametros*******************",params)
   const encodedName = params.productName ? encodeURIComponent(params.productName) : '';
 
   const url = import.meta.env.VITE_API_URL + `/reports/products-selled-by-dates/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&productName=${encodedName}`;

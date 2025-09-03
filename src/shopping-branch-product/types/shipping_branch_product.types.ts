@@ -3,6 +3,7 @@ import { Emisor, Receptor } from './notes_of_remision.types';
 import { ICheckStockResponse, ProductQuery } from '@/types/branch_products.types';
 import { Transmitter } from '@/types/categories.types';
 import { OrderProductDetail } from '@/types/order-products.types';
+import { ISubCategory } from '@/types/sub_categories.types';
 
 export interface IResponseBranchProductPaginatedSent {
   ok?: boolean;
@@ -39,20 +40,9 @@ export interface Product {
   unidaDeMedida: string;
   code: string;
   isActive: boolean;
-  subCategory?: SubCategoryProduct
+  subCategory?: ISubCategory
 }
-export interface SubCategoryProduct {
-  id: number;
-  name: string;
-  isActive: boolean;
-  categoryProduct: CategoryProduct;
-  categoryProductId: number;
-}
-export interface CategoryProduct {
-  id: number;
-  name: string;
-  isActive: boolean;
-}
+
 export interface Branch {
   id: number;
   name: string;

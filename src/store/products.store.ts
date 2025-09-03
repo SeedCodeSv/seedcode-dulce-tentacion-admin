@@ -54,6 +54,15 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     status: 404,
     ok: false,
   },
+  params: {
+    page: 1,
+    limit: 30,
+    name: "",
+    code: "",
+    category: 0,
+    subCategory: 0,
+    active: true
+  },
   getProductsDetails(id) {
     get_product_by_id(id)
       .then(({ data }) => {
@@ -150,9 +159,11 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   postProducts(payload) {
+    const params = get().params
+
     return create_products(payload)
       .then(() => {
-        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
+        get().getPaginatedProducts(params);
         toast.success(messages.success);
       })
       .catch(() => {
@@ -160,10 +171,12 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   patchProducts(payload, id): Promise<{ ok: boolean }> {
+    const params = get().params
+
     return update_products(payload, id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
+        get().getPaginatedProducts(params);
 
         return { ok: true };
       })
@@ -174,10 +187,12 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   async deleteProducts(id) {
+    const params = get().params
+
     await delete_products(id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
+        get().getPaginatedProducts(params);
       })
       .catch(() => {
         toast.error(messages.error);
@@ -240,11 +255,13 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       return false
     })
   },
-   async patchConvertProduct(payload, id) {
+  async patchConvertProduct(payload, id) {
+    const params = get().params
+
     return update_product_coversion(payload, id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
+        get().getPaginatedProducts(params);
 
         return true;
       })

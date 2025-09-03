@@ -21,6 +21,7 @@ import useGlobalStyles from '../global/global.styles';
 import FullPageLayout from '../global/FullOverflowLayout';
 import LoadingTable from '../global/LoadingTable';
 import EmptyTable from '../global/EmptyTable';
+import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 
 import ItemPdf from './ItemPdf';
 
@@ -32,7 +33,6 @@ import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
 import DivGlobal from '@/themes/ui/div-global';
 import { TableComponent } from '@/themes/ui/table-ui';
-import { ResponsiveFilterWrapper } from '../global/ResposiveFilters';
 import useWindowSize from '@/hooks/useWindowSize';
 
 function List() {

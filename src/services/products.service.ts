@@ -58,9 +58,20 @@ export const get_products_and_recipe = (
 ) => {
   const token = get_token() ?? '';
 
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('category', category.toString());
+  params.append('subCategory', subCategory.toString())
+  params.append('name', name);
+  params.append('code', code);
+  params.append('active', active.toString());
+  params.append('typeProduct', typeProduct);
+
   return axios.get<GetProductAndRecipe>(
     API_URL +
-    `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
+    `/products/products-and-recipe?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
