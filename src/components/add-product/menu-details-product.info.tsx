@@ -35,27 +35,27 @@ function MenuDetailsProductInfo({ selectedProducts, setSelectedProducts }: Props
   const [name, setName] = useState('');
 
   useEffect(() => {
-    getPaginatedProducts(
-      1,
-      20,
-      0,
-      0,
-      selectedTypeSearch === 'NOMBRE' ? name : '',
-      selectedTypeSearch === 'CODIGO' ? name : '',
-      1
-    );
+    getPaginatedProducts({
+      page: 1,
+      limit: 20,
+      category: 0,
+      subCategory: 0,
+      name: selectedTypeSearch === 'NOMBRE' ? name : '',
+      code: selectedTypeSearch === 'CODIGO' ? name : '',
+      active: true
+    });
   }, []);
 
   const handleSearch = (page = 1) => {
-    getPaginatedProducts(
+    getPaginatedProducts({
       page,
-      20,
-      0,
-      0,
-      selectedTypeSearch === 'NOMBRE' ? name : '',
-      selectedTypeSearch === 'CODIGO' ? name : '',
-      1
-    );
+      limit: 20,
+      category: 0,
+      subCategory: 0,
+      name: selectedTypeSearch === 'NOMBRE' ? name : '',
+      code: selectedTypeSearch === 'CODIGO' ? name : '',
+      active: true
+    });
   };
 
   const handleAddSupplier = (prd: Product) => {

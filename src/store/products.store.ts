@@ -72,9 +72,9 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
       });
   },
   savePaginatedProducts: (products: IGetProductsPaginated) => set({ paginated_products: products }),
-  getPaginatedProducts: (page, limit, category, subCategory, name, code, active = 1) => {
+  getPaginatedProducts: (params) => {
     set({ loading_products: true });
-    get_products(page, limit, category, subCategory, name, code, active)
+    get_products(params)
       .then((products) => set({ paginated_products: products.data, loading_products: false }))
       .catch(() => {
         set({
@@ -152,7 +152,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
   postProducts(payload) {
     return create_products(payload)
       .then(() => {
-        get().getPaginatedProducts(1, 5, 0, 0, '', '');
+        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
         toast.success(messages.success);
       })
       .catch(() => {
@@ -163,7 +163,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     return update_products(payload, id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 5, 0, 0, '', '');
+        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
 
         return { ok: true };
       })
@@ -177,7 +177,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     await delete_products(id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 5, 0, 0, '', '');
+        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
       })
       .catch(() => {
         toast.error(messages.error);
@@ -244,7 +244,7 @@ export const useProductsStore = create<IProductsStore>((set, get) => ({
     return update_product_coversion(payload, id)
       .then(() => {
         toast.success(messages.success);
-        get().getPaginatedProducts(1, 5, 0, 0, '', '');
+        get().getPaginatedProducts({page: 1, limit: 30, category: 0, subCategory: 0, name:'', code: '', active: true});
 
         return true;
       })

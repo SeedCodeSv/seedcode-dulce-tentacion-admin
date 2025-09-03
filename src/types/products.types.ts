@@ -1,3 +1,4 @@
+import { number } from 'yup';
 import { BranchProduct } from './branch_products.types';
 import { BasicResponse, IPagination } from './global.types';
 import { ISubCategory } from './sub_categories.types';
@@ -482,6 +483,15 @@ export interface UpdateProductPayload {
   unidaDeMedida: string;
   branch?: { id: number }[];
   supplierId?: number;
+}
+export interface SearchProduct {
+  page: number;
+  limit: number;
+  category: number;
+  subCategory: number;
+  name: string;
+  code: string;
+  active: boolean;
 }
 
 

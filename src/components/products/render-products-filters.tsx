@@ -10,46 +10,33 @@ import {
   useDisclosure,
 } from '@heroui/react';
 import { Filter, SearchIcon } from 'lucide-react';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useCategoriesStore } from '@/store/categories.store';
 import { useSubCategoryStore } from '@/store/sub-category';
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
-
-type Key = string | number;
+import { SearchProduct } from '@/types/products.types';
 
 interface Props {
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
   handleSearch: (value: string | undefined) => void;
-  code: string;
-  setCode: React.Dispatch<React.SetStateAction<string>>;
-  category: Key | null | undefined;
-  setCategory: React.Dispatch<React.SetStateAction<Key | null | undefined>>;
-  subcategory: Key | null | undefined;
-  setSubcategory: React.Dispatch<React.SetStateAction<Key | null | undefined>>;
+  params: SearchProduct
+  setParams: (params: SearchProduct) => void
 }
 
 function RenderProductsFilters(props: Props) {
   const {
-    search,
-    setSearch,
     handleSearch,
-    code,
-    setCode,
-    category,
-    setCategory,
-    subcategory,
-    setSubcategory,
+    setParams,
+    params
   } = props;
 
   const { sub_categories, getSubCategoriesList, getSubcategories, subcategories } = useSubCategoryStore();
   const { list_categories, getListCategories } = useCategoriesStore();
 
   useEffect(() => {
-    getSubcategories(Number(category ?? 0));
-  }, [category]);
+    getSubcategories(Number(params.category ?? 0));
+  }, [params.category]);
 
   useEffect(() => {
     getListCategories();
@@ -72,11 +59,11 @@ function RenderProductsFilters(props: Props) {
           labelPlacement="outside"
           placeholder="Escribe para buscar..."
           startContent={<SearchIcon />}
-          value={search}
+          value={params.name}
           variant="bordered"
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setParams({ ...params, name: e.target.value })}
           onClear={() => {
-            setSearch('');
+            setParams({ ...params, name: '' });
             handleSearch('');
           }}
           onKeyDown={(e) => {
@@ -96,50 +83,73 @@ function RenderProductsFilters(props: Props) {
           labelPlacement="outside"
           placeholder="Escribe para buscar..."
           startContent={<SearchIcon />}
-          value={code}
+          value={params.code}
           variant="bordered"
-          onChange={(e) => setCode(e.target.value)}
+          onChange={(e) => setParams({ ...params, code: e.target.value })}
           onClear={() => {
-            setCode('');
+            setParams({ ...params, code: "" });
             handleSearch('');
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSearch(undefined);
+            }
           }}
         />
         <Autocomplete
-          className="w-full dark:text-white rounded-xl "
+          className="w-full dark:text-white rounded-xl"
           classNames={{
             base: 'font-semibold text-gray-500 dark:text-gray-50 text-sm',
           }}
           label="Categoría"
           placeholder="Selecciona la categoría"
-          selectedKey={category}
+          selectedKey={params.category ? String(params.category) : undefined}
           variant="bordered"
-          onSelectionChange={setCategory}
+          onSelectionChange={(key) => {
+            if (key) {
+              const cat = Number(key);
+
+              setParams({ ...params, category: cat, subCategory: 0});
+            }else{
+              setParams({...params, category: 0, subCategory: 0})
+            }
+          }}
         >
-          {list_categories.map((bra) => (
-            <AutocompleteItem key={bra.id} className="dark:text-white">
-              {bra.name}
+          {list_categories.map((item) => (
+            <AutocompleteItem key={String(item.id)} className="dark:text-white">
+              {item.name}
             </AutocompleteItem>
           ))}
         </Autocomplete>
+
         <Autocomplete
           className="w-full dark:text-white"
           classNames={{
             base: 'font-semibold text-gray-500 text-sm',
           }}
-          items={subcategories.length > 0 || Number(category) > 0 ? subcategories : sub_categories}
+          items={subcategories.length > 0 || Number(params.category) > 0 ? subcategories : sub_categories}
           label="Sub Categoría"
           labelPlacement="outside"
           placeholder="Selecciona la sub categoría"
-          selectedKey={subcategory}
+          selectedKey={params.subCategory ? String(params.subCategory) : undefined}
           variant="bordered"
-          onSelectionChange={setSubcategory}
+          onSelectionChange={(key) => {
+            if (key) {
+              const subCat = Number(key);
+
+              setParams({ ...params, subCategory: subCat });
+            }else{
+              setParams({ ...params, subCategory: 0 });
+            }
+          }}
         >
           {(item) => (
-            <AutocompleteItem key={item.id} className="dark:text-white">
+            <AutocompleteItem key={String(item.id)} className="dark:text-white">
               {item.name}
             </AutocompleteItem>
           )}
         </Autocomplete>
+
         <ButtonUi
           className="hidden w-full md:flex "
           startContent={<SearchIcon className="w-10" />}

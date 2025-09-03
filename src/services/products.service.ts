@@ -11,6 +11,7 @@ import {
   IGetProductsPaginated,
   ProductList,
   ProductPayload,
+  SearchProduct,
   Verify_Code,
 } from '../types/products.types';
 import { API_URL } from '../utils/constants';
@@ -19,20 +20,24 @@ import { get_token } from '../storage/localStorage';
 import { BasicResponse } from '@/types/global.types';
 import { IPayloadBranchProduct } from '@/types/branch_products.types';
 
-export const get_products = (
-  page = 1,
-  limit = 5,
-  category = 0,
-  subCategory = 0,
-  name = '',
-  code = '',
-  active = 1
-) => {
+export const get_products = (search: SearchProduct) => {
   const token = get_token() ?? '';
+
+  const params = new URLSearchParams();
+  const active = search.active ? 1 : 0
+
+  params.append('page', search.page.toString());
+  params.append('limit', search.limit.toString());
+  params.append('category', search.category.toString());
+  params.append('subCategory', search.subCategory.toString())
+  params.append('name', search.name);
+  params.append('code', search.code);
+  params.append('active', active.toString());
+
 
   return axios.get<IGetProductsPaginated>(
     API_URL +
-    `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
+    `/products/list-paginated?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

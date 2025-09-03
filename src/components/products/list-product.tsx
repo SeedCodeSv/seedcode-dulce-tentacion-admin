@@ -36,8 +36,6 @@ interface Props {
   actions: string[];
 }
 
-type Key = string | number;
-
 function ListProducts({ actions }: Props) {
   const [isOpenModalUpdate, setIsOpenModalUpdate] = useState(false);
   const { getPaginatedProducts, paginated_products, activateProduct, loading_products } =
@@ -45,17 +43,20 @@ function ListProducts({ actions }: Props) {
   const modalConvert = useDisclosure()
   const [product, setSelectProduct] = useState<Product>()
 
-  const [search, setSearch] = useState('');
-  const [code, setCode] = useState('');
-
-  const [category, setCategory] = useState<Key | null>();
-  const [subCategory, setSubCategory] = useState<Key | null>();
-  const [limit, setLimit] = useState(30);
   const { windowSize } = useWindowSize();
   const [view, setView] = useState<'table' | 'grid' | 'list'>(
     windowSize.width < 768 ? 'grid' : 'table'
   );
-  const [active, setActive] = useState(true);
+
+  const [params, setParams] = useState({
+    page: 1,
+    limit: 30,
+    category: 0,
+    subCategory: 0,
+    name: "",
+    code: "",
+    active: true
+  })
 
 
   // const [view, setView] = useState<'table' | 'grid'>('table');
@@ -67,33 +68,17 @@ function ListProducts({ actions }: Props) {
   // }, [windowSize?.width]);
 
   useEffect(() => {
-    getPaginatedProducts(
-      1,
-      limit,
-      Number(category ?? 0),
-      Number(subCategory ?? 0),
-      search,
-      code,
-      active ? 1 : 0
-    );
-  }, [limit, active]);
+    getPaginatedProducts(params);
+  }, [params.limit, params.active]);
 
   const handleSearch = (searchParam: string | undefined) => {
-    getPaginatedProducts(
-      1,
-      limit,
-      Number(category ?? 0),
-      Number(subCategory ?? 0),
-      searchParam ?? search,
-      searchParam ?? code,
-      active ? 1 : 0
-    );
+    getPaginatedProducts({...params,page:1, name: searchParam ?? params.name, code: searchParam ?? params.code});
   };
 
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const handleActivate = (id: number) => {
     activateProduct(id).then(() => {
-      getPaginatedProducts(1, limit, 0, 0, '', '', active ? 1 : 0);
+      getPaginatedProducts({...params, page: 1});
     });
   };
   const navigate = useNavigate();
@@ -111,15 +96,9 @@ function ListProducts({ actions }: Props) {
       <DivGlobal >
         <div className="hidden lg:flex w-full">
           <RenderProductsFilters
-            category={category}
-            code={code}
             handleSearch={handleSearch}
-            search={search}
-            setCategory={setCategory}
-            setCode={setCode}
-            setSearch={setSearch}
-            setSubcategory={setSubCategory}
-            subcategory={subCategory}
+            params={params}
+            setParams={setParams}
           />
         </div>
         <div className="flex flex-col gap-3 lg:flex-row lg:justify-between lg:gap-10">
@@ -127,14 +106,14 @@ function ListProducts({ actions }: Props) {
             <div>
               <Switch
                 classNames={{
-                  thumb: classNames(active ? 'bg-blue-500' : 'bg-gray-400'),
-                  wrapper: classNames(active ? '!bg-blue-300' : 'bg-gray-200'),
+                  thumb: classNames(params.active ? 'bg-blue-500' : 'bg-gray-400'),
+                  wrapper: classNames(params.active ? '!bg-blue-300' : 'bg-gray-200'),
                 }}
-                isSelected={active}
-                onValueChange={(active) => setActive(active)}
+                isSelected={params.active}
+                onValueChange={(active) => setParams({ ...params, active })}
               >
                 <span className="text-sm sm:text-base whitespace-nowrap">
-                  Mostrar {active ? 'inactivos' : 'activos'}
+                  Mostrar {params.active ? 'inactivos' : 'activos'}
                 </span>
               </Switch>
             </div>
@@ -146,13 +125,13 @@ function ListProducts({ actions }: Props) {
                 classNames={{
                   label: 'font-semibold',
                 }}
-                defaultSelectedKeys={[limit.toString()]}
+                defaultSelectedKeys={[params.limit.toString()]}
                 label="Cantidad a mostrar"
                 labelPlacement="outside"
-                value={limit}
+                value={params.limit}
                 variant="bordered"
                 onChange={(e) => {
-                  setLimit(Number(e.target.value !== '' ? e.target.value : limit));
+                  setParams({ ...params, limit: Number(e.target.value !== '' ? e.target.value : params.limit) });
                 }}
               >
                 {limit_options.map((limit) => (
@@ -165,15 +144,9 @@ function ListProducts({ actions }: Props) {
             <RenderViewButton setView={setView} view={view} />
             <div className="flex lg:hidden">
               <RenderProductsFilters
-                category={category}
-                code={code}
                 handleSearch={handleSearch}
-                search={search}
-                setCategory={setCategory}
-                setCode={setCode}
-                setSearch={setSearch}
-                setSubcategory={setSubCategory}
-                subcategory={subCategory}
+                params={params}
+                setParams={setParams}
               />
             </div>
 
@@ -205,7 +178,7 @@ function ListProducts({ actions }: Props) {
         {view === 'table' && (
           <>
             <TableComponent
-            className='overflow-auto'
+              className='overflow-auto'
               headers={["Nº", "Nombre", "Código", "Sub categoría", 'Acciones']}
             >
               {loading_products ? (
@@ -329,15 +302,8 @@ function ListProducts({ actions }: Props) {
                 previousPage={paginated_products.prevPag}
                 totalPages={paginated_products.totalPag}
                 onPageChange={(page) => {
-                  getPaginatedProducts(
-                    page,
-                    limit,
-                    Number(category ?? 0),
-                    Number(subCategory ?? 0),
-                    search,
-                    code,
-                    active ? 1 : 0
-                  );
+                  setParams({...params, page})
+                  getPaginatedProducts({...params, page});
                 }}
               />
             </div>
