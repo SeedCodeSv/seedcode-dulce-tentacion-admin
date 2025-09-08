@@ -127,7 +127,9 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
                 item.branchName ?? '',
                 item.code ?? '',
                 item.productName ?? '',
-                item.unitMessure ?? '',
+                item.productName?.toLowerCase().startsWith("porcion")
+                    ? "PORCION"
+                    : item.unitMessure ?? '',
                 Number(item.quantity ?? 0),
                 Number(item.price ?? 0),
                 Number(item.total ?? 0),
