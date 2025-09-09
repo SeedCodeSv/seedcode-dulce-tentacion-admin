@@ -73,6 +73,8 @@ export interface KardexByProduct {
   typeOfMovement: string;
   typeOfInventory: string;
   quantity: number;
+  initialStock: number
+  finalStock: number
   date: string;
   time: string;
   totalMovement: string;
@@ -84,26 +86,26 @@ export interface KardexByProduct {
 
 
 export interface IReportKardexGeneral {
-  ok:         boolean;
-  data:       DataKardex[];
-  total:      number;
-  totalPag:   number;
+  ok: boolean;
+  data: DataKardex[];
+  total: number;
+  totalPag: number;
   currentPag: number;
-  nextPag:    number;
-  prevPag:    number;
-  status:     number;
+  nextPag: number;
+  prevPag: number;
+  status: number;
 }
 
 export interface DataKardex {
-  date:          string;
-  time:          string;
-  movementType:  string;
+  date: string;
+  time: string;
+  movementType: string;
   inventoryType: string;
-  productName:   string;
-  productCode:   string;
-  branchName:    string;
-  quantity:      number;
-  unitCost:      number;
+  productName: string;
+  productCode: string;
+  branchName: string;
+  quantity: number;
+  unitCost: number;
   totalMovement: number;
   initialStock: number
 }

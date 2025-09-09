@@ -15,8 +15,10 @@ export default function TableKardexProduct() {
         'No.',
         'Fecha',
         'Descripción',
+        'Stock Inicial',
         'Entrada',
         'Salida',
+        'Stock Final',
         'Costo Unitario',
         'Total Movimiento',
       ]}
@@ -42,6 +44,9 @@ export default function TableKardexProduct() {
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100 ">
                   {product.typeOfInventory}
                 </td>
+                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  { product.initialStock}
+                </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                   {product.typeOfMovement === TypeOfMovements.Entries
                     ? product.quantity
@@ -51,6 +56,9 @@ export default function TableKardexProduct() {
                   {product.typeOfMovement === TypeOfMovements.Exits
                     ? product.quantity
                     : 0}
+                </td>
+                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
+                  { product.finalStock}
                 </td>
                 <td className="p-3 text-sm text-slate-500 dark:text-slate-100">
                   ${Number(product.branchProduct.costoUnitario).toFixed(3)}
