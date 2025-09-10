@@ -33,7 +33,6 @@ type ContextType = {
   actionView: string[];
 };
 
-
 export const KardexByProductList = () => {
   const user = get_user();
   const { actionView } = useOutletContext<ContextType>();

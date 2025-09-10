@@ -140,23 +140,26 @@ export const DownloadKardexProductPDFButton = ({ search, branchName}: {
         doc.text(`Total de salidas: ${totalExits}`, x, currentY);
       };
 
-      const headers = [
+      const headers =[
         'No.',
         'Fecha',
         'Descripción',
+        'Stock Inicial',
         'Entrada',
         'Salida',
+        'Stock Final',
         'Costo Unitario',
-        'Precio de venta',
         'Total Movimiento',
-      ];
+      ]
 
       const rows = KardexProduct.movements.map((item, index) => [
         index + 1,
         formatSimpleDate(`${item.date}|${item.time}`),
         item.typeOfInventory || '',
+        item.initialStock,
         item.typeOfMovement === TypeOfMovements.Entries ? item.quantity : 0,
         item.typeOfMovement === TypeOfMovements.Exits ? item.quantity : 0,
+        Number(item.finalStock),
         `$ ${Number(item.branchProduct.costoUnitario ?? 0).toFixed(2)}`,
          `$ ${Number(item.branchProduct.price ?? 0).toFixed(2)}`,
         `$ ${Number(item.totalMovement ?? 0).toFixed(2)}`,

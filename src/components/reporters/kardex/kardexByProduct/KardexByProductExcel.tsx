@@ -48,7 +48,17 @@ export const DownloadKardexProductExcelButton = ({ search, branchName }: {
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet('Kardex');
 
-      const headers = ['No.', 'Fecha', 'Descripción', 'Entrada', 'Salida', 'Costo Unitario', 'Costo promedio'];
+      const headers = [
+        'No.',
+        'Fecha',
+        'Descripción',
+        'Stock Inicial',
+        'Entrada',
+        'Salida',
+        'Stock Final',
+        'Costo Unitario',
+        'Total Movimiento',
+      ];
 
       addHeader(worksheet, transmitter?.nombreComercial ?? '', search, branchName);
 
@@ -60,8 +70,10 @@ export const DownloadKardexProductExcelButton = ({ search, branchName }: {
         index + 1,
         formatSimpleDate(`${item.date}|${item.time}`),
         item.typeOfInventory || '',
+        item.initialStock || 0,
         item.typeOfMovement === TypeOfMovements.Entries ? Number(item.quantity) : 0,
         item.typeOfMovement === TypeOfMovements.Exits ? Number(item.quantity) : 0,
+        item.finalStock || 0,
         `$ ${Number(item.branchProduct.costoUnitario ?? 0).toFixed(2)}`,
         `$ ${Number(item.totalMovement ?? 0).toFixed(2)}`,
       ]);
