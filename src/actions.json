@@ -476,6 +476,14 @@
         "Exportar Excel",
         "Exportar PDF"
       ]
+    },
+    {
+      "view": "Reporte de productos",
+      "actions": [
+        "Mostrar",
+        "Exportar Excel",
+        "Exportar PDF"
+      ]
     }
   ]
 }

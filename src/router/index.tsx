@@ -51,6 +51,8 @@ const AnexosCompras = lazy(() => import('@/pages/anexos_iva/anexos_compras'));
 const AnexoFe = lazy(() => import('@/pages/anexos_iva/anexo_fe'));
 const AnexoCcfe = lazy(() => import('@/pages/anexos_iva/anexo_ccfe'));
 
+
+const ProductOrderConsolidated = lazy(() => import('@/components/product-order/product-order-consolidate'));
 const Supplier = lazy(() => import('../pages/Supplier'));
 const Discount = lazy(() => import('../pages/Promotions'));
 const AddPromotions = lazy(() => import('../components/discounts/AddPromotions'));
@@ -172,6 +174,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/order-products"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Reporte de productos') ? <ProductOrderConsolidated /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/report-product-order"
       />
       <Route
         element={
@@ -370,6 +380,14 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
           </AnimatedRoute>
         }
         path="/birthday-calendar"
+      />
+      <Route
+        element={
+          <AnimatedRoute>
+            {handleCheckPermission('Ventas por Periodo') ? <VentasPorPeriodo /> : <Home />}
+          </AnimatedRoute>
+        }
+        path="/sales-by-period"
       />
       <Route
         element={

@@ -6,7 +6,6 @@ import { useEffect, useMemo } from 'react';
 import { ISubCategory, ISubCategoryPayload } from '../../types/sub_categories.types';
 import { useSubCategoryStore } from '../../store/sub-category';
 import { useCategoriesStore } from '../../store/categories.store';
-import { CategoryProduct } from '../../types/branch_products.types';
 
 import ButtonUi from '@/themes/ui/button-ui';
 import { Colors } from '@/types/themes.types';
@@ -117,15 +116,15 @@ const AddSubCategory = (props: Props) => {
                 onBlur={handleBlur('categoryProductId')}
                 onSelectionChange={(key) => {
                   if (key) {
-                    const category = JSON.parse(key as string) as CategoryProduct;
+                    const category = Number(key);
 
-                    handleChange('categoryProductId')(category.id.toString());
+                    handleChange('categoryProductId')(category.toString());
                   }
                 }}
               >
-                {list_categories.map((bra) => (
-                  <AutocompleteItem key={JSON.stringify(bra)} className="dark:text-white">
-                    {bra.name}
+                {list_categories.map((item) => (
+                  <AutocompleteItem key={item.id} className="dark:text-white">
+                    {item.name}
                   </AutocompleteItem>
                 ))}
               </Autocomplete>

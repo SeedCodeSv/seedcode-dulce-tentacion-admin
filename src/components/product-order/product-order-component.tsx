@@ -180,7 +180,7 @@ const {transmitter, gettransmitter} = useTransmitterStore()
         <Autocomplete
           className="font-semibold dark:text-white w-full"
           defaultSelectedKey={String(search.branchId)}
-          label="Sucursal"
+          label="Sucursales"
           labelPlacement="outside"
           placeholder="Selecciona la sucursal"
           variant="bordered"

@@ -196,6 +196,7 @@ export const KardexByProductList = () => {
                 setSearch({ ...search, endDate: e.target.value });
               }}
             />
+            <div className='flex gap-3 w-full justify-between'>
             <Select
               disallowEmptySelection
               aria-label="Cantidad a mostrar"
@@ -217,8 +218,24 @@ export const KardexByProductList = () => {
                 </SelectItem>
               ))}
             </Select>
+            <div className='hidden lg:flex'>
+             <RenderViewButton isList setView={setView} view={view} />
+             </div>
+            </div>
+           <div className="flex gap-3 items-center col-start-4 justify-end hidden lg:flex">
+              {JSON.stringify(actionView).includes('Descargar PDF') && (
+                <DownloadKardexProductPDFButton branchName= {branchName}
+                   search={search}
+                />
+              )}
+              {JSON.stringify(actionView).includes('Exportar Excel') && (
+                <DownloadKardexProductExcelButton branchName= {branchName}
+                   search={search}
+                />
+              )}
+            </div>
           </ResponsiveFilterWrapper>
-          <div className='flex justify-between gap-4 w-full'>
+           <div className='flex justify-between gap-4 w-full lg:hidden flex'>
             <RenderViewButton isList setView={setView} view={view} />
             <div className="flex gap-3 items-center">
               {JSON.stringify(actionView).includes('Descargar PDF') && (
@@ -236,12 +253,13 @@ export const KardexByProductList = () => {
         </section>
 
         <section className="flex flex-col w-full max-w-[380px] gap-1 flex-1 dark:text-white px-3 py-2 rounded-xl bg-slate-100 shadow-sm dark:bg-slate-700">
+          <div className='flex gap-4 justify-between w-full'>
           <span className="flex gap-1 font-semibold">
             Nombre:
-            {search.productName ? (
-              <TooltipGlobal text={search.productName}>
+            {totales.productName ? (
+              <TooltipGlobal text={totales.productName}>
                 <p className="whitespace-nowrap overflow-hidden text-ellipsis">
-                  {search.productName}
+                  {totales.productName}
                 </p>
               </TooltipGlobal>
             ) : (
@@ -249,9 +267,13 @@ export const KardexByProductList = () => {
             )}
 
           </span>
-          <span className="font-semibold">Stock Inicial: {totales.initialStock}</span>
+          {/* <span className="font-semibold">Stock Inicial: {totales.initialStock}</span> */}
+          <span className="font-semibold text-gray-500"> stock actual: {totales.stockActual}</span>
+          </div>
+          <div className='flex gap-4 justify-between w-full'>
           <span className="font-semibold">Total de entradas: {totales.totalEntradas}</span>
           <span className="font-semibold">Total de salidas: {totales.totalSalidas}</span>
+          </div>
         </section>
       </div>
 

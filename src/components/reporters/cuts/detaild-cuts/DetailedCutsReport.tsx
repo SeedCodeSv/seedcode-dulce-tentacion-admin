@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Input, Modal, ModalBody, ModalContent, ModalHeader, Select, SelectItem, useDisclosure } from "@heroui/react";
 import { Printer, SearchIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import DetailedCutTable from "./DetailedCutTable";
 import DetailedCutMovilView from "./DetailedCutCardView";
@@ -17,7 +18,6 @@ import { useBranchesStore } from "@/store/branches.store";
 import { useTransmitterStore } from "@/store/transmitter.store";
 import { formatDate, getElSalvadorDateTime } from "@/utils/dates";
 import { Branches } from "@/types/branches.types";
-import { toast } from "sonner";
 import { formatCurrency } from "@/utils/utils";
 import ButtonUi from "@/themes/ui/button-ui";
 import { Colors } from "@/types/themes.types";

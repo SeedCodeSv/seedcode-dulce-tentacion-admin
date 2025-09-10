@@ -483,6 +483,15 @@ export interface UpdateProductPayload {
   branch?: { id: number }[];
   supplierId?: number;
 }
+export interface SearchProduct {
+  page: number;
+  limit: number;
+  category: number;
+  subCategory: number;
+  name: string;
+  code: string;
+  active: boolean;
+}
 
 
 

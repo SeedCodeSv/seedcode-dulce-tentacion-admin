@@ -38,14 +38,23 @@ export const get_kardex_report_by_product = async (
   productName: string = '',
   startDate: string = '',
   endDate: string = '',
-  branchProductId: number = 0,
+  branchProductId: number = 0
 ) => {
   const token = get_token() ?? '';
+
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('productName', productName);
+  params.append('startDate', startDate);
+  params.append('endDate', endDate);
+  params.append('branchProductId', branchProductId.toString());
 
   return (
     await axios.get<IReportKardexByProduct>(
       import.meta.env.VITE_API_URL +
-      `/reports/kardex-by-product/${id}?page=${page}&limit=${limit}&branchProductId=${branchProductId}&startDate=${startDate}&endDate=${endDate}&productName=${productName}`,
+      `/reports/kardex-by-product/${id}?${params.toString()}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,15 +63,14 @@ export const get_kardex_report_by_product = async (
     )
   ).data;
 };
-
-
 export const get_kardex_report_general = async (params: SearchReport) => {
   const token = get_token() ?? '';
-    const branchQuery = params.branchIds?.map(id => `branchIds=${id}`).join('&') ?? '';
+  const branchQuery = params.branchIds?.map(id => `branchIds=${id}`).join('&') ?? '';
+  const encodedName = params.name ? encodeURIComponent(params.name) : '';
 
   const url =
     import.meta.env.VITE_API_URL +
-    `/reports/kardex-general?page=${params.page}&limit=${params.limit}&name=${params.name}&dateFrom=${params.startDate}&dateTo=${params.endDate}&${branchQuery}`;
+    `/reports/kardex-general?page=${params.page}&limit=${params.limit}&name=${encodedName}&dateFrom=${params.startDate}&dateTo=${params.endDate}&${branchQuery}`;
 
   const response = await axios.get<IReportKardexGeneral>(url, {
     headers: {

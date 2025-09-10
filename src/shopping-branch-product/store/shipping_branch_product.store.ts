@@ -304,7 +304,7 @@ export const useShippingBranchProductBranch = create<IShippingProductBranchStore
         products.push({
           ...branchProduct,
           quantity: pendingQuantity,
-          stock: 'sin definir'
+          stock: 'sin definir',
         })
     }
 

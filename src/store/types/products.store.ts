@@ -7,6 +7,7 @@ import {
   ProductAndRecipe,
   ProductPayload,
   Recipe,
+  SearchProduct,
   UpdateProductPayload,
 } from '../../types/products.types';
 
@@ -28,15 +29,7 @@ export interface IProductsStore {
   productsAndRecipePagination: IPagination;
   getRecipeBook: (id: number) => Promise<boolean>;
   savePaginatedProducts: (products: IGetProductsPaginated) => void;
-  getPaginatedProducts: (
-    page: number,
-    limit: number,
-    category: number,
-    subCategary: number,
-    name: string,
-    code: string,
-    active?: number
-  ) => void;
+  getPaginatedProducts: (params: SearchProduct) => void;
   getPaginatedProductsAndRecipe: (
     page: number,
     limit: number,
@@ -58,7 +51,6 @@ export interface IProductsStore {
   onConvertProduct: (payload: ConvertProduct) => Promise<boolean>
   getConvertProduct: (id: number) => Promise<boolean>;
   patchConvertProduct: (payload: ConvertProduct, id: number) => Promise<boolean>;
-
   convertedProduct: GetConvertProduct | null
-
+  params: SearchProduct
 }

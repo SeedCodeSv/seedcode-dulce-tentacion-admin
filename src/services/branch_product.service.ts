@@ -15,8 +15,15 @@ import { UpdateBranchProductOrder } from '@/types/products.types';
 export const get_branch_product = (id: number, page = 1, limit = 5, name = '', code = '') => {
   const token = get_token() ?? '';
 
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('name', name);
+  params.append('code', code);
+
   return axios.get<IGetBranchProductPaginated>(
-    `${API_URL}/branch-products/by-branch-paginated/${id}?page=${page}&limit=${limit}&name=${name}&code=${code}`,
+    `${API_URL}/branch-products/by-branch-paginated/${id}?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -35,8 +42,17 @@ export const get_branch_product_orders = (
 ) => {
   const token = get_token() ?? '';
 
+  const params = new URLSearchParams();
+
+  params.append('branch', branch)
+  params.append('supplier', supplier);
+  params.append('name', name);
+  params.append('code', code);
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+
   return axios.get<IGetBranchProductOrder>(
-    `${API_URL}/branch-products/get-products?branch=${branch}&supplier=${supplier}&name=${name}&code=${code}&page=${page}&limit=${limit}`,
+    `${API_URL}/branch-products/get-products?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -74,7 +90,10 @@ export const get_branch_product_list = async ({
   productName?: string;
 }) => {
   const token = get_token() ?? '';
-  const query = `${branchId}?name=${productName ?? ''}`;
+  const params = new URLSearchParams();
+
+  params.append('name', productName ?? "");
+  const query = `${branchId}?${params.toString()}`;
 
   return (
     await axios.get<IGetBranchProductPaginated>(`${API_URL}/branch-products/list/${query}`, {
@@ -85,7 +104,7 @@ export const get_branch_product_list = async ({
   ).data;
 };
 
-export const verify_products_stock = async ( branchId: number, products: ProductQuery[] ) => {
+export const verify_products_stock = async (branchId: number, products: ProductQuery[]) => {
   const data = axios.post<ICheckStockResponse>(`${API_URL}/branch-products/check-stock/${branchId}`, products)
 
   return data
@@ -99,7 +118,11 @@ export const get_branch_product_search = async ({
   productName?: string;
 }) => {
   const token = get_token() ?? '';
-  const query = `${branchId}?name=${productName ?? ''}`;
+
+  const params = new URLSearchParams();
+
+  params.append('name', productName ?? "");
+  const query = `${branchId}?${params.toString()}`;
 
   return (
     await axios.get<IGetBranchProductPaginated>(`${API_URL}/branch-products/list/search/${query}`, {

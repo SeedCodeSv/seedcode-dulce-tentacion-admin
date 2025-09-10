@@ -8,7 +8,8 @@ export interface IReportKardexStore {
     initialStock: number,
     totalEntradas: number,
     totalSalidas: number,
-    productName: string
+    productName: string,
+    stockActual: number
   }
   kardexGeneral: DataKardex[]
   details: IDetaiLAdjustment[];

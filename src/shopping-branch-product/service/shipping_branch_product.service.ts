@@ -15,9 +15,18 @@ export const get_shopping_products_branch = async (
   supplier: string,
   code: string
 ) => {
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('name', name);
+  params.append('category', category)
+  params.append('supplier', supplier)
+  params.append('code', code);
+
   return axios.get<IResponseBranchProductPaginatedSent>(
     import.meta.env.VITE_API_URL +
-    `/branch-products/by-branch/${branchId}?page=${page}&limit=${limit}&name=${name}&category=${category}&supplier=${supplier}&code=${code}&`
+    `/branch-products/by-branch/${branchId}?${params.toString()}`
   );
 };
 

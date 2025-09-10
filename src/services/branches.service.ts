@@ -24,20 +24,20 @@ export const get_branches_pagination = (
 
   return axios.get<IGetBranchesPaginated>(
     API_URL +
-      '/branches/list-paginated/' +
-      `${user?.pointOfSale?.branch.transmitterId ?? 0}` +
-      '?page=' +
-      page +
-      '&limit=' +
-      limit +
-      '&name=' +
-      name +
-      '&phone=' +
-      phone +
-      '&address=' +
-      address +
-      '&active=' +
-      active,
+    '/branches/list-paginated/' +
+    `${user?.pointOfSale?.branch.transmitterId ?? 0}` +
+    '?page=' +
+    page +
+    '&limit=' +
+    limit +
+    '&name=' +
+    name +
+    '&phone=' +
+    phone +
+    '&address=' +
+    address +
+    '&active=' +
+    active,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -52,7 +52,7 @@ export const get_branches_list = () => {
 
   return axios.get<IGetBranchesList>(
     API_URL +
-      `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
+    `/branches/list-by-transmitter/${user?.pointOfSale?.branch.transmitterId ?? 0}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -114,9 +114,17 @@ export const get_branch_products = (
 ) => {
   const token = get_token() ?? '';
 
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('name', name);
+  params.append('category', category)
+  params.append('code', code);
+
   return axios.get<IGetBranchProductList>(
     API_URL +
-      `/branch-products/by-branch/${id}?page=${page}&limit=${limit}&name=${name}&category=${category}&code=${code}`,
+    `/branch-products/by-branch/${id}?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -129,6 +137,6 @@ export const save_active_branch = (id: number, state: boolean) => {
   return axios.patch<{ ok: boolean }>(API_URL + '/branches/activate/' + id, (state = !state));
 };
 
-export const get_branch_by_id = (id: number) =>{
-    return axios.get<GetBranchResponse>(API_URL + `/branches/${id}`);
+export const get_branch_by_id = (id: number) => {
+  return axios.get<GetBranchResponse>(API_URL + `/branches/${id}`);
 }

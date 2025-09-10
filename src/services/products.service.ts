@@ -11,6 +11,7 @@ import {
   IGetProductsPaginated,
   ProductList,
   ProductPayload,
+  SearchProduct,
   Verify_Code,
 } from '../types/products.types';
 import { API_URL } from '../utils/constants';
@@ -19,20 +20,24 @@ import { get_token } from '../storage/localStorage';
 import { BasicResponse } from '@/types/global.types';
 import { IPayloadBranchProduct } from '@/types/branch_products.types';
 
-export const get_products = (
-  page = 1,
-  limit = 5,
-  category = 0,
-  subCategory = 0,
-  name = '',
-  code = '',
-  active = 1
-) => {
+export const get_products = (search: SearchProduct) => {
   const token = get_token() ?? '';
+
+  const params = new URLSearchParams();
+  const active = search.active ? 1 : 0
+
+  params.append('page', search.page.toString());
+  params.append('limit', search.limit.toString());
+  params.append('category', search.category.toString());
+  params.append('subCategory', search.subCategory.toString())
+  params.append('name', search.name);
+  params.append('code', search.code);
+  params.append('active', active.toString());
+
 
   return axios.get<IGetProductsPaginated>(
     API_URL +
-    `/products/list-paginated?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}`,
+    `/products/list-paginated?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -53,9 +58,20 @@ export const get_products_and_recipe = (
 ) => {
   const token = get_token() ?? '';
 
+  const params = new URLSearchParams();
+
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
+  params.append('category', category.toString());
+  params.append('subCategory', subCategory.toString())
+  params.append('name', name);
+  params.append('code', code);
+  params.append('active', active.toString());
+  params.append('typeProduct', typeProduct);
+
   return axios.get<GetProductAndRecipe>(
     API_URL +
-      `/products/products-and-recipe?page=${page}&limit=${limit}&category=${category}&subCategory=${subCategory}&name=${name}&code=${code}&active=${active}&typeProduct=${typeProduct}`,
+    `/products/products-and-recipe?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -165,7 +181,7 @@ export const get_branch_product_recipe = (
   );
 };
 
-export const create_branch_product = (payload: IPayloadBranchProduct) =>{
+export const create_branch_product = (payload: IPayloadBranchProduct) => {
   return axios.post<BasicResponse>(API_URL + '/branch-products/add/branch-product', payload)
 }
 export const get_branch_product_recipe_supplier = (
@@ -205,21 +221,28 @@ export const get_product_list_search = async ({
   code
 }: {
   productName?: string;
-  code: string
+  code: string;
 }) => {
   const token = get_token() ?? '';
 
+  const encodedName = productName ? encodeURIComponent(productName) : '';
+  const encodedCode = encodeURIComponent(code);
+
   return (
-    await axios.get<IGetProductsPaginated>(`${API_URL}/products/search/list?name=${productName}&code=${code}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    await axios.get<IGetProductsPaginated>(
+      `${API_URL}/products/search/list?name=${encodedName}&code=${encodedCode}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
   ).data;
 };
 
 
-export const convert_product = async ( payload: ConvertProduct ) => {
+
+export const convert_product = async (payload: ConvertProduct) => {
   const data = axios.post<BasicResponse>(`${API_URL}/products/convert`, payload)
 
   return data
@@ -232,7 +255,7 @@ export const get_converted_product = async (id: number) => {
 }
 
 
-export const update_product_coversion = async (payload: ConvertProduct, id:number ) => {
+export const update_product_coversion = async (payload: ConvertProduct, id: number) => {
   const data = axios.patch<BasicResponse>(`${API_URL}/product-conversions/${id}`, payload)
 
   return data

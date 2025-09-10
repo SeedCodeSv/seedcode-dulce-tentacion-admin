@@ -1,3 +1,4 @@
+import { CategoryProduct } from './categories.types'
 import { Employee } from './employees.types'
 
 export interface ISubCategory {
@@ -28,12 +29,6 @@ export interface IGetSubCategoriesPaginated {
 export interface ISubCategoryPayload {
   name: string;
   categoryProductId: number;
-}
-
-export interface CategoryProduct {
-  id: number
-  name: string
-  isActive?: boolean
 }
 
  export interface IGetSubCategory {

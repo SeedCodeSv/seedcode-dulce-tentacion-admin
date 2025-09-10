@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo } from 'react';
+import { useContext, useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import Lottie from 'lottie-react';
 

@@ -13,8 +13,6 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Tab,
-  Tabs,
   useDisclosure
 } from '@heroui/react';
 
