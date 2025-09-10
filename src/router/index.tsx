@@ -281,7 +281,7 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
             {handleCheckPermission('Notas de crédito') ? <CreditNotePage /> : <Home />}
           </AnimatedRoute>
         }
-        path="/credit-notes"
+        path="/credit-notes/:id"
       />
       <Route
         element={
