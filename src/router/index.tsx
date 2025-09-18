@@ -24,7 +24,6 @@ import CashCutsPage from '@/pages/CashCuts';
 import GeneralCashCutReportComponent from '@/components/reporters/cuts/general-cuts/SummaryCutsReport';
 import DetailedCashCutReportComponent from '@/components/reporters/cuts/detaild-cuts/DetailedCutsReport';
 import ProductsSelledSummaryComponent from '@/components/reporters/products_selled/general/ProductsSelledSummaryComponent';
-import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
 import ProductSelledReportPage from '@/pages/ProductsSelledReport';
 import ProductOrderPage from '@/pages/product-order';
 import NotaRemisionProdutOrder from '@/components/product-order/note-refeal/nota-remision-product-order';
@@ -40,6 +39,8 @@ import DetailedBranchesProducts from '@/pages/reports/DetailedByBranchesProducts
 import ProductSalesReportPage from '@/pages/reports/ProductReport';
 import PdfPreview from '@/components/product-order/note-refeal/Pdfs';
 import ProductLossPage from '@/pages/reports/ProductLossPage';
+import ProductsSelledConsolidatedComponent from '@/components/reporters/products_selled/consolidado/ProductsSelledConsolidatedComponent';
+import ProductsSelledDetailComponent from '@/components/reporters/products_selled/detailed/ProductsSelledDetailComponent';
 
 const AccountingItems = lazy(() => import('@/pages/contablilidad/accounting-items'));
 const AddAccountingItems = lazy(() => import('@/pages/contablilidad/add-accounting-items'));
@@ -214,7 +215,9 @@ export const router = ({ roleActions }: { roleActions: IRoleAction }) => {
         <Route index element={
           <ProductsSelledSummaryComponent />} />
         <Route element={<ProductsSelledDetailComponent />} path="detailed" />
+        <Route element={<ProductsSelledConsolidatedComponent />} path="consolidado" />
       </Route>
+
       <Route
         element={
           <AnimatedRoute>

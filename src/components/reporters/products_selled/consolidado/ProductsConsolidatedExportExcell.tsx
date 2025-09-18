@@ -16,13 +16,13 @@ interface Props {
 }
 
 
-export default function ProductsDetailedExportExcell({ params, comercialName }: Props) {
-    const { products_selled_detailed, getProductsSelledDetailExport } = useProductsOrdersReportStore()
+export default function ProductsConsolidatedExportExcell({ params, comercialName }: Props) {
+    const { products_selled, getProductsSelledExport } = useProductsOrdersReportStore()
     const [loading_data, setLoadingData] = useState(false)
 
     const handle = async () => {
         setLoadingData(true)
-        const res = await getProductsSelledDetailExport({ ...params, limit: products_selled_detailed.total })
+        const res = await getProductsSelledExport({ ...params, limit: products_selled.total })
 
         if (res) {
             await exportToExcel(res.products_selled)
@@ -120,22 +120,9 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
             return branchA.localeCompare(branchB);
         });
 
-        const headersUpperCase = headers.map((header) => header.toUpperCase())
-        const headerIndexes: Record<string, number> = {};
-
-        headersUpperCase.forEach((h, i) => {
-            headerIndexes[h] = i + 1;
-        });
-
-
-        const colPrecioVenta = headerIndexes['PRECIO UNITARIO']
-        const colCantidad = headerIndexes['CANTIDAD VENDIDA']
-        const colTotal = headerIndexes['TOTAL'];
-
-        sortedProducts.forEach((item, index) => {
-            const start = headerRow.number + 1
-            const rowNumber = start + index;
-            const row = worksheet.addRow([
+        // Luego agregamos al worksheet
+        sortedProducts.forEach((item) => {
+            worksheet.addRow([
                 formatDateSimple(item.date),
                 item.branchName ?? '',
                 item.code ?? '',
@@ -148,15 +135,6 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
                 Number(item.total ?? 0),
                 item.category ?? ''
             ]);
-
-             row.getCell(colTotal).value = {
-                formula: `${worksheet.getColumn(colPrecioVenta).letter}${rowNumber}*${worksheet.getColumn(colCantidad).letter}${rowNumber}`,
-            };
-
-            [colPrecioVenta, colTotal].forEach((colIndex) => {
-                row.getCell(colIndex).numFmt =
-                    '_("$"* #,##0.00_);_("$"* (#,##0.00);_("$"* "-"??_);_(@_)';
-            });
         });
 
 
@@ -175,7 +153,7 @@ export default function ProductsDetailedExportExcell({ params, comercialName }: 
 
     return (
         <ButtonUi
-            isDisabled={loading_data || products_selled_detailed.products_sellled.length === 0}
+            isDisabled={loading_data || products_selled.products_sellled.length === 0}
             startContent={<PiMicrosoftExcelLogo className="" size={25} />}
             theme={Colors.Success}
             onPress={handle}

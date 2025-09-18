@@ -26,13 +26,13 @@ interface Props {
     comercialName: string
 }
 
-export default function ProductsDetailedExportPdf({ params, comercialName }: Props) {
-    const { products_selled_detailed,getProductsSelledDetailExport} = useProductsOrdersReportStore()
+export default function ProductsConsolidatedExportPdf({ params, comercialName }: Props) {
+    const { products_selled,getProductsSelledExport} = useProductsOrdersReportStore()
     const [loading_data, setLoadingData] = useState(false)
 
     const handle = async () => {
         setLoadingData(true)
-        const res = await getProductsSelledDetailExport({...params, limit: products_selled_detailed.total})
+        const res = await getProductsSelledExport({...params, limit: products_selled.total})
 
         if (res) {
             await handleDownloadPDF(res.products_selled)
@@ -194,7 +194,7 @@ export default function ProductsDetailedExportPdf({ params, comercialName }: Pro
     return (
         <>
             <ButtonUi
-                isDisabled={loading_data || products_selled_detailed.products_sellled.length === 0}
+                isDisabled={loading_data || products_selled.products_sellled.length === 0}
                 theme={Colors.Primary}
                 onPress={() => {
                     if (!loading_data) {

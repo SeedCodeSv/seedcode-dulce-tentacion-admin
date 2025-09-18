@@ -13,11 +13,12 @@ export default function ProductSelledReportPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentTab = location.pathname === "/products-selled/detailed" ? "detailed" : "general";
+  const currentTab = location.pathname === "/products-selled/detailed" ? "detailed" : location.pathname === "/products-selled/consolidado" ? "consolidado" : "general";
 
   const handleChange = (key: string) => {
     if (key === "general") navigate("/products-selled");
     else if (key === "detailed") navigate("/products-selled/detailed");
+    else if (key === "consolidado") navigate("/products-selled/consolidado")
   };
 
   return (
@@ -37,6 +38,7 @@ export default function ProductSelledReportPage() {
           onSelectionChange={(key) => handleChange(key as string)}
         >
           <Tab key="detailed" title="Detallado" />
+          <Tab key="consolidado" title="Consolidado"/>
           <Tab key="general" title="Resumen" />
         </Tabs>
         <Outlet context={{ actionView }} />

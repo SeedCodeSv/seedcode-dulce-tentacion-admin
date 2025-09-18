@@ -3,8 +3,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChevronDown, ChevronUp, SearchIcon } from "lucide-react";
 import debounce from "debounce";
 
-import ProductsDetailedExportPdf from "./ProductsDetailedExportPdf";
-import ProductsDetailedExportExcell from "./ProductsDetailedExportExcell";
+import ProductsDetailedExportPdf from "./ProductsConsolidatedExportPdf";
+import ProductsDetailedExportExcell from "./ProductsConsolidatedExportExcell";
 
 import { ResponsiveFilterWrapper } from "@/components/global/ResposiveFilters";
 import { TableComponent } from "@/themes/ui/table-ui";
@@ -23,9 +23,9 @@ import RenderViewButton from "@/components/global/render-view-button";
 import { ProductsSellled } from "@/types/reports/productsSelled.report.types";
 import { useProductsStore } from "@/store/products.store";
 
-export default function ProductsSelledDetailComponent() {
+export default function ProductsSelledConsolidatedComponent() {
     const { getBranchesList, branch_list } = useBranchesStore();
-    const { products_selled_detailed, getProductsSelledDetail, loading } = useProductsOrdersReportStore()
+    const { products_selled, getProductsSelled, loading } = useProductsOrdersReportStore()
     const { transmitter, gettransmitter } = useTransmitterStore();
     const { windowSize } = useWindowSize()
     const [view, setView] = useState<'grid' | 'list' | 'table'>(
@@ -50,13 +50,13 @@ export default function ProductsSelledDetailComponent() {
         });
         gettransmitter()
         getBranchesList()
-        getProductsSelledDetail(search)
+        getProductsSelled(search)
     }, [])
 
     const handleSearch = (page: number) => {
         const productName = search.productName === "undefined" ? "" : search.productName
 
-        getProductsSelledDetail({ ...search, page, productName })
+        getProductsSelled({ ...search, page, productName })
     }
 
     const [sortConfig, setSortConfig] = useState<{
@@ -68,7 +68,7 @@ export default function ProductsSelledDetailComponent() {
     });
 
     const sortedProducts = useMemo(() => {
-        return [...products_selled_detailed.products_sellled].sort((a, b) => {
+        return [...products_selled.products_sellled].sort((a, b) => {
             if (sortConfig.key) {
                 let aValue = a[sortConfig.key];
                 let bValue = b[sortConfig.key];
@@ -89,7 +89,7 @@ export default function ProductsSelledDetailComponent() {
 
             return 0;
         });
-    }, [products_selled_detailed.products_sellled, sortConfig]);
+    }, [products_selled.products_sellled, sortConfig]);
 
 
     const handleSort = (key: keyof ProductsSellled) => {
@@ -172,7 +172,7 @@ export default function ProductsSelledDetailComponent() {
                         const newSearch = { ...search, productName: '', productId: 0 };
  
                         setSearch(newSearch);
-                        getProductsSelledDetail({...search, productName: ''});
+                        getProductsSelled(newSearch);
                     }}
                     onInputChange={(value) => {
                         handleSearchProduct(value);
@@ -188,7 +188,7 @@ export default function ProductsSelledDetailComponent() {
                         if (product === undefined) {
                             const newSearch = { ...search, productName: '', productId: 0 };
 
-                            getProductsSelledDetail(newSearch);
+                            getProductsSelled(newSearch);
 
                         }
                     }}
@@ -293,7 +293,7 @@ export default function ProductsSelledDetailComponent() {
                                     <LoadingTable />
                                 </TdGlobal>
                             </tr>
-                        ) : products_selled_detailed.products_sellled.length === 0 ? (
+                        ) : products_selled.products_sellled.length === 0 ? (
                             <tr>
                                 <TdGlobal className="p-3 text-sm text-center text-slate-500" colSpan={11}>
                                     <EmptyTable />
@@ -321,12 +321,12 @@ export default function ProductsSelledDetailComponent() {
                     <CardProductSellesDetail />
                 )}
             </div>
-            {products_selled_detailed.totalPag > 1 &&
+            {products_selled.totalPag > 1 &&
                 <Pagination
-                    currentPage={products_selled_detailed.currentPag}
-                    nextPage={products_selled_detailed.nextPag}
-                    previousPage={products_selled_detailed.prevPag}
-                    totalPages={products_selled_detailed.totalPag}
+                    currentPage={products_selled.currentPag}
+                    nextPage={products_selled.nextPag}
+                    previousPage={products_selled.prevPag}
+                    totalPages={products_selled.totalPag}
                     onPageChange={(page) => {
                         handleSearch(page)
                     }}
@@ -338,7 +338,7 @@ export default function ProductsSelledDetailComponent() {
 
 
 const CardProductSellesDetail = () => {
-    const { products_selled_detailed, loading } = useProductsOrdersReportStore()
+    const { products_selled, loading } = useProductsOrdersReportStore()
 
     return (
         <>
@@ -347,12 +347,12 @@ const CardProductSellesDetail = () => {
                     <div className="col-span-full flex justify-center items-center">
                         <LoadingTable />
                     </div>
-                ) : products_selled_detailed.products_sellled.length === 0 ? (
+                ) : products_selled.products_sellled.length === 0 ? (
                     <div className="col-span-full flex justify-center items-center">
                         <EmptyTable />
                     </div>
                 ) : (
-                    products_selled_detailed.products_sellled.map((item, index) => (
+                    products_selled.products_sellled.map((item, index) => (
                         <Card key={index} className="border shadow-sm">
                             <CardHeader>
                                 <h3 className="text-md font-bold text-gray-800">{item.productName}</h3>

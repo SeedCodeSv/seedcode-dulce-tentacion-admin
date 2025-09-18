@@ -18,6 +18,20 @@ export const get_products_selled_by_dates = async (params: SearchReport) => {
   return response.data;
 }
 
+export const get_productsSelled_details = async (params: SearchReport) => {
+  const token = get_token() ?? '';
+  const encodedName = params.productName && params.productName !== 'undefined' ? encodeURIComponent(params.productName) : '';
+
+  const url = import.meta.env.VITE_API_URL + `/reports/details/export/products-selled-by-dates/${params.branchId}?page=${params.page}&limit=${params.limit}&startDate=${params.startDate}&endDate=${params.endDate}&productName=${encodedName}`;
+
+  const response = await axios.get<IGetProductsSelled>(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+}
 
 export const get_products_selled_summary = async (params: SearchReport) => {
   const token = get_token() ?? '';

@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { IProductSelledStore } from "./types/productSelled.report.store.types";
 
 import { initialPagination } from "@/utils/utils";
-import { get_products_selled_by_branches, get_products_selled_by_dates, get_products_selled_summary } from "@/services/reports/productsSelled.report.service";
+import { get_products_selled_by_branches, get_products_selled_by_dates, get_products_selled_summary, get_productsSelled_details } from "@/services/reports/productsSelled.report.service";
 import { IGetProductsSelled } from "@/types/reports/productsSelled.report.types";
 
 export const useProductsOrdersReportStore = create<IProductSelledStore>((set) => ({
@@ -26,6 +26,11 @@ export const useProductsOrdersReportStore = create<IProductSelledStore>((set) =>
         branchTotals: {}
     },
     loading_data: false,
+    loading_detailed: false,
+    products_selled_detailed: {
+        ...initialPagination,
+        products_sellled: []
+    },
     getProductSelledSummary(params) {
         get_products_selled_summary(params).then((data) => {
             set({ summary_products_selled: data })
@@ -40,39 +45,39 @@ export const useProductsOrdersReportStore = create<IProductSelledStore>((set) =>
             })
         })
     },
-   getProductsSelled(params) {
-  return get_products_selled_by_dates(params)
-    .then((data) => {
-      set({ products_selled: data });
+    getProductsSelled(params) {
+        return get_products_selled_by_dates(params)
+            .then((data) => {
+                set({ products_selled: data });
 
-      return { ok: true, products_selled: data }; // <-- aquí corregido
-    })
-    .catch(() => {
-      const emptyData: IGetProductsSelled = {
-        ...initialPagination,
-        products_sellled: [],
-      };
+                return { ok: true, products_selled: data }; // <-- aquí corregido
+            })
+            .catch(() => {
+                const emptyData: IGetProductsSelled = {
+                    ...initialPagination,
+                    products_sellled: [],
+                };
 
-      set({ products_selled: emptyData });
+                set({ products_selled: emptyData });
 
-      return { ok: false, products_selled: emptyData };
-    });
-},
- getProductsSelledExport(params) {
-  return get_products_selled_by_dates(params)
-    .then((data) => {
+                return { ok: false, products_selled: emptyData };
+            });
+    },
+    getProductsSelledExport(params) {
+        return get_products_selled_by_dates(params)
+            .then((data) => {
 
-      return { ok: true, products_selled: data }; 
-    })
-    .catch(() => {
-      const emptyData: IGetProductsSelled = {
-        ...initialPagination,
-        products_sellled: [],
-      };
+                return { ok: true, products_selled: data };
+            })
+            .catch(() => {
+                const emptyData: IGetProductsSelled = {
+                    ...initialPagination,
+                    products_sellled: [],
+                };
 
-      return { ok: false, products_selled: emptyData }; 
-    });
-},
+                return { ok: false, products_selled: emptyData };
+            });
+    },
 
     getProductSaledByBranches(params) {
         set({ loading_data: true })
@@ -89,5 +94,36 @@ export const useProductsOrdersReportStore = create<IProductSelledStore>((set) =>
                 loading_data: false
             })
         })
+    },
+    getProductsSelledDetail(params) {
+        return get_productsSelled_details(params)
+            .then((data) => {
+                set({ products_selled_detailed: data });
+
+            })
+            .catch(() => {
+                const emptyData: IGetProductsSelled = {
+                    ...initialPagination,
+                    products_sellled: [],
+                };
+
+                set({ products_selled_detailed: emptyData });
+
+            });
+    },
+    getProductsSelledDetailExport(params) {
+        return get_productsSelled_details(params)
+            .then((data) => {
+
+                return { ok: true, products_selled: data };
+            })
+            .catch(() => {
+                const emptyData: IGetProductsSelled = {
+                    ...initialPagination,
+                    products_sellled: [],
+                };
+
+                return { ok: false, products_selled: emptyData };
+            });
     },
 }))
