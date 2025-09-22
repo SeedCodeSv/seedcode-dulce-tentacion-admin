@@ -93,6 +93,11 @@ export const TypeInventoryMoment = [
     name: 'Devolucion o Anulacion',
     type: 'Entradas',
   },
+  {
+    id: 7,
+    name: 'Producido',
+    type: 'Entradas',
+  },
 ];
 
 export const typesInventoryMovement = [
